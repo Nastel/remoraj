@@ -1,0 +1,3 @@
+com.jkoolcloud.remora.advices.JMSCreateConnectionAdvice
+com.jkoolcloud.remora.advices.JMSReceiveAdvice
+com.jkoolcloud.remora.advices.JMSSendAdvice

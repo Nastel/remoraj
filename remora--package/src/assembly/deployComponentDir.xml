@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://maven.apache.org/ASSEMBLY-COMPONENT/2.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.0.0 http://maven.apache.org/xsd/assembly-component-2.0.0.xsd">
+    <moduleSets>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+
+            <sources>
+                <includeModuleDirectory>false</includeModuleDirectory>
+                <fileSets>
+                    <fileSet>
+                        <outputDirectory></outputDirectory>
+                        <directory>${project.build.directory}</directory>
+                        <includes>
+                            <include>remora.jar</include>
+                        </includes>
+                    </fileSet>
+                    <fileSet>
+                        <outputDirectory>modules</outputDirectory>
+                        <directory>${project.build.directory}</directory>
+                        <includes>
+                            <include>*.jar</include>
+                        </includes>
+                        <excludes>
+                            <exclude>remora.jar</exclude>
+                            <exclude>remora-core*</exclude>
+                            <exclude>remora--package*</exclude>
+                        </excludes>
+                    </fileSet>
+                </fileSets>
+            </sources>
+
+        </moduleSet>
+    </moduleSets>
+
+    <fileSets>
+        <fileSet>
+            <directory>../config</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>config</outputDirectory>
+        </fileSet>
+
+        <!-- static content -->
+        <fileSet>
+            <directory>../</directory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+
+        </fileSet>
+
+        <!-- JavaDocs -->
+        <!--<fileSet>-->
+        <!--<directory>../${project.build.directory}</directory>-->
+        <!--<includes>-->
+        <!--<include>*-javadoc.*</include>-->
+        <!--</includes>-->
+        <!--<outputDirectory>docs</outputDirectory>-->
+        <!--<lineEnding>${assembly.line.endings}</lineEnding>-->
+        <!--</fileSet>-->
+    </fileSets>
+</component>
