@@ -17,12 +17,8 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <imb.runtimes>c:\\Program Files (x86)\\IBM\\WebSphere\\AppServer\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
-        <ibm.thinclient>c:\\Program Files (x86)\\IBM\\WebSphere\\AppServer\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
-
+        <imb.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
+        <ibm.thinclient>${websphere.install.dir}\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
     </properties>
 
     <dependencies>
@@ -31,6 +27,7 @@
             <artifactId>remora-core</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>runtime</artifactId>
@@ -49,8 +46,6 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean package</defaultGoal>
-
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>

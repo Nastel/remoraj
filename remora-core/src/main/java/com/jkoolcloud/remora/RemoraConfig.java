@@ -1,6 +1,7 @@
 package com.jkoolcloud.remora;
 
 import com.jkoolcloud.remora.core.output.OutputManager;
+import com.jkoolcloud.remora.core.utils.RemoraClassLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ public enum RemoraConfig {
 
     public static final String REMORA_PROPERTIES_FILE = "/config/remora.properties";
     Properties config;
+    public ClassLoader classLoader = null;
 
     RemoraConfig() {
         init();

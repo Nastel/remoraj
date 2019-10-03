@@ -3,19 +3,7 @@
 #set( $symbol_escape = '\' )
 package ${package}.advices;
 
-import java.lang.reflect.Method;
-
-import com.jkoolcloud.remora.advices.BaseTranformers;
-import com.jkoolcloud.remora.advices.GeneralAdvice;
-import com.jkoolcloud.remora.core.EntryDefinition;
-
-import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.type.TypeDescription;
-import java.lang.instrument.Instrumentation;
-
-import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
-import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class ${adviceClassName}Advice extends BaseTranformers implements RemoraAdvice {
 

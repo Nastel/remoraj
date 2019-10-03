@@ -17,9 +17,6 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -34,7 +31,6 @@
             <artifactId>java-uuid-generator</artifactId>
             <version>3.2.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -51,8 +47,6 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean package</defaultGoal>
-
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
@@ -97,7 +91,7 @@
                                 <addClasspath>true</addClasspath>
                                 <classpathPrefix>dependency-jars/</classpathPrefix>
                                 <!-- Jar file entry point -->
-                                <mainClass>com.jkoolcloud.javaam.App</mainClass>
+                                <mainClass>com.jkoolcloud.remora.Remora</mainClass>
                             </manifest>
                             <manifestEntries>
                                 <Premain-Class>com.jkoolcloud.remora.Remora</Premain-Class>
@@ -107,7 +101,8 @@
                             </manifestEntries>
                         </archive>
                     </configuration>
-                </plugin>            </plugins>
+                </plugin>
+            </plugins>
         </pluginManagement>
 
         <plugins>

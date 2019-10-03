@@ -14,7 +14,6 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-
     <properties>
         <release.deploy.name>remora</release.deploy.name>
         <release.deploy.dir>../../build/${release.deploy.name}</release.deploy.dir>
@@ -27,9 +26,7 @@
         <assembly.line.endings>unix</assembly.line.endings>
     </properties>
 
-
     <build>
-        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -88,6 +85,5 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 
 </project>

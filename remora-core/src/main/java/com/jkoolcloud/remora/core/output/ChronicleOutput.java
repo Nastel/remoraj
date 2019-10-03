@@ -1,20 +1,20 @@
 package com.jkoolcloud.remora.core.output;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
+
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
 
 	private ExcerptAppender appender;
 	private ChronicleQueue queue;
 	@RemoraConfig.Configurable
-	String queuePath = "c:\\tmp\\probe";
+	String queuePath = "./tmp/probe";
 
 	@Override
 	public void init() {

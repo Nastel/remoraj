@@ -26,6 +26,7 @@
                             <exclude>remora.jar</exclude>
                             <exclude>remora-core*</exclude>
                             <exclude>remora--package*</exclude>
+                            <exclude>original-*</exclude>
                         </excludes>
                     </fileSet>
                 </fileSets>

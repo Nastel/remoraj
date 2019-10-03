@@ -17,9 +17,6 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -31,8 +28,6 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean package</defaultGoal>
-
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
