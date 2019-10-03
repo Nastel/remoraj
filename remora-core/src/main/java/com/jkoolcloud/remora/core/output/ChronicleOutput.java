@@ -14,7 +14,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 	private ExcerptAppender appender;
 	private ChronicleQueue queue;
 	@RemoraConfig.Configurable
-	String queuePath = "c:\\tmp\\probe";
+	String queuePath = "./tmp/probe";
 
 	@Override
 	public void init() {

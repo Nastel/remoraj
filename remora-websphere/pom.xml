@@ -20,10 +20,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <ibm.thinclient>c:\\Program Files (x86)\\IBM\\WebSphere\\AppServer\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
-        <imb.runtimes>c:\\Program Files (x86)\\IBM\\WebSphere\\AppServer\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
-        <ibm.webcontainer>c:\\Program Files (x86)\\IBM\\WebSphere\\AppServer\plugins\com.ibm.ws.webcontainer.jar</ibm.webcontainer>
-        <ibm.rsaHelpers>c:\\Program Files (x86)\\IBM\\WebSphere\\AppServer\lib\rsahelpers.jar</ibm.rsaHelpers>
+        <ibm.thinclient>${websphere.install.dir}\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
+        <imb.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
+        <ibm.webcontainer>${websphere.install.dir}\plugins\com.ibm.ws.webcontainer.jar</ibm.webcontainer>
+        <ibm.rsaHelpers>${websphere.install.dir}\lib\rsahelpers.jar</ibm.rsaHelpers>
     </properties>
 
     <dependencies>
