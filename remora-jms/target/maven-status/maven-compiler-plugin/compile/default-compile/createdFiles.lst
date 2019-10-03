@@ -1,3 +1,0 @@
-com\jkoolcloud\remora\advices\JMSCreateConnectionAdvice.class
-com\jkoolcloud\remora\advices\JMSReceiveAdvice.class
-com\jkoolcloud\remora\advices\JMSSendAdvice.class
