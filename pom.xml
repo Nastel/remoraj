@@ -16,12 +16,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <skip.assembly.pack>false</skip.assembly.pack>
+
+        <websphere.install.dir>C:\Program Files (x86)\IBM\WebSphere\AppServer</websphere.install.dir>
+
         <byte.buddy.version>1.9.16</byte.buddy.version>
         <chronicle.version>5.17.17</chronicle.version>
-        <project.version>0.1-SNAPSHOT</project.version>
-        <skip.assembly.pack>false</skip.assembly.pack>
         <powermock.version>2.0.2</powermock.version>
-        <websphere.install.dir>C:\Program Files (x86)\IBM\WebSphere\AppServer</websphere.install.dir>
     </properties>
 
     <dependencies>
@@ -53,6 +55,8 @@
     </dependencies>
 
     <build>
+        <defaultGoal>clean package</defaultGoal>
+
         <pluginManagement>
             <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
