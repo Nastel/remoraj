@@ -35,7 +35,6 @@
             <version>3.2.0</version>
         </dependency>
 
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -97,7 +96,7 @@
                                 <addClasspath>true</addClasspath>
                                 <classpathPrefix>dependency-jars/</classpathPrefix>
                                 <!-- Jar file entry point -->
-                                <mainClass>com.jkoolcloud.javaam.App</mainClass>
+                                <mainClass>com.jkoolcloud.remora.Remora</mainClass>
                             </manifest>
                             <manifestEntries>
                                 <Premain-Class>com.jkoolcloud.remora.Remora</Premain-Class>
@@ -107,7 +106,8 @@
                             </manifestEntries>
                         </archive>
                     </configuration>
-                </plugin>            </plugins>
+                </plugin>
+            </plugins>
         </pluginManagement>
 
         <plugins>

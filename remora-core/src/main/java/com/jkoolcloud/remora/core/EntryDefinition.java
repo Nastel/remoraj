@@ -1,9 +1,9 @@
 package com.jkoolcloud.remora.core;
 
-import net.openhft.chronicle.wire.AbstractMarshallable;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import net.openhft.chronicle.wire.AbstractMarshallable;
 
 public class EntryDefinition extends AbstractMarshallable {
 	final String id = new JUGFactoryImpl().newUUID();
@@ -80,7 +80,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public void setException(String exception) {
-	    this.mode= Mode.EXCEPTION;
+		this.mode = Mode.EXCEPTION;
 		this.exception = exception;
 	}
 
@@ -128,9 +128,9 @@ public class EntryDefinition extends AbstractMarshallable {
 		}
 	}
 
-public void stop(){
+	public void stop() {
 		mode = Mode.STOP;
-}
+	}
 
 	public enum EventType {
 		CALL, SEND, RECEIVE, OPEN, CLOSE

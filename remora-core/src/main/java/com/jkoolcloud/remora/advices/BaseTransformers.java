@@ -1,17 +1,7 @@
 package com.jkoolcloud.remora.advices;
 
-
-import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.core.CallStack;
-import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.output.OutputManager;
-import com.jkoolcloud.remora.core.JUGFactoryImpl;
-import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.matcher.ElementMatcher;
-import org.jetbrains.annotations.NotNull;
-
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import static net.bytebuddy.matcher.ElementMatchers.none;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -21,10 +11,19 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
-import static net.bytebuddy.matcher.ElementMatchers.none;
+import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
+import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.JUGFactoryImpl;
+import com.jkoolcloud.remora.core.output.OutputManager;
 
-public abstract class BaseTranformers implements RemoraAdvice {
+import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.asm.Advice;
+import net.bytebuddy.description.NamedElement;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.matcher.ElementMatcher;
+
+public abstract class BaseTransformers implements RemoraAdvice {
 
 	@RemoraConfig.Configurable
 	public static List<String> ignores;
@@ -60,12 +59,10 @@ public abstract class BaseTranformers implements RemoraAdvice {
 	public AgentBuilder.Identified.Extendable getTransform() {
 
 		return new AgentBuilder.Default()//
-				//.with(listener)//
+				// .with(listener)//
 				.disableClassFormatChanges()//
 				// .enableUnsafeBootstrapInjection()//
-				.ignore(getClassIgnores())
-				.type(getTypeMatcher())
-				.transform(getAdvice());
+				.ignore(getClassIgnores()).type(getTypeMatcher()).transform(getAdvice());
 	}
 
 	public abstract ElementMatcher<TypeDescription> getTypeMatcher();
@@ -84,17 +81,18 @@ public abstract class BaseTranformers implements RemoraAdvice {
 		}
 
 		Stack<EntryDefinition> entryDefinitionStack = stackThreadLocal.get();
-		if (entryDefinitionStack != null && entryDefinitionStack.size() >=2) {
-			EntryDefinition lastEntryDefintion = entryDefinitionStack.get(entryDefinitionStack.size()-2);
-			if (lastEntryDefintion != null) {
-				entryDefinition.addProperty("PARENT", lastEntryDefintion.getId());
+		if (entryDefinitionStack != null && entryDefinitionStack.size() >= 2) {
+			EntryDefinition lastEntryDefinition = entryDefinitionStack.get(entryDefinitionStack.size() - 2);
+			if (lastEntryDefinition != null) {
+				entryDefinition.addProperty("PARENT", lastEntryDefinition.getId());
 			}
 		}
 		OutputManager.INSTANCE.send(entryDefinition);
 	}
 
-	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, @Advice.Thrown Throwable exception) {
-		System.out.println("Exception Occured!!");
+	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition,
+			@Advice.Thrown Throwable exception) {
+		System.out.println("Exception Occurred!!");
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		exception.printStackTrace(printWriter);
@@ -102,8 +100,9 @@ public abstract class BaseTranformers implements RemoraAdvice {
 		entryDefinition.setExceptionTrace(stringWriter.toString());
 	}
 
-	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition, ThreadLocal<Stack<EntryDefinition>> stackThreadLocal,
-			@Advice.This Object thiz, @Advice.Origin Method method) {
+	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
+			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, @Advice.This Object thiz,
+			@Advice.Origin Method method) {
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -162,9 +161,9 @@ public abstract class BaseTranformers implements RemoraAdvice {
 	public static void doFinally() {
 		if (stackThreadLocal != null) {
 			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
-			if(entryDefinitions!= null) {
+			if (entryDefinitions != null) {
 				entryDefinitions.pop();
-				if(entryDefinitions.size() ==0) {
+				if (entryDefinitions.size() == 0) {
 					stackThreadLocal.remove();
 				}
 			}
@@ -184,21 +183,17 @@ public abstract class BaseTranformers implements RemoraAdvice {
 	}
 
 	public static void handleAdviceException(Throwable t, String adviceName) {
-		BaseTranformers.class.getSimpleName();
+		BaseTransformers.class.getSimpleName();
 	}
 
-	protected ElementMatcher getClassIgnores(){
-		return nameStartsWith("net.openhft")
-				.or(nameStartsWith("java.lang"))
-				.or(nameStartsWith("com.jkoolcloud.remora"))
-				.or(nameStartsWith("net.bytebuddy"))
-				.or(getFromConfig());
+	protected ElementMatcher<NamedElement> getClassIgnores() {
+		return nameStartsWith("net.openhft").or(nameStartsWith("java.lang")).or(nameStartsWith("com.jkoolcloud.remora"))
+				.or(nameStartsWith("net.bytebuddy")).or(getFromConfig());
 	}
 
-	@NotNull
-	private ElementMatcher getFromConfig() {
-		ElementMatcher.Junction ad = none();
-		for (String ignore:ignores) {
+	private ElementMatcher<NamedElement> getFromConfig() {
+		ElementMatcher.Junction<NamedElement> ad = none();
+		for (String ignore : ignores) {
 			ad = ad.or(nameStartsWith(ignore));
 		}
 		return ad;

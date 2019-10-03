@@ -20,8 +20,7 @@ import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 
 /**
- * Default UUID factory based on FasterXML UUID generator.
- * See: http://wiki.fasterxml.com/JugHome
+ * Default UUID factory based on FasterXML UUID generator. See: http://wiki.fasterxml.com/JugHome
  *
  * @version $Revision: 1 $
  */
@@ -38,7 +37,7 @@ public class JUGFactoryImpl {
 		return uuidGenerator.generate().toString();
 	}
 
-    public String newUUID(Object obj) {
+	public String newUUID(Object obj) {
 		return uuidGenerator.generate().toString();
 	}
 }

@@ -1,19 +1,18 @@
 package com.jkoolcloud.remora.advices;
 
-import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
-import com.jkoolcloud.remora.core.EntryDefinition;
-import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.type.TypeDescription;
-import org.jetbrains.annotations.NotNull;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
+import com.jkoolcloud.remora.core.EntryDefinition;
 
-public class IBMAdapterRSA extends BaseTranformers implements RemoraAdvice{
+import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.asm.Advice;
+import net.bytebuddy.description.type.TypeDescription;
+
+public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 
 	private static final String ADVICE_NAME = "IBMAdapterRSA";
 	public static String[] INTERCEPTING_CLASS = { "com.ibm.ws.rsadapter.jdbc.WSJdbcStatement",
@@ -25,7 +24,6 @@ public class IBMAdapterRSA extends BaseTranformers implements RemoraAdvice{
 			.advice((nameStartsWith("execut")), IBMAdapterRSA.class.getName());
 
 	@Override
-	@NotNull
 	public EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
 		return new EnhancedElementMatcher<>(INTERCEPTING_CLASS);
 	}
@@ -37,15 +35,17 @@ public class IBMAdapterRSA extends BaseTranformers implements RemoraAdvice{
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This WSJdbcStatement thiz, //
-							  @Advice.AllArguments Object[] arguments, //
-							  @Advice.Origin Method method, //
-							  @Advice.Local("ed") EntryDefinition ed, //
-							  @Advice.Local("starttime") long starttime
+			@Advice.AllArguments Object[] arguments, //
+			@Advice.Origin Method method, //
+			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("starttime") long starttime
 
 	) {
 		try {
 			System.out.println("M");
-			if (isChainedClassInterception(IBMAdapterRSA.class)) return; // return if its chain of same
+			if (isChainedClassInterception(IBMAdapterRSA.class)) {
+				return; // return if its chain of same
+			}
 			if (ed == null) {
 				ed = new EntryDefinition(IBMAdapterRSA.class);
 			}
