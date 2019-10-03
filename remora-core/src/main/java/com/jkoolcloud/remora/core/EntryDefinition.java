@@ -7,7 +7,7 @@ import net.openhft.chronicle.wire.AbstractMarshallable;
 
 public class EntryDefinition extends AbstractMarshallable {
 	final String id = new JUGFactoryImpl().newUUID();
-	final Class adviceClass;
+	final String adviceClass;
 	String name;
 	String clazz;
 	Map<String, String> properties = new HashMap<>();
@@ -27,7 +27,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	String exceptionTrace;
 
 	public EntryDefinition(Class adviceClass) {
-		this.adviceClass = adviceClass;
+		this.adviceClass = adviceClass.getSimpleName();
 	}
 
 	public EntryDefinition() {
@@ -108,7 +108,7 @@ public class EntryDefinition extends AbstractMarshallable {
 		return correlator;
 	}
 
-	public Class getAdviceClass() {
+	public String getAdviceClass() {
 		return adviceClass;
 	}
 

@@ -41,16 +41,19 @@ public enum RemoraConfig {
                     field.setAccessible(true);
 
                     try {
-                        switch (field.getType().getName()) {
-                            case "java.lang.String":
-                                field.set(object, getConfigValue(object.getClass(), field.getName()));
-                                break;
-                            case "java.util.List":
-                                field.set(object, getList(getConfigValue(object.getClass(), field.getName())));
-                                break;
-                            case "default":
-                                pLog("Unsuppoerted property");
+                        String configValue = getConfigValue(object.getClass(), field.getName());
+                        if (configValue != null) {
+                            switch (field.getType().getName()) {
+                                case "java.lang.String":
+                                    field.set(object, configValue);
+                                    break;
+                                case "java.util.List":
+                                    field.set(object, getList(configValue));
+                                    break;
+                                case "default":
+                                    pLog("Unsupported property");
 
+                            }
                         }
 
 
@@ -88,7 +91,6 @@ public enum RemoraConfig {
             File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
         try ( FileInputStream inStream = new FileInputStream(file);) {
             config.load(inStream);
-            config.size();
             pLog("Sucessfully loaded {0} properties from configuration file", config.size());
         } catch (IOException e) {
             pLog("Failed loading properties file");
