@@ -25,15 +25,17 @@ public class RemoraInit {
 
 		}
 
-		/*
-		 * new IBMWebsphereInterceptor().getTransform().installOn(inst);
-		 * 
-		 * new IBMAdapterRSA().getTransform().installOn(inst); new
-		 * DataSourceConnectionAdvice().getTransform().with(AgentBuilder.Listener.StreamWriting.toSystemError()).
-		 * installOn(inst); // new JavaxHttpServlet().getTransform().installOn(inst); new
-		 * JMSSendAdvice().getTransform().installOn(inst); new JMSReceiveAdvice().getTransform().installOn(inst); new
-		 * JMSCreateConnectionAdvice().getTransform().installOn(inst); //new
-		 * SimpleTest2().getTransform().installOn(inst); new SimpleTest().getTransform().installOn(inst);
-		 */
+		// new IBMWebsphereInterceptor().getTransform().installOn(inst);
+
+		// new IBMAdapterRSA().getTransform().installOn(inst);
+		// new
+		// DataSourceConnectionAdvice().getTransform().with(AgentBuilder.Listener.StreamWriting.toSystemError()).installOn(inst);
+		// new JavaxHttpServlet().getTransform().installOn(inst);
+		// new JMSSendAdvice().getTransform().installOn(inst);
+		// new JMSReceiveAdvice().getTransform().installOn(inst);
+		// new JMSCreateConnectionAdvice().getTransform().installOn(inst);
+		// new SimpleTest2().getTransform().installOn(inst);
+		// new SimpleTest().getTransform().installOn(inst);
+
 	}
 }

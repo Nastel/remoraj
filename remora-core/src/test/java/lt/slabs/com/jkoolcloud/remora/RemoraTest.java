@@ -20,12 +20,16 @@ public class RemoraTest {
 	public static void main(String[] args) throws Throwable {
 		System.setProperty("probe.output", SysOutOutput.class.getName());
 		System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
-		System.out.println("\n\tClass.loader=" + Remora.class.getClassLoader() + "\n\tJava.version="
-				+ System.getProperty("java.version") + "\n\tJava.vendor=" + System.getProperty("java.vendor")
-				+ "\n\tJava.home=" + System.getProperty("java.home") + "\n\tJava.heap="
-				+ Runtime.getRuntime().maxMemory() + "\n\tOS.name=" + System.getProperty("os.name") + "\n\tOS.version="
-				+ System.getProperty("os.version") + "\n\tOS.arch=" + System.getProperty("os.arch") + "\n\tOS.cpus="
-				+ Runtime.getRuntime().availableProcessors());
+		System.out.println( //
+				"\n\tClass.loader=" + Remora.class.getClassLoader() //
+						+ "\n\tJava.version=" + System.getProperty("java.version") //
+						+ "\n\tJava.vendor=" + System.getProperty("java.vendor") //
+						+ "\n\tJava.home=" + System.getProperty("java.home") //
+						+ "\n\tJava.heap=" + Runtime.getRuntime().maxMemory() //
+						+ "\n\tOS.name=" + System.getProperty("os.name") //
+						+ "\n\tOS.version=" + System.getProperty("os.version") //
+						+ "\n\tOS.arch=" + System.getProperty("os.arch") //
+						+ "\n\tOS.cpus=" + Runtime.getRuntime().availableProcessors());
 
 		new JustATest().instrumentedMethod("http://www.google.com", "Argument");
 

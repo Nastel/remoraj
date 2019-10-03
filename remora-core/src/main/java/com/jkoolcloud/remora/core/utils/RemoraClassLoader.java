@@ -26,8 +26,7 @@ public class RemoraClassLoader extends URLClassLoader {
 				PrintStream out = error == null ? System.out : System.err;
 				out.println(
 						this + " findClass(" + name + "), loader=" + (clazz != null ? clazz.getClassLoader() : null));
-				if (error != null)
-				{
+				if (error != null) {
 					error.printStackTrace();
 				}
 			}

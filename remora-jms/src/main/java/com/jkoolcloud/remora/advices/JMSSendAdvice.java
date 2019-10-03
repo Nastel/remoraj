@@ -29,7 +29,8 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSSendAdvice.class.getClassLoader()).advice(methodMatcher(), JMSSendAdvice.class.getName());
+			.include(JMSSendAdvice.class.getClassLoader()) //
+			.advice(methodMatcher(), JMSSendAdvice.class.getName());
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {

@@ -32,7 +32,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	private static AgentBuilder.Listener.StreamWriting listener = AgentBuilder.Listener.StreamWriting.toSystemError();
 
-	public class EnhancedElementMatcher<T extends TypeDescription> extends ElementMatcher.Junction.AbstractBase<T> {
+	public static class EnhancedElementMatcher<T extends TypeDescription>
+			extends ElementMatcher.Junction.AbstractBase<T> {
 
 		private String[] interceptingClass;
 
@@ -53,16 +54,16 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 			return false;
 		}
-
 	}
 
 	public AgentBuilder.Identified.Extendable getTransform() {
-
 		return new AgentBuilder.Default()//
-				// .with(listener)//
+				// .with(listener) //
 				.disableClassFormatChanges()//
-				// .enableUnsafeBootstrapInjection()//
-				.ignore(getClassIgnores()).type(getTypeMatcher()).transform(getAdvice());
+				// .enableUnsafeBootstrapInjection() //
+				.ignore(getClassIgnores()) //
+				.type(getTypeMatcher()) //
+				.transform(getAdvice());
 	}
 
 	public abstract ElementMatcher<TypeDescription> getTypeMatcher();
@@ -170,7 +171,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	public static boolean isChainedClassInterception(Class adviceClass) {
+	public static boolean isChainedClassInterception(Class<?> adviceClass) {
 		try {
 			if (adviceClass.equals(stackThreadLocal.get().peek().getAdviceClass())) {
 				System.out.println("Stack contains the same advice");
@@ -187,8 +188,11 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	protected ElementMatcher<NamedElement> getClassIgnores() {
-		return nameStartsWith("net.openhft").or(nameStartsWith("java.lang")).or(nameStartsWith("com.jkoolcloud.remora"))
-				.or(nameStartsWith("net.bytebuddy")).or(getFromConfig());
+		return nameStartsWith("net.openhft") //
+				.or(nameStartsWith("java.lang")) //
+				.or(nameStartsWith("com.jkoolcloud.remora")) //
+				.or(nameStartsWith("net.bytebuddy")) //
+				.or(getFromConfig());
 	}
 
 	private ElementMatcher<NamedElement> getFromConfig() {
