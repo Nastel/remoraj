@@ -39,8 +39,7 @@ public class Remora {
 		}
 		OutputManager outputManager = OutputManager.INSTANCE; //
 		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
-
-		bootLoader = new RemoraClassLoader(findJars(options + MODULES_DIR), Remora.class.getClassLoader());
+		bootLoader = new RemoraClassLoader(findJars(options + MODULES_DIR), Remora.class.getClassLoader(), inst);
 		pLog("Initializing classloader: " + bootLoader);
 		Class<?> appClass = bootLoader.loadClass(RemoraInit.class.getName());
 		Object instance = appClass.newInstance();

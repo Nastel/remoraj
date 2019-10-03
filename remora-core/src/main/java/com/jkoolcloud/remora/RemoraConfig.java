@@ -76,7 +76,7 @@ public enum RemoraConfig {
         while(value == null &&
                 !workingClass.equals(Object.class)) {
             value = RemoraConfig.INSTANCE.config.getProperty(workingClass.getName() + "." + name);
-            workingClass = aClass.getSuperclass();
+            workingClass = workingClass.getSuperclass();
         }
         return value;
     }

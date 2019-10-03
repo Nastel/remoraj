@@ -197,6 +197,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	private ElementMatcher<NamedElement> getFromConfig() {
 		ElementMatcher.Junction<NamedElement> ad = none();
+		if (ignores ==  null) return ad;
 		for (String ignore : ignores) {
 			ad = ad.or(nameStartsWith(ignore));
 		}
