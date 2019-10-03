@@ -3,6 +3,7 @@ package com.jkoolcloud.remora.core;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class EntryDefinitionTest {
      */
 
     @Test
-    public void testWiteToQueue() throws IOException {
+    public void testWiteToQueue() throws IOException, InterruptedException {
         Path tempDirectory = Files.createTempDirectory(getClass().getName());
 
         ChronicleQueue queue = ChronicleQueue.single(tempDirectory.toFile().getAbsolutePath());
@@ -35,13 +36,27 @@ public class EntryDefinitionTest {
 
         appender.writeDocument(ed);
 
+
         EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class);
         boolean s = tailer.readDocument(edRead);
         System.out.println(edRead);
-        assertEquals("Name field deserialization fault", "AAA", ed.name );
-        assertEquals("Exception field deserialization fault", "Exception", ed.exception );
-        assertEquals("Properties field entry deserialization fault", "TEST_value", ed.getProperties().get("Key") );
-        assertNotNull("Id field should be filled", ed.id );
+        assertEquals("Name field deserialization fault", "AAA", ed.name);
+        assertEquals("Exception field deserialization fault", "Exception", ed.exception);
+        assertEquals("Properties field entry deserialization fault", "TEST_value", ed.getProperties().get("Key"));
+        assertNotNull("Id field should be filled", ed.id);
+
+
+        queue.close();
+        boolean success = false;
+        while (!success) {
+            try {
+                Thread.sleep(900);
+                FileUtils.deleteDirectory(tempDirectory.toFile());
+                success = true;
+            } catch (IOException e) {
+                success = false;
+            }
+        }
     }
 
 }

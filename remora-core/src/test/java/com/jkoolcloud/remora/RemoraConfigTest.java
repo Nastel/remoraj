@@ -1,5 +1,6 @@
 package com.jkoolcloud.remora;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,60 +17,65 @@ import static org.junit.Assert.*;
 
 public class RemoraConfigTest {
 
-    public class TestForSingleStringConfigrable
-    {
+    private Path remoraTempDir;
+
+    public static class TestForSingleStringConfigrable {
         @RemoraConfig.Configurable
         String testField;
     }
 
-    public class TestForListConfigrable
-    {
+    public static class TestForListConfigrable {
         @RemoraConfig.Configurable
         List testField;
     }
 
-    public class TestForListConfigrableSuperClass extends TestForListConfigrable
-    {
+    public static class TestForListConfigrableSuperClass extends TestForListConfigrable {
 
     }
 
     @Test
     public void configTestHappyPath() throws IOException {
         Properties properties = new Properties() {{
-            put(TestForSingleStringConfigrable.class.getName() + "." +"testField", "TEST");
+            put(TestForSingleStringConfigrable.class.getName() + "." + "testField", "TEST");
         }};
         prepareConfigFile(properties);
         TestForSingleStringConfigrable test = new TestForSingleStringConfigrable();
+        RemoraConfig.INSTANCE.init();  // you need to initialise repeatidly 'cause multiple tests will fail
         RemoraConfig.INSTANCE.configure(test);
-        assertNotNull("Configurring field failed",test.testField);
+        cleanup();
+        assertNotNull("Configuring field failed", test.testField);
     }
 
     @Test
     public void configTestHappyPathList() throws IOException {
         Properties properties = new Properties() {{
-            put(TestForListConfigrable.class.getName() + "." +"testField", "TEST  ;       TEST; TEST;;");
+            put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
         }};
         prepareConfigFile(properties);
         TestForListConfigrable test = new TestForListConfigrable();
+        RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
         RemoraConfig.INSTANCE.configure(test);
+        cleanup();
         assertNotNull("Configurring field failed", test.testField);
-        assertEquals("Not all of expected list values parsed", 3,test.testField.size());
+        assertEquals("Not all of expected list values parsed", 3, test.testField.size());
     }
 
     @Test
     public void configTestHappyPathSuperClass() throws IOException {
         Properties properties = new Properties() {{
-            put(TestForListConfigrableSuperClass.class.getName() + "." +"testField", "TEST  ;       TEST; TEST;;");
+            put(TestForListConfigrableSuperClass.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
         }};
         prepareConfigFile(properties);
         TestForListConfigrableSuperClass test = new TestForListConfigrableSuperClass();
+        RemoraConfig.INSTANCE.init();  // you need to initialise repeatidly 'cause multiple tests will fail
         RemoraConfig.INSTANCE.configure(test);
+        cleanup();
         assertNotNull("Configurring field failed", test.testField);
-        assertEquals("Not all of expected list values parsed", 3,test.testField.size());
+        assertEquals("Not all of expected list values parsed", 3, test.testField.size());
     }
 
     public void prepareConfigFile(Properties properties) throws IOException {
-        Path remoraTempDir = Files.createTempDirectory("remoraTempDir");
+        remoraTempDir = Files.createTempDirectory("remoraTempDir");
         System.setProperty(REMORA_PATH, remoraTempDir.toAbsolutePath().toString());
 
         File file = new File(remoraTempDir.toAbsolutePath() + "/config/remora.properties");
@@ -78,6 +84,16 @@ public class RemoraConfigTest {
         FileOutputStream out = new FileOutputStream(file);
 
         properties.store(out, "TEST");
+        out.close();
+
+    }
+
+    public void cleanup() {
+        try {
+            FileUtils.deleteDirectory(remoraTempDir.toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

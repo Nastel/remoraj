@@ -79,12 +79,13 @@ public enum RemoraConfig {
         return value;
     }
 
-    private void init() {
+    protected void init() {
         config = new Properties();
-        try {
+
             String remoraPath = System.getProperty(REMORA_PATH);
             File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
-            config.load(new FileInputStream(file));
+        try ( FileInputStream inStream = new FileInputStream(file);) {
+            config.load(inStream);
             config.size();
             pLog("Sucessfully loaded {0} properties from configuration file", config.size());
         } catch (IOException e) {
