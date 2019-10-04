@@ -21,8 +21,8 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "execut";
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(IBMAdapterRSA.class.getClassLoader())
-			.include(RemoraConfig.INSTANCE.classLoader)
+			.include(IBMAdapterRSA.class.getClassLoader()) //
+			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice((nameStartsWith("execut")), IBMAdapterRSA.class.getName());
 
 	@Override

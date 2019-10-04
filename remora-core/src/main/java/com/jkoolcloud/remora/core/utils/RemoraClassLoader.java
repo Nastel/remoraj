@@ -13,16 +13,15 @@ import com.jkoolcloud.remora.RemoraConfig;
 public class RemoraClassLoader extends URLClassLoader {
 	public RemoraClassLoader(URL[] urls, ClassLoader parent, Instrumentation inst) {
 		super(urls, parent);
-		for (URL url :urls) {
+		for (URL url : urls) {
 			try {
 				inst.appendToBootstrapClassLoaderSearch(new JarFile(url.getFile()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		RemoraConfig.INSTANCE.classLoader=this;
+		RemoraConfig.INSTANCE.classLoader = this;
 	}
-
 
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {

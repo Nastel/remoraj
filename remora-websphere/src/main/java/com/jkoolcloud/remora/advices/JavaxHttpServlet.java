@@ -26,8 +26,8 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JavaxHttpServlet.class.getClassLoader())
-			.include(RemoraConfig.INSTANCE.classLoader)
+			.include(JavaxHttpServlet.class.getClassLoader()) //
+			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
 
 	@Override
