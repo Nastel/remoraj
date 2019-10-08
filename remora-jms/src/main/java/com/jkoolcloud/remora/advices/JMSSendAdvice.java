@@ -4,12 +4,14 @@ import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.QueueSender;
 
+import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -24,6 +26,15 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageProducer" };
 	public static String INTERCEPTING_METHOD = "send";
 
+	@RemoraConfig.Configurable
+	public static boolean logging;
+	public static Logger logger = Logger.getLogger(JMSSendAdvice.class.getName());
+
+	/**
+	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+	 * method matches.
+	 */
+
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return named(INTERCEPTING_METHOD);
 	}
@@ -31,6 +42,10 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JMSSendAdvice.class.getClassLoader()) //
 			.advice(methodMatcher(), JMSSendAdvice.class.getName());
+
+	/**
+	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 */
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
@@ -42,24 +57,42 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 		return advice;
 	}
 
+	/**
+	 * Advices before method is called before instrumented method code
+	 *
+	 * @param thiz
+	 *            reference to method object
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param method
+	 *            instrumented method description
+	 * @param ed
+	 *            {@link EntryDefinition} for collecting ant passing values to
+	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
+	 * @param startTime
+	 *            method startTime
+	 *
+	 */
+
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This MessageProducer thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) //
+			@Advice.Local("startTime") long startTime) //
 	{
 		try {
-			System.out.println("J");
-			if (isChainedClassInterception(JMSSendAdvice.class)) {
+			if (logging) {
+				logger.entering(JMSCreateConnectionAdvice.class.getName(), "before");
+			}
+			if (isChainedClassInterception(JMSSendAdvice.class, logger)) {
 				return; // return if its chain of same
 			}
-
 			if (ed == null) {
 				ed = new EntryDefinition(JMSSendAdvice.class);
 			}
 			ed.setEventType(EntryDefinition.EventType.SEND);
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (thiz instanceof QueueSender) {
 				ed.addPropertyIfExist("QUEUE", ((QueueSender) thiz).getQueue().getQueueName());
@@ -78,15 +111,14 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 					try {
 						message.setObjectProperty("JanusMessageSignature", ed.getCorrelator());
 					} catch (Exception e) {
-						System.out.println("Cannot alter message");
+						logger.fine("Cannot alter message");
 					}
 				}
 
 			}
 
 		} catch (Throwable t) {
-			System.out.println("###################### Advice Error");
-			t.printStackTrace();
+			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
 
@@ -97,19 +129,25 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("starttime") long starttime) {
-		boolean doFinnaly = true;
+		boolean doFinally = true;
 		try {
-			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				System.out.println("EntryDefinition not exist");
-				doFinnaly = false;
+			if (ed == null) // noinspection Duplicates
+			{ // ed expected to be null if not created by entry, that's for duplicates
+				if (logging) {
+					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+				}
+				doFinally = false;
 				return;
 			}
-			System.out.println("JE");
-			fillDefaultValuesAfter(ed, starttime, exception);
+			// noinspection Duplicates
+			if (logging) {
+				logger.exiting(JMSSendAdvice.class.getName(), "after");
+			}
+			fillDefaultValuesAfter(ed, starttime, exception, logger);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
-			if (doFinnaly) {
+			if (doFinally) {
 				doFinally();
 			}
 		}

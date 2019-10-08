@@ -3,7 +3,9 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
+import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -17,6 +19,10 @@ public class SimpleTest extends BaseTransformers {
 	private static final String ADVICE_NAME = "SimpleTest";
 	public static String[] INTERCEPTING_CLASS = { "lt.slabs.com.jkoolcloud.remora.JustATest" };
 	public static String INTERCEPTING_METHOD = "instrumentedMethod";
+
+	@RemoraConfig.Configurable
+	public static boolean logging;
+	public static Logger logger = Logger.getLogger(SimpleTest.class.getName());
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(SimpleTest.class.getClassLoader())
@@ -56,13 +62,13 @@ public class SimpleTest extends BaseTransformers {
 				ed = new EntryDefinition(SimpleTest.class);
 			}
 
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method);
+			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 			Class.forName("Blah");
 			ed.addProperty("URI", uri.toString());
 			ed.addProperty("Arg", arguments.toString());
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
 
@@ -73,7 +79,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("starttime") long starttime) {
 		try {
-			fillDefaultValuesAfter(ed, starttime, exception);
+			fillDefaultValuesAfter(ed, starttime, exception, logger);
 		} finally {
 			doFinally();
 		}

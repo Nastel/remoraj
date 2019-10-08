@@ -6,9 +6,11 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.reflect.Method;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.jms.ConnectionFactory;
 
+import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -23,6 +25,15 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.ConnectionFactory" };
 	public static String INTERCEPTING_METHOD = "createConnection";
 
+	@RemoraConfig.Configurable
+	public static boolean logging;
+	public static Logger logger = Logger.getLogger(JMSCreateConnectionAdvice.class.getName());
+
+	/**
+	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+	 * method maches.
+	 */
+
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return named(INTERCEPTING_METHOD).or(named("createQueueConnection"));
 	}
@@ -31,6 +42,10 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			.include(JMSCreateConnectionAdvice.class.getClassLoader())
 
 			.advice(methodMatcher(), JMSCreateConnectionAdvice.class.getName());
+
+	/**
+	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 */
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
@@ -42,16 +57,36 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 		return advice;
 	}
 
+	/**
+	 * Advices before method is called before instrumented method code
+	 *
+	 * @param thiz
+	 *            reference to method object
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param method
+	 *            instrumented method description
+	 * @param ed
+	 *            {@link EntryDefinition} for collecting ant passing values to
+	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
+	 * @param startTime
+	 *            method startTime
+	 * 
+	 */
+
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This ConnectionFactory thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) //
+			@Advice.Local("startTime") long startTime) //
 	{
 		try {
-			System.out.println("JC");
-			if (isChainedClassInterception(JMSCreateConnectionAdvice.class)) {
+			if (logging) {
+				logger.entering(JMSCreateConnectionAdvice.class.getName(), "before");
+			}
+
+			if (isChainedClassInterception(JMSCreateConnectionAdvice.class, logger)) {
 				return; // return if its chain of same
 			}
 
@@ -59,7 +94,8 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 				ed = new EntryDefinition(JMSCreateConnectionAdvice.class);
 			}
 			ed.setEventType(EntryDefinition.EventType.OPEN);
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method);
+
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			Properties fieldValue = getFieldValue("factory.properties", thiz, Properties.class);
 			if (fieldValue != null) {
@@ -67,10 +103,28 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			}
 
 		} catch (Throwable t) {
-			System.out.println("###################### Advice Error");
-			t.printStackTrace();
+			if (logging) {
+				logger.throwing(JMSCreateConnectionAdvice.class.getName(), "before", t);
+			}
 		}
 	}
+
+	/**
+	 * Method called on instrumented method finished.
+	 *
+	 * @param obj
+	 *            reference to method object
+	 * @param method
+	 *            instrumented method description
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param exception
+	 *            exception thrown in method exit (not caught)
+	 * @param ed
+	 *            {@link EntryDefinition} passed along the method (from before method)
+	 * @param startTime
+	 *            startTime passed along the method
+	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This ConnectionFactory obj, //
@@ -78,20 +132,24 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
-		boolean doFinnaly = true;
+			@Advice.Local("startTime") long startTime) {
+		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				System.out.println("EntryDefinition not exist");
-				doFinnaly = false;
+				if (logging) {
+					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+				}
+				doFinally = false;
 				return;
 			}
-			System.out.println("JCE");
-			fillDefaultValuesAfter(ed, starttime, exception);
+			if (logging) {
+				logger.exiting(JMSCreateConnectionAdvice.class.getName(), "after");
+			}
+			fillDefaultValuesAfter(ed, startTime, exception, logger);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
-			if (doFinnaly) {
+			if (doFinally) {
 				doFinally();
 			}
 		}

@@ -9,6 +9,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	final String id = new JUGFactoryImpl().newUUID();
 	final String adviceClass;
 	String name;
+
 	String clazz;
 	Map<String, String> properties = new HashMap<>();
 	String application;
@@ -31,7 +32,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public EntryDefinition() {
-		this.adviceClass = null;
+        adviceClass = null;
 	}
 
 	public void setThread(String thread) {
@@ -59,6 +60,10 @@ public class EntryDefinition extends AbstractMarshallable {
 		}
 	}
 
+	public String getClazz() {
+		return clazz;
+	}
+
 	public void setStartTime(Long startTime) {
 		this.startTime = startTime;
 	}
@@ -80,7 +85,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public void setException(String exception) {
-		this.mode = Mode.EXCEPTION;
+        mode = Mode.EXCEPTION;
 		this.exception = exception;
 	}
 

@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 
 public class LoggerWrapper {
 	public static void pLog(String message) {
+
 		System.out.println(message);
 	}
 

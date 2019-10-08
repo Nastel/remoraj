@@ -3,6 +3,7 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -21,6 +22,14 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
 	public static String INTERCEPTING_METHOD = "service";
 
+	@RemoraConfig.Configurable
+	public static boolean logging;
+	public static Logger logger = Logger.getLogger(JavaxHttpServlet.class.getName());
+
+	/**
+	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+	 * method matches.
+	 */
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return nameStartsWith(INTERCEPTING_METHOD);
 	}
@@ -30,6 +39,9 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
 
+	/**
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
+	 */
 	@Override
 	public EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
 		return new EnhancedElementMatcher<>(INTERCEPTING_CLASS);
@@ -40,30 +52,46 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 		return advice;
 	}
 
+	/**
+	 * Advices before method is called before instrumented method code
+	 *
+	 * @param thiz
+	 *            reference to method object
+	 * @param req
+	 * @param resp
+	 *            arguments provided for method
+	 * @param method
+	 *            instrumented method description
+	 * @param ed
+	 *            {@link EntryDefinition} for collecting ant passing values to
+	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
+	 * @param startTime
+	 *            method startTime
+	 *
+	 */
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) //
+			@Advice.Local("startTime") long startTime) //
 	{
 		try {
-			System.out.println("X");
-			if (isChainedClassInterception(JavaxHttpServlet.class)) {
+			if (logging) {
+				logger.entering(JavaxHttpServlet.class.getName(), "before");
+			}
+			if (isChainedClassInterception(JavaxHttpServlet.class, logger)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(JavaxHttpServlet.class);
 			}
 			ed.addProperty("Working", "true");
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (req != null) {
 				try {
-					// if (req.getServletContext() != null) {
-					// ed.addProperty("Resource", req.getServletContext().getContextPath()); CANT USE
-					// }
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
 				} catch (Throwable t) {
@@ -74,35 +102,29 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			} else {
 				System.out.println("## Request null");
 			}
-			// if (thiz != null) {
-			// try {
-			// ed.addPropertyIfExist("CONTEXT_PATH", thiz.getContextPath());
-			// } catch (Throwable t) {
-			// System.out.println("this" + thiz);
-			// t.printStackTrace();
-			// }
-			// } else {
-			// System.out.println("## This null");
-			// }
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
 
-	// private static boolean safe(Runnable function) {
-	// try {
-	// function.run();
-	// return true;
-	// } catch (Throwable e) {
-	// StackTraceElement stackTraceElement = e.getStackTrace()[2];
-	// System.out.println("Advice safe failure");
-	// System.out.print("#### " + e.getMessage() + " ");
-	// System.out.println(stackTraceElement.getFileName() + ":" + stackTraceElement.getLineNumber() + " & "
-	// + stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName());
-	// return false;
-	// }
-	// }
+	/**
+	 * Method called on instrumented method finished.
+	 *
+	 * @param obj
+	 *            reference to method object
+	 * @param method
+	 *            instrumented method description
+	 * @param req
+	 * @param resp
+	 *            arguments provided for method
+	 * @param exception
+	 *            exception thrown in method exit (not caught)
+	 * @param ed
+	 *            {@link EntryDefinition} passed along the method (from before method)
+	 * @param startTime
+	 *            startTime passed along the method
+	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
@@ -111,15 +133,27 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
+			@Advice.Local("startTime") long startTime) {
+		boolean doFinally = true;
 		try {
-			System.out.println("XE");
-			fillDefaultValuesAfter(ed, starttime, exception);
+			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
+				if (logging) {
+					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+				}
+				doFinally = false;
+				return;
+			}
+			if (logging) {
+				logger.exiting(JavaxHttpServlet.class.getName(), "after");
+			}
+			fillDefaultValuesAfter(ed, startTime, exception, logger);
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
-			doFinally();
+			if (doFinally) {
+				doFinally();
+			}
 		}
 
 	}

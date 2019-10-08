@@ -1,8 +1,7 @@
 package com.jkoolcloud.remora;
 
 import static com.jkoolcloud.remora.Remora.REMORA_PATH;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,6 +28,11 @@ public class RemoraConfigTest {
 		List testField;
 	}
 
+	public static class TestForBooleanConfigrable {
+		@RemoraConfig.Configurable
+		boolean testField;
+	}
+
 	public static class TestForListConfigrableSuperClass extends TestForListConfigrable {
 
 	}
@@ -46,6 +50,21 @@ public class RemoraConfigTest {
 		RemoraConfig.INSTANCE.configure(test);
 		cleanup();
 		assertNotNull("Configuring field failed", test.testField);
+	}
+
+	@Test
+	public void configTestBooleanHappyPath() throws IOException {
+		Properties properties = new Properties() {
+			{
+				put(TestForBooleanConfigrable.class.getName() + "." + "testField", "true");
+			}
+		};
+		prepareConfigFile(properties);
+		TestForBooleanConfigrable test = new TestForBooleanConfigrable();
+		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
+		RemoraConfig.INSTANCE.configure(test);
+		cleanup();
+		assertTrue("Configuring field failed", test.testField);
 	}
 
 	@Test

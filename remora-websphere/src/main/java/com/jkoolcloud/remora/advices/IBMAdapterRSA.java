@@ -4,6 +4,7 @@ import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 import com.jkoolcloud.remora.RemoraConfig;
@@ -11,7 +12,9 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
+import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.matcher.ElementMatcher;
 
 public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 
@@ -20,11 +23,27 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 			"com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement", "com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement" };
 	public static String INTERCEPTING_METHOD = "execut";
 
+	@RemoraConfig.Configurable
+	public static boolean logging;
+	public static Logger logger = Logger.getLogger(IBMAdapterRSA.class.getName());
+
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(IBMAdapterRSA.class.getClassLoader()) //
 			.include(RemoraConfig.INSTANCE.classLoader) //
-			.advice((nameStartsWith("execut")), IBMAdapterRSA.class.getName());
+			.advice(methodMatcher(), IBMAdapterRSA.class.getName());
 
+	/**
+	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+	 * method matches.
+	 */
+
+	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
+		return (nameStartsWith(INTERCEPTING_METHOD));
+	}
+
+	/**
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
+	 */
 	@Override
 	public EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
 		return new EnhancedElementMatcher<>(INTERCEPTING_CLASS);
@@ -35,23 +54,42 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 		return advice;
 	}
 
+	/**
+	 * Advices before method is called before instrumented method code
+	 *
+	 * @param thiz
+	 *            reference to method object
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param method
+	 *            instrumented method description
+	 * @param ed
+	 *            {@link EntryDefinition} for collecting ant passing values to
+	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
+	 * @param startTime
+	 *            method startTime
+	 *
+	 */
+
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This WSJdbcStatement thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime
+			@Advice.Local("startTime") long startTime
 
 	) {
 		try {
-			System.out.println("M");
-			if (isChainedClassInterception(IBMAdapterRSA.class)) {
+			if (logging) {
+				logger.entering(IBMAdapterRSA.class.getName(), "before");
+			}
+			if (isChainedClassInterception(IBMAdapterRSA.class, logger)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(IBMAdapterRSA.class);
 			}
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 			if (arguments != null && arguments.length >= 1 && arguments[0] instanceof String) {
 				ed.addProperty("SQL", arguments[0].toString());
 
@@ -63,21 +101,52 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 				ed.addProperty("DB_NAME", thiz.getJNDIName());
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
+
+	/**
+	 * Method called on instrumented method finished.
+	 *
+	 * @param obj
+	 *            reference to method object
+	 * @param method
+	 *            instrumented method description
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param exception
+	 *            exception thrown in method exit (not caught)
+	 * @param ed
+	 *            {@link EntryDefinition} passed along the method (from before method)
+	 * @param startTime
+	 *            startTime passed along the method
+	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
+			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
+			@Advice.Local("startTime") long startTime) {
+		boolean doFinally = true;
 		try {
+
+			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
+				if (logging) {
+					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+				}
+				doFinally = false;
+				return;
+			}
+			if (logging) {
+				logger.exiting(IBMAdapterRSA.class.getName(), "after");
+			}
 			System.out.println("ME");
-			fillDefaultValuesAfter(ed, starttime, exception);
-			ed.addProperty("Return", "true");
+			fillDefaultValuesAfter(ed, startTime, exception, logger);
 		} finally {
-			doFinally();
+			if (doFinally) {
+				doFinally();
+			}
 		}
 
 	}

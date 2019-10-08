@@ -19,7 +19,7 @@
 
         <skip.assembly.pack>false</skip.assembly.pack>
 
-        <websphere.install.dir>C:\Program Files (x86)\IBM\WebSphere\AppServer</websphere.install.dir>
+        <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
         <byte.buddy.version>1.9.16</byte.buddy.version>
         <chronicle.version>5.17.17</chronicle.version>

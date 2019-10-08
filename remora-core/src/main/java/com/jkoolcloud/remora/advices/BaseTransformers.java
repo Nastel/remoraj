@@ -1,5 +1,6 @@
 package com.jkoolcloud.remora.advices;
 
+import static java.text.MessageFormat.format;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.none;
 
@@ -10,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
@@ -71,14 +73,14 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public abstract AgentBuilder.Transformer getAdvice();
 
 	public static void fillDefaultValuesAfter(EntryDefinition entryDefinition, long startTime,
-			@Advice.Thrown Throwable exception) {
+			@Advice.Thrown Throwable exception, Logger logger) {
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
 		entryDefinition.setDuration((long) duration);
 
 		if (exception == null) {
 			entryDefinition.stop();
 		} else {
-			handleInstrumentedMethodException(entryDefinition, exception);
+			handleInstrumentedMethodException(entryDefinition, exception, logger);
 		}
 
 		Stack<EntryDefinition> entryDefinitionStack = stackThreadLocal.get();
@@ -91,36 +93,43 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		OutputManager.INSTANCE.send(entryDefinition);
 	}
 
-	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition,
-			@Advice.Thrown Throwable exception) {
-		System.out.println("Exception Occurred!!");
+	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, Throwable exception,
+			Logger logger) {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		exception.printStackTrace(printWriter);
 		entryDefinition.setException(exception.getMessage());
 		entryDefinition.setExceptionTrace(stringWriter.toString());
+
+		if (logger != null) {
+			logger.fine(
+					format("Exception {0} occurred in method {1}", exception.getMessage(), entryDefinition.getClazz()));
+		}
 	}
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
-			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, @Advice.This Object thiz,
-			@Advice.Origin Method method) {
+			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, Logger logger) {
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
-				System.out.println("#This not filled");
+				logger.fine("This not filled");
 			}
 
 			if (method != null) {
 				entryDefinition.setName(method.getName());
 			} else {
-				System.out.println("#Method not filled");
+				logger.fine("#Method not filled");
 			}
 
 			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
 				Stack<EntryDefinition> definitions = new CallStack<EntryDefinition>();
 				stackThreadLocal.set(definitions);
-				entryDefinition.setCorrelator(new JUGFactoryImpl().newUUID());
+				String correlator = new JUGFactoryImpl().newUUID();
+				entryDefinition.setCorrelator(correlator);
+				if (logger != null) {
+					logger.fine(format("#New stack correlator {0}", correlator));
+				}
 			}
 
 			stackThreadLocal.get().push(entryDefinition);
@@ -130,7 +139,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			entryDefinition.setStackTrace(getStackTrace());
 			OutputManager.INSTANCE.send(entryDefinition);
 		} catch (Throwable t) {
-			System.out.println("####Advice error/common");
+			if (logger != null) {
+				logger.fine(format("####Advice error/common: {0}", t));
+			}
 		}
 		return System.nanoTime();
 	}
@@ -171,19 +182,21 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	public static boolean isChainedClassInterception(Class<?> adviceClass) {
+	public static boolean isChainedClassInterception(Class<?> adviceClass, Logger logger) {
 		try {
 			if (adviceClass.equals(stackThreadLocal.get().peek().getAdviceClass())) {
-				System.out.println("Stack contains the same advice");
+				if (logger != null) {
+					logger.fine(("Stack contains the same advice"));
+				}
 				return true;
 			}
 		} catch (Exception e) {
-			System.out.println("cant check");
+			logger.fine(("Can't check if advice stack has stacked common advices"));
 		}
 		return false;
 	}
 
-	public static void handleAdviceException(Throwable t, String adviceName) {
+	public static void handleAdviceException(Throwable t, String adviceName, Logger logger) {
 		BaseTransformers.class.getSimpleName();
 	}
 

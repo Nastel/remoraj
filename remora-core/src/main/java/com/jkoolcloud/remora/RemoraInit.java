@@ -16,6 +16,8 @@ public class RemoraInit {
 
 	private static final Logger LOGGER = Logger.getLogger(RemoraInit.class.getName());
 	public static final String REMORA_LOG = "remora.log";
+	private static final Level DEFAULT_LEVEL = Level.INFO;
+	public static final SimpleFormatter REMORA_LOG_FORMATTER = new SimpleFormatter();
 
 	public void initializeAdvices(Instrumentation inst, ClassLoader classLoader) {
 		configureRemoraRootLogger();
@@ -39,9 +41,13 @@ public class RemoraInit {
 	}
 
 	protected void configureRemoraRootLogger() {
-		Logger logger = LogManager.getLogManager().getLogger("com.jkoolcloud.remora");
+		Logger remoraLogger = LOGGER.getParent();
 		try {
-			logger.addHandler(new FileHandler(REMORA_LOG, LOG_FILE_SIZE, LOG_COUNT, true));
+			FileHandler handler = new FileHandler(REMORA_LOG, LOG_FILE_SIZE, LOG_COUNT, true);
+			handler.setLevel(Level.parse(RemoraConfig.INSTANCE.config.getProperty("remora", DEFAULT_LEVEL.getName())));
+			handler.setFormatter(REMORA_LOG_FORMATTER);
+			handler.setLevel(Level.ALL);
+			remoraLogger.addHandler(handler);
 		} catch (IOException e) {
 			LOGGER.throwing(getClass().getName(), "configureRemoraRootLogger", e);
 		}
@@ -51,26 +57,29 @@ public class RemoraInit {
 		FileHandler handler = null;
 		try {
 			handler = new FileHandler(remoraAdvice.getClass().getSimpleName(), LOG_FILE_SIZE, LOG_COUNT, true);
-			handler.setFilter(new Filter() {
-				@Override
-				public boolean isLoggable(LogRecord record) {
-					return true;
-				}
-			});
-			handler.setFormatter(new SimpleFormatter());
+			handler.setFilter(new PassAllFilter());
+			handler.setFormatter(REMORA_LOG_FORMATTER);
 			handler.setLevel(Level.ALL);
 		} catch (IOException e) {
-			LOGGER.throwing(getClass().getName(), "cofigureLogger", e);
+			LOGGER.throwing(getClass().getName(), "ConfigureLogger", e);
 		}
 		Logger logger = LogManager.getLogManager().getLogger(remoraAdvice.getClass().getName());
 
 		Arrays.asList(logger.getHandlers()).stream().forEach(l -> logger.removeHandler(l));
 		logger.addHandler(handler);
-		logger.addHandler(new ConsoleHandler());
 
 		logger.setUseParentHandlers(false);
 		logger.setLevel(Level.parse(
 				RemoraConfig.INSTANCE.config.getProperty(remoraAdvice.getClass().getName(), Level.INFO.getName())));
-		logger.info("Configured");
+		logger.info("Advice logger configured");
+	}
+
+	private class PassAllFilter implements Filter {
+
+		@Override
+		public boolean isLoggable(LogRecord record) {
+			return true;
+		}
+
 	}
 }

@@ -4,11 +4,13 @@ import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.QueueReceiver;
 
+import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -22,6 +24,15 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageConsumer" };
 	public static String INTERCEPTING_METHOD = "receive";
 
+	@RemoraConfig.Configurable
+	public static boolean logging;
+	public static Logger logger = Logger.getLogger(JMSReceiveAdvice.class.getName());
+
+	/**
+	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+	 * method matches.
+	 */
+
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return named(INTERCEPTING_METHOD);
 	}
@@ -30,6 +41,10 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			.include(JMSReceiveAdvice.class.getClassLoader())
 
 			.advice(methodMatcher(), JMSReceiveAdvice.class.getName());
+
+	/**
+	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 */
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
@@ -41,25 +56,40 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 		return advice;
 	}
 
+	/**
+	 * Advices before method is called before instrumented method code
+	 *
+	 * @param thiz
+	 *            reference to method object
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param method
+	 *            instrumented method description
+	 * @param ed
+	 *            {@link EntryDefinition} for collecting ant passing values to
+	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
+	 * @param startTime
+	 *            method startTime
+	 *
+	 */
+
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This MessageConsumer thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) //
+			@Advice.Local("starttime") long startTime) //
 	{
 		try {
-			System.out.println("JR");
-			if (isChainedClassInterception(JMSReceiveAdvice.class)) {
-				return; // return if its chain of same
+			if (logging) {
+				logger.entering(JMSReceiveAdvice.class.getName(), "before");
 			}
-			try {
-				if (JMSReceiveAdvice.class.equals(stackThreadLocal.get().peek().getAdviceClass())) {
-					System.out.println("Stack contains the same advice");
-					return; // return if its chain of same
-				}
-			} catch (Exception e) {
-				System.out.println("cant check");
+			if (ed == null) {
+				ed = new EntryDefinition(JMSSendAdvice.class);
+			}
+			System.out.println("JR");
+			if (isChainedClassInterception(JMSReceiveAdvice.class, logger)) {
+				return; // return if its chain of same
 			}
 
 			if (ed == null) {
@@ -67,16 +97,33 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (thiz instanceof QueueReceiver) {
 				ed.addPropertyIfExist("QUEUE", ((QueueReceiver) thiz).getQueue().getQueueName());
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
+
+	/**
+	 * Method called on instrumented method finished.
+	 *
+	 * @param obj
+	 *            reference to method object
+	 * @param method
+	 *            instrumented method description
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param exception
+	 *            exception thrown in method exit (not caught)
+	 * @param ed
+	 *            {@link EntryDefinition} passed along the method (from before method)
+	 * @param startTime
+	 *            startTime passed along the method
+	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This MessageConsumer obj, //
@@ -85,13 +132,16 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Thrown Throwable exception, //
 			@Advice.Return Message message, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
+			@Advice.Local("startTime") long startTime) {
 		boolean doFinnaly = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				System.out.println("EntryDefinition not exist");
+				logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				doFinnaly = false;
 				return;
+			}
+			if (logging) {
+				logger.exiting(JMSReceiveAdvice.class.getName(), "after");
 			}
 			if (message != null) {
 				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
@@ -99,10 +149,9 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 				ed.addPropertyIfExist("TYPE", message.getJMSType());
 
 			}
-			System.out.println("JRE");
-			fillDefaultValuesAfter(ed, starttime, exception);
+			fillDefaultValuesAfter(ed, startTime, exception, logger);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME);
+			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
 			if (doFinnaly) {
 				doFinally();

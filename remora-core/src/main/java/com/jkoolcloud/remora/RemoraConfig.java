@@ -47,6 +47,9 @@ public enum RemoraConfig {
 							case "java.util.List":
 								field.set(object, getList(configValue));
 								break;
+							case "boolean":
+								field.set(object, Boolean.parseBoolean(configValue));
+								break;
 							case "default":
 								pLog("Unsupported property");
 
@@ -63,8 +66,9 @@ public enum RemoraConfig {
 	}
 
 	private static List getList(String configValue) {
-		if (configValue == null)
+		if (configValue == null) {
 			return null;
+		}
 		String[] split = configValue.split(";");
 		return Arrays.asList(split).stream().map(v -> v.trim()).collect(Collectors.toList());
 	}
@@ -84,7 +88,7 @@ public enum RemoraConfig {
 
 		String remoraPath = System.getProperty(REMORA_PATH);
 		File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
-		try (FileInputStream inStream = new FileInputStream(file);) {
+		try (FileInputStream inStream = new FileInputStream(file)) {
 			config.load(inStream);
 			pLog("Sucessfully loaded {0} properties from configuration file", config.size());
 		} catch (IOException e) {
