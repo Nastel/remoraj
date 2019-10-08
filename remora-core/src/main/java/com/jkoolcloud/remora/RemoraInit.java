@@ -1,5 +1,6 @@
 package com.jkoolcloud.remora;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ public class RemoraInit {
 	public static final int LOG_COUNT = 1;
 
 	private static final Logger LOGGER = Logger.getLogger(RemoraInit.class.getName());
-	public static final String REMORA_LOG = "remora.log";
+	public static final String REMORA_LOG = System.getProperty(Remora.REMORA_PATH) + "/log/" + "remora%u.log";
 	private static final Level DEFAULT_LEVEL = Level.INFO;
 	public static final SimpleFormatter REMORA_LOG_FORMATTER = new SimpleFormatter();
 
@@ -43,6 +44,7 @@ public class RemoraInit {
 	protected void configureRemoraRootLogger() {
 		Logger remoraLogger = LOGGER.getParent();
 		try {
+			new File(REMORA_LOG).getParentFile().mkdirs();
 			FileHandler handler = new FileHandler(REMORA_LOG, LOG_FILE_SIZE, LOG_COUNT, true);
 			handler.setLevel(Level.parse(RemoraConfig.INSTANCE.config.getProperty("remora", DEFAULT_LEVEL.getName())));
 			handler.setFormatter(REMORA_LOG_FORMATTER);
@@ -56,7 +58,10 @@ public class RemoraInit {
 	protected void configureAdviceLogger(RemoraAdvice remoraAdvice) {
 		FileHandler handler = null;
 		try {
-			handler = new FileHandler(remoraAdvice.getClass().getSimpleName(), LOG_FILE_SIZE, LOG_COUNT, true);
+			String path = System.getProperty(Remora.REMORA_PATH) + "/log/";
+			new File(path).mkdirs();
+			String pattern = path + remoraAdvice.getClass().getSimpleName() + "%u.log";
+			handler = new FileHandler(pattern, LOG_FILE_SIZE, LOG_COUNT, true);
 			handler.setFilter(new PassAllFilter());
 			handler.setFormatter(REMORA_LOG_FORMATTER);
 			handler.setLevel(Level.ALL);
@@ -65,13 +70,15 @@ public class RemoraInit {
 		}
 		Logger logger = LogManager.getLogManager().getLogger(remoraAdvice.getClass().getName());
 
-		Arrays.asList(logger.getHandlers()).stream().forEach(l -> logger.removeHandler(l));
-		logger.addHandler(handler);
+		if (logger != null) {
+			Arrays.asList(logger.getHandlers()).stream().forEach(l -> logger.removeHandler(l));
+			logger.addHandler(handler);
 
-		logger.setUseParentHandlers(false);
-		logger.setLevel(Level.parse(
-				RemoraConfig.INSTANCE.config.getProperty(remoraAdvice.getClass().getName(), Level.INFO.getName())));
-		logger.info("Advice logger configured");
+			logger.setUseParentHandlers(false);
+			logger.setLevel(Level.parse(RemoraConfig.INSTANCE.config
+					.getProperty(remoraAdvice.getClass().getName() + "logLevel", Level.FINEST.getName())));
+			logger.info("Advice logger configured");
+		}
 	}
 
 	private class PassAllFilter implements Filter {

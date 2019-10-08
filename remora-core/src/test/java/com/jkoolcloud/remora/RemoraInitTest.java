@@ -11,6 +11,7 @@ public class RemoraInitTest {
 
 	@Test
 	public void configureLogger() {
+		System.setProperty(Remora.REMORA_PATH, ".");
 		Logger logger = Logger.getLogger(getClass().getName());
 		RemoraInit init = new RemoraInit();
 		init.configureRemoraRootLogger();
