@@ -35,7 +35,7 @@ public class SimpleTest extends BaseTransformers {
 
 	public SimpleTest() {
 		ClassLoader classLoader = getClass().getClassLoader();
-		System.out.println(classLoader + " and parent: " + (classLoader == null ? "null" : classLoader.getParent()));
+		logger.fine(classLoader + " and parent: " + (classLoader == null ? "null" : classLoader.getParent()));
 
 	}
 

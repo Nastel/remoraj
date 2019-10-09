@@ -95,12 +95,11 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
 				} catch (Throwable t) {
-					System.out.println("req" + req);
-					t.printStackTrace();
+					logger.info("Failed getting some of properties" + req);
 				}
 
 			} else {
-				System.out.println("## Request null");
+				logger.info("## Request null");
 			}
 
 		} catch (Throwable t) {

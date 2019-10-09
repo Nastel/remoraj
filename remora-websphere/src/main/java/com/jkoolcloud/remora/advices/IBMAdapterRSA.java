@@ -94,7 +94,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 				ed.addProperty("SQL", arguments[0].toString());
 
 			} else {
-				System.out.println("Augmenting SQL fault" + Arrays.toString(arguments));
+				logger.info("Augmenting SQL fault" + Arrays.toString(arguments));
 			}
 
 			if (thiz != null) {
@@ -141,7 +141,6 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 			if (logging) {
 				logger.exiting(IBMAdapterRSA.class.getName(), "after");
 			}
-			System.out.println("ME");
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
 		} finally {
 			if (doFinally) {

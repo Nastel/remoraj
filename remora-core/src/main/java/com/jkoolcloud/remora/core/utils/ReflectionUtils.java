@@ -22,8 +22,7 @@ public class ReflectionUtils {
 		if (expectedReturn.isInstance(workingObject)) {
 			return (T) workingObject;
 		} else {
-			System.out.println("Type mismatch");
-			return null;
+			throw new IllegalArgumentException("Type mismatch");
 		}
 
 	}

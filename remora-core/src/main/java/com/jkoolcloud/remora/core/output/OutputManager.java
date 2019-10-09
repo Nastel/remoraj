@@ -1,15 +1,18 @@
 package com.jkoolcloud.remora.core.output;
 
-import static com.jkoolcloud.remora.core.utils.LoggerWrapper.pLog;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public enum OutputManager {
 	INSTANCE;
+
+	// If anyone wonders why it's not static
+	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
+	private final Logger logger = Logger.getLogger(OutputManager.class.getName());
 
 	private static boolean shutdown = false;
 	private static AgentOutput output;
@@ -19,8 +22,8 @@ public enum OutputManager {
 		install();
 	}
 
-	public static void install() {
-		pLog("Starting OutputManager");
+	public void install() {
+		logger.info("Starting OutputManager");
 		outputListeners = new ArrayList<>();
 		String outputClass = System.getProperty("probe.output");
 		if (outputClass != null) {
@@ -34,7 +37,7 @@ public enum OutputManager {
 		} else {
 			output = new ChronicleOutput();
 		}
-		RemoraConfig.configure(output);
+		RemoraConfig.INSTANCE.configure(output);
 		synchronized (output) {
 			try {
 				outputListeners.forEach(listener -> listener.onInitialize());
@@ -56,7 +59,7 @@ public enum OutputManager {
 
 	}
 
-	public static void send(EntryDefinition entryDefinition) {
+	public void send(EntryDefinition entryDefinition) {
 		if (output != null) {
 			outputListeners.forEach(l -> l.onSend());
 			output.send(entryDefinition);
@@ -65,7 +68,7 @@ public enum OutputManager {
 		}
 	}
 
-	public static interface AgentOutput<T> {
+	public interface AgentOutput<T> {
 		void init() throws OutputException;
 
 		void send(T entry);
@@ -121,6 +124,8 @@ public enum OutputManager {
 
 			class OutputLogger implements OutputListener {
 
+				private static final Logger logger = Logger.getLogger(OutputLogger.class.getName());
+
 				@Override
 				public void beforeSend() {
 
@@ -143,15 +148,15 @@ public enum OutputManager {
 
 				@Override
 				public void onShutdown() {
-					pLog("Shutting down: ");
+					logger.info("Shutting down: ");
 				}
 
 				@Override
 				public void onSent(Exception e) {
 					if (e == null) {
-						pLog("Message sent");
+						logger.info("Message sent");
 					} else {
-						pLog("Cannot send the message");
+						logger.severe("Cannot send the message");
 					}
 				}
 

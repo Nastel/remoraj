@@ -2,6 +2,7 @@ package com.jkoolcloud.remora.core.output;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -10,6 +11,8 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
+
+	Logger logger = Logger.getLogger(ChronicleOutput.class.getName());
 
 	private ExcerptAppender appender;
 	private ChronicleQueue queue;
@@ -21,21 +24,21 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		File queueDir = null;
 
 		queueDir = Paths.get(queuePath).toFile();
-		System.out.println("Writing to " + queueDir.getAbsolutePath());
+		logger.info("Writing to " + queueDir.getAbsolutePath());
 
 		ChronicleQueue queue = ChronicleQueue.single(queueDir.getPath());
 
 		if (queue != null) {
-			System.out.println("Queue initialized " + this);
+			logger.info("Queue initialized " + this);
 		} else {
-			System.out.println("Queue failed");
+			logger.severe("Queue failed");
 		}
 
 		appender = queue.acquireAppender();
 		if (appender != null) {
-			System.out.println("Appender initialized");
+			logger.info("Appender initialized");
 		} else {
-			System.out.println("Appender failed");
+			logger.severe("Appender failed");
 		}
 
 	}
@@ -47,13 +50,10 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 
 	@Override
 	public void shutdown() {
-		System.out.println(this);
+		logger.info("Shutting down chronicle queue:" + this);
 		if (queue != null) {
 			queue.close();
 		}
 	}
 
-	public ExcerptAppender getAppender() {
-		return appender;
-	}
 }

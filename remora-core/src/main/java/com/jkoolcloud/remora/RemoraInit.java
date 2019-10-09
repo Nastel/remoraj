@@ -1,5 +1,7 @@
 package com.jkoolcloud.remora;
 
+import static java.text.MessageFormat.format;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
@@ -30,7 +32,7 @@ public class RemoraInit {
 		Iterator<RemoraAdvice> iterator = advices.iterator();
 		while (iterator.hasNext()) {
 			RemoraAdvice remoraAdvice = iterator.next();
-			RemoraConfig.configure(remoraAdvice);
+			RemoraConfig.INSTANCE.configure(remoraAdvice);
 			remoraAdvice.install(inst);
 			configureAdviceLogger(remoraAdvice);
 
@@ -77,7 +79,17 @@ public class RemoraInit {
 			logger.setUseParentHandlers(false);
 			logger.setLevel(Level.parse(RemoraConfig.INSTANCE.config
 					.getProperty(remoraAdvice.getClass().getName() + "logLevel", Level.FINEST.getName())));
-			logger.info("Advice logger configured");
+
+			logger.info(format("Advice logger configured, level {1}, handlers {2},  ", logger, logger.getLevel(),
+					logger.getHandlers()));
+			logger.severe("SEVERE is displayed");
+			logger.warning("WARNING is displayed");
+			logger.config("CONFIG is displayed");
+			logger.info("INFO is displayed");
+			logger.fine("FINE is displayed");
+			logger.finer("FINER is displayed");
+			logger.finer("FINEST is displayed");
+
 		}
 	}
 

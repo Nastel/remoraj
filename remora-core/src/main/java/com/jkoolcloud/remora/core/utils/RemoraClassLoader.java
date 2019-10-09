@@ -1,16 +1,18 @@
 package com.jkoolcloud.remora.core.utils;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 
 public class RemoraClassLoader extends URLClassLoader {
+	Logger logger = Logger.getLogger(RemoraClassLoader.class.getName());
+
 	public RemoraClassLoader(URL[] urls, ClassLoader parent, Instrumentation inst) {
 		super(urls, parent);
 		for (URL url : urls) {
@@ -35,11 +37,10 @@ public class RemoraClassLoader extends URLClassLoader {
 			throw ce;
 		} finally {
 			if (Remora.DEBUG_BOOT_LOADER) {
-				PrintStream out = error == null ? System.out : System.err;
-				out.println(
+				logger.fine(
 						this + " findClass(" + name + "), loader=" + (clazz != null ? clazz.getClassLoader() : null));
 				if (error != null) {
-					error.printStackTrace();
+					logger.throwing("RemoraClassLoader", "finClass", error);
 				}
 			}
 		}

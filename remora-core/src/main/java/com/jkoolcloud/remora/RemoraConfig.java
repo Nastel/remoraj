@@ -1,7 +1,7 @@
 package com.jkoolcloud.remora;
 
 import static com.jkoolcloud.remora.Remora.REMORA_PATH;
-import static com.jkoolcloud.remora.core.utils.LoggerWrapper.pLog;
+import static java.text.MessageFormat.format;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,12 +14,17 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public enum RemoraConfig {
 	INSTANCE;
 
 	public static final String REMORA_PROPERTIES_FILE = "/config/remora.properties";
+
+	// If anyone wonders why it's not static
+	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
+	private Logger logger = Logger.getLogger(RemoraConfig.class.getName());
 	Properties config;
 	public ClassLoader classLoader = null;
 
@@ -27,7 +32,7 @@ public enum RemoraConfig {
 		init();
 	}
 
-	public static void configure(Object object) {
+	public void configure(Object object) {
 
 		Class<?> aClass = object.getClass();
 
@@ -51,7 +56,7 @@ public enum RemoraConfig {
 								field.set(object, Boolean.parseBoolean(configValue));
 								break;
 							case "default":
-								pLog("Unsupported property");
+								logger.info("Unsupported property");
 
 							}
 						}
@@ -65,7 +70,7 @@ public enum RemoraConfig {
 		}
 	}
 
-	private static List getList(String configValue) {
+	private List getList(String configValue) {
 		if (configValue == null) {
 			return null;
 		}
@@ -73,7 +78,7 @@ public enum RemoraConfig {
 		return Arrays.asList(split).stream().map(v -> v.trim()).collect(Collectors.toList());
 	}
 
-	private static String getConfigValue(Class<?> aClass, String name) {
+	private String getConfigValue(Class<?> aClass, String name) {
 		Class workingClass = aClass;
 		String value = null;
 		while (value == null && !workingClass.equals(Object.class)) {
@@ -90,9 +95,10 @@ public enum RemoraConfig {
 		File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
 		try (FileInputStream inStream = new FileInputStream(file)) {
 			config.load(inStream);
-			pLog("Sucessfully loaded {0} properties from configuration file", config.size());
+			logger.info(format("Sucessfully loaded {0} properties from configuration file", config.size()));
 		} catch (IOException e) {
-			pLog("Failed loading properties file");
+			logger.severe("Failed loading properties file");
+			logger.throwing("RemoraConfig", "init", e);
 		}
 	}
 

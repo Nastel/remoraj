@@ -87,7 +87,6 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			if (ed == null) {
 				ed = new EntryDefinition(JMSSendAdvice.class);
 			}
-			System.out.println("JR");
 			if (isChainedClassInterception(JMSReceiveAdvice.class, logger)) {
 				return; // return if its chain of same
 			}
