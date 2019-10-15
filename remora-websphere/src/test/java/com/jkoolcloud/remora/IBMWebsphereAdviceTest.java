@@ -48,8 +48,8 @@ public class IBMWebsphereAdviceTest {
 		// Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
 		Method method = Whitebox.getMethod(WebApp.class, "handleRequest", ServletRequest.class, ServletResponse.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 0, logger);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 0);
 	}
 
 	@Test
@@ -68,12 +68,11 @@ public class IBMWebsphereAdviceTest {
 		EntryDefinition handleRequestEntry = new EntryDefinition(IBMWebsphereAdvice.class);
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
 		Object[] jmxSendArguments = {};
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, 56);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 78 );
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140,
-				logger);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
 	}
 
 	@Test
@@ -96,7 +95,7 @@ public class IBMWebsphereAdviceTest {
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsReceiveEntryInternal = new EntryDefinition(JMSReceiveAdvice.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
 		Object[] jmxSendArguments = {};
 		// first JMS message
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, System.nanoTime());
@@ -116,7 +115,7 @@ public class IBMWebsphereAdviceTest {
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, System.nanoTime() );
 
 		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry,
-				System.nanoTime(), logger);
+				System.nanoTime());
 	}
 
 	@Test
@@ -139,9 +138,8 @@ public class IBMWebsphereAdviceTest {
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140,
-				logger);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
 
 		// IBMWebsphereInterceptor.before(servletWrapper, servletRequest, servletResponse, method, handleRequestEntry,
 		// 0);
@@ -156,8 +154,8 @@ public class IBMWebsphereAdviceTest {
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntryInternal, 86);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, null, 98 );
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 102 );
-		IBMWebsphereAdvice.after(servletWrapper, method, servletRequest, servletResponse, null, handleRequestEntry, 140,
-				logger);
+		IBMWebsphereAdvice.after(servletWrapper, method, servletRequest, servletResponse, null, handleRequestEntry,
+				140);
 
 	}
 
@@ -172,8 +170,8 @@ public class IBMWebsphereAdviceTest {
 		ServletResponse servletResponse = mock(ServletResponse.class);
 		Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, null, 0, logger);
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, null, 0, logger);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, null, 0);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, null, 0);
 
 	}
 
