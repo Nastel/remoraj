@@ -25,8 +25,12 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "receive";
 
 	@RemoraConfig.Configurable
-	public static boolean logging;
-	public static Logger logger = Logger.getLogger(JMSReceiveAdvice.class.getName());
+	public static boolean logging = true;
+	public static Logger logger;
+	static {
+		logger = Logger.getLogger(JMSReceiveAdvice.class.getName());
+		configureAdviceLogger(logger);
+	}
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -78,11 +82,12 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long startTime) //
+			@Advice.Local("starttime") long startTime)//
+	// @Advice.Local("remoraLogger") Logger logger) // ) //
 	{
 		try {
 			if (logging) {
-				logger.entering(JMSReceiveAdvice.class.getName(), "before");
+				logger.info(format("Entering: {0} {1}", JMSReceiveAdvice.class.getName(), "before"));
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(JMSSendAdvice.class);
@@ -131,17 +136,23 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Thrown Throwable exception, //
 			@Advice.Return Message message, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) {
+			@Advice.Local("startTime") long startTime) //
+	// @Advice.Local("remoraLogger") Logger logger)
+	{
 		boolean doFinnaly = true;
 		try {
+			if (logging) {
+				logger = Logger.getLogger(JMSReceiveAdvice.class.getName());
+				logger.info(format("Exiting: {0} {1}", JMSReceiveAdvice.class.getName(), "after"));
+			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+				if (logging) {
+					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+				}
 				doFinnaly = false;
 				return;
 			}
-			if (logging) {
-				logger.exiting(JMSReceiveAdvice.class.getName(), "after");
-			}
+
 			if (message != null) {
 				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
 				ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
@@ -159,4 +170,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 
 	}
 
+	@Override
+	protected AgentBuilder.Listener getListener() {
+		return new TransformationLoggingListener(logger);
+	}
 }

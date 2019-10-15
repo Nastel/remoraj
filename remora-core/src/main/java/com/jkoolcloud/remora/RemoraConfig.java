@@ -25,7 +25,7 @@ public enum RemoraConfig {
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
 	private Logger logger = Logger.getLogger(RemoraConfig.class.getName());
-	Properties config;
+	public Properties config;
 	public ClassLoader classLoader = null;
 
 	RemoraConfig() {
@@ -44,21 +44,27 @@ public enum RemoraConfig {
 
 					try {
 						String configValue = getConfigValue(object.getClass(), field.getName());
+						Object appliedValue = null;
 						if (configValue != null) {
 							switch (field.getType().getName()) {
 							case "java.lang.String":
-								field.set(object, configValue);
+								appliedValue = configValue;
 								break;
 							case "java.util.List":
-								field.set(object, getList(configValue));
+								appliedValue = getList(configValue);
 								break;
 							case "boolean":
-								field.set(object, Boolean.parseBoolean(configValue));
+								appliedValue = Boolean.parseBoolean(configValue);
 								break;
 							case "default":
 								logger.info("Unsupported property");
 
 							}
+						}
+						if (appliedValue != null) {
+							logger.info(format("Setting {0} class config field \"{2}\" as {1}",
+									object.getClass().getName(), appliedValue.toString(), field.getName()));
+							field.set(object, appliedValue);
 						}
 
 					} catch (IllegalAccessException e) {
@@ -98,7 +104,7 @@ public enum RemoraConfig {
 			logger.info(format("Sucessfully loaded {0} properties from configuration file", config.size()));
 		} catch (IOException e) {
 			logger.severe("Failed loading properties file");
-			logger.throwing("RemoraConfig", "init", e);
+			logger.info(format("Exception: {0} {1} \n {2}", "RemoraConfig", "init", e));
 		}
 	}
 

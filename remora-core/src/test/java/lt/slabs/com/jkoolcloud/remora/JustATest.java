@@ -8,9 +8,9 @@ public class JustATest {
 	public void instrumentedMethod(String uri, String arg) throws IOException {
 
 		HttpURLConnection urlConnection = (HttpURLConnection) new URL(uri).openConnection();
-		throw new IOException("TEST CASE");
+		// throw new IOException("TEST CASE");
 
-		// System.out.println(urlConnection.getResponseCode());
+		System.out.println(urlConnection.getResponseCode());
 	}
 
 }

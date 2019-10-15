@@ -1,6 +1,6 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -26,8 +26,12 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	public static String INTERCEPTING_METHOD = "handleRequest";
 
 	@RemoraConfig.Configurable
-	public static boolean logging;
-	public static Logger logger = Logger.getLogger(IBMWebsphereAdvice.class.getName());
+	public static boolean logging = true;
+	public static Logger logger;
+	static {
+		logger = Logger.getLogger(IBMWebsphereAdvice.class.getName());
+		configureAdviceLogger(logger);
+	}
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -35,7 +39,7 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	 */
 
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return nameStartsWith(INTERCEPTING_METHOD);
+		return named(INTERCEPTING_METHOD);
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
@@ -47,7 +51,7 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	 */
 
 	@Override
-	public BaseTransformers.EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
 		return new BaseTransformers.EnhancedElementMatcher<>(INTERCEPTING_CLASS);
 	}
 
@@ -80,10 +84,14 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) {
+			@Advice.Local("startTime") long startTime) //
+	// @Advice.Local("remoraLogger") Logger logger)
+	{
 		try {
+			System.out.println("W Using logger: " + logger);
 			if (logging) {
-				logger.entering(IBMWebsphereAdvice.class.getName(), "before");
+				logger = Logger.getLogger(IBMWebsphereAdvice.class.getName());
+				logger.info(format("Entering: {0} {1}", IBMWebsphereAdvice.class.getName(), "before"));
 			}
 			if (isChainedClassInterception(IBMWebsphereAdvice.class, logger)) {
 				return; // return if its chain of same
@@ -102,24 +110,24 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
 				} catch (Throwable t) {
-					logger.fine("Some of req failed" + req);
+					logger.info("Some of req failed" + req);
 				}
 				if (req instanceof SRTServletRequest) {
 					ed.addPropertyIfExist("RESOURCE", ((SRTServletRequest) req).getEncodedRequestURI());
 				}
 
 			} else {
-				logger.fine("## Request null");
+				logger.info("## Request null");
 			}
 
 			if (thiz != null && thiz instanceof WebApp) {
 				try {
 					ed.addPropertyIfExist("CONTEXT_PATH", ((WebApp) thiz).getContextPath());
 				} catch (Throwable t) {
-					logger.fine("this" + thiz);
+					logger.info("this" + thiz);
 				}
 			} else {
-				logger.fine("## This null");
+				logger.info("## This null");
 			}
 
 		} catch (Throwable t) {
@@ -134,19 +142,21 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
+			@Advice.Local("starttime") long starttime) //
+	// @Advice.Local("remoraLogger") Logger logger)
+	{
 
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
-					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
 				doFinally = false;
 				return;
 			}
 			if (logging) {
-				logger.exiting(IBMWebsphereAdvice.class.getName(), "after");
+				logger.info(format("Exiting: {0} {1}", IBMWebsphereAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, starttime, exception, logger);
 			ed.addProperty("RespContext", resp.getContentType());
@@ -160,4 +170,8 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 
 	}
 
+	@Override
+	protected AgentBuilder.Listener getListener() {
+		return new TransformationLoggingListener(logger);
+	}
 }

@@ -1,5 +1,7 @@
 package com.jkoolcloud.remora.core.utils;
 
+import static java.text.MessageFormat.format;
+
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
@@ -17,6 +19,7 @@ public class RemoraClassLoader extends URLClassLoader {
 		super(urls, parent);
 		for (URL url : urls) {
 			try {
+				logger.info("Appending boot classloader with: " + url);
 				inst.appendToBootstrapClassLoaderSearch(new JarFile(url.getFile()));
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -37,10 +40,10 @@ public class RemoraClassLoader extends URLClassLoader {
 			throw ce;
 		} finally {
 			if (Remora.DEBUG_BOOT_LOADER) {
-				logger.fine(
+				logger.info(
 						this + " findClass(" + name + "), loader=" + (clazz != null ? clazz.getClassLoader() : null));
 				if (error != null) {
-					logger.throwing("RemoraClassLoader", "finClass", error);
+					logger.info(format("Exception: {0} {1} \n {2}", "RemoraClassLoader", "finClass", error));
 				}
 			}
 		}

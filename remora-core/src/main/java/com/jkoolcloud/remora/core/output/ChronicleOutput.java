@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
+import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
@@ -17,16 +18,15 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 	private ExcerptAppender appender;
 	private ChronicleQueue queue;
 	@RemoraConfig.Configurable
-	String queuePath = "./tmp/probe";
+	String queuePath = System.getProperty(Remora.REMORA_PATH) + "/queue";
 
 	@Override
 	public void init() {
-		File queueDir = null;
+		File queueDir = Paths.get(queuePath).toFile();
 
-		queueDir = Paths.get(queuePath).toFile();
 		logger.info("Writing to " + queueDir.getAbsolutePath());
 
-		ChronicleQueue queue = ChronicleQueue.single(queueDir.getPath());
+		queue = ChronicleQueue.single(queueDir.getPath());
 
 		if (queue != null) {
 			logger.info("Queue initialized " + this);

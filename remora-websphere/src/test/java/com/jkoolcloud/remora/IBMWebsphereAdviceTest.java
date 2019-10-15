@@ -3,6 +3,7 @@ package com.jkoolcloud.remora;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -30,6 +31,8 @@ import com.jkoolcloud.remora.core.output.SysOutOutput;
 		"com.ibm.ws.webcontainer.servlet.ServletWrapper" })
 public class IBMWebsphereAdviceTest {
 
+	Logger logger = Logger.getLogger(IBMWebsphereAdvice.class.getName());
+
 	@Test
 	public void testWebsphereInterceptor() throws NoSuchMethodException {
 
@@ -45,8 +48,8 @@ public class IBMWebsphereAdviceTest {
 		// Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
 		Method method = Whitebox.getMethod(WebApp.class, "handleRequest", ServletRequest.class, ServletResponse.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 0);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 0, logger);
 	}
 
 	@Test
@@ -65,11 +68,12 @@ public class IBMWebsphereAdviceTest {
 		EntryDefinition handleRequestEntry = new EntryDefinition(IBMWebsphereAdvice.class);
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
 		Object[] jmxSendArguments = {};
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, 56);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 78 );
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140,
+				logger);
 	}
 
 	@Test
@@ -92,7 +96,7 @@ public class IBMWebsphereAdviceTest {
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsReceiveEntryInternal = new EntryDefinition(JMSReceiveAdvice.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
 		Object[] jmxSendArguments = {};
 		// first JMS message
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, System.nanoTime());
@@ -112,7 +116,7 @@ public class IBMWebsphereAdviceTest {
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, System.nanoTime() );
 
 		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry,
-				System.nanoTime());
+				System.nanoTime(), logger);
 	}
 
 	@Test
@@ -135,8 +139,9 @@ public class IBMWebsphereAdviceTest {
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0, logger);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140,
+				logger);
 
 		// IBMWebsphereInterceptor.before(servletWrapper, servletRequest, servletResponse, method, handleRequestEntry,
 		// 0);
@@ -151,8 +156,8 @@ public class IBMWebsphereAdviceTest {
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntryInternal, 86);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, null, 98 );
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 102 );
-		IBMWebsphereAdvice.after(servletWrapper, method, servletRequest, servletResponse, null, handleRequestEntry,
-				140);
+		IBMWebsphereAdvice.after(servletWrapper, method, servletRequest, servletResponse, null, handleRequestEntry, 140,
+				logger);
 
 	}
 
@@ -167,8 +172,8 @@ public class IBMWebsphereAdviceTest {
 		ServletResponse servletResponse = mock(ServletResponse.class);
 		Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
 
-		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, null, 0);
-		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, null, 0);
+		IBMWebsphereAdvice.before(webApp, servletRequest, servletResponse, method, null, 0, logger);
+		IBMWebsphereAdvice.after(webApp, method, servletRequest, servletResponse, null, null, 0, logger);
 
 	}
 

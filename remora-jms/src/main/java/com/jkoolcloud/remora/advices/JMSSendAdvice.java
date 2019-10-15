@@ -27,8 +27,16 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "send";
 
 	@RemoraConfig.Configurable
-	public static boolean logging;
-	public static Logger logger = Logger.getLogger(JMSSendAdvice.class.getName());
+	public static boolean logging = true;
+	public static Logger logger;
+	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+			.include(JMSSendAdvice.class.getClassLoader()) //
+			.advice(methodMatcher(), JMSSendAdvice.class.getName());
+
+	static {
+		logger = Logger.getLogger(JMSSendAdvice.class.getName());
+		configureAdviceLogger(logger);
+	}
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -37,24 +45,6 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return named(INTERCEPTING_METHOD);
-	}
-
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSSendAdvice.class.getClassLoader()) //
-			.advice(methodMatcher(), JMSSendAdvice.class.getName());
-
-	/**
-	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
-	 */
-
-	@Override
-	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
-	}
-
-	@Override
-	public AgentBuilder.Transformer getAdvice() {
-		return advice;
 	}
 
 	/**
@@ -80,10 +70,12 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) //
+	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
 			if (logging) {
-				logger.entering(JMSCreateConnectionAdvice.class.getName(), "before");
+				logger = Logger.getLogger(JMSSendAdvice.class.getName());
+				logger.info(format("Entering: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "before"));
 			}
 			if (isChainedClassInterception(JMSSendAdvice.class, logger)) {
 				return; // return if its chain of same
@@ -111,7 +103,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 					try {
 						message.setObjectProperty("JanusMessageSignature", ed.getCorrelator());
 					} catch (Exception e) {
-						logger.fine("Cannot alter message");
+						logger.info("Cannot alter message");
 					}
 				}
 
@@ -128,20 +120,22 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
+			@Advice.Local("starttime") long starttime //
+	// @Advice.Local("remoraLogger") Logger logger//
+	) {
 		boolean doFinally = true;
 		try {
 			if (ed == null) // noinspection Duplicates
 			{ // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
-					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
 				doFinally = false;
 				return;
 			}
 			// noinspection Duplicates
 			if (logging) {
-				logger.exiting(JMSSendAdvice.class.getName(), "after");
+				logger.info(format("Exiting: {0} {1}", JMSSendAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, starttime, exception, logger);
 		} catch (Throwable t) {
@@ -154,4 +148,22 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 
 	}
 
+	/**
+	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 */
+
+	@Override
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return hasSuperType(named(INTERCEPTING_CLASS[0]));
+	}
+
+	@Override
+	public AgentBuilder.Transformer getAdvice() {
+		return advice;
+	}
+
+	@Override
+	protected AgentBuilder.Listener getListener() {
+		return new TransformationLoggingListener(logger);
+	}
 }

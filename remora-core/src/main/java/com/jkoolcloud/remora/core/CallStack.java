@@ -12,13 +12,13 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
-		logger.fine("Stack push: " + (size() + 1));
+		logger.info("Stack push: " + (size() + 1));
 		return super.push(item);
 	}
 
 	@Override
 	public synchronized EntryDefinition pop() {
-		logger.fine("Stack pop: " + (size() - 1));
+		logger.info("Stack pop: " + (size() - 1));
 		return super.pop();
 	}
 }

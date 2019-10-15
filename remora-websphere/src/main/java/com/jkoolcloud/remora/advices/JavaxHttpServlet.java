@@ -23,8 +23,12 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "service";
 
 	@RemoraConfig.Configurable
-	public static boolean logging;
-	public static Logger logger = Logger.getLogger(JavaxHttpServlet.class.getName());
+	public static boolean logging = true;
+	public static Logger logger;
+	static {
+		logger = Logger.getLogger(JavaxHttpServlet.class.getName());
+		configureAdviceLogger(logger);
+	}
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -43,7 +47,7 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
 	 */
 	@Override
-	public EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
 		return new EnhancedElementMatcher<>(INTERCEPTING_CLASS);
 	}
 
@@ -76,10 +80,11 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) //
+	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
 			if (logging) {
-				logger.entering(JavaxHttpServlet.class.getName(), "before");
+				logger.info(format("Entering: {0} {1}", JavaxHttpServlet.class.getName(), "before"));
 			}
 			if (isChainedClassInterception(JavaxHttpServlet.class, logger)) {
 				return; // return if its chain of same
@@ -132,18 +137,21 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) {
+			@Advice.Local("startTime") long startTime) //
+	// @Advice.Local("remoraLogger") Logger logger)
+	{
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
-					logger.fine("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+					logger = Logger.getLogger(JavaxHttpServlet.class.getName());
+					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
 				doFinally = false;
 				return;
 			}
 			if (logging) {
-				logger.exiting(JavaxHttpServlet.class.getName(), "after");
+				logger.info(format("Exiting: {0} {1}", JavaxHttpServlet.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
 			ed.addProperty("RespContext", resp.getContentType());
@@ -157,4 +165,8 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 
 	}
 
+	@Override
+	protected AgentBuilder.Listener getListener() {
+		return new TransformationLoggingListener(logger);
+	}
 }

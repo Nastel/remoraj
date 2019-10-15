@@ -15,8 +15,12 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	private static final String ADVICE_NAME = "GeneralAdvice";
 
 	@RemoraConfig.Configurable
-	public static boolean logging;
-	public static Logger logger = Logger.getLogger(GeneralAdvice.class.getName());
+	public static boolean logging = true;
+	public static Logger logger;
+	static {
+		logger = Logger.getLogger(GeneralAdvice.class.getName());
+		configureAdviceLogger(logger);
+	}
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -89,4 +93,8 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 		return null;
 	}
 
+	@Override
+	protected AgentBuilder.Listener getListener() {
+		return new TransformationLoggingListener(logger);
+	}
 }

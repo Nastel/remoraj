@@ -21,7 +21,7 @@
 
         <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
-        <byte.buddy.version>1.9.16</byte.buddy.version>
+        <byte.buddy.version>1.10.1</byte.buddy.version>
         <chronicle.version>5.17.17</chronicle.version>
         <powermock.version>2.0.2</powermock.version>
     </properties>
@@ -106,8 +106,8 @@
     <modules>
         <module>remora-core</module>
         <module>remora-simple-test</module>
-        <module>remora-websphere</module>
-        <module>remora-jms</module>
+        <!--<module>remora-websphere</module>-->
+        <!--<module>remora-jms</module>-->
         <module>remora--package</module>
 
     </modules>

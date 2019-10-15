@@ -1,6 +1,6 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -21,27 +21,25 @@ public class SimpleTest extends BaseTransformers {
 	public static String INTERCEPTING_METHOD = "instrumentedMethod";
 
 	@RemoraConfig.Configurable
-	public static boolean logging;
-	public static Logger logger = Logger.getLogger(SimpleTest.class.getName());
-
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(SimpleTest.class.getClassLoader())
-
-			.advice(methodMatcher(), SimpleTest.class.getName());
-
-	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return nameStartsWith(INTERCEPTING_METHOD);
+	public static boolean logging = true;
+	public static Logger logger;
+	static {
+		logger = Logger.getLogger(SimpleTest.class.getName());
+		configureAdviceLogger(logger);
 	}
 
-	public SimpleTest() {
-		ClassLoader classLoader = getClass().getClassLoader();
-		logger.fine(classLoader + " and parent: " + (classLoader == null ? "null" : classLoader.getParent()));
+	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+			.include(SimpleTest.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)
 
+			.advice(methodMatcher(), "com.jkoolcloud.remora.advices.SimpleTest");
+
+	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
+		return named(INTERCEPTING_METHOD);
 	}
 
 	@Override
-	public BaseTransformers.EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
-		return new BaseTransformers.EnhancedElementMatcher<>(INTERCEPTING_CLASS);
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return named(INTERCEPTING_CLASS[0]);
 	}
 
 	@Override
@@ -55,20 +53,21 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Argument(1) Object arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime //
-	) {
+			@Advice.Local("starttime") long starttime) //
+	{
 		try {
+			System.out.println("BEFORE METHOD CALL");
 			if (ed == null) {
 				ed = new EntryDefinition(SimpleTest.class);
+				System.out.println("NEW entry def");
 			}
 
 			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
-			Class.forName("Blah");
 			ed.addProperty("URI", uri.toString());
 			ed.addProperty("Arg", arguments.toString());
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			// handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
 
@@ -79,11 +78,16 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("starttime") long starttime) {
 		try {
-			fillDefaultValuesAfter(ed, starttime, exception, logger);
+			System.out.println("###AFTER METHOD CALL");
+			// fillDefaultValuesAfter(ed, starttime, exception, logger);
 		} finally {
 			doFinally();
 		}
 
 	}
 
+	@Override
+	public AgentBuilder.Listener getListener() {
+		return new BaseTransformers.TransformationLoggingListener(logger);
+	}
 }
