@@ -99,13 +99,21 @@ public class Remora {
 				} catch (MalformedURLException e) {
 					return null;
 				}
-			}).peek(file -> logger.info("Found: " + file)).collect(Collectors.toList()).toArray(new URL[files.size()]);
+			}).peek(file -> logFoundClasspathEntry(file)).collect(Collectors.toList()).toArray(new URL[files.size()]);
 
 			return uris;
 		} else {
 			logger.severe(
 					"Module dir is not existing; Check java agent parameters; --javaagent:remora.jar=parameters. Parameters should point to the directory remora exists");
 			return null;
+		}
+	}
+
+	private static void logFoundClasspathEntry(URL file) {
+		if (logger == null) {
+			System.out.println("Found: " + file);
+		} else {
+			logger.info("Found: " + file);
 		}
 	}
 
