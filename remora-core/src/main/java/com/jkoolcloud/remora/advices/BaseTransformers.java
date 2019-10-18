@@ -291,6 +291,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		@Override
 		public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
 				boolean loaded, DynamicType dynamicType) {
+			System.out.println(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(),
+					classLoader, module, loaded));
 			logger.info(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(), classLoader,
 					module, loaded));
 		}
@@ -298,6 +300,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		@Override
 		public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded,
 				Throwable throwable) {
+
+			System.out.println(
+					format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
 			logger.info(format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
 			logger.info(Arrays.toString(throwable.getStackTrace()));
 			throwable.printStackTrace();

@@ -6,11 +6,6 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.QueueSender;
-
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
@@ -20,21 +15,24 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
+public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "JMSSendAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageProducer" };
-	public static String INTERCEPTING_METHOD = "send";
+	private static final String ADVICE_NAME = "JBossAdvice";
+	public static String[] INTERCEPTING_CLASS = { "org.jboss.as.ejb3.inflow.AbstractInvocationHandler",
+			"org.jboss.as.ee.component.ProxyInvocationHandler",
+			"org.jboss.as.cmp.component.CmpEntityBeanInvocationHandler",
+			"org.jboss.invocation.InterceptorInvocationHandler" };
+
+	public static String INTERCEPTING_METHOD = "invoke";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
 	public static Logger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSSendAdvice.class.getClassLoader()) //
-			.advice(methodMatcher(), JMSSendAdvice.class.getName());
+			.include(JBossAdvice.class.getClassLoader()).advice(methodMatcher(), JBossAdvice.class.getName());
 
 	static {
-		logger = Logger.getLogger(JMSSendAdvice.class.getName());
+		logger = Logger.getLogger(JBossAdvice.class.getName());
 		configureAdviceLogger(logger);
 	}
 
@@ -65,79 +63,61 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This MessageProducer thiz, //
+	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger) //
-	{
+			@Advice.Local("startTime") long startTime) {
 		try {
-			if (logging) {
-				logger = Logger.getLogger(JMSSendAdvice.class.getName());
-				logger.info(format("Entering: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "before"));
-			}
-			if (isChainedClassInterception(JMSSendAdvice.class, logger)) {
-				return; // return if its chain of same
-			}
 			if (ed == null) {
-				ed = new EntryDefinition(JMSSendAdvice.class);
+				ed = new EntryDefinition(JBossAdvice.class);
 			}
-			ed.setEventType(EntryDefinition.EventType.SEND);
+			if (logging) {
+				logger.info(format("Entering: {0} {1}", JBossAdvice.class.getName(), "before"));
+			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
-
-			if (thiz instanceof QueueSender) {
-				ed.addPropertyIfExist("QUEUE", ((QueueSender) thiz).getQueue().getQueueName());
-			}
-
-			for (Object argument : arguments) {
-				if (argument instanceof Queue) {
-					Queue destination = (Queue) argument;
-					ed.addPropertyIfExist("QUEUE", destination.getQueueName());
-				}
-				if (argument instanceof Message) {
-					Message message = (Message) argument;
-					ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
-					ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
-					ed.addPropertyIfExist("TYPE", message.getJMSType());
-					try {
-						message.setObjectProperty("JanusMessageSignature", ed.getCorrelator());
-					} catch (Exception e) {
-						logger.info("Cannot alter message");
-					}
-				}
-
-			}
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
 
+	/**
+	 * Method called on instrumented method finished.
+	 *
+	 * @param obj
+	 *            reference to method object
+	 * @param method
+	 *            instrumented method description
+	 * @param arguments
+	 *            arguments provided for method
+	 * @param exception
+	 *            exception thrown in method exit (not caught)
+	 * @param ed
+	 *            {@link EntryDefinition} passed along the method (from before method)
+	 * @param startTime
+	 *            startTime passed along the method
+	 */
+
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This MessageProducer obj, //
+	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
-			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long starttime //
-	// @Advice.Local("remoraLogger") Logger logger//
-	) {
+			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (ed == null) // noinspection Duplicates
-			{ // ed expected to be null if not created by entry, that's for duplicates
+			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
 				doFinally = false;
 				return;
 			}
-			// noinspection Duplicates
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JMSSendAdvice.class.getName(), "after"));
+				logger.info(format("Exiting: {0} {1}", JBossAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, starttime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logger);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
@@ -149,7 +129,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	/**
-	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
 	 */
 
 	@Override
@@ -166,4 +146,5 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
 	}
+
 }

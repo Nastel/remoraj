@@ -5,8 +5,12 @@ package ${package}.advices;
 
 import org.junit.Test;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import com.jkoolcloud.remora.core.EntryDefinition;
+import org.junit.Test;
+import org.powermock.reflect.Whitebox;
+
+import java.lang.reflect.Method;
+
 
 //Enable power mockito if any of classes failing to mock
 //@RunWith(PowerMockRunner.class)

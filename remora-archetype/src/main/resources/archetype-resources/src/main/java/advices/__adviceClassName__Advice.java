@@ -18,7 +18,7 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class ${adviceClassName}Advice extends BaseTranformers implements RemoraAdvice {
+public class ${adviceClassName}Advice extends BaseTransformers implements RemoraAdvice {
 
 
 	private static final String ADVICE_NAME = "${adviceClassName}Advice";
@@ -29,7 +29,7 @@ public class ${adviceClassName}Advice extends BaseTranformers implements RemoraA
 	public static boolean logging = true;
 		public static Logger logger;
 	static {
-		logger = Logger.getLogger(${adviceClassName}.class.getName());
+		logger = Logger.getLogger(${adviceClassName}Advice.class.getName());
 		configureAdviceLogger(logger);
 	}
 
@@ -48,7 +48,7 @@ public class ${adviceClassName}Advice extends BaseTranformers implements RemoraA
      */
 
 	@Override
-	public EnhancedElementMatcher<TypeDescription> getTypeMatcher() {
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
 			return hasSuperType(named(INTERCEPTING_CLASS[0]));
 	}
 
@@ -87,10 +87,10 @@ public class ${adviceClassName}Advice extends BaseTranformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		try {
             if (ed == null) {
-                ed = new EntryDefinition(JMSSendAdvice.class);
+                ed = new EntryDefinition(${adviceClassName}Advice.class);
             }
             if (logging) {
-               logger.info(format("Entering: {0} {1}",JMSCreateConnectionAdvice.class.getName(), "before");
+               logger.info(format("Entering: {0} {1}",${adviceClassName}Advice.class.getName(), "before");
             }
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 		} catch (Throwable t) {
@@ -130,9 +130,9 @@ public class ${adviceClassName}Advice extends BaseTranformers implements RemoraA
 		    return;
             }
             if (logging) {
-                logger.info(format("Exiting: {0} {1}",${adviceClassName}Advice.class.getName(), "after");
+                logger.info(format("Exiting: {0} {1}",${adviceClassName}Advice.class.getName(), "after"));
             }
-                fillDefaultValuesAfter(ed, startTime, exception);
+                fillDefaultValuesAfter(ed, startTime, exception, logger);
         } catch (Throwable t) {
             handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
@@ -142,5 +142,10 @@ public class ${adviceClassName}Advice extends BaseTranformers implements RemoraA
 		}
 
 	}
+
+	@Override
+    protected AgentBuilder.Listener getListener() {
+        return new TransformationLoggingListener(logger);
+    }
 
 }
