@@ -3,13 +3,16 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.QueueSender;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -22,21 +25,16 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "JMSSendAdvice";
+	public static final String ADVICE_NAME = "JMSSendAdvice";
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageProducer" };
 	public static String INTERCEPTING_METHOD = "send";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
+	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JMSSendAdvice.class.getClassLoader()) //
 			.advice(methodMatcher(), JMSSendAdvice.class.getName());
-
-	static {
-		logger = Logger.getLogger(JMSSendAdvice.class.getName());
-		configureAdviceLogger(logger);
-	}
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -74,7 +72,6 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger = Logger.getLogger(JMSSendAdvice.class.getName());
 				logger.info(format("Entering: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "before"));
 			}
 			if (isChainedClassInterception(JMSSendAdvice.class, logger)) {
@@ -165,5 +162,16 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	@Override
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

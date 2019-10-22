@@ -2,11 +2,14 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -18,17 +21,13 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
 public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
-	private static final String ADVICE_NAME = "JavaxHttpServlet";
+	public static final String ADVICE_NAME = "JavaxHttpServlet";
 	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
 	public static String INTERCEPTING_METHOD = "service";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
-	static {
-		logger = Logger.getLogger(JavaxHttpServlet.class.getName());
-		configureAdviceLogger(logger);
-	}
+	public static TaggedLogger logger;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -144,7 +143,6 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
-					logger = Logger.getLogger(JavaxHttpServlet.class.getName());
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
 				doFinally = false;
@@ -168,5 +166,16 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	@Override
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

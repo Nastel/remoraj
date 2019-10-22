@@ -1,12 +1,13 @@
 package com.jkoolcloud.remora.core;
 
 import java.util.Stack;
-import java.util.logging.Logger;
+
+import org.tinylog.TaggedLogger;
 
 public class CallStack<T> extends Stack<EntryDefinition> {
-	private final Logger logger;
+	private final TaggedLogger logger;
 
-	public CallStack(Logger logger) {
+	public CallStack(TaggedLogger logger) {
 		this.logger = logger;
 	}
 

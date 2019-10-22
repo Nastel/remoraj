@@ -14,7 +14,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 public enum RemoraConfig {
@@ -24,7 +25,7 @@ public enum RemoraConfig {
 
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
-	private Logger logger = Logger.getLogger(RemoraConfig.class.getName());
+	private Logger logger = LoggerFactory.getLogger(RemoraConfig.class.getName());
 	public Properties config;
 	public ClassLoader classLoader = null;
 
@@ -103,7 +104,7 @@ public enum RemoraConfig {
 			config.load(inStream);
 			logger.info(format("Sucessfully loaded {0} properties from configuration file", config.size()));
 		} catch (IOException e) {
-			logger.severe("Failed loading properties file");
+			logger.error("Failed loading properties file");
 			logger.info(format("Exception: {0} {1} \n {2}", "RemoraConfig", "init", e));
 		}
 	}

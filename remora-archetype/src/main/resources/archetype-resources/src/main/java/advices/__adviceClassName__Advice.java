@@ -7,7 +7,8 @@ import net.bytebuddy.asm.Advice;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -21,7 +22,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class ${adviceClassName}Advice extends BaseTransformers implements RemoraAdvice {
 
 
-	private static final String ADVICE_NAME = "${adviceClassName}Advice";
+	public static final String ADVICE_NAME = "${adviceClassName}Advice";
 	public static String[] INTERCEPTING_CLASS = {"<CHANGE HERE>"};
 	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
@@ -29,7 +30,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static boolean logging = true;
 		public static Logger logger;
 	static {
-		logger = Logger.getLogger(${adviceClassName}Advice.class.getName());
+		logger = LoggerFactory.getLogger(${adviceClassName}Advice.class.getName());
 		configureAdviceLogger(logger);
 	}
 

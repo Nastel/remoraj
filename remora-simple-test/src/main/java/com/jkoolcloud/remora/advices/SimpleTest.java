@@ -2,8 +2,11 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -16,17 +19,13 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class SimpleTest extends BaseTransformers {
 
-	private static final String ADVICE_NAME = "SimpleTest";
+	public static final String ADVICE_NAME = "SimpleTest";
 	public static String[] INTERCEPTING_CLASS = { "lt.slabs.com.jkoolcloud.remora.JustATest" };
 	public static String INTERCEPTING_METHOD = "instrumentedMethod";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
-	static {
-		logger = Logger.getLogger(SimpleTest.class.getName());
-		configureAdviceLogger(logger);
-	}
+	public static TaggedLogger logger;
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(SimpleTest.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)
@@ -56,10 +55,12 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("starttime") long starttime) //
 	{
 		try {
+			logger.info("BEFORE METHOD CALL");
 			System.out.println("BEFORE METHOD CALL");
 			if (ed == null) {
 				ed = new EntryDefinition(SimpleTest.class);
 				System.out.println("NEW entry def");
+				logger.info("NEW entry def");
 			}
 
 			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
@@ -89,5 +90,16 @@ public class SimpleTest extends BaseTransformers {
 	@Override
 	public AgentBuilder.Listener getListener() {
 		return new BaseTransformers.TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

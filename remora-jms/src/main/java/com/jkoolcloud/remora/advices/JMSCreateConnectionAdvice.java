@@ -4,11 +4,14 @@ import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.jms.ConnectionFactory;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -21,17 +24,13 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class JMSCreateConnectionAdvice extends BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "JMSCreateConnectionAdvice";
+	public static final String ADVICE_NAME = "JMSCreateConnectionAdvice";
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.ConnectionFactory" };
 	public static String INTERCEPTING_METHOD = "createConnection";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
-	static {
-		logger = Logger.getLogger(JMSCreateConnectionAdvice.class.getName());
-		configureAdviceLogger(logger);
-	}
+	public static TaggedLogger logger;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -88,7 +87,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	{
 		try {
 			if (logging) {
-				logger = Logger.getLogger(JMSCreateConnectionAdvice.class.getName());
 				logger.info(format("Entering: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "before"));
 			}
 
@@ -168,5 +166,16 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	@Override
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

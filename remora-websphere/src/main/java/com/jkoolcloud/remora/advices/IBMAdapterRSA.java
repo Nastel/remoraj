@@ -2,9 +2,12 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.logging.Logger;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 import com.jkoolcloud.remora.RemoraConfig;
@@ -18,18 +21,14 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "IBMAdapterRSA";
+	public static final String ADVICE_NAME = "IBMAdapterRSA";
 	public static String[] INTERCEPTING_CLASS = { "com.ibm.ws.rsadapter.jdbc.WSJdbcStatement",
 			"com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement", "com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement" };
 	public static String INTERCEPTING_METHOD = "execut";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
-	static {
-		logger = Logger.getLogger(IBMAdapterRSA.class.getName());
-		configureAdviceLogger(logger);
-	}
+	public static TaggedLogger logger;
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(IBMAdapterRSA.class.getClassLoader()) //
@@ -86,7 +85,6 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	) {
 		try {
 			if (logging) {
-				logger = Logger.getLogger(IBMAdapterRSA.class.getName());
 				logger.info(format("Entering: {0} {1}", IBMAdapterRSA.class.getName(), "before"));
 			}
 			if (isChainedClassInterception(IBMAdapterRSA.class, logger)) {
@@ -161,5 +159,16 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	@Override
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

@@ -3,7 +3,8 @@ package com.jkoolcloud.remora;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -31,7 +32,7 @@ import com.jkoolcloud.remora.core.output.SysOutOutput;
 		"com.ibm.ws.webcontainer.servlet.ServletWrapper" })
 public class IBMWebsphereAdviceTest {
 
-	Logger logger = Logger.getLogger(IBMWebsphereAdvice.class.getName());
+	Logger logger = LoggerFactory.getLogger(IBMWebsphereAdvice.class.getName());
 
 	@Test
 	public void testWebsphereInterceptor() throws NoSuchMethodException {

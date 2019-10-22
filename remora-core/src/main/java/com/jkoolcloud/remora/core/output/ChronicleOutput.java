@@ -2,7 +2,8 @@ package com.jkoolcloud.remora.core.output;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
@@ -13,7 +14,7 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
 
-	Logger logger = Logger.getLogger(ChronicleOutput.class.getName());
+	Logger logger = LoggerFactory.getLogger(ChronicleOutput.class.getName());
 
 	private ExcerptAppender appender;
 	private ChronicleQueue queue;
@@ -31,14 +32,14 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		if (queue != null) {
 			logger.info("Queue initialized " + this);
 		} else {
-			logger.severe("Queue failed");
+			logger.error("Queue failed");
 		}
 
 		appender = queue.acquireAppender();
 		if (appender != null) {
 			logger.info("Appender initialized");
 		} else {
-			logger.severe("Appender failed");
+			logger.error("Appender failed");
 		}
 
 	}

@@ -3,8 +3,11 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -17,7 +20,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "JBossAdvice";
+	public static final String ADVICE_NAME = "JBossAdvice";
 	public static String[] INTERCEPTING_CLASS = { "org.jboss.as.ejb3.inflow.AbstractInvocationHandler",
 			"org.jboss.as.ee.component.ProxyInvocationHandler",
 			"org.jboss.as.cmp.component.CmpEntityBeanInvocationHandler",
@@ -27,14 +30,9 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
+	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JBossAdvice.class.getClassLoader()).advice(methodMatcher(), JBossAdvice.class.getName());
-
-	static {
-		logger = Logger.getLogger(JBossAdvice.class.getName());
-		configureAdviceLogger(logger);
-	}
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -147,4 +145,14 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 		return new TransformationLoggingListener(logger);
 	}
 
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
+	}
 }

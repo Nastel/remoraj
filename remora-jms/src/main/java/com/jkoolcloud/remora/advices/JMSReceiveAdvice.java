@@ -3,12 +3,15 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.QueueReceiver;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -20,17 +23,13 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
 public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
-	private static final String ADVICE_NAME = "JMSReceiveAdvice";
+	public static final String ADVICE_NAME = "JMSReceiveAdvice";
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageConsumer" };
 	public static String INTERCEPTING_METHOD = "receive";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
-	static {
-		logger = Logger.getLogger(JMSReceiveAdvice.class.getName());
-		configureAdviceLogger(logger);
-	}
+	public static TaggedLogger logger;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -142,7 +141,6 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 		boolean doFinnaly = true;
 		try {
 			if (logging) {
-				logger = Logger.getLogger(JMSReceiveAdvice.class.getName());
 				logger.info(format("Exiting: {0} {1}", JMSReceiveAdvice.class.getName(), "after"));
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -173,5 +171,16 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	@Override
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

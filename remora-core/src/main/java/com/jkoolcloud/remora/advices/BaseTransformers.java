@@ -1,24 +1,19 @@
 package com.jkoolcloud.remora.advices;
 
-import static com.jkoolcloud.remora.Remora.LOG_COUNT;
-import static com.jkoolcloud.remora.Remora.LOG_FILE_SIZE;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.none;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.*;
 
-import com.jkoolcloud.remora.Remora;
+import org.tinylog.TaggedLogger;
+
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -35,6 +30,7 @@ import net.bytebuddy.utility.JavaModule;
 
 public abstract class BaseTransformers implements RemoraAdvice {
 
+	private static final String ADVICE_NAME = "GENERAL";
 	@RemoraConfig.Configurable
 	public static List<String> ignores;
 
@@ -79,7 +75,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public abstract AgentBuilder.Transformer getAdvice();
 
 	public static void fillDefaultValuesAfter(EntryDefinition entryDefinition, long startTime,
-			@Advice.Thrown Throwable exception, Logger logger) {
+			@Advice.Thrown Throwable exception, TaggedLogger logger) {
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
 		entryDefinition.setDuration((long) duration);
 
@@ -100,7 +96,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, Throwable exception,
-			Logger logger) {
+			TaggedLogger logger) {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		exception.printStackTrace(printWriter);
@@ -114,7 +110,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
-			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, Logger logger) {
+			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -188,7 +184,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	public static boolean isChainedClassInterception(Class<?> adviceClass, Logger logger) {
+	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger) {
 		try {
 			if (adviceClass.equals(stackThreadLocal.get().peek().getAdviceClass())) {
 				if (logger != null) {
@@ -202,7 +198,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return false;
 	}
 
-	public static void handleAdviceException(Throwable t, String adviceName, Logger logger) {
+	public static void handleAdviceException(Throwable t, String adviceName, TaggedLogger logger) {
 		BaseTransformers.class.getSimpleName();
 	}
 
@@ -228,63 +224,19 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	protected abstract AgentBuilder.Listener getListener();
 
 	@Override
-	public void install(Instrumentation inst) {
-		getTransform().with(getListener()).installOn(inst);
-	}
-
-	protected static void configureAdviceLogger(Logger logger) {
-		FileHandler handler = null;
-		try {
-			String path = System.getProperty(Remora.REMORA_PATH) + "/log/";
-			new File(path).mkdirs();
-			String pattern = path + logger.getName() + "%g%u%u%u.log";
-			handler = new FileHandler(pattern, LOG_FILE_SIZE, LOG_COUNT, true);
-			handler.setFilter(new PassAllFilter());
-			handler.setFormatter(Remora.REMORA_LOG_FORMATTER);
-			handler.setLevel(Level.ALL);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (logger != null) {
-			Arrays.asList(logger.getHandlers()).stream().forEach(l -> logger.removeHandler(l));
-			logger.addHandler(handler);
-			logger.addHandler(new StreamHandler(System.out, Remora.REMORA_LOG_FORMATTER));
-
-			logger.setUseParentHandlers(false);
-			logger.setLevel(Level.parse(
-					RemoraConfig.INSTANCE.config.getProperty(logger.getName() + "logLevel", Level.FINEST.getName())));
-
-			logger.info(format("Advice logger configured, level {1}, handlers {2},  ", logger, logger.getLevel(),
-					logger.getHandlers()));
-			logger.severe("SEVERE is displayed");
-			logger.warning("WARNING is displayed");
-			logger.config("CONFIG is displayed");
-			logger.info("INFO is displayed");
-			logger.info("FINE is displayed");
-			logger.finer("FINER is displayed");
-			logger.finer("FINEST is displayed");
-
-		}
+	public String getName() {
+		return ADVICE_NAME;
 	}
 
 	public static String format(String pattern, Object... args) {
 		return MessageFormat.format(pattern, args);
 	}
 
-	private static class PassAllFilter implements Filter {
-
-		@Override
-		public boolean isLoggable(LogRecord record) {
-			return true;
-		}
-
-	}
-
 	public static class TransformationLoggingListener extends AgentBuilder.Listener.Adapter {
-		Logger logger;
+		TaggedLogger logger;
 		public final static String PREFIX = "[ByteBuddy]";
 
-		public TransformationLoggingListener(Logger logger) {
+		public TransformationLoggingListener(TaggedLogger logger) {
 			this.logger = logger;
 		}
 
@@ -301,11 +253,16 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded,
 				Throwable throwable) {
 
-			System.out.println(
-					format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
-			logger.info(format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
-			logger.info(Arrays.toString(throwable.getStackTrace()));
-			throwable.printStackTrace();
+			if (logger == null) {
+				System.out.println(
+						format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
+				throwable.printStackTrace();
+			} else {
+				logger.info(
+						format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
+				logger.info(Arrays.toString(throwable.getStackTrace()));
+			}
+
 		}
 
 	}

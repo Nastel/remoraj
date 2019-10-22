@@ -2,7 +2,8 @@ package com.jkoolcloud.remora.core.output;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -12,7 +13,7 @@ public enum OutputManager {
 
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
-	private final Logger logger = Logger.getLogger(OutputManager.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(OutputManager.class.getName());
 
 	private static boolean shutdown = false;
 	private static AgentOutput output;
@@ -124,7 +125,7 @@ public enum OutputManager {
 
 			class OutputLogger implements OutputListener {
 
-				private static final Logger logger = Logger.getLogger(OutputLogger.class.getName());
+				private static final Logger logger = LoggerFactory.getLogger(OutputLogger.class.getName());
 
 				@Override
 				public void beforeSend() {
@@ -156,7 +157,7 @@ public enum OutputManager {
 					if (e == null) {
 						logger.info("Message sent");
 					} else {
-						logger.severe("Cannot send the message");
+						logger.error("Cannot send the message");
 					}
 				}
 

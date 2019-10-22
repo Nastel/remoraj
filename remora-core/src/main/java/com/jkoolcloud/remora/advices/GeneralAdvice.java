@@ -1,7 +1,10 @@
 package com.jkoolcloud.remora.advices;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -12,14 +15,13 @@ import net.bytebuddy.description.type.TypeDescription;
 
 public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "GeneralAdvice";
+	public static final String ADVICE_NAME = "GeneralAdvice";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-	public static Logger logger;
+	public static TaggedLogger logger;
 	static {
-		logger = Logger.getLogger(GeneralAdvice.class.getName());
-		configureAdviceLogger(logger);
+		logger = Logger.tag(ADVICE_NAME);
 	}
 
 	/**
@@ -96,5 +98,16 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	@Override
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
+	}
+
+	@Override
+	public void install(Instrumentation inst) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(inst);
 	}
 }

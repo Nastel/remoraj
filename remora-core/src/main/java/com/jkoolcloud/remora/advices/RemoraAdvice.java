@@ -4,4 +4,6 @@ import java.lang.instrument.Instrumentation;
 
 public interface RemoraAdvice {
 	void install(Instrumentation inst);
+
+	String getName();
 }

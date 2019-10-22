@@ -7,13 +7,14 @@ import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 
 public class RemoraClassLoader extends URLClassLoader {
-	Logger logger = Logger.getLogger(RemoraClassLoader.class.getName());
+	Logger logger = LoggerFactory.getLogger(RemoraClassLoader.class.getName());
 
 	public RemoraClassLoader(URL[] urls, ClassLoader parent, Instrumentation inst) {
 		super(urls, parent);
