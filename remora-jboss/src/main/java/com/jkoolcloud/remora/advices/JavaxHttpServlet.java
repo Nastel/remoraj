@@ -1,14 +1,13 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.QueueReceiver;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -22,10 +21,10 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
-	public static final String ADVICE_NAME = "JMSReceiveAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageConsumer" };
-	public static String INTERCEPTING_METHOD = "receive";
+public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
+	public static final String ADVICE_NAME = "JavaxHttpServlet";
+	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
+	public static String INTERCEPTING_METHOD = "service";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
@@ -35,22 +34,21 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
 	 */
-
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return named(INTERCEPTING_METHOD);
+		return nameStartsWith(INTERCEPTING_METHOD);
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSReceiveAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), JMSReceiveAdvice.class.getName());
+			.include(JavaxHttpServlet.class.getClassLoader()) //
+			.include(RemoraConfig.INSTANCE.classLoader) //
+			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
 
 	/**
-	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
 	 */
-
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
+		return named(INTERCEPTING_CLASS[0]);
 	}
 
 	@Override
@@ -63,7 +61,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param arguments
+	 * @param req
+	 * @param resp
 	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
@@ -74,35 +73,38 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            method startTime
 	 *
 	 */
-
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This MessageConsumer thiz, //
-			@Advice.AllArguments Object[] arguments, //
+	public static void before(@Advice.This Object thiz, //
+			@Advice.Argument(0) ServletRequest req, //
+			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime)//
-	// @Advice.Local("remoraLogger") Logger logger) // ) //
+			@Advice.Local("startTime") long startTime) //
+	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", JMSReceiveAdvice.class.getName(), "before"));
+				logger.info(format("Entering: {0} {1}", JavaxHttpServlet.class.getName(), "before"));
 			}
-			if (ed == null) {
-				ed = new EntryDefinition(JMSSendAdvice.class);
-			}
-			if (isChainedClassInterception(JMSReceiveAdvice.class, logger)) {
+			if (isChainedClassInterception(JavaxHttpServlet.class, logger)) {
 				return; // return if its chain of same
 			}
-
 			if (ed == null) {
-				ed = new EntryDefinition(JMSReceiveAdvice.class);
+				ed = new EntryDefinition(JavaxHttpServlet.class);
 			}
-
-			ed.setEventType(EntryDefinition.EventType.RECEIVE);
+			ed.addProperty("Working", "true");
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
-			if (thiz instanceof QueueReceiver) {
-				ed.addPropertyIfExist("QUEUE", ((QueueReceiver) thiz).getQueue().getQueueName());
+			if (req != null) {
+				try {
+					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
+					ed.addPropertyIfExist("SERVER", req.getLocalName());
+				} catch (Throwable t) {
+					logger.info("Failed getting some of properties" + req);
+				}
+
+			} else {
+				logger.info("## Request null");
 			}
 
 		} catch (Throwable t) {
@@ -117,7 +119,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
+	 * @param req
+	 * @param resp
 	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
@@ -128,39 +131,33 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This MessageConsumer obj, //
+	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
-			@Advice.AllArguments Object[] arguments, //
+			@Advice.Argument(0) ServletRequest req, //
+			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
-			@Advice.Return Message message, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-		boolean doFinnaly = true;
+		boolean doFinally = true;
 		try {
-			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JMSReceiveAdvice.class.getName(), "after"));
-			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
-				doFinnaly = false;
+				doFinally = false;
 				return;
 			}
-
-			if (message != null) {
-				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
-				ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
-				ed.addPropertyIfExist("TYPE", message.getJMSType());
-
+			if (logging) {
+				logger.info(format("Exiting: {0} {1}", JavaxHttpServlet.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
-			if (doFinnaly) {
+			if (doFinally) {
 				doFinally();
 			}
 		}

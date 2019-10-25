@@ -2,13 +2,13 @@ package com.jkoolcloud.remora.testClasses;
 
 import java.lang.instrument.Instrumentation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 
 public class Advice2 implements RemoraAdvice {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Advice2.class.getName());
+	private static final TaggedLogger LOGGER = Logger.tag("INFO");
 	private static final String ADVICE_NAME = "2";
 
 	public Advice2() {

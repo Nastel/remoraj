@@ -49,8 +49,6 @@ public class Remora {
 
 		// logger.info("Starting from premain; classloader: " + Remora.class.getClassLoader());
 
-		OutputManager outputManager = OutputManager.INSTANCE; //
-		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
 		inst.appendToBootstrapClassLoaderSearch(new JarFile(baseRemoraDir + "remora.jar"));
 		bootLoader = new RemoraClassLoader(findJars(options + MODULES_DIR), Remora.class.getClassLoader(), inst);
 		// logger.info("Initializing classloader: " + bootLoader);
@@ -61,6 +59,8 @@ public class Remora {
 		// logger.info("Initializing advices: " + appClass);
 		initializeAdvices.invoke(instance, inst, bootLoader);
 		logger = Logger.tag("INIT");
+		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
+		OutputManager outputManager = OutputManager.INSTANCE; //
 	}
 
 	public static URL[] findJars(String location) throws MalformedURLException {

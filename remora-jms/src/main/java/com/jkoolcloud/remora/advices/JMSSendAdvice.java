@@ -34,6 +34,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JMSSendAdvice.class.getClassLoader()) //
+			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice(methodMatcher(), JMSSendAdvice.class.getName());
 
 	/**

@@ -1,7 +1,6 @@
 package com.jkoolcloud.remora;
 
 import static com.jkoolcloud.remora.Remora.REMORA_PATH;
-import static java.text.MessageFormat.format;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +13,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 public enum RemoraConfig {
@@ -25,7 +22,7 @@ public enum RemoraConfig {
 
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
-	private Logger logger = LoggerFactory.getLogger(RemoraConfig.class.getName());
+	// private TaggedLogger logger = Logger.tag("INIT");
 	public Properties config;
 	public ClassLoader classLoader = null;
 
@@ -58,13 +55,13 @@ public enum RemoraConfig {
 								appliedValue = Boolean.parseBoolean(configValue);
 								break;
 							case "default":
-								logger.info("Unsupported property");
+								// logger.info("Unsupported property");
 
 							}
 						}
 						if (appliedValue != null) {
-							logger.info(format("Setting {0} class config field \"{2}\" as {1}",
-									object.getClass().getName(), appliedValue.toString(), field.getName()));
+							// logger.info(format("Setting {0} class config field \"{2}\" as {1}",
+							// object.getClass().getName(), appliedValue.toString(), field.getName()));
 							field.set(object, appliedValue);
 						}
 
@@ -102,10 +99,10 @@ public enum RemoraConfig {
 		File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
 		try (FileInputStream inStream = new FileInputStream(file)) {
 			config.load(inStream);
-			logger.info(format("Sucessfully loaded {0} properties from configuration file", config.size()));
+			// logger.info(format("Sucessfully loaded {0} properties from configuration file", config.size()));
 		} catch (IOException e) {
-			logger.error("Failed loading properties file");
-			logger.info(format("Exception: {0} {1} \n {2}", "RemoraConfig", "init", e));
+			// logger.error("Failed loading properties file");
+			// logger.info(format("Exception: {0} {1} \n {2}", "RemoraConfig", "init", e));
 		}
 	}
 

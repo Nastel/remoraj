@@ -1,12 +1,11 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import static com.jkoolcloud.remora.advices.JBossAdvice.APM_BASE_PACKAGE;
+import static com.jkoolcloud.remora.advices.JBossAdvice.JBOSS_MODULES_SYSTEM_PKGS;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -20,39 +19,28 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
-	public static final String ADVICE_NAME = "JavaxHttpServlet";
-	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
-	public static String INTERCEPTING_METHOD = "service";
+public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice {
+
+	public static final String ADVICE_NAME = "JBoss";
+	public static String[] INTERCEPTING_CLASS = { "io.undertow.servlet.handlers.ServletHandler" };
+
+	public static String INTERCEPTING_METHOD = "handleRequest";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
 	public static TaggedLogger logger;
+	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+			.include(JBossServletAdvice.class.getClassLoader())//
+			.include(RemoraConfig.INSTANCE.classLoader) //
+			.advice(methodMatcher(), JBossServletAdvice.class.getName());
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
 	 */
+
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return nameStartsWith(INTERCEPTING_METHOD);
-	}
-
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JavaxHttpServlet.class.getClassLoader()) //
-			.include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
-
-	/**
-	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
-	 */
-	@Override
-	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return new EnhancedElementMatcher<>(INTERCEPTING_CLASS);
-	}
-
-	@Override
-	public AgentBuilder.Transformer getAdvice() {
-		return advice;
+		return named(INTERCEPTING_METHOD);
 	}
 
 	/**
@@ -60,8 +48,7 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param req
-	 * @param resp
+	 * @param arguments
 	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
@@ -72,40 +59,27 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 *            method startTime
 	 *
 	 */
+
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
-			@Advice.Argument(0) ServletRequest req, //
-			@Advice.Argument(1) ServletResponse resp, //
+			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger) //
-	{
+			@Advice.Local("startTime") long startTime) {
 		try {
-			if (logging) {
-				logger.info(format("Entering: {0} {1}", JavaxHttpServlet.class.getName(), "before"));
-			}
-			if (isChainedClassInterception(JavaxHttpServlet.class, logger)) {
-				return; // return if its chain of same
-			}
 			if (ed == null) {
-				ed = new EntryDefinition(JavaxHttpServlet.class);
+				ed = new EntryDefinition(JBossServletAdvice.class);
 			}
-			ed.addProperty("Working", "true");
+			if (logging) {
+				logger.info(format("Entering: {0} {1}", JBossServletAdvice.class.getName(), "before"));
+			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
-			if (req != null) {
-				try {
-					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
-					ed.addPropertyIfExist("SERVER", req.getLocalName());
-				} catch (Throwable t) {
-					logger.info("Failed getting some of properties" + req);
-				}
-
-			} else {
-				logger.info("## Request null");
-			}
-
+			// Class find issues
+			// if (arguments !=null && arguments.length > 0 &&
+			// arguments.getClass().isInstance(Class.forName("io.undertow.servlet.core.ManagedServlet"))) {
+			// ed.addPropertyIfExist("RESOURCE", arguments[0].toString());
+			// }
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		}
@@ -118,8 +92,7 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param req
-	 * @param resp
+	 * @param arguments
 	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
@@ -132,13 +105,10 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
-			@Advice.Argument(0) ServletRequest req, //
-			@Advice.Argument(1) ServletResponse resp, //
-			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger)
-	{
+			@Advice.AllArguments Object[] arguments, //
+			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -149,10 +119,9 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JavaxHttpServlet.class.getName(), "after"));
+				logger.info(format("Exiting: {0} {1}", JBossServletAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
-			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
@@ -161,6 +130,20 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			}
 		}
 
+	}
+
+	/**
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
+	 */
+
+	@Override
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return named(INTERCEPTING_CLASS[0]);
+	}
+
+	@Override
+	public AgentBuilder.Transformer getAdvice() {
+		return advice;
 	}
 
 	@Override
@@ -175,7 +158,18 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 
 	@Override
 	public void install(Instrumentation inst) {
+		String systemPackages = System.getProperty(JBOSS_MODULES_SYSTEM_PKGS);
+		if (systemPackages != null) {
+			if (!systemPackages.contains(APM_BASE_PACKAGE)) {
+				System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + APM_BASE_PACKAGE);
+			}
+		} else {
+			if (!systemPackages.contains(APM_BASE_PACKAGE)) {
+				System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + APM_BASE_PACKAGE);
+			}
+		}
 		logger = Logger.tag(ADVICE_NAME);
 		getTransform().with(getListener()).installOn(inst);
+
 	}
 }

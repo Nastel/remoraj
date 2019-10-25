@@ -20,11 +20,14 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.JUGFactoryImpl;
 import com.jkoolcloud.remora.core.output.OutputManager;
 
+import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
+import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.utility.JavaModule;
 
@@ -61,7 +64,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public AgentBuilder.Identified.Extendable getTransform() {
-		return new AgentBuilder.Default()//
+		ByteBuddy byteBuddy = new ByteBuddy().with(TypeValidation.DISABLED)
+				.with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE);
+
+		return new AgentBuilder.Default(byteBuddy)//
 				// .with(listener) //
 				.disableClassFormatChanges()//
 				// .enableUnsafeBootstrapInjection() //
@@ -243,10 +249,14 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		@Override
 		public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
 				boolean loaded, DynamicType dynamicType) {
-			System.out.println(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(),
-					classLoader, module, loaded));
-			logger.info(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(), classLoader,
-					module, loaded));
+			if (logger == null) {
+				System.out.println(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(),
+						classLoader, module, loaded));
+			} else {
+				logger.info(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(),
+						classLoader, module, typeDescription));
+
+			}
 		}
 
 		@Override
@@ -260,6 +270,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			} else {
 				logger.info(
 						format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
+				logger.info(throwable.getMessage());
 				logger.info(Arrays.toString(throwable.getStackTrace()));
 			}
 

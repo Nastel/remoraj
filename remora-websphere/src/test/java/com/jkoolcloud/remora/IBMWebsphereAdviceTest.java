@@ -3,8 +3,6 @@ package com.jkoolcloud.remora;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -19,6 +17,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -32,7 +32,7 @@ import com.jkoolcloud.remora.core.output.SysOutOutput;
 		"com.ibm.ws.webcontainer.servlet.ServletWrapper" })
 public class IBMWebsphereAdviceTest {
 
-	Logger logger = LoggerFactory.getLogger(IBMWebsphereAdvice.class.getName());
+	private static final TaggedLogger LOGGER = Logger.tag("IBMWebsphereAdviceTest");
 
 	@Test
 	public void testWebsphereInterceptor() throws NoSuchMethodException {

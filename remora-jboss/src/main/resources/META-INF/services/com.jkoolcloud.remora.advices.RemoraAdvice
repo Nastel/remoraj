@@ -1,1 +1,2 @@
 com.jkoolcloud.remora.advices.JBossAdvice
+com.jkoolcloud.remora.advices.JBossServletAdvice

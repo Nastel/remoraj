@@ -17,6 +17,8 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
+        <servlet.systemPath>c:/EAP-7.2.0/modules/system/layers/base/io/undertow/servlet/main/undertow-servlet-2.0.15.Final-redhat-00001.jar
+        </servlet.systemPath>
     </properties>
 
     <dependencies>
@@ -24,6 +26,28 @@
             <groupId>com.jkoolcloud.remora</groupId>
             <artifactId>remora-core</artifactId>
             <version>0.1-SNAPSHOT</version>
+            <!--<exclusions>-->
+            <!--<exclusion>-->
+            <!--<groupId>*</groupId>-->
+            <!--<artifactId>*</artifactId>-->
+            <!--</exclusion>-->
+            <!--</exclusions>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>c:\workspace\remoraj\remora-core\target\remora.jar</systemPath>-->
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>servlet</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${servlet.systemPath}</systemPath>
         </dependency>
     </dependencies>
 
@@ -75,6 +99,55 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <finalName>remora</finalName>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <minimizeJar>false</minimizeJar>
+                    <relocations>
+                        <relocation>
+                            <pattern>org</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.org</shadedPattern>
+                        </relocation>
+                        <!--<relocation>-->
+                        <!--<pattern>java</pattern>-->
+                        <!--<shadedPattern>com.jkoolcloud.remora.shaded.java</shadedPattern>-->
+                        <!--</relocation>-->
+                        <relocation>
+                            <pattern>net</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.net</shadedPattern>
+                            <excludes>
+                                <exclude>net.bytebuddy.**</exclude>
+                            </excludes>
+                        </relocation>
+                        <relocation>
+                            <pattern>com</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.com</shadedPattern>
+                            <excludes>
+                                <exclude>com.jkoolcloud.remora.**</exclude>
+                            </excludes>
+                        </relocation>
+                        <relocation>
+                            <pattern>software</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.software</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

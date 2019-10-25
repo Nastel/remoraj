@@ -121,6 +121,35 @@
                         </transformer>
                     </transformers>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <!--<minimizeJar>false</minimizeJar>-->
+                    <!--<relocations>-->
+                    <!--<relocation>-->
+                    <!--<pattern>org</pattern>-->
+                    <!--<shadedPattern>com.jkoolcloud.remora.shaded.org</shadedPattern>-->
+                    <!--</relocation>-->
+                    <!--&lt;!&ndash;<relocation>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<pattern>java</pattern>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<shadedPattern>com.jkoolcloud.remora.shaded.java</shadedPattern>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</relocation>&ndash;&gt;-->
+                    <!--<relocation>-->
+                    <!--<pattern>net</pattern>-->
+                    <!--<shadedPattern>com.jkoolcloud.remora.shaded.net</shadedPattern>-->
+                    <!--<excludes>-->
+                    <!--<exclude>net.bytebuddy.**</exclude>-->
+                    <!--</excludes>-->
+                    <!--</relocation>-->
+                    <!--<relocation>-->
+                    <!--<pattern>com</pattern>-->
+                    <!--<shadedPattern>com.jkoolcloud.remora.shaded.com</shadedPattern>-->
+                    <!--<excludes>-->
+                    <!--<exclude>com.jkoolcloud.remora.**</exclude>-->
+                    <!--</excludes>-->
+                    <!--</relocation>-->
+                    <!--<relocation>-->
+                    <!--<pattern>software</pattern>-->
+                    <!--<shadedPattern>com.jkoolcloud.remora.shaded.software</shadedPattern>-->
+                    <!--</relocation>-->
+                    <!--</relocations>-->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>

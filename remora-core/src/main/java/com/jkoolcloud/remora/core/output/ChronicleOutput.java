@@ -2,8 +2,9 @@ package com.jkoolcloud.remora.core.output;
 
 import java.io.File;
 import java.nio.file.Paths;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
@@ -14,7 +15,7 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
 
-	Logger logger = LoggerFactory.getLogger(ChronicleOutput.class.getName());
+	TaggedLogger logger = Logger.tag("INIT");
 
 	private ExcerptAppender appender;
 	private ChronicleQueue queue;
