@@ -25,7 +25,7 @@ public class ${adviceClassName}AdviceTest{
 
             EntryDefinition handleRequestEntry=new EntryDefinition(${adviceClassName}Advice.class);
 
-            Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
+//            Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 
             //test before method
          //   ${adviceClassName}Advice.before();

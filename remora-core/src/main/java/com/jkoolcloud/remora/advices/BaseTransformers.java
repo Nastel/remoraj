@@ -229,11 +229,6 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	protected abstract AgentBuilder.Listener getListener();
 
-	@Override
-	public String getName() {
-		return ADVICE_NAME;
-	}
-
 	public static String format(String pattern, Object... args) {
 		return MessageFormat.format(pattern, args);
 	}
