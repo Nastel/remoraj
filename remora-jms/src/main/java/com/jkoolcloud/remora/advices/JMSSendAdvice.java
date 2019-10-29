@@ -73,7 +73,8 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "before"));
+				logger.info("Entering: {0} {1} from {2}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
+						thiz.getClass().getName());
 			}
 			if (isChainedClassInterception(JMSSendAdvice.class, logger)) {
 				return; // return if its chain of same

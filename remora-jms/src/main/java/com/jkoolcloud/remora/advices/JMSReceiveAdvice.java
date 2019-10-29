@@ -85,7 +85,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", JMSReceiveAdvice.class.getName(), "before"));
+				logger.info("Entering: {0} {1} from {2}", JMSReceiveAdvice.class.getSimpleName(), "before",
+						thiz.getClass().getName());
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(JMSSendAdvice.class);

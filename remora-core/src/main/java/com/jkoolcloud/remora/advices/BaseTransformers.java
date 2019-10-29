@@ -205,7 +205,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static void handleAdviceException(Throwable t, String adviceName, TaggedLogger logger) {
-		BaseTransformers.class.getSimpleName();
+		if (logger != null) {
+			logger.info("{0} threw an exception {1}", adviceName, t.getMessage());
+			logger.info(Arrays.toString(t.getStackTrace()));
+		}
 	}
 
 	protected ElementMatcher<NamedElement> getClassIgnores() {

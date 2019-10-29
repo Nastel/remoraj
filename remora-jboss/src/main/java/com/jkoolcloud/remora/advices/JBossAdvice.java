@@ -77,7 +77,8 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 				ed = new EntryDefinition(JBossAdvice.class);
 			}
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", JBossAdvice.class.getName(), "before"));
+				logger.info("Entering: {0} {1} from {2}", JBossAdvice.class.getSimpleName(), "before",
+						thiz.getClass().getName());
 			}
 			if (req != null) {
 				try {

@@ -1,5 +1,6 @@
 package com.jkoolcloud.remora.advices;
 
+import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
@@ -87,13 +88,20 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 				ed = new EntryDefinition(JDBCStatementAdvice.class);
 			}
 			if (logging) {
-				logger.info("Entering: {0} {1}", JDBCStatementAdvice.class.getName(), "before");
+				logger.info("Entering: {0} {1} from {2}", JDBCStatementAdvice.class.getName(), "before",
+						thiz.getClass().getName());
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 			ed.addPropertyIfExist("SQL", sql);
-			if (thiz.getConnection() != null) {
-				ed.addPropertyIfExist("RESUORCE", thiz.getConnection().getSchema());
+
+			try {
+				String resource = getFieldValue("connection.myURL", thiz, String.class);
+				ed.addPropertyIfExist("RESOURCE", resource);
+				logger.info("Adding resource reflection {0}", resource);
+			} catch (Exception e1) {
+				logger.info("Exception: {0}", e1);
 			}
+
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		}

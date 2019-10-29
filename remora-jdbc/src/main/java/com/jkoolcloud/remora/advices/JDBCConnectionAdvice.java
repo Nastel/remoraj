@@ -84,7 +84,8 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 				ed = new EntryDefinition(JDBCConnectionAdvice.class);
 			}
 			if (logging) {
-				logger.info("Entering: {0} {1}", JDBCConnectionAdvice.class.getName(), "before");
+				logger.info("Entering: {0} {1} from {2}", JDBCConnectionAdvice.class.getName(), "before",
+						thiz.getClass().getName());
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 		} catch (Throwable t) {

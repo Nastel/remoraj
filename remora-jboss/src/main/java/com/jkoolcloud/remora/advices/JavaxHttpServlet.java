@@ -84,7 +84,8 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", JavaxHttpServlet.class.getName(), "before"));
+				logger.info("Entering: {0} {1} from {2}", JavaxHttpServlet.class.getSimpleName(), "before",
+						thiz.getClass().getName());
 			}
 			if (isChainedClassInterception(JavaxHttpServlet.class, logger)) {
 				return; // return if its chain of same

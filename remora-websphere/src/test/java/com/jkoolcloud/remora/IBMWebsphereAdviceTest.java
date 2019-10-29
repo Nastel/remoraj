@@ -32,6 +32,10 @@ import com.jkoolcloud.remora.core.output.SysOutOutput;
 		"com.ibm.ws.webcontainer.servlet.ServletWrapper" })
 public class IBMWebsphereAdviceTest {
 
+	static {
+		System.setProperty(Remora.REMORA_PATH, ".");
+	}
+
 	private static final TaggedLogger LOGGER = Logger.tag("IBMWebsphereAdviceTest");
 
 	@Test
