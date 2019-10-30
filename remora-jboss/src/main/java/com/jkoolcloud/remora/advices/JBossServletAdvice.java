@@ -165,9 +165,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 				System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + APM_BASE_PACKAGE);
 			}
 		} else {
-			if (!systemPackages.contains(APM_BASE_PACKAGE)) {
-				System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + APM_BASE_PACKAGE);
-			}
+			System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, APM_BASE_PACKAGE);
 		}
 		logger = Logger.tag(ADVICE_NAME);
 		getTransform().with(getListener()).installOn(inst);

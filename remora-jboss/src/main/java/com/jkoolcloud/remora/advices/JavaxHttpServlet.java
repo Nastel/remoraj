@@ -5,9 +5,14 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -29,6 +34,18 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
 	public static TaggedLogger logger;
+	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+			.include(JavaxHttpServlet.class.getClassLoader()) //
+			.include(RemoraConfig.INSTANCE.classLoader) //
+			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
+	@RemoraConfig.Configurable
+	public static String cookiePrefix = "CKIE_";
+	@RemoraConfig.Configurable
+	public static String headerPrefix = "HDR_";
+	@RemoraConfig.Configurable
+	public static boolean attachCorrelator = true;
+	@RemoraConfig.Configurable
+	public static String headerCorrIDName = "REMORA_CORR";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -36,24 +53,6 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 */
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return nameStartsWith(INTERCEPTING_METHOD);
-	}
-
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JavaxHttpServlet.class.getClassLoader()) //
-			.include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
-
-	/**
-	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
-	 */
-	@Override
-	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return named(INTERCEPTING_CLASS[0]);
-	}
-
-	@Override
-	public AgentBuilder.Transformer getAdvice() {
-		return advice;
 	}
 
 	/**
@@ -96,10 +95,52 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			ed.addProperty("Working", "true");
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
-			if (req != null) {
+			if (req != null && req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
 				try {
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
+
+					HttpServletRequest request = (HttpServletRequest) req;
+
+					ed.addPropertyIfExist("PROTOCOL", request.getProtocol());
+					ed.addPropertyIfExist("METHOD", request.getMethod());
+					ed.addPropertyIfExist("SECURE", request.isSecure());
+					ed.addPropertyIfExist("SCHEME", request.getScheme());
+					ed.addPropertyIfExist("SERVER", request.getServerName());
+					ed.addPropertyIfExist("PORT", request.getServerPort());
+					ed.addPropertyIfExist("RESOURCE", request.getRequestURI());
+					ed.addPropertyIfExist("QUERY", request.getQueryString());
+					ed.addPropertyIfExist("CONTENT_TYPE", request.getHeader("Content-Type"));
+
+					if (request.getCookies() != null) {
+						for (Cookie cookie : request.getCookies()) {
+							ed.addPropertyIfExist(cookiePrefix + cookie.getName(), cookie.getValue());
+						}
+					}
+					Enumeration headerNames = request.getHeaderNames();
+					if (headerNames != null) {
+						while (headerNames.hasMoreElements()) {
+							String headerName = (String) headerNames.nextElement();
+							Enumeration<String> headerValues = request.getHeaders(headerName);
+							StringBuilder headerValue = new StringBuilder();
+							while (headerValues.hasMoreElements()) {
+								headerValue.append(headerValues.nextElement());
+								if (headerValues.hasMoreElements()) {
+									headerValue.append(";");
+								}
+							}
+							ed.addPropertyIfExist(headerPrefix + headerName, headerValue.toString());
+						}
+					}
+					if (attachCorrelator && resp != null && resp instanceof HttpServletResponse) {
+						if (((HttpServletRequest) req).getHeader(headerCorrIDName) == null) {
+							((HttpServletResponse) resp).addHeader(headerCorrIDName, ed.getId());
+							logger.info("Added header: " + headerCorrIDName + ed.getId());
+						} else {
+							((HttpServletResponse) resp).addHeader(headerCorrIDName,
+									((HttpServletRequest) req).getHeader(headerCorrIDName));
+						}
+					}
 				} catch (Throwable t) {
 					logger.info("Failed getting some of properties" + req);
 				}
@@ -154,6 +195,7 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 				logger.info(format("Exiting: {0} {1}", JavaxHttpServlet.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
+
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
@@ -163,6 +205,19 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			}
 		}
 
+	}
+
+	/**
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
+	 */
+	@Override
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return named(INTERCEPTING_CLASS[0]);
+	}
+
+	@Override
+	public AgentBuilder.Transformer getAdvice() {
+		return advice;
 	}
 
 	@Override
