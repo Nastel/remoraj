@@ -32,7 +32,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public EntryDefinition() {
-        adviceClass = null;
+		adviceClass = null;
 	}
 
 	public void setThread(String thread) {
@@ -57,6 +57,18 @@ public class EntryDefinition extends AbstractMarshallable {
 	public void addPropertyIfExist(String key, String value) {
 		if (value != null) {
 			addProperty(key, value);
+		}
+	}
+
+	public void addPropertyIfExist(String key, Boolean value) {
+		if (value != null) {
+			addProperty(key, value.toString());
+		}
+	}
+
+	public void addPropertyIfExist(String key, Integer value) {
+		if (value != null) {
+			addProperty(key, value.toString());
 		}
 	}
 
@@ -85,7 +97,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public void setException(String exception) {
-        mode = Mode.EXCEPTION;
+		mode = Mode.EXCEPTION;
 		this.exception = exception;
 	}
 

@@ -7,8 +7,8 @@ import net.bytebuddy.asm.Advice;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.reflect.Method;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -28,11 +28,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
-		public static Logger logger;
-	static {
-		logger = LoggerFactory.getLogger(${adviceClassName}Advice.class.getName());
-		configureAdviceLogger(logger);
-	}
+    public static TaggedLogger logger;
 
 	/**
 	 *  Method matcher intended to match intercepted class method/s to
@@ -91,7 +87,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
                 ed = new EntryDefinition(${adviceClassName}Advice.class);
             }
             if (logging) {
-               logger.info(format("Entering: {0} {1}",${adviceClassName}Advice.class.getName(), "before");
+               logger.info(format("Entering: {0} {1}",${adviceClassName}Advice.class.getName(), "before"));
             }
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 		} catch (Throwable t) {
@@ -147,6 +143,12 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	@Override
     protected AgentBuilder.Listener getListener() {
         return new TransformationLoggingListener(logger);
+    }
+
+    @Override
+    public void install(Instrumentation instrumentation) {
+        logger = Logger.tag(ADVICE_NAME);
+        getTransform().with(getListener()).installOn(instrumentation);
     }
 
 }

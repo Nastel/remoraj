@@ -71,7 +71,8 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 				ed = new EntryDefinition(JBossServletAdvice.class);
 			}
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", JBossServletAdvice.class.getName(), "before"));
+				logger.info("Entering: {0} {1} from {2}", JBossServletAdvice.class.getSimpleName(), "before",
+						thiz.getClass().getName());
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
@@ -164,9 +165,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 				System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + APM_BASE_PACKAGE);
 			}
 		} else {
-			if (!systemPackages.contains(APM_BASE_PACKAGE)) {
-				System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + APM_BASE_PACKAGE);
-			}
+			System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, APM_BASE_PACKAGE);
 		}
 		logger = Logger.tag(ADVICE_NAME);
 		getTransform().with(getListener()).installOn(inst);

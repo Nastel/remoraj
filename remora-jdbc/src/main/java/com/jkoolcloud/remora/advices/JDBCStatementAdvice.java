@@ -1,14 +1,11 @@
 package com.jkoolcloud.remora.advices;
 
 import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
-import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
-import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.Properties;
-
-import javax.jms.ConnectionFactory;
+import java.sql.Statement;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -18,15 +15,15 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.NamedElement;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class JMSCreateConnectionAdvice extends BaseTransformers implements RemoraAdvice {
+public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "JMSCreateConnectionAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.jms.ConnectionFactory" };
-	public static String INTERCEPTING_METHOD = "createConnection";
+	public static final String ADVICE_NAME = "JDBCStatementAdvice";
+	public static String[] INTERCEPTING_CLASS = { "java.sql.Statement" };
+	public static String INTERCEPTING_METHOD = "execute";
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
@@ -34,30 +31,31 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
-	 * method maches.
+	 * method matches.
 	 */
 
-	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return named(INTERCEPTING_METHOD).or(named("createQueueConnection"));
+	private static ElementMatcher<? super MethodDescription> methodMatcher() {
+		return nameStartsWith("execute").and(takesArgument(0, String.class)).and(isPublic());
 	}
 
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSCreateConnectionAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), JMSCreateConnectionAdvice.class.getName());
-
 	/**
-	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
 	 */
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
+		return not(isInterface()).and(hasSuperType(named(INTERCEPTING_CLASS[0])));
 	}
 
 	@Override
 	public AgentBuilder.Transformer getAdvice() {
 		return advice;
 	}
+
+	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+			.include(JDBCStatementAdvice.class.getClassLoader())//
+			.include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), JDBCStatementAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -73,44 +71,39 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
 	 * @param startTime
 	 *            method startTime
-	 * 
+	 *
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This ConnectionFactory thiz, //
-			@Advice.AllArguments Object[] arguments, //
+	public static void before(@Advice.This Statement thiz, //
+			@Advice.Argument(0) String sql, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger) //
-	{
+			@Advice.Local("startTime") long startTime) {
 		try {
+			if (isChainedClassInterception(JDBCStatementAdvice.class, logger)) {
+				return;
+			}
+			if (ed == null) {
+				ed = new EntryDefinition(JDBCStatementAdvice.class);
+			}
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
+				logger.info("Entering: {0} {1} from {2}", JDBCStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
-
-			if (isChainedClassInterception(JMSCreateConnectionAdvice.class, logger)) {
-				return; // return if its chain of same
-			}
-
-			if (ed == null) {
-				ed = new EntryDefinition(JMSCreateConnectionAdvice.class);
-			}
-			ed.setEventType(EntryDefinition.EventType.OPEN);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			ed.addPropertyIfExist("SQL", sql);
 
-			Properties fieldValue = getFieldValue("factory.properties", thiz, Properties.class);
-			if (fieldValue != null) {
-				ed.addProperties(fieldValue);
+			try {
+				String resource = getFieldValue("connection.myURL", thiz, String.class);
+				ed.addPropertyIfExist("RESOURCE", resource);
+				logger.info("Adding resource reflection {0}", resource);
+			} catch (Exception e1) {
+				logger.info("Exception: {0}", e1);
 			}
 
 		} catch (Throwable t) {
-			if (logging) {
-				logger.info(
-						format("Exception: {0} {1} \n {2}", JMSCreateConnectionAdvice.class.getName(), "before", t));
-			}
+			handleAdviceException(t, ADVICE_NAME, logger);
 		}
 	}
 
@@ -132,14 +125,12 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This ConnectionFactory obj, //
+	public static void after(@Advice.This Statement thiz, //
+			@Advice.Argument(0) String sql, //
 			@Advice.Origin Method method, //
-			@Advice.AllArguments Object[] arguments, //
-			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime)//
-	// @Advice.Local("remoraLogger") Logger logger)
-	{
+			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -150,9 +141,10 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "after"));
+				logger.info("Exiting: {0} {1}", JDBCStatementAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
+
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		} finally {
@@ -169,13 +161,13 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	}
 
 	@Override
-	public String getName() {
-		return ADVICE_NAME;
+	public void install(Instrumentation instrumentation) {
+		logger = Logger.tag(ADVICE_NAME);
+		getTransform().with(getListener()).installOn(instrumentation);
 	}
 
 	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
+	public String getName() {
+		return ADVICE_NAME;
 	}
 }

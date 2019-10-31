@@ -89,7 +89,8 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 		try {
 			System.out.println("W Using logger: " + logger);
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", IBMWebsphereAdvice.class.getName(), "before"));
+				logger.info("Entering: {0} {1} from {2}", IBMWebsphereAdvice.class.getSimpleName(), "before",
+						thiz.getClass().getName());
 			}
 			if (isChainedClassInterception(IBMWebsphereAdvice.class, logger)) {
 				return; // return if its chain of same
