@@ -120,6 +120,7 @@
         <module>remora-websphere</module>
         <module>remora-jms</module>
         <module>remora-jboss</module>
+        <module>remora-stream</module>
         <module>remora--package</module>
 
     </modules>

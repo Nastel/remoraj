@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.jkoolcloud.remora</groupId>
+        <artifactId>remora-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>remora-stream</artifactId>
+
+    <properties>
+        <chronicle.stream.version>1.10.0-SNAPSHOT</chronicle.stream.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.jkoolcloud.remora</groupId>
+            <artifactId>remora-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jkoolcloud.tnt4j.streams</groupId>
+            <artifactId>tnt4j-streams-chronicle</artifactId>
+            <version>${chronicle.stream.version}</version>
+        </dependency>
+    </dependencies>
+</project>

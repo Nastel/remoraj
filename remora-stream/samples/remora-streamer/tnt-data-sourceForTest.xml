@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tnt-data-source
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Nastel/tnt4j-streams/master/config/tnt-data-source.xsd">
+
+    <java-object name="Null" class="com.jkoolcloud.tnt4j.streams.outputs.NullActivityOutput"/>
+
+    <parser name="propertiesParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityMapParser">
+        <field name="all" locator="*"></field>
+    </parser>
+
+    <parser name="TokenParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser">
+
+        <field name="eventName" locator="name" locator-type="Label"/>
+        <field name="guid" locator="id" locator-type="Label">
+            <field-transform name="ETHTokenSymbolTransform" lang="groovy"><![CDATA[
+                $fieldValue.trim()
+            ]]></field-transform>
+        </field>
+        <field name="severity" locator="exception" locator-type="Label">
+            <field-transform name="SeverityMarkup" lang="groovy"><![CDATA[
+                $fieldValue == null ? "INFO" : "ERROR"
+            ]]></field-transform>
+        </field>
+        <field name="class" locator="clazz" locator-type="Label"/>
+        <field name="exception" locator="exceptionTrace" locator-type="Label"/>
+        <field name="exceptionMessage" locator="exception" locator-type="Label"/>
+        <field name="ElapsedTime" locator="duration" locator-type="Label" units="Microseconds" datatype="Timestamp"/>
+        <field name="StartTime" locator="startTime" locator-type="Label" units="Milliseconds" datatype="Timestamp" timezone="EET"/>
+        <field name="Correlator" locator="correlator" locator-type="Label"/>
+        <field name="Thread" locator="thread" locator-type="Label"/>
+        <field name="Message" locator="StackTrace" locator-type="Label"/>
+        <embedded-activity name="properties" locator="properties" locator-type="Label">
+            <parser-ref name="propertiesParser"></parser-ref>
+        </embedded-activity>
+        <field name="EventType" locator="eventType" locator-type="Label"/>
+        <field name="MODE" locator="mode" locator-type="Label"/>
+    </parser>
+
+    <stream name="ChronicleStream" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
+
+        <property name="HaltIfNoParser" value="false"/>
+        <property name="FileName" value="c:\tmp\probe\"/>
+        <property name="MarshallClass" value="com.jkoolcloud.remora.core.EntryDefinition"/>
+
+        <!--<reference name="Null"/>-->
+        <parser-ref name="TokenParser"/>
+    </stream>
+</tnt-data-source>
