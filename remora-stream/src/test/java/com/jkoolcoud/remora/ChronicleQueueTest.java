@@ -17,7 +17,6 @@
 package com.jkoolcoud.remora;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,20 +44,23 @@ public class ChronicleQueueTest {
 
 	@Test
 	public void streamTest() throws Exception {
-		ChronicleQueueStream stream = new ChronicleQueueStream();
-		stream.setProperty(StreamProperties.PROP_FILENAME,
-				"c:\\Users\\slabs\\AppData\\Local\\Temp\\chronicle-queue4202994159695497585\\");
-		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.javaam.EntryDefinition");
-		stream.addReference(new NullActivityOutput());
-		stream.startStream();
-
-		Object nextItem = stream.getNextItem();
-		System.out.println(nextItem);
-		assertNotNull(nextItem);
+		// System.setProperty("log4j.configuration", "file:./config/log4j.properties");
+		// ChronicleQueueStream stream = new ChronicleQueueStream();
+		// stream.setProperty(StreamProperties.PROP_FILENAME,
+		// "c:\\Users\\slabs\\AppData\\Local\\Temp\\chronicle-queue4202994159695497585\\");
+		// stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS,
+		// "com.jkoolcloud.remora.core.EntryDefinition");
+		// stream.addReference(new NullActivityOutput());
+		// stream.startStream();
+		//
+		// Object nextItem = stream.getNextItem();
+		// System.out.println(nextItem);
+		// assertNotNull(nextItem);
 	}
 
 	@Test
 	public void streamTestWithCreateQueue() throws Exception {
+		System.setProperty("log4j.configuration", "file:./config/log4j.properties");
 		ChronicleQueueStream stream = new ChronicleQueueStream() {
 			@Override
 			public ReadMarshallable getNextItem() throws Exception {

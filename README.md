@@ -1,2 +1,4 @@
 # remoraj
-Profiling byte code agent for java
+
+RemoraJ is java application monitoring tool.
+

@@ -2,6 +2,8 @@
 <component xmlns="http://maven.apache.org/ASSEMBLY-COMPONENT/2.0.0"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.0.0 http://maven.apache.org/xsd/assembly-component-2.0.0.xsd">
+
+
     <moduleSets>
         <moduleSet>
             <useAllReactorProjects>true</useAllReactorProjects>
@@ -16,6 +18,7 @@
                             <include>remora.jar</include>
                         </includes>
                     </fileSet>
+
                     <fileSet>
                         <outputDirectory>modules</outputDirectory>
                         <directory>${project.build.directory}</directory>
@@ -54,6 +57,27 @@
             </includes>
             <outputDirectory></outputDirectory>
 
+        </fileSet>
+        <fileSet>
+            <directory>../remora-stream/target/classes/lib</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>tnt4j-streams\lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../remora-stream/samples</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>tnt4j-streams</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../remora-stream/config</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>tnt4j-streams/config</outputDirectory>
         </fileSet>
 
         <!-- JavaDocs -->
