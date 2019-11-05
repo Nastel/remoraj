@@ -151,4 +151,11 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
         getTransform().with(getListener()).installOn(instrumentation);
     }
 
+
+
+    @Override
+    public String getName() {
+        return ADVICE_NAME;
+    }
+
 }

@@ -192,14 +192,16 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger) {
 		try {
-			if (adviceClass.equals(stackThreadLocal.get().peek().getAdviceClass())) {
+			if (adviceClass.getSimpleName().equals(stackThreadLocal.get().peek().getAdviceClass())) {
 				if (logger != null) {
 					logger.info(("Stack contains the same advice"));
 				}
 				return true;
 			}
 		} catch (Exception e) {
-			logger.info(("Can't check if advice stack has stacked common advices"));
+			if (logger != null) {
+				logger.info(("Can't check if advice stack has stacked common advices"));
+			}
 		}
 		return false;
 	}

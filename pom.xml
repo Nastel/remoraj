@@ -122,6 +122,7 @@
         <module>remora-jboss</module>
         <module>remora-jdbc</module>
         <module>remora-stream</module>
+        <module>remora-apacheHttpClient</module>
         <module>remora--package</module>
 
     </modules>
