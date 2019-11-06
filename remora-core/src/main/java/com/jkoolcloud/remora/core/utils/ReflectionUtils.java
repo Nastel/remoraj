@@ -3,27 +3,31 @@ package com.jkoolcloud.remora.core.utils;
 import java.lang.reflect.Field;
 
 public class ReflectionUtils {
-	public static <T> T getFieldValue(String path, Object object, Class<T> expectedReturn) {
-		String[] levels = path.split("\\.");
+	public static <T> T getFieldValue(Object object, Class<T> expectedReturn, String... paths) {
 
-		Object workingObject = object;
-		for (String level : levels) {
-			try {
-				Field field = _getField(level, workingObject);
-				Object o = field.get(workingObject);
-				workingObject = o;
-			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
-				break;
-			} catch (IllegalAccessException e) {
-				// we set it accessible
+		for (String path : paths) {
+			String[] levels = path.split("\\.");
+
+			Object workingObject = object;
+			for (String level : levels) {
+				try {
+					Field field = _getField(level, workingObject);
+					Object o = field.get(workingObject);
+					workingObject = o;
+				} catch (NoSuchFieldException e) {
+					e.printStackTrace();
+					break;
+				} catch (IllegalAccessException e) {
+					// we set it accessible
+				}
+			}
+			if (expectedReturn.isInstance(workingObject)) {
+				return (T) workingObject;
+			} else {
+				continue;
 			}
 		}
-		if (expectedReturn.isInstance(workingObject)) {
-			return (T) workingObject;
-		} else {
-			throw new IllegalArgumentException("Type mismatch");
-		}
+		throw new IllegalArgumentException("Type mismatch");
 
 	}
 

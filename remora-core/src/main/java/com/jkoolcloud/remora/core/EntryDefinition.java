@@ -9,14 +9,16 @@ public class EntryDefinition extends AbstractMarshallable {
 	final String id = new JUGFactoryImpl().newUUID();
 	final String adviceClass;
 	String name;
-
 	String clazz;
 	Map<String, String> properties = new HashMap<>();
+
 	String application;
+
+	String resource;
+	ResourceType resourceType;
 
 	EventType eventType = EventType.CALL;
 	Mode mode = Mode.RUNNING;
-	String resource;
 
 	String returnType;
 	String returnValue;
@@ -145,6 +147,22 @@ public class EntryDefinition extends AbstractMarshallable {
 		}
 	}
 
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
+	}
+
+	public String getResource() {
+		return resource;
+	}
+
+	public void setResource(String resource, ResourceType resourceType) {
+		this.resource = resourceType.name() + "=" + resource;
+	}
+
 	public void stop() {
 		mode = Mode.STOP;
 	}
@@ -155,5 +173,9 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public enum Mode {
 		RUNNING, STOP, EXCEPTION
+	}
+
+	public enum ResourceType {
+		GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL, NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE, SERVICE, QUEUE, FILE, TOPIC, HTTP
 	}
 }

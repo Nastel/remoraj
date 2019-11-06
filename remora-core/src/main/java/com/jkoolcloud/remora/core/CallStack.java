@@ -7,6 +7,8 @@ import org.tinylog.TaggedLogger;
 public class CallStack<T> extends Stack<EntryDefinition> {
 	private final TaggedLogger logger;
 
+	private String application;
+
 	public CallStack(TaggedLogger logger) {
 		this.logger = logger;
 	}
@@ -14,6 +16,7 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
 		logger.info("Stack push: " + (size() + 1));
+		item.setApplication(application);
 		return super.push(item);
 	}
 
@@ -21,5 +24,16 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 	public synchronized EntryDefinition pop() {
 		logger.info("Stack pop: " + (size() - 1));
 		return super.pop();
+	}
+
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
+		for (int i = 0; i <= size(); i++) {
+			get(i).setApplication(application);
+		}
 	}
 }

@@ -24,11 +24,15 @@
         </field>
         <field name="class" locator="clazz" locator-type="Label"/>
         <field name="exception" locator="exceptionTrace" locator-type="Label"/>
+        <field name="ResourceName" locator="resource" locator-type="Label"/>
+        <field name="ApplName" locator="application" locator-type="Label"/>
         <field name="exceptionMessage" locator="exception" locator-type="Label"/>
         <field name="ElapsedTime" locator="duration" locator-type="Label" units="Microseconds" datatype="Timestamp"/>
         <field name="StartTime" locator="startTime" locator-type="Label" units="Milliseconds" datatype="Timestamp" timezone="EET"/>
         <field name="Correlator" locator="correlator" locator-type="Label"/>
+
         <field name="Thread" locator="thread" locator-type="Label"/>
+        <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
         <field name="Message" locator="StackTrace" locator-type="Label"/>
         <embedded-activity name="properties" locator="properties" locator-type="Label">
             <parser-ref name="propertiesParser"></parser-ref>

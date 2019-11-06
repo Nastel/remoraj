@@ -86,13 +86,19 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (thiz instanceof QueueSender) {
-				ed.addPropertyIfExist("QUEUE", ((QueueSender) thiz).getQueue().getQueueName());
+				String queueName = ((QueueSender) thiz).getQueue().getQueueName();
+				ed.addPropertyIfExist("QUEUE", queueName);
+				ed.addPropertyIfExist("QUEUE", queueName);
+				ed.setResource(queueName, EntryDefinition.ResourceType.QUEUE);
 			}
 
 			for (Object argument : arguments) {
 				if (argument instanceof Queue) {
 					Queue destination = (Queue) argument;
-					ed.addPropertyIfExist("QUEUE", destination.getQueueName());
+					String queueName = destination.getQueueName();
+					ed.addPropertyIfExist("QUEUE", queueName);
+					ed.setResource(queueName, EntryDefinition.ResourceType.QUEUE);
+
 				}
 				if (argument instanceof Message) {
 					Message message = (Message) argument;

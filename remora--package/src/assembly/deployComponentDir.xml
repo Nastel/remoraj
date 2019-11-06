@@ -28,6 +28,7 @@
                         <excludes>
                             <exclude>remora.jar</exclude>
                             <exclude>remora-core*</exclude>
+                            <exclude>remora-stream*</exclude>
                             <exclude>remora--package*</exclude>
                             <exclude>original-*</exclude>
                         </excludes>

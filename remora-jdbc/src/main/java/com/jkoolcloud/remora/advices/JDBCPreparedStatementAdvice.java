@@ -1,6 +1,5 @@
 package com.jkoolcloud.remora.advices;
 
-import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
@@ -19,12 +18,16 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvice {
+@TranparentAdvice
+public class JDBCPreparedStatementAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "JDBCStatementAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.sql.Statement" };
-	public static String INTERCEPTING_METHOD = "execute";
+	public static final String ADVICE_NAME = "JDBCPreparedStatementAdvice";
 
+	public static String[] INTERCEPTING_CLASS = { "java.sql.PreparedStatement" };
+	public static String INTERCEPTING_METHOD = "set*";
+
+	@RemoraConfig.Configurable
+	public static final String parameterPrefix = "PARAM_";
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
 	public static TaggedLogger logger;
@@ -35,7 +38,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return nameStartsWith("execute").and(takesArgument(0, String.class)).and(isPublic());
+		return nameStartsWith("set").and(takesArgument(0, int.class)).and(takesArguments(2)).and(isPublic());
 	}
 
 	/**
@@ -53,17 +56,15 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JDBCStatementAdvice.class.getClassLoader())//
+			.include(JDBCPreparedStatementAdvice.class.getClassLoader())//
 			.include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), JDBCStatementAdvice.class.getName());
+			.advice(methodMatcher(), JDBCPreparedStatementAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -76,31 +77,20 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Statement thiz, //
-			@Advice.Argument(0) String sql, //
+			@Advice.Argument(0) int parameterIndex, //
+			@Advice.Argument(1) Object parameterValue, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (isChainedClassInterception(JDBCStatementAdvice.class, logger)) {
-				return;
-			}
-			if (ed == null) {
-				ed = new EntryDefinition(JDBCStatementAdvice.class);
-			}
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JDBCStatementAdvice.class.getName(), "before",
+				logger.info("Entering: {0} {1} from {2}", JDBCPreparedStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
-			ed.addPropertyIfExist("SQL", sql);
+			if (stackThreadLocal != null && stackThreadLocal.get() != null) {
+				ed = stackThreadLocal.get().peek();
 
-			try {
-				String resource = getFieldValue(thiz, String.class, "connection.myURL", "jndiName");
-				ed.setResource(resource, EntryDefinition.ResourceType.DATACENTER);
-				ed.addPropertyIfExist("RESOURCE", resource);
-				logger.info("Adding resource reflection {0}", resource);
-			} catch (Exception e1) {
-				logger.info("Exception: {0}", e1);
+				ed.addPropertyIfExist(parameterPrefix + parameterIndex, parameterValue.toString());
 			}
 
 		} catch (Throwable t) {
@@ -127,32 +117,10 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Statement thiz, //
-			@Advice.Argument(0) String sql, //
 			@Advice.Origin Method method, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
-		boolean doFinally = true;
-		try {
-			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
-				doFinally = false;
-				return;
-			}
-			if (logging) {
-				logger.info("Exiting: {0} {1}", JDBCStatementAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
-
-		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
-		} finally {
-			if (doFinally) {
-				doFinally();
-			}
-		}
 
 	}
 

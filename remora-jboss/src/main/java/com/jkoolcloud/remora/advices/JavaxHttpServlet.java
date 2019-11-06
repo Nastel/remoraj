@@ -6,6 +6,8 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletRequest;
@@ -18,6 +20,7 @@ import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -108,7 +111,20 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 					ed.addPropertyIfExist("SCHEME", request.getScheme());
 					ed.addPropertyIfExist("SERVER", request.getServerName());
 					ed.addPropertyIfExist("PORT", request.getServerPort());
-					ed.addPropertyIfExist("RESOURCE", request.getRequestURI());
+					String requestURI = request.getRequestURI();
+					ed.addPropertyIfExist("RESOURCE", requestURI);
+
+					ed.setResource(requestURI, EntryDefinition.ResourceType.HTTP);
+
+					if (stackThreadLocal != null && stackThreadLocal.get() != null
+							&& stackThreadLocal.get() instanceof CallStack) {
+						Pattern compile = Pattern.compile("\\/(.\\w*)\\/");
+						Matcher matcher = compile.matcher(requestURI);
+						if (matcher.find()) {
+							((CallStack) stackThreadLocal.get()).setApplication(matcher.group(0));
+						}
+					}
+
 					ed.addPropertyIfExist("QUERY", request.getQueryString());
 					ed.addPropertyIfExist("CONTENT_TYPE", request.getHeader("Content-Type"));
 

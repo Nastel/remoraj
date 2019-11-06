@@ -98,6 +98,8 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 			ed.addPropertyIfExist("URI", request.getURI().toString());
 			ed.addPropertyIfExist("HOST", route.getTargetHost().getHostName());
+			ed.setResource(request.getURI().toString(), EntryDefinition.ResourceType.NETADDR);
+
 			request.addHeader(headerCorrIDName, ed.getId());
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);

@@ -27,16 +27,16 @@ public class ReflectionUtilsTest {
 
 	@Test
 	public void testSingleAccessibleFieldFromDirectClass() {
-		assertEquals("John", ReflectionUtils.getFieldValue("name", new Person(), String.class));
+		assertEquals("John", ReflectionUtils.getFieldValue(new Person(), String.class, "name"));
 	}
 
 	@Test
 	public void testSingleAccessibleFieldFromInheritedClass() {
-		assertEquals("John", ReflectionUtils.getFieldValue("name", new Worker(), String.class));
+		assertEquals("John", ReflectionUtils.getFieldValue(new Worker(), String.class, "name"));
 	}
 
 	@Test
 	public void testChainedInaccessibleField() {
-		assertEquals("Good", ReflectionUtils.getFieldValue("person.health", new TimeTable(), String.class));
+		assertEquals("Good", ReflectionUtils.getFieldValue(new TimeTable(), String.class, "person.health"));
 	}
 }

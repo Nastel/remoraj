@@ -1,2 +1,4 @@
 com.jkoolcloud.remora.advices.JDBCConnectionAdvice
 com.jkoolcloud.remora.advices.JDBCStatementAdvice
+com.jkoolcloud.remora.advices.JDBCCallableStatementAdvice
+com.jkoolcloud.remora.advices.JDBCPreparedStatementAdvice

@@ -100,10 +100,13 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (thiz instanceof QueueReceiver) {
-				ed.addPropertyIfExist("QUEUE", ((QueueReceiver) thiz).getQueue().getQueueName());
+				String queueName = ((QueueReceiver) thiz).getQueue().getQueueName();
+				ed.addPropertyIfExist("QUEUE", queueName);
+				ed.setResource(queueName, EntryDefinition.ResourceType.QUEUE);
 			}
 
 		} catch (Throwable t) {
