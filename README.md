@@ -1,11 +1,11 @@
 
 # RemoraJ
 
-RemoraJ is java application monitoring tool. RemoraJ monitors your application performance by tracking common application building blocks and services services like HTTP, JMS, JDBC.
+RemoraJ is a java application monitoring tool. RemoraJ monitors your application performance by tracking common application building blocks and services services like HTTP, JMS, JDBC requests. RemoraJ consists of tw0 parts: java agent running within application's JVM and tnt4j-streams which is an external agent that fordwards java traces to an central analytics platforms such as https://jkoolcloud.com. These traces are send using JSON over HTTPS.
 
 # Installing
 
-You must set up Java agent and TNT4J-streams to run RemoraJ. Your should have working repository and token in JKoolCloud.  
+You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and token in https://jkoolcloud.com.  
 
 ## Java agent 
 ## Using -javaagent option
@@ -17,8 +17,8 @@ Option 1: using IBM WebSphere console.
 * Step 1    Navigate to Application servers > [Your server name] > Process definition > Java Virtual Machine
 * Step 2    Edit field "Generic JVM arguments"
 * Step 3    Add -javaagent:[c:\remora]\remora.jar=[c:\remora]
-* Step 4    Restart IBM websphere 
-* Step 5    Run and configure TNT4J streams
+* Step 4    Restart IBM WebSphere 
+* Step 5    Run and configure TNT4J streams forwarding agent
 
 Option 2: editing server.xml properties manually 
 
@@ -41,7 +41,7 @@ Option 2: editing server.xml properties manually
 
 
 
-## TNT4J streams
+## Configure TNT4J streams
 
 * Step 1    Go to tnt4j streams config
 * Step 2    Edit `tnt4j-streams.properties` and setup your access Token (`event.sink.factory.EventSinkFactory.prod.Token`)
@@ -51,13 +51,13 @@ Option 2: editing server.xml properties manually
 
 # Configuration
 
-The configuration file is ir your remora dir under `config` folder, file named remora.properties.
+RemoraJ configuration file is located `config` folder, file named `remora.properties`.
 See relevant comments in file for advanced config.
 
 # Running
 
 Once the agent atached and TNT4J-Streams configured you can 
-Run remoraJ\tnt4j-streams\remora-streamer\run.bat(run.sh).
+Run `remoraJ\tnt4j-streams\remora-streamer\run.sh(run.bat)`.
   
 
 
