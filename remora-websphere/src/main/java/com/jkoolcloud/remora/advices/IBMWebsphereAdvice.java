@@ -11,9 +11,11 @@ import javax.servlet.ServletResponse;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
+import com.ibm.websphere.management.AdminService;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -42,7 +44,8 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(IBMWebsphereAdvice.class.getClassLoader())
+			.include(IBMWebsphereAdvice.class.getClassLoader())//
+			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice(methodMatcher(), IBMWebsphereAdvice.class.getName());
 
 	/**
@@ -87,7 +90,6 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
-			System.out.println("W Using logger: " + logger);
 			if (logging) {
 				logger.info("Entering: {0} {1} from {2}", IBMWebsphereAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
@@ -98,7 +100,6 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 			if (ed == null) {
 				ed = new EntryDefinition(IBMWebsphereAdvice.class);
 			}
-			ed.addProperty("Working", "true");
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (req != null) {
@@ -108,6 +109,23 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 					// }
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
+
+					try {
+						Method getAdminService = Class.forName("com.ibm.websphere.management.AdminServiceFactory")
+								.getMethod("getAdminService");
+						AdminService adminService = (AdminService) getAdminService.invoke(null);
+						String cellName = adminService.getCellName();
+						String nodeName = adminService.getNodeName();
+						String domainName = adminService.getDomainName();
+						ed.addPropertyIfExist("CELL", cellName);
+						ed.addPropertyIfExist("NODE", nodeName);
+						ed.addPropertyIfExist("DOMAIN", domainName);
+						((CallStack) stackThreadLocal.get()).setServer(cellName + "/" + nodeName + "/" + domainName);
+					} catch (Exception e) {
+						logger.error(e);
+						((CallStack) stackThreadLocal.get()).setServer(req.getLocalName());
+					}
+
 				} catch (Throwable t) {
 					logger.info("Some of req failed" + req);
 				}

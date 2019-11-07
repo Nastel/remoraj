@@ -28,7 +28,8 @@ public class SimpleTest extends BaseTransformers {
 	public static TaggedLogger logger;
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(SimpleTest.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)
+			.include(SimpleTest.class.getClassLoader())//
+			.include(RemoraConfig.INSTANCE.classLoader)//
 
 			.advice(methodMatcher(), "com.jkoolcloud.remora.advices.SimpleTest");
 

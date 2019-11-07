@@ -95,7 +95,6 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 			if (ed == null) {
 				ed = new EntryDefinition(JavaxHttpServlet.class);
 			}
-			ed.addProperty("Working", "true");
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
 			if (req != null && req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
@@ -159,6 +158,8 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 					}
 				} catch (Throwable t) {
 					logger.info("Failed getting some of properties" + req);
+					logger.error(t);
+
 				}
 
 			} else {

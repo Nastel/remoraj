@@ -42,7 +42,8 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSCreateConnectionAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader) //
+			.include(JMSCreateConnectionAdvice.class.getClassLoader())//
+			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice(methodMatcher(), JMSCreateConnectionAdvice.class.getName());
 
 	/**

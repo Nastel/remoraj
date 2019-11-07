@@ -131,7 +131,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 
 			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
-				Stack<EntryDefinition> definitions = new CallStack<EntryDefinition>(logger);
+				Stack<EntryDefinition> definitions = new CallStack<>(logger);
 				stackThreadLocal.set(definitions);
 				String correlator = new JUGFactoryImpl().newUUID();
 				entryDefinition.setCorrelator(correlator);

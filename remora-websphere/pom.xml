@@ -21,6 +21,9 @@
         <imb.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
         <ibm.webcontainer>${websphere.install.dir}\plugins\com.ibm.ws.webcontainer.jar</ibm.webcontainer>
         <ibm.rsaHelpers>${websphere.install.dir}\lib\rsahelpers.jar</ibm.rsaHelpers>
+        <ibm.adminService>
+            ${websphere.install.dir}\plugins\com.ibm.ws.admin.core.jar
+        </ibm.adminService>
     </properties>
 
     <dependencies>
@@ -67,6 +70,13 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${ibm.rsaHelpers}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>adminService</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${ibm.adminService}</systemPath>
         </dependency>
     </dependencies>
 

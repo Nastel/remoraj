@@ -9,6 +9,8 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	private String application;
 
+	private String server;
+
 	public CallStack(TaggedLogger logger) {
 		this.logger = logger;
 	}
@@ -17,6 +19,7 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 	public EntryDefinition push(EntryDefinition item) {
 		logger.info("Stack push: " + (size() + 1));
 		item.setApplication(application);
+		item.setServer(server);
 		return super.push(item);
 	}
 
@@ -32,8 +35,19 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	public void setApplication(String application) {
 		this.application = application;
-		for (int i = 0; i <= size(); i++) {
+		for (int i = 0; i < size(); i++) {
 			get(i).setApplication(application);
+		}
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+		for (int i = 0; i < size(); i++) {
+			get(i).setServer(server);
 		}
 	}
 }

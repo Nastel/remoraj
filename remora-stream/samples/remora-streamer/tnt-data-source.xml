@@ -6,7 +6,13 @@
     <java-object name="Null" class="com.jkoolcloud.tnt4j.streams.outputs.NullActivityOutput"/>
 
     <parser name="propertiesParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityMapParser">
-        <field name="all" locator="*"></field>
+        <field name="correlator" locator="HEADER_REMORA_CORR" locator-type="Label"/>
+        <field name="ID" locator="MESSAGE_ID" locator-type="Label">
+            <field-transform lang="groovy"><![CDATA[
+                $fieldValue != null && $fieldValue.startsWith("ID:") ? $fieldValue - "ID:" : null
+            ]]></field-transform>
+        </field>
+        <field name="all" locator="#"></field>
     </parser>
 
     <parser name="TokenParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser">
@@ -34,6 +40,8 @@
         <field name="Thread" locator="thread" locator-type="Label"/>
         <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
         <field name="Message" locator="StackTrace" locator-type="Label"/>
+        <field name="ServerName" locator="server" locator-type="Label"/>
+
         <embedded-activity name="properties" locator="properties" locator-type="Label">
             <parser-ref name="propertiesParser"></parser-ref>
         </embedded-activity>
@@ -42,7 +50,8 @@
     </parser>
 
     <stream name="ChronicleStream" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
-
+        <property name="BuildSourceFQNFromStreamedData" value="true"/>
+        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}"/>
         <property name="HaltIfNoParser" value="false"/>
         <property name="FileName" value="..\..\queue"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.EntryDefinition"/>

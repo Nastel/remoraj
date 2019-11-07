@@ -41,7 +41,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSReceiveAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader) //
+			.include(JMSReceiveAdvice.class.getClassLoader())//
+			.include(RemoraConfig.INSTANCE.classLoader) //
 			.advice(methodMatcher(), JMSReceiveAdvice.class.getName());
 
 	/**

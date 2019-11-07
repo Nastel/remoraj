@@ -12,6 +12,7 @@ import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -87,6 +88,9 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 					// }
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
+					if (((CallStack) stackThreadLocal.get()).getServer() == null) {
+						((CallStack) stackThreadLocal.get()).setServer(req.getLocalName());
+					}
 				} catch (Throwable t) {
 					logger.info("Some of req failed" + req);
 				}

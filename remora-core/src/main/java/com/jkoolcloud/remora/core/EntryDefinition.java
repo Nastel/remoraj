@@ -28,6 +28,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	String StackTrace;
 
 	String exceptionTrace;
+	String server;
 
 	public EntryDefinition(Class adviceClass) {
 		this.adviceClass = adviceClass.getSimpleName();
@@ -165,6 +166,14 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public void stop() {
 		mode = Mode.STOP;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}
+
+	public String getServer() {
+		return server;
 	}
 
 	public enum EventType {
