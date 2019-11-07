@@ -41,7 +41,6 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
 	 */
-
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
 		return named("service").and(takesArgument(0, named("javax.servlet.ServletRequest")))
 				.and(takesArgument(1, named("javax.servlet.ServletResponse")));
@@ -61,9 +60,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
 	 * @param startTime
 	 *            method startTime
-	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
@@ -107,8 +104,6 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed
@@ -116,13 +111,12 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 	 * @param startTime
 	 *            startTime passed along the method
 	 */
-
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
 			@Advice.Argument(0) ServletRequest req, //
-			@Advice.Argument(1) ServletResponse resp, // // @Advice.Return Object returnValue, // //TODO needs separate
-														// Advice capture for void type
+			@Advice.Argument(1) ServletResponse resp, //
+			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
@@ -151,7 +145,6 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 	/**
 	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
 	 */
-
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
 		return not(isInterface()).and(hasSuperType(named("javax.servlet.Servlet")));

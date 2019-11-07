@@ -73,7 +73,6 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
 	 * @param startTime
 	 *            method startTime
-	 *
 	 */
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
@@ -187,7 +186,6 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	 * @param startTime
 	 *            startTime passed along the method
 	 */
-
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //

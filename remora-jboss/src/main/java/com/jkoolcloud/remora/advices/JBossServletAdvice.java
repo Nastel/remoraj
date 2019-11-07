@@ -38,7 +38,6 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
 	 */
-
 	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
 		return named(INTERCEPTING_METHOD);
 	}
@@ -57,9 +56,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
 	 * @param startTime
 	 *            method startTime
-	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
@@ -102,7 +99,6 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * @param startTime
 	 *            startTime passed along the method
 	 */
-
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
@@ -136,7 +132,6 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 	/**
 	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
 	 */
-
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
 		return named(INTERCEPTING_CLASS[0]);

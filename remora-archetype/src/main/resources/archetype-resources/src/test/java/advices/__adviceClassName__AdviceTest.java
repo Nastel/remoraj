@@ -18,19 +18,19 @@ import java.lang.reflect.Method;
 //@SuppressStaticInitializationFor({""})
 public class ${adviceClassName}AdviceTest{
 
-    @Test
-    public void test${adviceClassName}Interceptor() throws NoSuchMethodException{
-            //PowerMockito.mockStatic(<<classToIntercept>>.class);
-            //WebApp webApp=mock(<<classToIntercept>>.class);
+	@Test
+	public void test${adviceClassName}Interceptor() throws NoSuchMethodException{
+		//PowerMockito.mockStatic(<<classToIntercept>>.class);
+		//WebApp webApp=mock(<<classToIntercept>>.class);
 
-            EntryDefinition handleRequestEntry=new EntryDefinition(${adviceClassName}Advice.class);
+		EntryDefinition handleRequestEntry=new EntryDefinition(${adviceClassName}Advice.class);
 
-//            Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
+//		Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 
-            //test before method
-         //   ${adviceClassName}Advice.before();
+		//test before method
+//		${adviceClassName}Advice.before();
 
-            //test after method
-          //  ${adviceClassName}Advice.after();
-        }
+		//test after method
+//		${adviceClassName}Advice.after();
+	}
 }
