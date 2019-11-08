@@ -24,8 +24,8 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice {
-	public static final String ADVICE_NAME = "IBMWebsphereAdvice";
+public class WASAdvice extends BaseTransformers implements RemoraAdvice {
+	public static final String ADVICE_NAME = "WASAdvice";
 	public static String[] INTERCEPTING_CLASS = { "com.ibm.ws.webcontainer.webapp.WebApp",
 			"com.ibm.ws.webcontainer.servlet.ServletWrapper" };
 	public static String INTERCEPTING_METHOD = "handleRequest";
@@ -44,9 +44,9 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(IBMWebsphereAdvice.class.getClassLoader())//
+			.include(WASAdvice.class.getClassLoader())//
 			.include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), IBMWebsphereAdvice.class.getName());
+			.advice(methodMatcher(), WASAdvice.class.getName());
 
 	/**
 	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
@@ -91,14 +91,14 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 	{
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", IBMWebsphereAdvice.class.getSimpleName(), "before",
+				logger.info("Entering: {0} {1} from {2}", WASAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(IBMWebsphereAdvice.class, logger)) {
+			if (isChainedClassInterception(WASAdvice.class, logger)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
-				ed = new EntryDefinition(IBMWebsphereAdvice.class);
+				ed = new EntryDefinition(WASAdvice.class);
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
@@ -173,7 +173,7 @@ public class IBMWebsphereAdvice extends BaseTransformers implements RemoraAdvice
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", IBMWebsphereAdvice.class.getName(), "after"));
+				logger.info(format("Exiting: {0} {1}", WASAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
 			ed.addProperty("RespContext", resp.getContentType());

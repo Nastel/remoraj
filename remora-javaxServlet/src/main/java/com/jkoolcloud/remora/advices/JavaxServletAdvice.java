@@ -29,7 +29,7 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
+public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice {
 	public static final String ADVICE_NAME = "JavaxHttpServlet";
 	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
 	public static String INTERCEPTING_METHOD = "service";
@@ -38,9 +38,9 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	public static boolean logging = true;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JavaxHttpServlet.class.getClassLoader()) //
+			.include(JavaxServletAdvice.class.getClassLoader()) //
 			.include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), JavaxHttpServlet.class.getName());
+			.advice(methodMatcher(), JavaxServletAdvice.class.getName());
 	@RemoraConfig.Configurable
 	public static String cookiePrefix = "CKIE_";
 	@RemoraConfig.Configurable
@@ -85,14 +85,14 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JavaxHttpServlet.class.getSimpleName(), "before",
+				logger.info("Entering: {0} {1} from {2}", JavaxServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(JavaxHttpServlet.class, logger)) {
+			if (isChainedClassInterception(JavaxServletAdvice.class, logger)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
-				ed = new EntryDefinition(JavaxHttpServlet.class);
+				ed = new EntryDefinition(JavaxServletAdvice.class);
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 
@@ -207,7 +207,7 @@ public class JavaxHttpServlet extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JavaxHttpServlet.class.getName(), "after"));
+				logger.info(format("Exiting: {0} {1}", JavaxServletAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
 

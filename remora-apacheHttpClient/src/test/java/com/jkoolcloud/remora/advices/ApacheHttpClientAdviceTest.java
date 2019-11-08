@@ -24,7 +24,7 @@ public class ApacheHttpClientAdviceTest {
 
 		EntryDefinition handleRequestEntry = new EntryDefinition(ApacheHttpClientAdvice.class);
 
-		// Method method = Whitebox.getMethod(Object.class, "<<interceptingMethod>>");
+		// \ Method method = Whitebox.getMethod(Object.class, "<<interceptingMethod>>");
 
 		// test before method
 		// ApacheHttpClientAdvice.before();
