@@ -8,7 +8,7 @@
     <version>0.1-SNAPSHOT</version>
     <parent>
         <groupId>com.jkoolcloud.remora</groupId>
-        <artifactId>remora-parent</artifactId>
+        <artifactId>remora</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>servlet</artifactId>
-            <version>1</version>
+            <version>2.0.15.Final-redhat-00001</version>
             <scope>system</scope>
             <systemPath>${servlet.systemPath}</systemPath>
         </dependency>
