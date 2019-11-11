@@ -17,7 +17,7 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <imb.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
+        <ibm.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</ibm.runtimes>
         <ibm.thinclient>${websphere.install.dir}\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
     </properties>
 
@@ -33,7 +33,7 @@
             <artifactId>runtime</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${imb.runtimes}</systemPath>
+            <systemPath>${ibm.runtimes}</systemPath>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>

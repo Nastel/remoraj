@@ -18,12 +18,10 @@
 
     <properties>
         <ibm.thinclient>${websphere.install.dir}\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
-        <imb.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</imb.runtimes>
+        <ibm.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</ibm.runtimes>
         <ibm.webcontainer>${websphere.install.dir}\plugins\com.ibm.ws.webcontainer.jar</ibm.webcontainer>
         <ibm.rsaHelpers>${websphere.install.dir}\lib\rsahelpers.jar</ibm.rsaHelpers>
-        <ibm.adminService>
-            ${websphere.install.dir}\plugins\com.ibm.ws.admin.core.jar
-        </ibm.adminService>
+        <ibm.adminService>${websphere.install.dir}\plugins\com.ibm.ws.admin.core.jar</ibm.adminService>
     </properties>
 
     <dependencies>
@@ -38,7 +36,7 @@
             <artifactId>runtime</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${imb.runtimes}</systemPath>
+            <systemPath>${ibm.runtimes}</systemPath>
         </dependency>
 
         <dependency>
