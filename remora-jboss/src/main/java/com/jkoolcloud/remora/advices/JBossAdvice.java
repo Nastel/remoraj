@@ -180,7 +180,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, APM_BASE_PACKAGE);
 		}
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
+		// getTransform().with(getListener()).installOn(inst);
 
 	}
 }

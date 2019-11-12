@@ -218,6 +218,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				.or(nameStartsWith("java.lang")) //
 				.or(nameStartsWith("com.jkoolcloud.remora")) //
 				.or(nameStartsWith("net.bytebuddy")) //
+				.or(nameStartsWith("weblogic.jdbc")) //
 				.or(getFromConfig());
 	}
 
@@ -228,6 +229,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 		for (String ignore : ignores) {
 			ad = ad.or(nameStartsWith(ignore));
+			System.out.println("Will ignore classes " + ignore);
 		}
 		return ad;
 	}
