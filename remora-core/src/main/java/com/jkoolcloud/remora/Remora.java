@@ -22,9 +22,6 @@ public class Remora {
 
 	public static TaggedLogger logger;
 
-	public static final int LOG_FILE_SIZE = 1024;
-	public static final int LOG_COUNT = 1;
-
 	public static final boolean DEBUG_BOOT_LOADER = true;
 	public static final String MODULES_DIR = "/modules";
 	public static final String REMORA_PATH = "remora.path";

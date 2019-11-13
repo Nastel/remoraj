@@ -17,7 +17,6 @@ import org.tinylog.TaggedLogger;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.JUGFactoryImpl;
 import com.jkoolcloud.remora.core.output.OutputManager;
 
 import net.bytebuddy.ByteBuddy;
@@ -133,15 +132,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
 				Stack<EntryDefinition> definitions = new CallStack<>(logger);
 				stackThreadLocal.set(definitions);
-				String correlator = new JUGFactoryImpl().newUUID();
-				entryDefinition.setCorrelator(correlator);
-				if (logger != null) {
-					logger.info(format("#New stack correlator {0}", correlator));
-				}
 			}
 
 			stackThreadLocal.get().push(entryDefinition);
-			entryDefinition.setCorrelator(stackThreadLocal.get().get(0).getCorrelator());
 			entryDefinition.setThread(Thread.currentThread().toString());
 			entryDefinition.setStartTime(System.currentTimeMillis());
 			entryDefinition.setStackTrace(getStackTrace());
@@ -218,7 +211,6 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				.or(nameStartsWith("java.lang")) //
 				.or(nameStartsWith("com.jkoolcloud.remora")) //
 				.or(nameStartsWith("net.bytebuddy")) //
-				.or(nameStartsWith("weblogic.jdbc")) //
 				.or(getFromConfig());
 	}
 

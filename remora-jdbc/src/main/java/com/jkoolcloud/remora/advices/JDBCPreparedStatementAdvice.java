@@ -18,7 +18,7 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-@TranparentAdvice
+@TransparentAdvice
 public class JDBCPreparedStatementAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "JDBCPreparedStatementAdvice";

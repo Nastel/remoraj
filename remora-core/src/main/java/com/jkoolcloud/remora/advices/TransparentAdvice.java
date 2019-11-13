@@ -5,5 +5,5 @@ package com.jkoolcloud.remora.advices;
  * one from stack and add the required parameters
  */
 
-public @interface TranparentAdvice {
+public @interface TransparentAdvice {
 }
