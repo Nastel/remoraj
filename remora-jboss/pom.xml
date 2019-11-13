@@ -3,37 +3,34 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.jkoolcloud.remora</groupId>
-    <artifactId>remora-jboss</artifactId>
-    <version>0.1-SNAPSHOT</version>
     <parent>
         <groupId>com.jkoolcloud.remora</groupId>
         <artifactId>remora</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
+    <packaging>jar</packaging>
+
+    <artifactId>remora-jboss</artifactId>
 
     <name>remora-jboss</name>
     <description>A simple remora-jboss.</description>
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <servlet.systemPath>c:/EAP-7.2.0/modules/system/layers/base/io/undertow/servlet/main/undertow-servlet-2.0.15.Final-redhat-00001.jar
-        </servlet.systemPath>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>Redhat-GA</id>
+            <url>https://maven.repository.redhat.com/ga/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
             <groupId>com.jkoolcloud.remora</groupId>
             <artifactId>remora-core</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <!--<exclusions>-->
-            <!--<exclusion>-->
-            <!--<groupId>*</groupId>-->
-            <!--<artifactId>*</artifactId>-->
-            <!--</exclusion>-->
-            <!--</exclusions>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>c:\workspace\remoraj\remora-core\target\remora.jar</systemPath>-->
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -44,10 +41,15 @@
 
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>servlet</artifactId>
+            <artifactId>undertow-servlet</artifactId>
             <version>2.0.15.Final-redhat-00001</version>
-            <scope>system</scope>
-            <systemPath>${servlet.systemPath}</systemPath>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.spec.javax.servlet</groupId>
+                    <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
