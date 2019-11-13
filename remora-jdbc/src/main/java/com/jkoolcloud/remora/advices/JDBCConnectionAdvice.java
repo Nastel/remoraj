@@ -75,7 +75,7 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
-			@Advice.AllArguments Object[] arguments, //
+			@Advice.Argument(0) String sql, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
@@ -88,6 +88,8 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 						thiz.getClass().getName());
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			ed.addPropertyIfExist("SQL", sql);
+
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		}

@@ -87,6 +87,9 @@ public class JDBCPreparedStatementAdvice extends BaseTransformers implements Rem
 				logger.info("Entering: {0} {1} from {2}", JDBCPreparedStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
+			if (isChainedClassInterception(JDBCPreparedStatementAdvice.class, logger)) {
+				return;
+			}
 			if (stackThreadLocal != null && stackThreadLocal.get() != null) {
 				ed = stackThreadLocal.get().peek();
 

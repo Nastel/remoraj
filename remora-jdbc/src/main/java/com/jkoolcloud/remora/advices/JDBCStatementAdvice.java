@@ -94,8 +94,17 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 			ed.addPropertyIfExist("SQL", sql);
 
+			if (sql.toUpperCase().startsWith("SELECT")) {
+				ed.setEventType(EntryDefinition.EventType.RECEIVE);
+			}
+
+			if (sql.toUpperCase().startsWith("UPDATE") || sql.toUpperCase().startsWith("INSERT")) {
+				ed.setEventType(EntryDefinition.EventType.SEND);
+			}
+
 			try {
-				String resource = getFieldValue(thiz, String.class, "connection.myURL", "jndiName");
+				String resource = getFieldValue(thiz, String.class, "connection.myURL", "wrappedConn.mc.myURL",
+						"jndiName");
 				ed.setResource(resource, EntryDefinition.ResourceType.DATACENTER);
 				ed.addPropertyIfExist("RESOURCE", resource);
 				logger.info("Adding resource reflection {0}", resource);
