@@ -21,8 +21,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 @TransparentAdvice
 public class JDBCCallableStatementAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "JDBCCallableStatementAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.sql.CallableStatement" };
+	public static final String ADVICE_NAME = "JDBCStatementParamsAdvice";
+	public static String[] INTERCEPTING_CLASS = { "java.sql.Statement" };
 	public static String INTERCEPTING_METHOD = "set*";
 
 	@RemoraConfig.Configurable
@@ -35,7 +35,8 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return nameStartsWith("set").and(takesArgument(0, String.class)).and(takesArguments(2)).and(isPublic());
+		return nameStartsWith("set").and(takesArgument(0, String.class).or(takesArgument(0, int.class)))
+				.and(takesArguments(2)).and(isPublic());
 	}
 
 	/**
@@ -76,7 +77,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Statement thiz, //
-			@Advice.Argument(0) String parameterName, //
+			@Advice.Argument(0) Object parameterName, //
 			@Advice.Argument(1) Object parameterValue, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
@@ -89,7 +90,11 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			if (stackThreadLocal != null && stackThreadLocal.get() != null && parameterName != null) {
 				ed = stackThreadLocal.get().peek();
 
-				ed.addPropertyIfExist(parameterName, parameterValue.toString());
+				if (parameterName instanceof String) {
+					ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
+				} else {
+					ed.addPropertyIfExist("PARAM_" + String.valueOf(parameterName), parameterValue.toString());
+				}
 			}
 
 		} catch (Throwable t) {
