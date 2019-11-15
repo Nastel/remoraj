@@ -1,13 +1,10 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-package ${package}.advices;
+package com.jkoolcloud.remora.advices;
 
-import net.bytebuddy.asm.Advice;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
@@ -16,16 +13,14 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.NamedElement;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import net.bytebuddy.description.method.MethodDescription;
 
+public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 
-public class ${adviceClassName}Advice extends BaseTransformers implements RemoraAdvice {
-
-	public static final String ADVICE_NAME = "${adviceClassName}Advice";
-	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
+	public static final String ADVICE_NAME = "WebsocketReceiveAdvice";
+	public static String[] INTERCEPTING_CLASS = { "javax.websocket.MessageHandler" };
 	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
 	@RemoraConfig.Configurable
@@ -33,12 +28,12 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static TaggedLogger logger;
 
 	/**
-	 * Method matcher intended to match intercepted class method/s to
-	 * instrument. See (@ElementMatcher) for available method matches.
+	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+	 * method matches.
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD);
+		return (nameStartsWith("onMessage").and(takesArgument(0, String.class)));
 	}
 
 	/**
@@ -47,7 +42,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
+		return hasSuperType(nameStartsWith(INTERCEPTING_CLASS[0]).and(not(isInterface())));
 	}
 
 	@Override
@@ -56,10 +51,8 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-		.include(${adviceClassName}Advice.class.getClassLoader())
-        .include(RemoraConfig.INSTANCE.classLoader)//
-		.advice(methodMatcher(), ${adviceClassName}Advice.class.getName());
-
+			.include(WebsocketReceiveAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), WebsocketReceiveAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -80,18 +73,23 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
-			@Advice.AllArguments Object[] arguments, //
+			@Advice.Argument(0) String message, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			if (ed == null) {
-				ed = new EntryDefinition(${adviceClassName}Advice.class);
+				ed = new EntryDefinition(WebsocketReceiveAdvice.class);
 			}
 			if (logging) {
-				logger.info(format("Entering: {0} {1}",${adviceClassName}Advice.class.getName(), "before"));
+				logger.info(format("Entering: {0} {1}", WebsocketReceiveAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			ed.setEventType(EntryDefinition.EventType.RECEIVE);
+			String correlator = WebsocketSessionAdvice.sessionHandlers.get(thiz);
+			ed.setCorrelator(correlator);
+			ed.addPropertyIfExist("SESSION", correlator);
+
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		}
@@ -108,8 +106,10 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
-	 * @param ed    {@link EntryDefinition} passed along the method (from before method)
-	 * @param startTime startTime passed along the method
+	 * @param ed
+	 *            {@link EntryDefinition} passed along the method (from before method)
+	 * @param startTime
+	 *            startTime passed along the method
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
@@ -129,7 +129,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}",${adviceClassName}Advice.class.getName(), "after"));
+				logger.info(format("Exiting: {0} {1}", WebsocketReceiveAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logger);
 		} catch (Throwable t) {

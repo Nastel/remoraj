@@ -3,8 +3,6 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.none;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -102,11 +100,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, Throwable exception,
 			TaggedLogger logger) {
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(stringWriter);
-		exception.printStackTrace(printWriter);
-		entryDefinition.setException(exception.getMessage());
-		entryDefinition.setExceptionTrace(stringWriter.toString());
+		entryDefinition.setException(exception);
 
 		if (logger != null) {
 			logger.info(
