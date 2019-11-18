@@ -6,7 +6,11 @@
     <java-object name="Null" class="com.jkoolcloud.tnt4j.streams.outputs.NullActivityOutput"/>
 
     <parser name="propertiesParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityMapParser">
-        <field name="correlator" locator="HEADER_REMORA_CORR" locator-type="Label"/>
+        <field name="correlator">
+            <field-locator locator="HEADER_REMORA_CORR" locator-type="Label"/>
+            <field-locator locator="SESSION" locator-type="Label"/>
+
+        </field>
         <field name="ID" locator="MESSAGE_ID" locator-type="Label">
             <field-transform lang="groovy"><![CDATA[
                 $fieldValue != null && $fieldValue.startsWith("ID:") ? $fieldValue - "ID:" : null

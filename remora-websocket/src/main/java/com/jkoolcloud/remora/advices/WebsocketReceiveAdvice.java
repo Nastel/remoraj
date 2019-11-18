@@ -4,11 +4,17 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.websocket.Session;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -33,7 +39,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return (nameStartsWith("onMessage").and(takesArgument(0, String.class)));
+		return (nameStartsWith("onMessage"));
 	}
 
 	/**
@@ -42,7 +48,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(nameStartsWith(INTERCEPTING_CLASS[0]).and(not(isInterface())));
+		return hasSuperType(nameStartsWith(INTERCEPTING_CLASS[0])).and(not(isInterface()));
 	}
 
 	@Override
@@ -73,7 +79,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
-			@Advice.Argument(0) String message, //
+			@Advice.Argument(0) Object message, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
@@ -86,9 +92,35 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
-			String correlator = WebsocketSessionAdvice.sessionHandlers.get(thiz);
-			ed.setCorrelator(correlator);
-			ed.addPropertyIfExist("SESSION", correlator);
+			Session session = WebsocketSessionAdvice.sessionHandlers.get(thiz);
+			if (session != null) {
+				String correlator = session.getId();
+				URI requestURI = session.getRequestURI();
+				ed.setResource(requestURI.toASCIIString(), EntryDefinition.ResourceType.NETADDR);
+				ed.setCorrelator(correlator);
+				ed.addPropertyIfExist("SESSION", correlator);
+
+				Pattern compile = Pattern.compile("\\/(.\\w*)\\/");
+				Matcher matcher = compile.matcher(requestURI.toASCIIString());
+				String application = null;
+				CallStack<EntryDefinition> stack = (CallStack) stackThreadLocal.get();
+				String server = null;
+				try {
+					server = session.getUserProperties().get("javax.websocket.endpoint.remoteAddress").toString();
+					stack.setServer(server);
+				} catch (NullPointerException e) {
+
+				}
+				if (matcher.find()) {
+					application = matcher.group(0);
+					stack.setApplication(application);
+				}
+
+				if (logging) {
+					logger.info("Attached correlator {0}, server {1}, application {2}", correlator, server,
+							application);
+				}
+			}
 
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
