@@ -1,7 +1,6 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
-import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -25,7 +24,7 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.NamedElement;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
@@ -54,8 +53,18 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
 	 */
-	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return nameStartsWith(INTERCEPTING_METHOD);
+	public static ElementMatcher<? super MethodDescription> methodMatcher() {
+		return named("service").and(takesArgument(0, named("javax.servlet.ServletRequest")))
+				.and(takesArgument(1, named("javax.servlet.ServletResponse")));
+
+	}
+
+	/**
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
+	 */
+	@Override
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return not(isInterface()).and(hasSuperType(named("javax.servlet.Servlet")));
 	}
 
 	/**
@@ -220,14 +229,6 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			}
 		}
 
-	}
-
-	/**
-	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
-	 */
-	@Override
-	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return named(INTERCEPTING_CLASS[0]);
 	}
 
 	@Override

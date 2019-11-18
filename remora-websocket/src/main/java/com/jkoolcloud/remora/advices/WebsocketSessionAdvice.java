@@ -4,7 +4,11 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.websocket.MessageHandler;
+import javax.websocket.Session;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -19,11 +23,13 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
 @TransparentAdvice
-public class JDBCCallableStatementAdvice extends BaseTransformers implements RemoraAdvice {
+public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "JDBCStatementParamsAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.sql.Statement" };
-	public static String INTERCEPTING_METHOD = "set*";
+	public static final String ADVICE_NAME = "WebsocketSessionAdvice";
+	public static String[] INTERCEPTING_CLASS = { "javax.websocket.Session" };
+	public static String INTERCEPTING_METHOD = "addMessageHandler";
+
+	public static Map<MessageHandler, String> sessionHandlers = new HashMap<>();
 
 	@RemoraConfig.Configurable
 	public static boolean logging = true;
@@ -35,8 +41,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return nameStartsWith("set").and(takesArgument(0, String.class).or(takesArgument(0, int.class)))
-				.and(takesArguments(2)).and(isPublic());
+		return named("addMessageHandler");
 	}
 
 	/**
@@ -45,7 +50,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return not(isInterface()).and(hasSuperType(named(INTERCEPTING_CLASS[0])));
+		return hasSuperType(nameStartsWith(INTERCEPTING_CLASS[0])).and(not(isInterface()));
 	}
 
 	@Override
@@ -54,17 +59,14 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JDBCCallableStatementAdvice.class.getClassLoader())//
-			.include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), JDBCCallableStatementAdvice.class.getName());
+			.include(WebsocketSessionAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), WebsocketSessionAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
 	 *
 	 * @param thiz
-	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
+	 *            reference to method object*
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -76,27 +78,22 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This Statement thiz, //
-			@Advice.Argument(0) Object parameterName, //
-			@Advice.Argument(1) Object parameterValue, //
+	public static void before(@Advice.This Session thiz, //
+			@Advice.Argument(0) Object arg1handler, //
+			@Advice.Argument(0) Object arg2Handler, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JDBCCallableStatementAdvice.class.getName(), "before",
-						thiz.getClass().getName());
+			MessageHandler handler = null;
+			if (arg1handler instanceof MessageHandler) {
+				handler = (MessageHandler) arg1handler;
 			}
-			if (stackThreadLocal != null && stackThreadLocal.get() != null && parameterName != null) {
-				ed = stackThreadLocal.get().peek();
-
-				if (parameterName instanceof String) {
-					ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
-				} else {
-					ed.addPropertyIfExist("PARAM_" + String.valueOf(parameterName), parameterValue.toString());
-				}
+			if (arg2Handler instanceof MessageHandler) {
+				handler = (MessageHandler) arg2Handler;
 			}
-
+			logger.info("Found new Handler {0} - session {1}", handler, thiz);
+			sessionHandlers.put(handler, thiz.getId());
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logger);
 		}
@@ -109,22 +106,11 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
-	 * @param exception
-	 *            exception thrown in method exit (not caught)
-	 * @param ed
-	 *            {@link EntryDefinition} passed along the method (from before method)
-	 * @param startTime
-	 *            startTime passed along the method
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This Statement thiz, //
-			@Advice.Origin Method method, //
-			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long startTime) {
+	public static void after(@Advice.This Object obj, //
+			@Advice.Origin Method method) {
 
 	}
 
@@ -143,4 +129,5 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	public String getName() {
 		return ADVICE_NAME;
 	}
+
 }

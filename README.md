@@ -1,11 +1,11 @@
 
 # RemoraJ
 
-RemoraJ is a java application monitoring tool. RemoraJ monitors your application performance by tracking common application building blocks and services services like HTTP, JMS, JDBC requests. RemoraJ consists of tw0 parts: java agent running within application's JVM and tnt4j-streams which is an external agent that fordwards java traces to an central analytics platforms such as https://jkoolcloud.com. These traces are send using JSON over HTTPS.
+RemoraJ is a java application monitoring tool. RemoraJ monitors your application performance by tracking common application building blocks and services services like HTTP, JMS, JDBC requests. RemoraJ consists of tw0 parts: java agent running within application's JVM and tnt4j-streams which is an external agent that fordwards java traces to an central analytics platforms such as https://www.jkoolcloud.com/. These traces are send using JSON over HTTPS.
 
 # Installing
 
-You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and token in https://jkoolcloud.com.  
+You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and token in https://www.jkoolcloud.com/.  
 
 ## Java agent 
 ## Using -javaagent option

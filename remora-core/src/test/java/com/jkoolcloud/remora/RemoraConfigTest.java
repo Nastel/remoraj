@@ -87,7 +87,7 @@ public class RemoraConfigTest {
 	public void configTestHappyPathSuperClass() throws IOException {
 		Properties properties = new Properties() {
 			{
-				put(TestForListConfigrableSuperClass.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
+				put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
 			}
 		};
 		prepareConfigFile(properties);

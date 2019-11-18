@@ -11,8 +11,11 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	private String server;
 
+	private String stackCorrelator;
+
 	public CallStack(TaggedLogger logger) {
 		this.logger = logger;
+		stackCorrelator = new JUGFactoryImpl().newUUID();
 	}
 
 	@Override
@@ -20,6 +23,8 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 		logger.info("Stack push: " + (size() + 1));
 		item.setApplication(application);
 		item.setServer(server);
+		item.setCorrelator(stackCorrelator);
+
 		return super.push(item);
 	}
 
