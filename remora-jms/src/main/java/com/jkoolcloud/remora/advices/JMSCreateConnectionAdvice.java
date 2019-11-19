@@ -29,7 +29,9 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	public static String INTERCEPTING_METHOD = "createConnection";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -91,7 +93,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 						thiz.getClass().getName());
 			}
 
-			if (isChainedClassInterception(JMSCreateConnectionAdvice.class, logger)) {
+			if (isChainedClassInterception(JMSCreateConnectionAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
 
@@ -100,7 +102,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			}
 			ed.setEventType(EntryDefinition.EventType.OPEN);
 
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			Properties fieldValue = getFieldValue(thiz, Properties.class, "factory.properties");
 			if (fieldValue != null) {
@@ -153,9 +155,9 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", JMSCreateConnectionAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();

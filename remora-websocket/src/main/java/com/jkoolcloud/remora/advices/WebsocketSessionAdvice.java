@@ -32,7 +32,9 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	public static Map<MessageHandler, Session> sessionHandlers = new HashMap<>();
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -94,7 +96,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			logger.info("Found new Handler {0} - session {1}", handler, thiz);
 			sessionHandlers.put(handler, thiz);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -121,7 +123,11 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	@Override
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(instrumentation);
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {0} not enabled", getName());
+		}
 	}
 
 	@Override

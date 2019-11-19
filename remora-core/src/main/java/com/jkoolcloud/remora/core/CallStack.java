@@ -20,7 +20,9 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
-		logger.info("Stack push: " + (size() + 1));
+		if (logger != null) {
+			logger.info("Stack push: " + (size() + 1));
+		}
 		item.setApplication(application);
 		item.setServer(server);
 		item.setCorrelator(stackCorrelator);
@@ -30,7 +32,9 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	@Override
 	public synchronized EntryDefinition pop() {
-		logger.info("Stack pop: " + (size() - 1));
+		if (logger != null) {
+			logger.info("Stack pop: " + (size() - 1));
+		}
 		return super.pop();
 	}
 

@@ -29,7 +29,9 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "execute";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -96,7 +98,9 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 				}
 				try {
 					Object httpServer = ReflectionUtils.getFieldValue(thiz, Object.class, "context.httpServer");
-					Logger.info("Setting server {0}", httpServer);
+					if (logging) {
+						logger.info("Setting server {0}", httpServer);
+					}
 					((CallStack) stack).setServer(httpServer.toString());
 				} catch (Exception e) {
 					logger.info(e);
@@ -105,7 +109,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -145,9 +149,9 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", WebLogicAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();

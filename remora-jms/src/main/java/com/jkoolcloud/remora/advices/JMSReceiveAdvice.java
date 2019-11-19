@@ -28,7 +28,9 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "receive";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -92,7 +94,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			if (ed == null) {
 				ed = new EntryDefinition(JMSSendAdvice.class);
 			}
-			if (isChainedClassInterception(JMSReceiveAdvice.class, logger)) {
+			if (isChainedClassInterception(JMSReceiveAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
 
@@ -102,7 +104,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (thiz instanceof QueueReceiver) {
 				String queueName = ((QueueReceiver) thiz).getQueue().getQueueName();
@@ -111,7 +113,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -161,9 +163,9 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 				ed.addPropertyIfExist("TYPE", message.getJMSType());
 
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinnaly) {
 				doFinally();

@@ -34,7 +34,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	public static String INTERCEPTING_METHOD = "service";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JavaxServletAdvice.class.getClassLoader()) //
@@ -97,13 +99,13 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 				logger.info("Entering: {0} {1} from {2}", JavaxServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(JavaxServletAdvice.class, logger)) {
+			if (isChainedClassInterception(JavaxServletAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(JavaxServletAdvice.class);
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null && req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
 				try {
@@ -125,7 +127,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 					if (stackThreadLocal != null && stackThreadLocal.get() != null
 							&& stackThreadLocal.get() instanceof CallStack) {
-						Pattern compile = Pattern.compile("\\/(.\\w*)\\/");
+						Pattern compile = Pattern.compile("\\/.[^/]*\\/");
 						Matcher matcher = compile.matcher(requestURI);
 						if (matcher.find()) {
 							((CallStack) stackThreadLocal.get()).setApplication(matcher.group(0));
@@ -175,7 +177,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -218,11 +220,11 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", JavaxServletAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();

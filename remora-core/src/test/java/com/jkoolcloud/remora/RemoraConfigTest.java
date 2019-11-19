@@ -26,6 +26,8 @@ public class RemoraConfigTest {
 	public static class TestForListConfigrable {
 		@RemoraConfig.Configurable
 		List testField;
+		@RemoraConfig.Configurable
+		static boolean logging;
 	}
 
 	public static class TestForBooleanConfigrable {
@@ -88,6 +90,7 @@ public class RemoraConfigTest {
 		Properties properties = new Properties() {
 			{
 				put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
+				put(TestForListConfigrableSuperClass.class.getName() + "." + "logging", "false");
 			}
 		};
 		prepareConfigFile(properties);
@@ -96,6 +99,7 @@ public class RemoraConfigTest {
 		RemoraConfig.INSTANCE.configure(test);
 		cleanup();
 		assertNotNull("Configurring field failed", test.testField);
+		assertNotNull("Logging field failed", TestForListConfigrable.logging);
 		assertEquals("Not all of expected list values parsed", 3, test.testField.size());
 	}
 

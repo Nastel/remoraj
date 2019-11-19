@@ -30,7 +30,9 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 	public static String INTERCEPTING_METHOD = "send";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -90,7 +92,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", WebsocketSendAdvice.class.getName(), "before"));
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			Session session = WebsocketSessionAdvice.sessionHandlers.get(thiz);
 			if (session != null) {
@@ -109,7 +111,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 
 				}
 
-				Pattern compile = Pattern.compile("\\/(.\\w*)\\/");
+				Pattern compile = Pattern.compile("\\/.[^/]*\\/");
 				Matcher matcher = compile.matcher(requestURI.toASCIIString());
 				String application = null;
 				if (matcher.find()) {
@@ -121,9 +123,11 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 					logger.info("Attached correlator {0}, server {1}, application {2}", correlator, server,
 							application);
 				}
+			} else {
+				logger.info("No session found");
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -163,9 +167,9 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", WebsocketSendAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();
@@ -182,7 +186,11 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 	@Override
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(instrumentation);
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {0} not enabled", getName());
+		}
 	}
 
 	@Override

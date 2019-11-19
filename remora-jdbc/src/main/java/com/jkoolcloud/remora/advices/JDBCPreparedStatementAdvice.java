@@ -29,7 +29,9 @@ public class JDBCPreparedStatementAdvice extends BaseTransformers implements Rem
 	@RemoraConfig.Configurable
 	public static final String parameterPrefix = "PARAM_";
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -87,7 +89,7 @@ public class JDBCPreparedStatementAdvice extends BaseTransformers implements Rem
 				logger.info("Entering: {0} {1} from {2}", JDBCPreparedStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(JDBCPreparedStatementAdvice.class, logger)) {
+			if (isChainedClassInterception(JDBCPreparedStatementAdvice.class, logging ? logger : null)) {
 				return;
 			}
 			if (stackThreadLocal != null && stackThreadLocal.get() != null) {
@@ -97,7 +99,7 @@ public class JDBCPreparedStatementAdvice extends BaseTransformers implements Rem
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -135,7 +137,11 @@ public class JDBCPreparedStatementAdvice extends BaseTransformers implements Rem
 	@Override
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(instrumentation);
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {0} not enabled", getName());
+		}
 	}
 
 	@Override

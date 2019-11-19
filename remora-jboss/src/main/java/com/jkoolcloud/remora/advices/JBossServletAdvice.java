@@ -27,7 +27,9 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 	public static String INTERCEPTING_METHOD = "handleRequest";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JBossServletAdvice.class.getClassLoader())//
@@ -71,7 +73,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 				logger.info("Entering: {0} {1} from {2}", JBossServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			// Class find issues
 			// if (arguments !=null && arguments.length > 0 &&
@@ -79,7 +81,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 			// ed.addPropertyIfExist("RESOURCE", arguments[0].toString());
 			// }
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -118,9 +120,9 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", JBossServletAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();
