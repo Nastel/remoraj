@@ -24,7 +24,9 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 	public static String INTERCEPTING_METHOD = "prepare";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -87,11 +89,11 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 				logger.info("Entering: {0} {1} from {2}", JDBCConnectionAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addPropertyIfExist("SQL", sql);
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -131,9 +133,9 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			if (logging) {
 				logger.info("Exiting: {0} {1}", JDBCConnectionAdvice.class.getName(), "after");
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();
@@ -150,7 +152,11 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 	@Override
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(instrumentation);
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {0} not enabled", getName());
+		}
 	}
 
 	@Override

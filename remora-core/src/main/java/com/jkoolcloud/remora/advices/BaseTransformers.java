@@ -33,6 +33,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	private static final String ADVICE_NAME = "GENERAL";
 	@RemoraConfig.Configurable
 	public static List<String> ignores;
+	@RemoraConfig.Configurable
+	public static boolean sendStackTrace;
 
 	public static ThreadLocal<Stack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 
@@ -114,13 +116,17 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
-				logger.info("This not filled");
+				if (logger != null) {
+					logger.info("This not filled");
+				}
 			}
 
 			if (method != null) {
 				entryDefinition.setName(method.getName());
 			} else {
-				logger.info("#Method not filled");
+				if (logger != null) {
+					logger.info("#Method not filled");
+				}
 			}
 
 			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
@@ -131,7 +137,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			stackThreadLocal.get().push(entryDefinition);
 			entryDefinition.setThread(Thread.currentThread().toString());
 			entryDefinition.setStartTime(System.currentTimeMillis());
-			entryDefinition.setStackTrace(getStackTrace());
+			if (sendStackTrace) {
+				entryDefinition.setStackTrace(getStackTrace());
+			}
 			OutputManager.INSTANCE.send(entryDefinition);
 		} catch (Throwable t) {
 			if (logger != null) {
@@ -148,7 +156,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Stack length: ");
 		sb.append(stackTrace.length);
-		sb.append("\n");
+		sb.append("\n ");
 		for (StackTraceElement element : stackTrace) {
 			i++;
 			if (i >= MAX_ELEMENTS) {
@@ -159,7 +167,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			sb.append(".");
 			sb.append(element.getMethodName());
 			sb.append("()");
-			sb.append("\n");
+			sb.append("\r\n\t ");
 
 		}
 		return sb.toString();

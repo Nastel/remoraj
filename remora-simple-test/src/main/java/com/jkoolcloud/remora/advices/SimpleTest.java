@@ -24,7 +24,9 @@ public class SimpleTest extends BaseTransformers {
 	public static String INTERCEPTING_METHOD = "instrumentedMethod";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
@@ -64,12 +66,12 @@ public class SimpleTest extends BaseTransformers {
 				logger.info("NEW entry def");
 			}
 
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addProperty("URI", uri.toString());
 			ed.addProperty("Arg", arguments.toString());
 
 		} catch (Throwable t) {
-			// handleAdviceException(t, ADVICE_NAME, logger);
+			// handleAdviceException(t, ADVICE_NAME, logging ? logger : null );
 		}
 	}
 
@@ -81,7 +83,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("starttime") long starttime) {
 		try {
 			System.out.println("###AFTER METHOD CALL");
-			// fillDefaultValuesAfter(ed, starttime, exception, logger);
+			// fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
 		} finally {
 			doFinally();
 		}

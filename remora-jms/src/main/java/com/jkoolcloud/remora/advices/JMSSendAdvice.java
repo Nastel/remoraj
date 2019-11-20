@@ -30,7 +30,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "send";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JMSSendAdvice.class.getClassLoader()) //
@@ -76,14 +78,14 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 				logger.info("Entering: {0} {1} from {2}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(JMSSendAdvice.class, logger)) {
+			if (isChainedClassInterception(JMSSendAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(JMSSendAdvice.class);
 			}
 			ed.setEventType(EntryDefinition.EventType.SEND);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (thiz instanceof QueueSender) {
 				String queueName = ((QueueSender) thiz).getQueue().getQueueName();
@@ -115,7 +117,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -125,7 +127,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("startTime") long starttime //
+			@Advice.Local("startTime") long startTime //
 	// @Advice.Local("remoraLogger") Logger logger//
 	) {
 		boolean doFinally = true;
@@ -142,9 +144,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", JMSSendAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, starttime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();

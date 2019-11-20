@@ -29,10 +29,12 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	public static String[] INTERCEPTING_CLASS = { "javax.websocket.Session" };
 	public static String INTERCEPTING_METHOD = "addMessageHandler";
 
-	public static Map<MessageHandler, String> sessionHandlers = new HashMap<>();
+	public static Map<MessageHandler, Session> sessionHandlers = new HashMap<>();
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -79,23 +81,22 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Session thiz, //
-			@Advice.Argument(0) Object arg1handler, //
-			@Advice.Argument(0) Object arg2Handler, //
+			@Advice.AllArguments Object[] args, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			MessageHandler handler = null;
-			if (arg1handler instanceof MessageHandler) {
-				handler = (MessageHandler) arg1handler;
+			if (args != null && args.length == 1 && args[0] instanceof MessageHandler) {
+				handler = (MessageHandler) args[0];
 			}
-			if (arg2Handler instanceof MessageHandler) {
-				handler = (MessageHandler) arg2Handler;
+			if (args != null && args.length == 2 && args[1] instanceof MessageHandler) {
+				handler = (MessageHandler) args[1];
 			}
 			logger.info("Found new Handler {0} - session {1}", handler, thiz);
-			sessionHandlers.put(handler, thiz.getId());
+			sessionHandlers.put(handler, thiz);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -122,7 +123,11 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	@Override
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(instrumentation);
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {0} not enabled", getName());
+		}
 	}
 
 	@Override

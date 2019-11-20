@@ -26,7 +26,9 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	public static String INTERCEPTING_METHOD = "execute";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -81,7 +83,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (isChainedClassInterception(JDBCStatementAdvice.class, logger)) {
+			if (isChainedClassInterception(JDBCStatementAdvice.class, logging ? logger : null)) {
 				return;
 			}
 			if (ed == null) {
@@ -91,7 +93,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 				logger.info("Entering: {0} {1} from {2}", JDBCStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addPropertyIfExist("SQL", sql);
 
 			if (sql.toUpperCase().startsWith("SELECT")) {
@@ -107,13 +109,17 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 						"jndiName");
 				ed.setResource(resource, EntryDefinition.ResourceType.DATACENTER);
 				ed.addPropertyIfExist("RESOURCE", resource);
-				logger.info("Adding resource reflection {0}", resource);
+				if (logging) {
+					logger.info("Adding resource reflection {0}", resource);
+				}
 			} catch (Exception e1) {
-				logger.info("Exception: {0}", e1);
+				if (logging) {
+					logger.info("Exception: {0}", e1);
+				}
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -153,10 +159,10 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			if (logging) {
 				logger.info("Exiting: {0} {1}", JDBCStatementAdvice.class.getName(), "after");
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();
@@ -173,7 +179,11 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	@Override
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(instrumentation);
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {0} not enabled", getName());
+		}
 	}
 
 	@Override

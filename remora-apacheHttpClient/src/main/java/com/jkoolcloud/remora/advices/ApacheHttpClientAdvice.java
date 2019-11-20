@@ -28,7 +28,9 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 	@RemoraConfig.Configurable
 	public static String headerCorrIDName = "REMORA_CORR";
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -86,7 +88,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (isChainedClassInterception(ApacheHttpClientAdvice.class, logger)) {
+			if (isChainedClassInterception(ApacheHttpClientAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
@@ -95,14 +97,14 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", ApacheHttpClientAdvice.class.getName(), "before"));
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addPropertyIfExist("URI", request.getURI().toString());
 			ed.addPropertyIfExist("HOST", route.getTargetHost().getHostName());
 			ed.setResource(request.getURI().toString(), EntryDefinition.ResourceType.NETADDR);
 
 			request.addHeader(headerCorrIDName, ed.getId());
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -143,9 +145,9 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", ApacheHttpClientAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();

@@ -31,7 +31,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "handleRequest";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean load = true;
+	@RemoraConfig.Configurable
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	/**
@@ -94,13 +96,13 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				logger.info("Entering: {0} {1} from {2}", WASAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(WASAdvice.class, logger)) {
+			if (isChainedClassInterception(WASAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
 			if (ed == null) {
 				ed = new EntryDefinition(WASAdvice.class);
 			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null) {
 				try {
@@ -148,7 +150,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -175,10 +177,10 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			if (logging) {
 				logger.info(format("Exiting: {0} {1}", WASAdvice.class.getName(), "after"));
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally();

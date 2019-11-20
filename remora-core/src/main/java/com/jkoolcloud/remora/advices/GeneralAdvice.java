@@ -18,7 +18,7 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	public static final String ADVICE_NAME = "GeneralAdvice";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = true;
+	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static {
 		logger = Logger.tag(ADVICE_NAME);
@@ -48,9 +48,9 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logger);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logger);
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
@@ -78,7 +78,7 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			fillDefaultValuesAfter(ed, startTime, exception, logger);
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} finally {
 			doFinally();
 		}
