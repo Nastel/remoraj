@@ -1,0 +1,2 @@
+com.jkoolcloud.remora.advices.KafkaConsumerAdvice
+com.jkoolcloud.remora.advices.KafkaProducerAdvice

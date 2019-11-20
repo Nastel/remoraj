@@ -2,7 +2,6 @@ package com.jkoolcloud.remora.core;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +71,7 @@ public class EntryDefinition extends AbstractMarshallable {
 		}
 	}
 
-	public void addPropertyIfExist(String key, Integer value) {
+	public void addPropertyIfExist(String key, Number value) {
 		if (value != null) {
 			addProperty(key, value.toString());
 		}
@@ -183,8 +182,8 @@ public class EntryDefinition extends AbstractMarshallable {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		exception.printStackTrace(printWriter);
-        setException(exception.getMessage());
-        setExceptionTrace(stringWriter.toString());
+		setException(exception.getMessage());
+		setExceptionTrace(stringWriter.toString());
 	}
 
 	public enum EventType {
