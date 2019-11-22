@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.record.Record;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
@@ -42,7 +41,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD).and(takesArgument(0, ProducerRecord.class));
+		return named(INTERCEPTING_METHOD)
+				.and(takesArgument(0, named("org.apache.kafka.clients.producer.ProducerRecord")));
 	}
 
 	/**
@@ -50,8 +50,6 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -77,8 +75,15 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			}
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
-			ed.setEventType(EntryDefinition.EventType.RECEIVE);
-
+			ed.setEventType(EntryDefinition.EventType.SEND);
+			String topic = record.topic();
+			ed.setApplication("KAFKA");
+			ed.addPropertyIfExist("TOPIC", topic);
+			ed.addPropertyIfExist("TIMESTAMP", record.timestamp());
+			ed.addPropertyIfExist("PARTITION", record.partition());
+			ed.addPropertyIfExist("KEY", String.valueOf(record.key()));
+			ed.addPropertyIfExist("VALUE", String.valueOf(record.value()));
+			ed.setResource(topic, EntryDefinition.ResourceType.QUEUE);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
@@ -103,9 +108,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	public static void after(@Advice.This KafkaProducer producer, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
-			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Return Record record, @Advice.Local("startTime") long startTime) {
+			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

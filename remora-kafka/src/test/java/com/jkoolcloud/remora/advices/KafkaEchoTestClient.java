@@ -19,7 +19,8 @@ public class KafkaEchoTestClient {
 
 	public static final String CONSUMMER_PROPERTIES = "../../../../consumer.properties";
 	public static final String PRODUCER_PROPERTIES = "../../../../producer.properties";
-	private static String topicName;
+	private static String receiveTopicName;
+	private static String sendTopicName;
 
 	public static void main(String[] args) throws Exception {
 		Consumer<String, String> consumer = initConsumer();
@@ -31,7 +32,7 @@ public class KafkaEchoTestClient {
 			while (iterator.hasNext()) {
 				ConsumerRecord<String, String> next = iterator.next();
 				System.out.println("Key " + next.key() + "Value " + next.value());
-				producer.send(new ProducerRecord<>(next.key(), "Echo" + next.value()));
+				producer.send(new ProducerRecord<>(sendTopicName, next.key(), "Echo" + next.value()));
 			}
 		}
 	}
@@ -39,11 +40,11 @@ public class KafkaEchoTestClient {
 	private static Consumer<String, String> initConsumer() throws Exception {
 		Properties props = new Properties();
 		props.load(new FileReader(KafkaEchoTestClient.class.getResource(CONSUMMER_PROPERTIES).getFile())); // NON-NLS
-		topicName = props.getProperty("test.app.topic.name", "tnt4j_streams_kafka_intercept_test_page_visits"); // NON-NLS
+		receiveTopicName = props.getProperty("test.app.topic.name", "tnt4j_streams_kafka_intercept_test_page_visits"); // NON-NLS
 		props.remove("test.app.topic.name");
 
 		Consumer<String, String> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Collections.singletonList(topicName));
+		consumer.subscribe(Collections.singletonList(receiveTopicName));
 
 		return consumer;
 	}
@@ -55,7 +56,8 @@ public class KafkaEchoTestClient {
 		Integer eventsToProduce = Integer.valueOf(props.getProperty("events.count"), 10);
 		props.remove("events.count");
 
-		topicName = props.getProperty("test.app.topic.name", "tnt4j_streams_kafka_intercept_test_page_visits"); // NON-NLS
+		sendTopicName = props.getProperty("test.app.topic.name", "tnt4j_streams_kafka_intercept_test_page_visits"); // NON-NLS
+
 		props.remove("test.app.topic.name");
 
 		Producer<String, String> producer = new KafkaProducer<>(props);
