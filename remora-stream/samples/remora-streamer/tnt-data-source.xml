@@ -16,7 +16,11 @@
                 $fieldValue != null && $fieldValue.startsWith("ID:") ? $fieldValue - "ID:" : null
             ]]></field-transform>
         </field>
-        <field name="all" locator="#"></field>
+        <field name="TIMESTAMP" datatype="Timestamp" units="Milliseconds">
+            <field-locator id="TNum" locator="TIMESTAMP" locator-type="Label" datatype="Number"/>
+        </field>
+
+        <field name="all" locator="#"/>
     </parser>
 
     <parser name="TokenParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser">
@@ -47,10 +51,17 @@
         <field name="ServerName" locator="server" locator-type="Label"/>
 
         <embedded-activity name="properties" locator="properties" locator-type="Label">
-            <parser-ref name="propertiesParser"></parser-ref>
+            <parser-ref name="propertiesParser"/>
         </embedded-activity>
         <field name="EventType" locator="eventType" locator-type="Label"/>
         <field name="MODE" locator="mode" locator-type="Label"/>
+        <field name="MessageAge" datatype="Number" value-type="age.usec">
+            <field-locator id="TimestampRAW" locator="TIMESTAMP" locator-type="Activity" datatype="AsInput">
+                <field-transform lang="groovy" phase="raw"><![CDATA[
+                    $fieldValue != null ? ${StartTime} - $fieldValue : null
+                ]]></field-transform>
+            </field-locator>
+        </field>
     </parser>
 
     <stream name="ChronicleStream" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">

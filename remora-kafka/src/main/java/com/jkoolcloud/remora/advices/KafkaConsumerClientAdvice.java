@@ -1,19 +1,18 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -21,11 +20,11 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvice {
+public class KafkaConsumerClientAdvice extends BaseTransformers {
 
-	public static final String ADVICE_NAME = "KafkaProducerAdvice";
-	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.producer.KafkaProducer" };
-	public static String INTERCEPTING_METHOD = "send";
+	public static final String ADVICE_NAME = "KafkaConsumerClientAdvice";
+	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.Consumer" };
+	public static String INTERCEPTING_METHOD = "poll";
 
 	@RemoraConfig.Configurable
 	public static boolean load = true;
@@ -33,8 +32,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(KafkaProducerAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), KafkaProducerAdvice.class.getName());
+			.include(KafkaConsumerClientAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), KafkaConsumerClientAdvice.class.getName());
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -42,8 +41,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD)
-				.and(takesArgument(0, named("org.apache.kafka.clients.producer.ProducerRecord")));
+		return named(INTERCEPTING_METHOD);
 	}
 
 	/**
@@ -62,30 +60,24 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This KafkaProducer thiz, //
-			@Advice.Argument(0) ProducerRecord record, //
+	public static void before(@Advice.This Consumer thiz, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			if (ed == null) {
-				ed = new EntryDefinition(KafkaProducerAdvice.class);
+				ed = new EntryDefinition(KafkaConsumerClientAdvice.class);
 			}
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", KafkaProducerAdvice.class.getName(), "before"));
+				logger.info(format("Entering: {0} {1}", KafkaConsumerClientAdvice.class.getName(), "before"));
 			}
-
+			ed.setTransparent();
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
-			ed.setEventType(EntryDefinition.EventType.SEND);
-			String topic = record.topic();
 
-			ed.setApplication(ReflectionUtils.getFieldValue(thiz, String.class, "clientId"));
-			ed.addPropertyIfExist("TOPIC", topic);
-			ed.addPropertyIfExist("TIMESTAMP", record.timestamp());
-			ed.addPropertyIfExist("PARTITION", record.partition());
-			ed.addPropertyIfExist("KEY", String.valueOf(record.key()));
-			ed.addPropertyIfExist("VALUE", String.valueOf(record.value()));
-			ed.setResource(topic, EntryDefinition.ResourceType.QUEUE);
+			ed.setEventType(EntryDefinition.EventType.CALL);
+			String clientId = getFieldValue(thiz, String.class, "clientId");
+			String groupId = getFieldValue(thiz, String.class, "groupId");
+			ed.setApplication(MessageFormat.format("clientId={}, groupId={}", clientId, groupId));
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
@@ -107,9 +99,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This KafkaProducer producer, //
+	public static void after(@Advice.This Consumer producer, //
 			@Advice.Origin Method method, //
-			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
@@ -122,7 +113,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", KafkaProducerAdvice.class.getName(), "after"));
+				logger.info(format("Exiting: {0} {1}", KafkaConsumerClientAdvice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
@@ -141,7 +132,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return named(INTERCEPTING_CLASS[0]);
+		return hasSuperType(named(INTERCEPTING_CLASS[0])).and(not(isInterface()));
 	}
 
 	@Override

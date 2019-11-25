@@ -97,7 +97,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				entryDefinition.addProperty("PARENT", lastEntryDefinition.getId());
 			}
 		}
-		OutputManager.INSTANCE.send(entryDefinition);
+		if (!entryDefinition.isTransparent()) {
+			OutputManager.INSTANCE.send(entryDefinition);
+		}
 	}
 
 	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, Throwable exception,
@@ -140,7 +142,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (sendStackTrace) {
 				entryDefinition.setStackTrace(getStackTrace());
 			}
-			OutputManager.INSTANCE.send(entryDefinition);
+			if (!entryDefinition.isTransparent()) {
+				OutputManager.INSTANCE.send(entryDefinition);
+			}
 		} catch (Throwable t) {
 			if (logger != null) {
 				logger.info(format("####Advice error/fillDefaultValuesBefore: {0}", t));

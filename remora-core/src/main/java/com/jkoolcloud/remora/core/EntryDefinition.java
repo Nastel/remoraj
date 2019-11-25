@@ -23,6 +23,8 @@ public class EntryDefinition extends AbstractMarshallable {
 	Mode mode = Mode.RUNNING;
 
 	String returnType;
+
+	boolean transparent;
 	String returnValue;
 	String exception;
 	String correlator;
@@ -184,6 +186,14 @@ public class EntryDefinition extends AbstractMarshallable {
 		exception.printStackTrace(printWriter);
 		setException(exception.getMessage());
 		setExceptionTrace(stringWriter.toString());
+	}
+
+	public boolean isTransparent() {
+		return transparent;
+	}
+
+	public void setTransparent() {
+        transparent = true;
 	}
 
 	public enum EventType {
