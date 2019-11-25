@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.jkoolcloud.remora</groupId>
-    <artifactId>remora-weblogic</artifactId>
-    <version>0.1-SNAPSHOT</version>
     <parent>
         <groupId>com.jkoolcloud.remora</groupId>
-        <artifactId>remora-parent</artifactId>
+        <artifactId>remora</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
+    <packaging>jar</packaging>
+
+    <artifactId>remora-weblogic</artifactId>
 
     <name>remora-weblogic</name>
     <description>A simple remora-weblogic.</description>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.jkoolcloud.remora</groupId>
             <artifactId>remora-core</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
