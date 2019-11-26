@@ -6,12 +6,14 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Stack;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -77,7 +79,14 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			ed.setEventType(EntryDefinition.EventType.CALL);
 			String clientId = getFieldValue(thiz, String.class, "clientId");
 			String groupId = getFieldValue(thiz, String.class, "groupId");
-			ed.setApplication(MessageFormat.format("clientId={}, groupId={}", clientId, groupId));
+			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+			if (entryDefinitions != null) {
+				String application = MessageFormat.format("clientId={}, groupId={}", clientId, groupId);
+				((CallStack) entryDefinitions).setApplication(application);
+				if (logging) {
+					logger.info(format("Setting the application", application));
+				}
+			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

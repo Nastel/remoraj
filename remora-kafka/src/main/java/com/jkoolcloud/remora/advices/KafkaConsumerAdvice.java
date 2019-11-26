@@ -90,7 +90,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			ed.setName("consume");
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 			ed.addPropertyIfExist("TOPIC", topic);
-			ed.setResource(topic, EntryDefinition.ResourceType.QUEUE);
+			ed.setResource(topic, EntryDefinition.ResourceType.TOPIC);
 
 			ed.addPropertyIfExist("PARTITION", partition);
 			ed.addPropertyIfExist("OFFSET", offset);
@@ -113,7 +113,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 					/* startTime = */ fillDefaultValuesBefore(ed, stackThreadLocal, null, null, logging ? logger : null)//
 			);
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
-			ed.setApplication("KAFKA");
 
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME + "start", logging ? logger : null);
@@ -125,11 +124,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	 *
 	 */
 
-	// @Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(// @Advice.Origin Method method, //
-	// @Advice.AllArguments Object[] arguments, //
-	// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-	) {
+	@Advice.OnMethodExit
+	public static void after() {
 		boolean doFinally = true;
 
 		try {

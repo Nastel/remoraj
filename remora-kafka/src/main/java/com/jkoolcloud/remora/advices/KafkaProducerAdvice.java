@@ -5,6 +5,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.util.Stack;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,6 +13,7 @@ import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
@@ -79,13 +81,21 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			String topic = record.topic();
 
-			ed.setApplication(ReflectionUtils.getFieldValue(thiz, String.class, "clientId"));
+			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+			if (entryDefinitions != null) {
+				String application = ReflectionUtils.getFieldValue(thiz, String.class, "clientId");
+				((CallStack) entryDefinitions).setApplication(application);
+				if (logging) {
+					logger.info(format("Setting the application", application));
+				}
+			}
+
 			ed.addPropertyIfExist("TOPIC", topic);
 			ed.addPropertyIfExist("TIMESTAMP", record.timestamp());
 			ed.addPropertyIfExist("PARTITION", record.partition());
 			ed.addPropertyIfExist("KEY", String.valueOf(record.key()));
 			ed.addPropertyIfExist("VALUE", String.valueOf(record.value()));
-			ed.setResource(topic, EntryDefinition.ResourceType.QUEUE);
+			ed.setResource(topic, EntryDefinition.ResourceType.TOPIC);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
