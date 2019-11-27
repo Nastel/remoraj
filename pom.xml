@@ -5,7 +5,7 @@
 
     <groupId>com.jkoolcloud.remora</groupId>
     <artifactId>remora</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>remora</name>
@@ -13,6 +13,7 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
+        <revision>0.1.1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

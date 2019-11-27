@@ -5,7 +5,6 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.Stack;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -91,7 +90,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 			if (stackThreadLocal != null) {
-				Stack<EntryDefinition> stack = stackThreadLocal.get();
+				CallStack<EntryDefinition> stack = stackThreadLocal.get();
 				if (stack == null) {
 					stack = new CallStack<>(logger);
 					stackThreadLocal.set(stack);

@@ -36,7 +36,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public static boolean sendStackTrace;
 
-	public static ThreadLocal<Stack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
+	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
@@ -113,7 +113,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
-			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
+			ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -132,7 +132,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 
 			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
-				Stack<EntryDefinition> definitions = new CallStack<>(logger);
+				CallStack<EntryDefinition> definitions = new CallStack<>(logger);
 				stackThreadLocal.set(definitions);
 			}
 

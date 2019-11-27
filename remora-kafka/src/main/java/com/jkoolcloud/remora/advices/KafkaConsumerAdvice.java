@@ -76,13 +76,15 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Argument(7) int serializedValueSize, //
 			@Advice.Argument(8) Object key, //
 			@Advice.Argument(9) Object value, //
-			@Advice.Argument(10) Headers headers) //
+			@Advice.Argument(10) Headers headers, //
+			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("startTime") long startTime)
+	//
 	{
 		try {
-			EntryDefinition ed = null;
-			if (ed == null) {
-				ed = new EntryDefinition(KafkaConsumerAdvice.class);
-			}
+			// if (ed == null) {
+			ed = new EntryDefinition(KafkaConsumerAdvice.class);
+			// }
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", KafkaConsumerAdvice.class.getName(), "before"));
 			}
@@ -104,14 +106,9 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			for (Header header : headers) {
 				ed.addPropertyIfExist(HEADER_PREFIX + header.key(), String.valueOf(header.value()));
 			}
-			Stack<Long> startTimes = startTimeThreadLocal.get();
-			if (startTimes == null) {
-				startTimes = new Stack<>();
-			}
 
-			startTimes.push(
-					/* startTime = */ fillDefaultValuesBefore(ed, stackThreadLocal, null, null, logging ? logger : null)//
-			);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, null, null, logging ? logger : null);//
+
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 
 		} catch (Throwable t) {
@@ -125,7 +122,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodExit
-	public static void after() {
+	public static void after(@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 
 		try {
@@ -133,21 +131,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 				logger.info(format("Exiting: {0} {1}", KafkaConsumerAdvice.class.getName(), "after"));
 			}
 
-			EntryDefinition ed = null;
-
-			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
-			Stack<Long> startTimes = startTimeThreadLocal.get();
-			long startTime = 0;
-			if (startTimes != null) {
-				startTime = startTimes.pop();
-			} else {
-				startTime = System.nanoTime();
-				logger.info("Can't determine {} method starttime", KafkaConsumerAdvice.ADVICE_NAME);
-			}
-
-			if (entryDefinitions != null) {
-				ed = entryDefinitions.peek();
-			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");

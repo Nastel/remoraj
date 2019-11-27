@@ -4,12 +4,16 @@ import static net.bytebuddy.matcher.ElementMatchers.isConstructor;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Method;
+import java.util.Stack;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.output.OutputManager;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -28,6 +32,8 @@ public class SimpleTestConstructor extends BaseTransformers {
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
+
+	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(SimpleTestConstructor.class.getClassLoader())//
@@ -54,13 +60,10 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("starttime") long starttime) //
 	{
 		try {
-			logger.info("BEFORE METHOD CALL");
 			System.out.println("BEFORE METHOD CALL");
-			if (ed == null) {
-				ed = new EntryDefinition(SimpleTestConstructor.class);
-				System.out.println("NEW entry def");
-				logger.info("NEW entry def");
-			}
+			ed = new EntryDefinition(SimpleTestConstructor.class);
+			System.out.println("NEW entry def");
+			logger.info("NEW entry def");
 
 			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, null, null, logging ? logger : null);
 
@@ -71,13 +74,46 @@ public class SimpleTestConstructor extends BaseTransformers {
 
 	public static void after(@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("starttime") long starttime) {
-		try {
-			System.out.println("###AFTER METHOD CALL");
-			// fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
-		} finally {
-			doFinally();
-		}
+	}
 
+	public static long fillDefaultValuesBefor(EntryDefinition entryDefinition,
+			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
+		System.out.println("default values");
+		try {
+			if (thiz != null) {
+				entryDefinition.setClazz(thiz.getClass().getName());
+			} else {
+				if (logger != null) {
+					logger.info("This not filled");
+				}
+			}
+
+			if (method != null) {
+				// entryDefinition.setName(method.getName());
+			} else {
+				if (logger != null) {
+					logger.info("#Method not filled");
+				}
+			}
+
+			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
+				Stack<EntryDefinition> definitions = new Stack<>();
+				stackThreadLocal.set(definitions);
+			}
+
+			stackThreadLocal.get().push(entryDefinition);
+			entryDefinition.setThread(Thread.currentThread().toString());
+			entryDefinition.setStartTime(System.currentTimeMillis());
+			if (sendStackTrace) {
+				entryDefinition.setStackTrace(getStackTrace());
+				OutputManager.INSTANCE.send(entryDefinition);
+			}
+		} catch (Throwable t) {
+			if (logger != null) {
+				logger.info(format("####Advice error/fillDefaultValuesBefore: {0}", t));
+			}
+		}
+		return System.nanoTime();
 	}
 
 	@Override

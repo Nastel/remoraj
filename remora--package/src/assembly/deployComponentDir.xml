@@ -47,6 +47,14 @@
             <outputDirectory>config</outputDirectory>
         </fileSet>
 
+        <fileSet>
+            <directory>../bin</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+
         <!-- static content -->
         <fileSet>
             <directory>../</directory>
