@@ -6,6 +6,8 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import javax.websocket.CloseReason;
+import javax.websocket.MessageHandler;
+import javax.websocket.Session;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -30,6 +32,9 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
+	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+			.include(WebsocketEndpointAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), WebsocketEndpointAdvice.class.getName());
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -37,26 +42,9 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return nameStartsWith("on").and(takesArgument(0, named("javax.websocket.Session")));
+		return (nameStartsWith("on").or(isAnnotatedWith(nameStartsWith("javax.websocket.On"))))//
+				.and(takesArgument(0, named("javax.websocket.Session")));
 	}
-
-	/**
-	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
-	 */
-
-	@Override
-	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(nameStartsWith(INTERCEPTING_CLASS[0]).and(not(isAbstract())));
-	}
-
-	@Override
-	public AgentBuilder.Transformer getAdvice() {
-		return advice;
-	}
-
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(WebsocketEndpointAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), WebsocketEndpointAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -75,9 +63,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
-			@Advice.Argument(0) javax.websocket.Session session, //
-			@Advice.Argument(1) Object scndArg, //
-
+			@Advice.AllArguments Object[] args, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
@@ -89,29 +75,57 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 				logger.info(format("Entering: {0} {1}", WebsocketEndpointAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
-			switch (method.getName()) {
-			case "onOpen":
-				ed.setEventType(EntryDefinition.EventType.OPEN);
-				break;
-			case "onClose":
-				ed.setEventType(EntryDefinition.EventType.CLOSE);
-				if (scndArg instanceof CloseReason) {
-					ed.addPropertyIfExist("CLOSE_REASON", ((CloseReason) scndArg).getReasonPhrase());
-					ed.addPropertyIfExist("CLOSE_CODE", ((CloseReason) scndArg).getCloseCode().getCode());
+
+			if (args != null && args.length >= 1 && args[0] instanceof Session) {
+				Session session = (Session) args[0];
+
+				String name = method.getName();
+				if ("onOpen".equals(name)) {
+					if (logging) {
+						logger.info("Encountered WebSocket onOpen");
+					}
+					ed.setEventType(EntryDefinition.EventType.OPEN);
+					for (MessageHandler handler : session.getMessageHandlers()) {
+
+						WebsocketSessionAdvice.sessionHandlers.put(handler, session);
+						if (logging) {
+							logger.info("Adding known handler {0} for session {1}", handler, session);
+						}
+					}
+					WebsocketSessionAdvice.sessionEndpoints.put(session.getBasicRemote(), session);
+					WebsocketSessionAdvice.sessionEndpoints.put(session.getAsyncRemote(), session);
 				}
-				WebsocketSessionAdvice.sessionHandlers.keySet().removeAll(session.getMessageHandlers());
-				break;
-			case "OnError":
-				ed.setEventType(EntryDefinition.EventType.CLOSE);
-				if (scndArg instanceof Throwable) {
-					ed.setException(((Throwable) scndArg));
+				if ("onClose".equals(name)) {
+					if (logging) {
+						logger.info("Encountered WebSocket onclose");
+					}
+					ed.setEventType(EntryDefinition.EventType.CLOSE);
+					if (args.length >= 2 && args[1] instanceof CloseReason) {
+						ed.addPropertyIfExist("CLOSE_REASON", ((CloseReason) args[1]).getReasonPhrase());
+						ed.addPropertyIfExist("CLOSE_CODE", ((CloseReason) args[1]).getCloseCode().getCode());
+					}
+					WebsocketSessionAdvice.sessionHandlers.keySet().removeAll(session.getMessageHandlers());
+					WebsocketSessionAdvice.sessionEndpoints.remove(session.getBasicRemote());
+					WebsocketSessionAdvice.sessionEndpoints.remove(session.getAsyncRemote());
 
 				}
-				WebsocketSessionAdvice.sessionHandlers.keySet().removeAll(session.getMessageHandlers());
+				if ("OnError".equals(name)) {
+					if (logging) {
+						logger.info("Encountered WebSocket onError");
+					}
+					ed.setEventType(EntryDefinition.EventType.CLOSE);
+					if (args.length >= 2 && args[1] instanceof Throwable) {
+						if (args[1] instanceof Throwable) {
+							ed.setException(((Throwable) args[1]));
 
-				break;
+						}
+					}
+					WebsocketSessionAdvice.sessionHandlers.keySet().removeAll(session.getMessageHandlers());
+					WebsocketSessionAdvice.sessionEndpoints.remove(session.getBasicRemote());
+					WebsocketSessionAdvice.sessionEndpoints.remove(session.getAsyncRemote());
+
+				}
 			}
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
@@ -138,8 +152,8 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
-			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, //
+			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
@@ -161,7 +175,22 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 				doFinally();
 			}
 		}
+	}
 
+	/**
+	 * Type matcher should find the class intended for instrumentation See (@ElementMatcher) for available matches.
+	 */
+
+	@Override
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return (hasSuperType(nameStartsWith(INTERCEPTING_CLASS[0]))
+				.or(isAnnotatedWith(named("javax.websocket.server.ServerEndpoint")))).and(not(isAbstract()))
+						.and(not(isInterface()));
+	}
+
+	@Override
+	public AgentBuilder.Transformer getAdvice() {
+		return advice;
 	}
 
 	@Override

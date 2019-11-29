@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.websocket.MessageHandler;
+import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
 import org.tinylog.Logger;
@@ -30,6 +31,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	public static String INTERCEPTING_METHOD = "addMessageHandler";
 
 	public static Map<MessageHandler, Session> sessionHandlers = new HashMap<>();
+	public static Map<RemoteEndpoint, Session> sessionEndpoints = new HashMap<>();
 
 	@RemoraConfig.Configurable
 	public static boolean load = true;

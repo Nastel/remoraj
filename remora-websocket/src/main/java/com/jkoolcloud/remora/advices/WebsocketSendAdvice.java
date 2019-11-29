@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
 import org.tinylog.Logger;
@@ -80,7 +81,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This Object thiz, //
+	public static void before(@Advice.This RemoteEndpoint thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
@@ -94,7 +95,10 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.setEventType(EntryDefinition.EventType.SEND);
-			Session session = WebsocketSessionAdvice.sessionHandlers.get(thiz);
+			Session session = WebsocketSessionAdvice.sessionEndpoints.get(thiz);
+			if (session == null) {
+				session = WebsocketSessionAdvice.sessionHandlers.get(thiz);
+			}
 			if (session != null) {
 				String correlator = session.getId();
 				URI requestURI = session.getRequestURI();
