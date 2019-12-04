@@ -67,6 +67,12 @@ public class EntryDefinition extends AbstractMarshallable {
 		}
 	}
 
+	public void addPropertiesIfExist(Map<?, ?> value) {
+		for (Map.Entry entry : value.entrySet()) {
+			addProperty(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
+		}
+	}
+
 	public void addPropertyIfExist(String key, Boolean value) {
 		if (value != null) {
 			addProperty(key, value.toString());
@@ -193,7 +199,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public void setTransparent() {
-        transparent = true;
+		transparent = true;
 	}
 
 	public enum EventType {

@@ -22,7 +22,7 @@
 
         <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
-        <byte.buddy.version>1.10.2</byte.buddy.version>
+        <byte.buddy.version>1.10.3</byte.buddy.version>
         <chronicle.version>5.17.17</chronicle.version>
         <powermock.version>2.0.2</powermock.version>
     </properties>
@@ -129,6 +129,8 @@
         <module>remora-weblogic</module>
         <module>remora-websocket</module>
         <module>remora-kafka</module>
+        <module>remora-ejb3</module>
         <module>remora--package</module>
+
     </modules>
 </project>

@@ -26,26 +26,38 @@ Option 2: editing server.xml properties manually
 * Step 2    Edit node `/process:Server/processDefinitions/jvmEntries` paramter `@genericJvmArguments`
 * Step 3    Edit the path to where your remora.jar situated
 ```
-<jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:c:\remora\remora-0.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1-SNAPSHOT\" executableJarFileName="" disableJIT="false">
+<jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\" executableJarFileName="" disableJIT="false">
 
 ```
 
 ### JBoss application server
 
-#### Standalone version
+#### Standalone mode
 
 * Step 1    Edit `bin\standalone.bat`
 * Step 2    Add line 
-```set "JAVA_OPTS=%JAVA_OPTS% -javaagent:c:\remora\remora-0.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1-SNAPSHOT\"```
+```set "JAVA_OPTS=%JAVA_OPTS% -javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"```
 * Step 3    Edit the path to where your remora.jar situated
 
+#### Domain mode
 
+* Step 1    Edit `domain\configuration\host.xml`
+* Step 2    Edit tag `<servers><jvm>`
+* Step 3    Add `<option value="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"/>`  
+```            <jvm name="default">
+                   <jvm-options>
+                       <option value="-agentlib:jdwp=transport=dt_socket,address=5007,server=y,suspend=n"/>
+                       <option value="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"/>
+                   </jvm-options>
+               </jvm>
+```
+* Step 3    Edit the path to where your remora.jar situated
 
 ## Configure TNT4J streams
 
 * Step 1    Go to tnt4j streams config
 * Step 2    Edit `tnt4j-streams.properties` and setup your access Token (`event.sink.factory.EventSinkFactory.prod.Token`)
-* Step 3    (Optional) Edit tnt `remora-0.1-SNAPSHOT\tnt4j-streams\remora-streamer\tnt-data-source.xml` 
+* Step 3    (Optional) Edit tnt `remora-0.1.1-SNAPSHOT\tnt4j-streams\remora-streamer\tnt-data-source.xml` 
 * Step 4    (Optional) Setup line ```<property name="FileName" value="..\..\queue"/>``` to point to your RemoraJ queue directory.
 
 
