@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.jkoolcloud.remora</groupId>
-    <artifactId>remora-ejb3</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
     <parent>
         <groupId>com.jkoolcloud.remora</groupId>
         <artifactId>remora</artifactId>
         <version>0.1.1-SNAPSHOT</version>
     </parent>
+    <packaging>jar</packaging>
+
+    <artifactId>remora-ejb3</artifactId>
 
     <name>remora-ejb3</name>
     <description>A simple remora-ejb3.</description>
