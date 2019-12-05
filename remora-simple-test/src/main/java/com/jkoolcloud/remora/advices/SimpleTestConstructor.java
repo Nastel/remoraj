@@ -1,11 +1,10 @@
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.isConstructor;
+import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.Stack;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -13,7 +12,6 @@ import org.tinylog.TaggedLogger;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.output.OutputManager;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -42,7 +40,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			.advice(methodMatcher(), "com.jkoolcloud.remora.advices.SimpleTestConstructor");
 
 	private static ElementMatcher.Junction<MethodDescription> methodMatcher() {
-		return isConstructor();
+		return isAnnotatedWith(named("lt.slabs.com.jkoolcloud.remora.onEnter"));
 	}
 
 	@Override
@@ -56,64 +54,75 @@ public class SimpleTestConstructor extends BaseTransformers {
 	}
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) //
+	public static void before(@Advice.AllArguments Object[] args, //
+			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Origin Method method, //
+			@Advice.This Object thiz, //
+			@Advice.Local("startTime") long starttime) //
 	{
 		try {
 			System.out.println("BEFORE METHOD CALL");
-			ed = new EntryDefinition(SimpleTestConstructor.class);
-			System.out.println("NEW entry def");
-			logger.info("NEW entry def");
+			if (ed == null) {
+				ed = new EntryDefinition(SimpleTestConstructor.class);
+				System.out.println("NEW entry def");
+				logger.info("NEW entry def");
+			}
 
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, null, null, logging ? logger : null);
+			if (args != null && args[0] instanceof String) {
+
+				System.out.println("OK");
+			} else {
+				System.out.println("NOK");
+			}
+
+			switch (method.getName()) {
+			case "a":
+				System.out.println("A");
+				break;
+			default:
+				System.out.println("Default");
+				break;
+
+			}
+
+			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 		} catch (Throwable t) {
-			// handleAdviceException(t, ADVICE_NAME, logging ? logger : null );
+			System.out.println("Exception");
+			logger.info("Exception");
+			t.printStackTrace();
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 
-	public static void after(@Advice.Local("ed") EntryDefinition ed, //
-			@Advice.Local("starttime") long starttime) {
-	}
-
-	public static long fillDefaultValuesBefor(EntryDefinition entryDefinition,
-			ThreadLocal<Stack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
-		System.out.println("default values");
+	@Advice.OnMethodExit(onThrowable = Throwable.class)
+	public static void after(@Advice.This Object obj, //
+			@Advice.Origin Method method, //
+			@Advice.AllArguments Object[] arguments, //
+			@Advice.Thrown Throwable exception, //
+			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("startTime") long startTime) {
+		boolean doFinally = true;
 		try {
-			if (thiz != null) {
-				entryDefinition.setClazz(thiz.getClass().getName());
-			} else {
-				if (logger != null) {
-					logger.info("This not filled");
+			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
+				if (logging) {
+					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				}
+				doFinally = false;
+				return;
 			}
-
-			if (method != null) {
-				// entryDefinition.setName(method.getName());
-			} else {
-				if (logger != null) {
-					logger.info("#Method not filled");
-				}
+			if (logging) {
+				logger.info(format("Exiting: {0} {1}", SimpleTestConstructor.class.getName(), "after"));
 			}
-
-			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
-				Stack<EntryDefinition> definitions = new Stack<>();
-				stackThreadLocal.set(definitions);
-			}
-
-			stackThreadLocal.get().push(entryDefinition);
-			entryDefinition.setThread(Thread.currentThread().toString());
-			entryDefinition.setStartTime(System.currentTimeMillis());
-			if (sendStackTrace) {
-				entryDefinition.setStackTrace(getStackTrace());
-				OutputManager.INSTANCE.send(entryDefinition);
-			}
+			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			if (logger != null) {
-				logger.info(format("####Advice error/fillDefaultValuesBefore: {0}", t));
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+		} finally {
+			if (doFinally) {
+				doFinally();
 			}
 		}
-		return System.nanoTime();
+
 	}
 
 	@Override

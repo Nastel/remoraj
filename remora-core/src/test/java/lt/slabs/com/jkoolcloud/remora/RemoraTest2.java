@@ -31,7 +31,8 @@ public class RemoraTest2 {
 						+ "\n\tOS.arch=" + System.getProperty("os.arch") //
 						+ "\n\tOS.cpus=" + Runtime.getRuntime().availableProcessors());
 
-		new JustATest2();
+		JustATest2 justATest2 = new JustATest2();
+		justATest2.onEnterAnnotatedMethod("c");
 
 		Thread.sleep(3000);
 	}
