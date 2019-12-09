@@ -42,7 +42,6 @@
             <scope>system</scope>
             <systemPath>${ibm.thinclient}</systemPath>
         </dependency>
-
     </dependencies>
 
     <build>
