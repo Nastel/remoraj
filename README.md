@@ -64,7 +64,8 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 * Step 1    Edit `domain\configuration\host.xml`
 * Step 2    Edit tag `<servers><jvm>`
 * Step 3    Add `<option value="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"/>`  
-```            <jvm name="default">
+```            
+               <jvm name="default">
                    <jvm-options>
                        <option value="-agentlib:jdwp=transport=dt_socket,address=5007,server=y,suspend=n"/>
                        <option value="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"/>
