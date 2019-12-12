@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<subsystem xmlns="urn:jboss:domain:resource-adapters:1.0">  
+		<resource-adapters>
+			<resource-adapter id="wmq.jmsra-9.0.4.0.rar">
+			</resource-adapter>  
+		</resource-adapters>  
+		<archive>
+             wmq.jmsra-9.0.4.0.rar             
+		</archive>  
+		<transaction-support>NoTransaction</transaction-support>
+		<connection-definitions>  
+			<connection-definition class-name="com.ibm.mq.connector.outbound.ManagedConnectionFactoryImpl" jndi-name="java:/BankConnectionFactory" enabled="true" use-java-context="true" pool-name="connection-definition">  
+					<config-property name="port">  
+                                1415  
+					</config-property>
+					<config-property name="username">Administrator</config-property>					
+					<config-property name="hostName">  
+                                172.16.6.16  
+					</config-property>  
+					<config-property name="channel">  
+                                SYSTEM.DEF.SVRCONN  
+					</config-property>  
+					<config-property name="transportType">  
+                                CLIENT  
+					</config-property>  
+					<config-property name="queueManager">  
+                                T1  
+					</config-property>  
+				</connection-definition>  
+			</connection-definitions>  
+			<admin-objects>  
+				<admin-object class-name="com.ibm.mq.connector.outbound.MQQueueProxy" jndi-name="java:/BankRequestQueue" enabled="true" use-java-context="true" pool-name="Updates">  
+					<config-property name="baseQueueName">  
+                                Updates  
+					</config-property>  
+				</admin-object>  
+				<admin-object class-name="com.ibm.mq.connector.outbound.MQQueueProxy" jndi-name="java:/BankReplyQueue" enabled="true" use-java-context="true" pool-name="Updates">  
+					<config-property name="baseQueueName">  
+                                Updates  
+					</config-property>  
+				</admin-object>  
+			</admin-objects>  
+
+</subsystem>		

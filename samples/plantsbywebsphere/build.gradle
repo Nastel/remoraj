@@ -1,0 +1,95 @@
+apply plugin: 'war'
+apply plugin: 'liberty'
+
+group = 'net.wasdev.sample'
+version = '1.0-SNAPSHOT'
+description = "PlantsByWebSphere"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6.5'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    serverLibs
+}
+
+dependencies {
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+	providedCompile 'javax:javaee-api:7.0'
+	serverLibs  'org.apache.derby:derby:10.11.1.1'
+	libertyRuntime 'com.ibm.websphere.appserver.runtime:wlp-javaee7:19.0.0.8'
+}
+
+task copyServerLibs(type: Copy) {
+    shouldRunAfter 'libertyCreate'
+    from configurations.serverLibs
+    into "${buildDir}/wlp/usr/servers/${rootProject.name}Server/lib"
+}
+
+war.archiveName "${rootProject.name}.war"
+test.dependsOn 'war'
+
+test {
+    defaultCharacterEncoding = "UTF-8"
+    useJUnitPlatform()
+    testLogging {
+        displayGranularity 1
+        showStandardStreams = true
+        showStackTraces = true
+        exceptionFormat = 'full'
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+}
+
+ext {
+	appUrl = "http://localhost:9080/${rootProject.name}/"
+}
+
+liberty {
+	server {
+		name = rootProject.name + 'Server'
+		dropins = [war]
+		looseApplication = false
+		configDirectory = file('src/main/liberty/config')
+	}
+}
+
+task openBrowser {
+    description = "Open browser to ${appUrl}"
+    doLast {
+        java.awt.Desktop.desktop.browse "${appUrl}".toURI()
+    }
+}
+
+clean.dependsOn 'libertyStop'
+libertyPackage.dependsOn 'libertyStop', 'copyServerLibs'
+libertyStart.dependsOn 'libertyStop', 'copyServerLibs'
+libertyRun.dependsOn 'libertyStop'
+libertyStart.doLast {
+	println "Application available at: ${appUrl}"
+}
+
+libertyStart.dependsOn 'libertyStop'
+libertyRun.dependsOn 'libertyStop'
+
+task start { dependsOn 'libertyStart' }
+task stop  { dependsOn 'libertyStop' }
+

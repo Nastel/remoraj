@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+<script type="text/javascript">
+
+function activateField()
+{
+	if (document.jmsForm.msgSource[0].checked)
+	   document.jmsForm.dataFile.disabled = "disabled";   
+	else
+	   document.jmsForm.dataFile.disabled = "";
+}
+
+</script>
+
+<title>Nastel Sample Bank (J2EE)</title>
+<link rel='shortcut icon' type='image/x-icon' href='images/nastel.ico'>
+<link rel='stylesheet' type='text/css' href='style.css'>
+</head>
+<body leftmargin=20 topmargin=20 marginwidth=20 marginheight=20	>
+<table width=80% align=center cellpadding=0 cellspacing=0 border=0>
+	<thead>
+		<tr>
+			<td colspan=99 align=left><img src='images/logo.gif'></td>
+		</tr>
+		<tr>
+			<td colspan=99 align=left><img height=20 src='images/spacer.gif'></td>
+		</tr>
+		<tr class=menu>
+			<td class='menu menu_cell'><a href='Account' class=menu>Account Overview</a></td>
+			<td class='menu menu_cell'><a href='ViewHistory' class=menu>View History</a></td>
+			<td class='menu menu_cell'><a href='BillPay' class=menu>Pay Bills Online</a></td>
+			<td class='menu menu_cell'><a href='RandomXact' class=menu>Sample Transactions</a></td>
+			<td class='menu menu_cell'><a href='ImportExport' class=menu>Import/Export</a></td>
+			<td class='menu menu_cell'><a href='Interbank' class=menu>Interbank</a></td>
+			<td class='menu menu_cell'><a href='benchmark' class=menu>Benchmark</a></td>
+			<td class='menu'><a href='logout.jsp' class=menu>Logout</a></td>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr class=title>
+			<td colspan=6 align=center><a href='http://www.nastel.com'
+				class=title>Nastel</a>'s Sample Bank application showcases the TransactionWorks monitoring system.</td>
+			<td align=right>v@VERSION@</td>
+		</tr>
+	</tfoot>
+	<tr>
+		<th colspan=99>
+		<table width=100% cellpadding=0 cellspacing=20>
+			<tr>
+				<th width=50% valign=center>
+				<table class=thin_border width=100% cellpadding=1 cellspacing=0>
+					<tr class=title>
+						<td align=center>JMS Import/Export</td>
+					</tr>
+					<tr>
+						<th>
+						<form method=post action='ImportExport' name="jmsForm" ENCTYPE=multipart/form-data>
+						<table class=info_body width=100% cellpadding=0 cellspacing=0 border=0>
+							<tr class=info_body>
+								<td class=label style="border-bottom: solid 1px white" align=left># messages to import/export:</td>
+								<td class=value align=left>
+									<input type=text size=5 name=xactnum value=5 >
+								</td>
+							</tr>
+							<tr class=info_body>
+								<td class=label style="border-bottom: solid 1px white" align=left>
+									<input type=radio name="msgSource" onclick="activateField()" value="dbTransactions" checked>Use transactions from DB
+								</td>
+							</tr>
+							<tr class=info_body>
+								<td class=label align=left>
+									<input type=radio name="msgSource" onclick="activateField()" value="file" >Use message from file:
+								</td>
+								<td class=value align=left>
+									<input type="file" name="dataFile" disabled>
+								</td>
+							</tr>
+							<tr>
+								<td align=center style="padding-top:20px; padding-bottom:0px">
+									<input type=checkbox name=backend checked=checked>Use backend
+								</td>
+							</tr>
+							<tr class=info_body>
+								<td align=center style="padding-top:20px" colspan=3>
+									<input type=submit name=submit value="Run Import/Export">
+								</td>
+							</tr>
+						</table>
+						</form>
+						</th>
+					</tr>
+				</table>
+				</th>
+				<th width=50% valign=center>
+				<table class=thin_border width=100% cellpadding=0 cellspacing=0>
+					<tr class=title>
+						<td align=center>Information</td>
+					</tr>
+					<tr>
+						<th>
+						<table class=info_body width=100% cellpadding=0 cellspacing=0 border=0>
+							<tr>
+								<td class=wrap align=center>This utility will export data to JMS Server over BankRequestQueue. It will then
+								re-import the data from the BankReplyQueue.</td>
+							</tr>
+						</table>
+						</th>
+					</tr>
+				</table>
+				</th>
+		</table>
+		</th>
+	</tr>
+</table>
+</body>
+</html>
