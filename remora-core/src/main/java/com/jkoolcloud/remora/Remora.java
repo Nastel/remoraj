@@ -46,8 +46,8 @@ public class Remora {
 
 		// logger.info("Starting from premain; classloader: " + Remora.class.getClassLoader());
 
-		inst.appendToBootstrapClassLoaderSearch(new JarFile(baseRemoraDir + "remora.jar"));
-		bootLoader = new RemoraClassLoader(findJars(options + MODULES_DIR), Remora.class.getClassLoader(), inst);
+		inst.appendToBootstrapClassLoaderSearch(new JarFile(baseRemoraDir + "/" + "remora.jar"));
+		bootLoader = new RemoraClassLoader(findJars(baseRemoraDir + MODULES_DIR), Remora.class.getClassLoader(), inst);
 		// logger.info("Initializing classloader: " + bootLoader);
 		Class<?> appClass = bootLoader.loadClass("com.jkoolcloud.remora.RemoraInit");
 		Object instance = appClass.newInstance();

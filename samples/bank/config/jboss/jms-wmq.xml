@@ -1,0 +1,21 @@
+﻿<application-policy name = "IbmQmAuthentication">
+  <authentication>
+    <login-module code="org.jboss.resource.security.ConfiguredIdentityLoginModule" flag="required">
+      <module-option name = "principal">mqm</module-option>
+      <module-option name = "userName">mqm</module-option>
+      <module-option name = "password">mqm</module-option>
+      <module-option name = "managedConnectionFactoryName">jboss.jca:service=TxCM,name=BankConnectionFactory</module-option>
+    </login-module>
+  </authentication>
+</application-policy>
+
+<application-policy name = "NoTxIbmQmAuthentication">
+  <authentication>
+    <login-module code="org.jboss.resource.security.ConfiguredIdentityLoginModule" flag="required">
+      <module-option name = "principal">mqm</module-option>
+      <module-option name = "userName">mqm</module-option>
+      <module-option name = "password">mqm</module-option>
+      <module-option name = "managedConnectionFactoryName">jboss.jca:service=NoTxCM,name=BankConnectionFactory</module-option>
+    </login-module>
+  </authentication>
+</application-policy>

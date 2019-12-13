@@ -30,6 +30,26 @@ Option 2: editing server.xml properties manually
 
 ```
 
+### IBM WAS Liberty 
+
+
+* Step 1	Edit or create `jvm.options` file in the folder [wlp\usr\servers\<serverName>\].  
+* Step 2	Add lines:
+```
+-javaagent:c:\workspace\build\remora\remora-0.1.1-SNAPSHOT\remora.jar
+-Dremora.path=c:\workspace\build\remora\remora-0.1.1-SNAPSHOT
+```
+
+* Step 3	Edit the path to where your remora.jar situated
+* Step 4	Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
+* Step 5	Add line:
+```
+org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
+```
+
+
+
+
 ### JBoss application server
 
 #### Standalone mode
@@ -44,7 +64,8 @@ Option 2: editing server.xml properties manually
 * Step 1    Edit `domain\configuration\host.xml`
 * Step 2    Edit tag `<servers><jvm>`
 * Step 3    Add `<option value="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"/>`  
-```            <jvm name="default">
+```            
+               <jvm name="default">
                    <jvm-options>
                        <option value="-agentlib:jdwp=transport=dt_socket,address=5007,server=y,suspend=n"/>
                        <option value="-javaagent:c:\remora\remora-0.1.1-SNAPSHOT\remora.jar=c:\remora\remora-0.1.1-SNAPSHOT\"/>

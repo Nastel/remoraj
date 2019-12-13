@@ -32,3 +32,4 @@ hs_err_pid*
 /**/_dev
 /**/*_dev.*
 *.log
+/samples/sample.plantsbywebsphere-master/.gitignore

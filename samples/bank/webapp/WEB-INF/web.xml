@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+    <display-name>bank</display-name>
+    <description>Sample Banking Application</description>
+
+    <context-param>
+        <param-name>nastel.tworks.max.saved.sessions</param-name>
+        <param-value>10</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>nastel.tworks.ignore.empty.sessions</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>nastel.tworks.archive.sessions</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.ws.rs.core.Application</param-name>
+        <param-value>com.nastel.bank.CheckOutApplication</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>Account</servlet-name>
+        <servlet-class>com.nastel.bank.Account</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>BillPay</servlet-name>
+        <servlet-class>com.nastel.bank.BillPay</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ImportExport</servlet-name>
+        <display-name>ImportExport</display-name>
+        <description>ImportExport Utility for Testing JMS</description>
+        <servlet-class>com.nastel.bank.ImportExport</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>MerchantAdd</servlet-name>
+        <servlet-class>com.nastel.bank.MerchantAdd</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>RandomXact</servlet-name>
+        <servlet-class>com.nastel.bank.RandomXact</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ViewHistory</servlet-name>
+        <servlet-class>com.nastel.bank.ViewHistory</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Benchmark</servlet-name>
+        <servlet-class>com.nastel.bank.Benchmark</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>InterbankTransaction</servlet-name>
+        <servlet-class>com.nastel.bank.InterbankTransaction</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InterbankEndpoint</servlet-name>
+        <servlet-class>com.nastel.bank.InterbankEndpoint</servlet-class>
+    </servlet>
+
+
+
+    <servlet-mapping>
+        <servlet-name>Account</servlet-name>
+        <url-pattern>/Account</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>BillPay</servlet-name>
+        <url-pattern>/BillPay</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ImportExport</servlet-name>
+        <url-pattern>/ImportExport</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>MerchantAdd</servlet-name>
+        <url-pattern>/MerchantAdd</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RandomXact</servlet-name>
+        <url-pattern>/RandomXact</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ViewHistory</servlet-name>
+        <url-pattern>/ViewHistory</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Benchmark</servlet-name>
+        <url-pattern>/benchmark</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>InterbankTransaction</servlet-name>
+        <url-pattern>/Interbank</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>InterbankEndpoint</servlet-name>
+        <url-pattern>/Endpoint</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>
