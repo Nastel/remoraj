@@ -103,6 +103,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			ed.setResource(request.getURI().toString(), EntryDefinition.ResourceType.NETADDR);
 
 			request.addHeader(headerCorrIDName, ed.getId());
+			ed.addProperty(headerCorrIDName, ed.getId());
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

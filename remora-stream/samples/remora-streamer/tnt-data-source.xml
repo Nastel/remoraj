@@ -8,6 +8,7 @@
     <parser name="propertiesParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityMapParser">
         <field name="correlator">
             <field-locator locator="HEADER_REMORA_CORR" locator-type="Label"/>
+            <field-locator locator="REMORA_CORR" locator-type="Label"/>
             <field-locator locator="SESSION" locator-type="Label"/>
 
         </field>

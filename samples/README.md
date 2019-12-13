@@ -22,7 +22,7 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 * Gradle - https://downloads.gradle-dn.com/distributions/gradle-5.2.1-bin.zip
 
 
-### Installing
+### Installing PlantsByWebsphere
 
 
 * Step 1:	select database to use (Derby or mySQL) skip to [step 7] if you choose Derby 
@@ -33,15 +33,19 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 * Step 5:	copy mySQL driver into `plantsbywebsphere\build\wlp\usr\shared\resources\mysql`
 * Step 6:	continue to [step 8]
 
-* Step 7:	modify server.xml [TODO ]
+* Step 7:	modify server.xml, uncomment Derby data source configuration
 
-* Step 8:	`gradle start open` should open internet browser with application running
+* Step 8:	modify `plantsbywebsphere\src\main\liberty\config\jvm.options`, change remoraJ paths here.
+* Step 9:	`gradle start open` should open Internet browser with application running
 
 
-## Building Bank
+## Installing Bank
  
-* Step 1:	deploy database, configure jdbc, JMS [TODO ]
-* Step 2:   mvn clean install wildfly:deploy
+* Step 1:	deploy database from folder`samples\bank\sql`
+* Step 2:	configure JBoss, change these files accordingly your system configuration and deploy all files in folder 	`\bank\config\jboss\jboss7.2\`, wmq.jmsra-9.0.4.0.rar - will install IBM MQ JMS driver, mysql-ds7.xml - will configure database, jms-ds7.xml - will configure JMS.
+* Step 3: 	Create `BankRequestQueue` and `BankReplyQueue`
+* Step 4:   mvn clean install wildfly:deploy
+* Step 5:	open bank application http://localhost:8080/Bank-1.0-SNAPSHOT/
 
 
 

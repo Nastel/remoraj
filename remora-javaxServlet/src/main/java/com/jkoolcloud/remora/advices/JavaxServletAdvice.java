@@ -158,12 +158,13 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 						}
 					}
 					if (attachCorrelator && resp != null && resp instanceof HttpServletResponse) {
-						if (((HttpServletRequest) req).getHeader(headerCorrIDName) == null) {
+						String remoraHeader = ((HttpServletRequest) req).getHeader(headerCorrIDName);
+						if (remoraHeader == null) {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, ed.getId());
 							logger.info("Added header: " + headerCorrIDName + ed.getId());
 						} else {
-							((HttpServletResponse) resp).addHeader(headerCorrIDName,
-									((HttpServletRequest) req).getHeader(headerCorrIDName));
+							((HttpServletResponse) resp).addHeader(headerCorrIDName, remoraHeader);
+							ed.addPropertyIfExist(headerCorrIDName, remoraHeader);
 						}
 					}
 				} catch (Throwable t) {
