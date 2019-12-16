@@ -10,10 +10,10 @@
     </parent>
     <packaging>jar</packaging>
 
-    <artifactId>${artifactId}</artifactId>
+    <artifactId>remora-bank_benchmark</artifactId>
 
-    <name>${artifactId}</name>
-    <description>A simple ${artifactId}.</description>
+    <name>remora-bank_benchmark</name>
+    <description>A simple remora-bank_benchmark.</description>
     <url>https://github.com/Nastel/</url>
 
     <properties>
