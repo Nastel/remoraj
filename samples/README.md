@@ -42,7 +42,7 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 ## Installing Bank
  
 * Step 1:	deploy database from folder`samples\bank\sql`
-* Step 2:	configure JBoss, change these files accordingly your system configuration and deploy all files in folder 	`\bank\config\jboss\jboss7.2\`, wmq.jmsra-9.0.4.0.rar - will install IBM MQ JMS driver, mysql-ds7.xml - will configure database, jms-ds7.xml - will configure JMS.
+* Step 2:	configure JBoss, change these files accordingly your system configuration and deploy all files in folder 	`\bank\config\jboss\jboss7.2\`, wmq.jmsra-9.0.4.0.rar - will install IBM MQ JMS driver, mysql-ds7.xml - will configure database, jms-ds7.xml - will configure JMS. Attach java agent (see readme on RemoraJ)
 * Step 3: 	Create `BankRequestQueue` and `BankReplyQueue`
 * Step 4:   mvn clean install wildfly:deploy
 * Step 5:	open bank application http://localhost:8080/Bank-1.0-SNAPSHOT/
