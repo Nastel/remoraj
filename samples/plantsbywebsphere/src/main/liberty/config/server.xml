@@ -25,7 +25,10 @@
     <library id="DerbyLib">
         <fileset dir="${server.config.dir}/lib/" includes="derby-*.jar"/>
     </library>
-	
+		<library id="MySQLLib">
+		<fileset dir="${shared.resource.dir}/mysql" includes="*.jar"/>
+	</library>
+
 	
 	<!-- MySQL configuration -->
 	<!-- You need to import DB script prior using this -->

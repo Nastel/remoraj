@@ -44,6 +44,12 @@ task copyServerLibs(type: Copy) {
     into "${buildDir}/wlp/usr/servers/${rootProject.name}Server/lib"
 }
 
+task copyMysqlDriver(type: Copy) {
+    shouldRunAfter 'copyServerLibs'
+    from file('sqlScripts/mysql-connector-java-8.0.18.jar')
+    into "${buildDir}/wlp/usr/shared/resources/mysql/"
+}
+
 war.archiveName "${rootProject.name}.war"
 test.dependsOn 'war'
 
@@ -80,8 +86,8 @@ task openBrowser {
 }
 
 clean.dependsOn 'libertyStop'
-libertyPackage.dependsOn 'libertyStop', 'copyServerLibs'
-libertyStart.dependsOn 'libertyStop', 'copyServerLibs'
+libertyPackage.dependsOn 'libertyStop', 'copyServerLibs', 'copyMysqlDriver'
+libertyStart.dependsOn 'libertyStop', 'copyServerLibs', 'copyMysqlDriver'
 libertyRun.dependsOn 'libertyStop'
 libertyStart.doLast {
 	println "Application available at: ${appUrl}"

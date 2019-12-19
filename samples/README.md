@@ -25,27 +25,35 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 ### Installing PlantsByWebsphere
 
 
-* Step 1:	select database to use (Derby or mySQL) skip to [step 7] if you choose Derby 
+* Step 1:	download and extract gradle to 'c:\gradle\' . Modify Windows path: `System properties -> Advanced -> Enviroment variables -> path` add 'c:\gradle\bin\'
 * Step 2:	install and run mySQL server
 * Step 3:	import SQL script located:  `plantsbywebsphere\sqlScripts\`
-* Step 4:	build the application "gradle start" - this step could fail we do only need to get the server installed
-* Step 4:	stop application "gradle stop"
-* Step 5:	copy mySQL driver into `plantsbywebsphere\build\wlp\usr\shared\resources\mysql`
-* Step 6:	continue to [step 8]
-
-* Step 7:	modify server.xml, uncomment Derby data source configuration
-
-* Step 8:	modify `plantsbywebsphere\src\main\liberty\config\jvm.options`, change remoraJ paths here.
-* Step 9:	`gradle start open` should open Internet browser with application running
+* Step 4:	modify `plantsbywebsphere\src\main\liberty\config\jvm.options`, change remoraJ paths here.
+* Step 5:	`gradle start open` should open Internet browser with application running
 
 
-## Installing Bank
+## Installing Bank JBoss
  
 * Step 1:	deploy database from folder`samples\bank\sql`
 * Step 2:	configure JBoss, change these files accordingly your system configuration and deploy all files in folder 	`\bank\config\jboss\jboss7.2\`, wmq.jmsra-9.0.4.0.rar - will install IBM MQ JMS driver, mysql-ds7.xml - will configure database, jms-ds7.xml - will configure JMS. Attach java agent (see readme on RemoraJ)
 * Step 3: 	Create `BankRequestQueue` and `BankReplyQueue`
 * Step 4:   mvn clean install wildfly:deploy
 * Step 5:	open bank application http://localhost:8080/Bank-1.0-SNAPSHOT/
+
+## Installing Bank Apache Tomcat 9.0.x
+
+* Step 1:	copy mysql driver (mysql-connector-java-8.0.18.jar) to tomcat/lib folder
+* Step 2:	copy IBM JMS lib and javax.jms-api-2.0.1.jar to tomcat/lib folder
+* Step 3:	deploy war, copy  Bank*.war to tomcat/webapps
+* Step 4:	configure JDBC, add lines to config/context.xml
+```  <Resource name="bank_db" auth="Container" type="javax.sql.DataSource"
+               maxTotal="100" maxIdle="30" maxWaitMillis="10000"
+               username="root" password="slabs123" driverClassName="com.mysql.jdbc.Driver"
+               url="jdbc:mysql://localhost:3306/bank?autoReconnect=true"/>
+			   
+````
+* Step 5:	configure IBM MQ
+* Step 6:	open bank application http://localhost:8080/Bank-1.0-SNAPSHOT/
 
 
 
