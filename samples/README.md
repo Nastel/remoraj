@@ -19,18 +19,6 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 
 ### Installing PlantsByWebsphere
 
-* Step 1:    select database to use (Derby or mySQL) skip to [step 7] if you choose Derby 
-* Step 2:    install and run mySQL server
-* Step 3:    import SQL script located:  `plantsbywebsphere\sqlScripts\`
-* Step 4:    build the application "gradle start" - this step could fail we do only need to get the server installed
-* Step 4:    stop application "gradle stop"
-* Step 5:    copy mySQL driver into `plantsbywebsphere\build\wlp\usr\shared\resources\mysql`
-* Step 6:    continue to [step 8]
-* Step 7:    modify server.xml, uncomment Derby data source configuration
-* Step 8:    modify `plantsbywebsphere\src\main\liberty\config\jvm.options`, change remoraJ paths here.
-* Step 9:    `gradle start open` should open Internet browser with application running
-
-## Installing Bank
 * Step 1:	download and extract gradle to 'c:\gradle\' . Modify Windows path: `System properties -> Advanced -> Enviroment variables -> path` add 'c:\gradle\bin\'
 * Step 2:	install and run mySQL server
 * Step 3:	import SQL script located:  `plantsbywebsphere\sqlScripts\`
@@ -47,16 +35,33 @@ jms-ds7.xml - will configure JMS. Attach java agent (see readme on RemoraJ)
 * Step 3:    create `BankRequestQueue` and `BankReplyQueue`
 * Step 4:    run `mvn clean install wildfly:deploy`
 * Step 5:    open bank application `http://localhost:8080/Bank-1.0-SNAPSHOT/`
+
+
 ## Installing Bank Apache Tomcat 9.0.x
 
 * Step 1:	copy mysql driver (mysql-connector-java-8.0.18.jar) to tomcat/lib folder
 * Step 2:	copy IBM JMS lib and javax.jms-api-2.0.1.jar to tomcat/lib folder
 * Step 3:	deploy war, copy  Bank*.war to tomcat/webapps
-* Step 4:	configure JDBC, add lines to config/context.xml
-```  <Resource name="bank_db" auth="Container" type="javax.sql.DataSource"
+* Step 4:	configure JDBC and JMS, add lines to config/context.xml
+```  
+	<Resource name="bank_db" auth="Container" type="javax.sql.DataSource"
                maxTotal="100" maxIdle="30" maxWaitMillis="10000"
                username="root" password="slabs123" driverClassName="com.mysql.jdbc.Driver"
                url="jdbc:mysql://localhost:3306/bank?autoReconnect=true"/>
+	<Resource
+      name="BankRequestQueue"
+      auth="Container"
+      type="com.ibm.mq.jms.MQQueue"
+      factory="com.ibm.mq.jms.MQQueueFactory"
+      description="JMS Queue for receiving messages from Dialog"
+      QU="BankRequestQueue"/>
+   <Resource
+      name="BankReplyQueue"
+      auth="Container"
+      type="com.ibm.mq.jms.MQQueue"
+      factory="com.ibm.mq.jms.MQQueueFactory"
+      description="JMS Queue for receiving messages from Dialog"
+      QU="BankReplyQueue"/>
 			   
 ````
 * Step 5:	configure IBM MQ
