@@ -54,6 +54,8 @@ public class ApacheHttpClientAdviceTest {
 		System.out.println(EntityUtils.toString(response.getEntity()));
 
 		Thread.sleep(3000);
+
+		httpClient.close();
 	}
 
 }
