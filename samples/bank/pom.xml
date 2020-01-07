@@ -11,7 +11,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -21,7 +20,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -31,20 +29,15 @@
                     <webappDirectory>./webapp</webappDirectory>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>2.0.1.Final</version>
             </plugin>
-
         </plugins>
-
     </build>
 
-
     <dependencies>
-
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
@@ -69,7 +62,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
-            <version>3.0.2.Final</version>
+            <version>3.9.3.Final</version>
             <scope>provided</scope>
         </dependency>
 
@@ -77,7 +70,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson-provider</artifactId>
-            <version>3.0.19.Final</version>
+            <version>3.9.3.Final</version>
         </dependency>
     </dependencies>
 
