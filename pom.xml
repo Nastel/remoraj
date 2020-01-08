@@ -13,7 +13,6 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <revision>0.1.1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -22,8 +21,8 @@
 
         <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
-        <byte.buddy.version>1.10.4</byte.buddy.version>
-        <chronicle.version>5.17.17</chronicle.version>
+        <byte.buddy.version>1.10.6</byte.buddy.version>
+        <chronicle.version>5.17.33</chronicle.version>
         <powermock.version>2.0.4</powermock.version>
         <tinylog.version>2.0.1</tinylog.version>
     </properties>
@@ -49,7 +48,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -131,7 +130,7 @@
         <module>remora-kafka</module>
         <module>remora-ejb3</module>
         <module>remora-spring</module>
-<!--        <module>remora-bank_benchmark</module>-->
+        <!--        <module>remora-bank_benchmark</module>-->
         <module>remora--package</module>
 
     </modules>
