@@ -69,7 +69,7 @@
         <property name="BuildSourceFQNFromStreamedData" value="true"/>
         <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}"/>
         <property name="HaltIfNoParser" value="false"/>
-        <property name="FileName" value="..\..\queue"/>
+        <property name="FileName" value="../../queue"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.EntryDefinition"/>
 
         <!--<reference name="Null"/>-->
