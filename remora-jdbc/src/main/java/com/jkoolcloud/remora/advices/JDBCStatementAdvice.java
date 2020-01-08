@@ -105,13 +105,17 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			}
 
 			try {
-				String resource = getFieldValue(thiz, String.class, "connection.myURL", "wrappedConn.mc.myURL",
-						"jndiName");
-				ed.setResource(resource, EntryDefinition.ResourceType.DATACENTER);
-				ed.addPropertyIfExist("RESOURCE", resource);
-				if (logging) {
-					logger.info("Adding resource reflection {0}", resource);
+				try {
+					String resource = getFieldValue(thiz, String.class, "connection.myURL", "wrappedConn.mc.myURL",
+							"jndiName");
+					ed.setResource(resource, EntryDefinition.ResourceType.DATACENTER);
+					ed.addPropertyIfExist("RESOURCE", resource);
+					if (logging) {
+						logger.info("Adding resource reflection {0}", resource);
+					}
+				} catch (IllegalArgumentException e) {
 				}
+
 			} catch (Exception e1) {
 				if (logging) {
 					logger.info("Exception: {0}", e1);

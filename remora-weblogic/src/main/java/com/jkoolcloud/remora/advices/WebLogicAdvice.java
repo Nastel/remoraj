@@ -101,7 +101,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 						logger.info("Setting server {0}", httpServer);
 					}
 					((CallStack) stack).setServer(httpServer.toString());
-				} catch (Exception e) {
+				} catch (IllegalArgumentException e) {
 					logger.info(e);
 				}
 

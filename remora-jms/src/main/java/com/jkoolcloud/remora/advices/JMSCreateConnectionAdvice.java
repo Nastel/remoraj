@@ -104,9 +104,13 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
-			Properties fieldValue = getFieldValue(thiz, Properties.class, "factory.properties");
-			if (fieldValue != null) {
-				ed.addProperties(fieldValue);
+			try {
+				Properties fieldValue = getFieldValue(thiz, Properties.class, "factory.properties");
+				if (fieldValue != null) {
+					ed.addProperties(fieldValue);
+				}
+			} catch (IllegalArgumentException e) {
+
 			}
 
 		} catch (Throwable t) {

@@ -77,16 +77,20 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			ed.setEventType(EntryDefinition.EventType.CALL);
-			String clientId = getFieldValue(thiz, String.class, "clientId");
-			String groupId = getFieldValue(thiz, String.class, "groupId");
-			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
-			if (entryDefinitions != null) {
-				String application = MessageFormat.format("clientId={}, groupId={}", clientId, groupId);
-				((CallStack) entryDefinitions).setApplication(application);
-				if (logging) {
-					logger.info(format("Setting the application", application));
+			try {
+				String clientId = getFieldValue(thiz, String.class, "clientId");
+				String groupId = getFieldValue(thiz, String.class, "groupId");
+				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+				if (entryDefinitions != null) {
+					String application = MessageFormat.format("clientId={}, groupId={}", clientId, groupId);
+					((CallStack) entryDefinitions).setApplication(application);
+					if (logging) {
+						logger.info(format("Setting the application", application));
+					}
 				}
+			} catch (IllegalArgumentException e) {
 			}
+
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

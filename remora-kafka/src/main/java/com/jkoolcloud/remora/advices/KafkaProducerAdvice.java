@@ -83,11 +83,16 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 
 			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 			if (entryDefinitions != null) {
-				String application = ReflectionUtils.getFieldValue(thiz, String.class, "clientId");
-				((CallStack) entryDefinitions).setApplication(application);
-				if (logging) {
-					logger.info(format("Setting the application", application));
+				try {
+					String application = ReflectionUtils.getFieldValue(thiz, String.class, "clientId");
+					((CallStack) entryDefinitions).setApplication(application);
+					if (logging) {
+						logger.info(format("Setting the application", application));
+					}
+				} catch (IllegalArgumentException e) {
+
 				}
+
 			}
 
 			ed.addPropertyIfExist("TOPIC", topic);
