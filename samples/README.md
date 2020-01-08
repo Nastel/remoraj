@@ -16,6 +16,9 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 ### Prerequisites
 
 * Gradle - https://downloads.gradle-dn.com/distributions/gradle-5.2.1-bin.zip
+* MySQL 5.7
+* IBM MQ 8.5
+
 
 ### Installing PlantsByWebsphere
 
@@ -32,9 +35,10 @@ PlantsByWebsphere application uses Bank on checkout and reduces the bank balance
 * Step 2:    configure JBoss, change these files accordingly your system configuration and deploy all files in folder 
 `\bank\config\jboss\jboss7.2\`, wmq.jmsra-9.0.4.0.rar - will install IBM MQ JMS driver, mysql-ds7.xml - will configure database, 
 jms-ds7.xml - will configure JMS. Attach java agent (see readme on RemoraJ)
-* Step 3:    create `BankRequestQueue` and `BankReplyQueue`
-* Step 4:    run `mvn clean install wildfly:deploy`
-* Step 5:    open bank application `http://localhost:8080/Bank-1.0-SNAPSHOT/`
+* Step 3:    run the JBoss with all modules loaded "standalone.bat -c standalone-full.xml" 
+* Step 4:    create `BankRequestQueue` and `BankReplyQueue`
+* Step 5:    run `mvn clean install wildfly:deploy`
+* Step 6:    open bank application `http://localhost:8080/Bank-1.0-SNAPSHOT/`
 
 
 ## Installing Bank Apache Tomcat 9.0.x
