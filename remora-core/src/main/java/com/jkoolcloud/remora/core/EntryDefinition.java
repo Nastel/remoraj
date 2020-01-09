@@ -5,39 +5,48 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jkoolcloud.remora.advices.TransparentAdvice;
+
 import net.openhft.chronicle.wire.AbstractMarshallable;
 
 public class EntryDefinition extends AbstractMarshallable {
-	final String id = new JUGFactoryImpl().newUUID();
-	final String adviceClass;
-	String name;
-	String clazz;
-	Map<String, String> properties = new HashMap<>();
+	protected final String id = new JUGFactoryImpl().newUUID();
 
-	String application;
+	private boolean transparent;
 
-	String resource;
-	ResourceType resourceType;
+	private String adviceClass;
+	protected String name;
+	private String clazz;
+	private Map<String, String> properties = new HashMap<>();
 
-	EventType eventType = EventType.CALL;
-	Mode mode = Mode.RUNNING;
+	private String application;
+	private String server;
 
-	String returnType;
+	private String resource;
+	private ResourceType resourceType;
 
-	boolean transparent;
-	String returnValue;
-	String exception;
-	String correlator;
-	Long startTime;
-	String StackTrace;
+	private EventType eventType = EventType.CALL;
+	private Mode mode = Mode.RUNNING;
 
-	String exceptionTrace;
-	String server;
+	private String returnType;
+
+	private String returnValue;
+	protected String exception;
+	private String correlator;
+	private Long startTime;
+
+	private String StackTrace;
+	private String exceptionTrace;
 
 	public EntryDefinition(Class adviceClass) {
 		this.adviceClass = adviceClass.getSimpleName();
+		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
+			setTransparent();
+		}
 	}
 
+	// public no arg constructor needed for serialization, thus marked as @Deprecated
+	@Deprecated
 	public EntryDefinition() {
 		adviceClass = null;
 	}
@@ -99,6 +108,10 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public void setClazz(String clazz) {
 		this.clazz = clazz;
+	}
+
+	public void setAdviceClass(Class adviceClass) {
+		this.adviceClass = adviceClass.getSimpleName();
 	}
 
 	public void setReturnType(String returnType) {
@@ -200,6 +213,10 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public void setTransparent() {
 		transparent = true;
+	}
+
+	public void setTransparent(boolean b) {
+		transparent = b;
 	}
 
 	public enum EventType {

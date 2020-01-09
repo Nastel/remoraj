@@ -86,9 +86,8 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (ed == null) {
-				ed = new EntryDefinition(WebsocketReceiveAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, WebsocketReceiveAdvice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", WebsocketReceiveAdvice.class.getName(), "before"));
 			}

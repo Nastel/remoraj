@@ -238,6 +238,40 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return MessageFormat.format(pattern, args);
 	}
 
+	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class adviceClass, TaggedLogger logger) {
+		if (ed != null) {
+			return ed;
+		}
+
+		EntryDefinition lastED = null;
+		CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+		if (entryDefinitions != null && entryDefinitions.size() != 0) {
+			lastED = entryDefinitions.peek();
+		}
+		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
+			if (lastED != null && lastED.isTransparent()) {
+				logger.debug("Transparent advice, last ED is transparent, returning last");
+				return lastED;
+			} else {
+				logger.debug("Transparent advice, no previous transparent advice, returning new");
+				EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
+				entryDefinition.setTransparent();
+				return entryDefinition;
+			}
+
+		} else {
+			if (lastED != null && lastED.isTransparent()) {
+				logger.debug("Nontransparent advice, previous transparent advice, returning last");
+				lastED.setAdviceClass(adviceClass);
+				lastED.setTransparent(false);
+				return lastED;
+			} else {
+				logger.debug("Nontransparent advice, previous non transparent advice, returning new");
+				return new EntryDefinition(adviceClass);
+			}
+		}
+	}
+
 	public static class TransformationLoggingListener extends AgentBuilder.Listener.Adapter {
 		TaggedLogger logger;
 		public final static String PREFIX = "[ByteBuddy]";

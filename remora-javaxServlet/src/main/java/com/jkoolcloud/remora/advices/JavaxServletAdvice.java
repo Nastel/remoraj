@@ -102,9 +102,8 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			if (isChainedClassInterception(JavaxServletAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
-			if (ed == null) {
-				ed = new EntryDefinition(JavaxServletAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, JavaxServletAdvice.class, logger);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null && req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {

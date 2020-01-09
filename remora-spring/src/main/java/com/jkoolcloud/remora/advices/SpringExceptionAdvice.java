@@ -83,9 +83,8 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (ed == null) {
-				ed = new EntryDefinition(SpringExceptionAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, SpringExceptionAdvice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", SpringExceptionAdvice.class.getName(), "before"));
 			}

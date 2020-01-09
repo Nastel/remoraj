@@ -91,9 +91,8 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			if (isChainedClassInterception(ApacheHttpClientAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
-			if (ed == null) {
-				ed = new EntryDefinition(ApacheHttpClientAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", ApacheHttpClientAdvice.class.getName(), "before"));
 			}

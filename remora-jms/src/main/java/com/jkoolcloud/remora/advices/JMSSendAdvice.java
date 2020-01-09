@@ -81,9 +81,8 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			if (isChainedClassInterception(JMSSendAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
-			if (ed == null) {
-				ed = new EntryDefinition(JMSSendAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, JMSSendAdvice.class, logger);
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 

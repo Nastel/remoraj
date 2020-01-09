@@ -99,9 +99,8 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			if (isChainedClassInterception(WASAdvice.class, logging ? logger : null)) {
 				return; // return if its chain of same
 			}
-			if (ed == null) {
-				ed = new EntryDefinition(WASAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, WASAdvice.class, logger);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null) {

@@ -26,6 +26,8 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	public static String INTERCEPTING_METHOD = "set*";
 
 	@RemoraConfig.Configurable
+	public static final String parameterPrefix = "PARAM_";
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -86,17 +88,15 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Local("startTime") long startTime) {
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JDBCCallableStatementAdvice.class.getName(), "before",
-						thiz.getClass().getName());
+				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCCallableStatementAdvice.class.getName(), "before",
+						thiz.getClass().getName(), method.getName());
 			}
-			if (stackThreadLocal != null && stackThreadLocal.get() != null && parameterName != null) {
-				ed = stackThreadLocal.get().peek();
-
-				if (parameterName instanceof String) {
-					ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
-				} else {
-					ed.addPropertyIfExist("PARAM_" + String.valueOf(parameterName), parameterValue.toString());
-				}
+			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, logger);
+			stackThreadLocal.get().push(ed);
+			if (parameterName instanceof String) {
+				ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
+			} else {
+				ed.addPropertyIfExist(parameterPrefix + String.valueOf(parameterName), parameterValue.toString());
 			}
 
 		} catch (Throwable t) {

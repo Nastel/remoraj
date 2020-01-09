@@ -87,9 +87,8 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (ed == null) {
-				ed = new EntryDefinition(${adviceClassName}Advice.class);
-			}
+
+			ed = getEntryDefinition(ed, ${adviceClassName}Advice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}",${adviceClassName}Advice.class.getName(), "before"));
 			}

@@ -97,9 +97,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 				return; // return if its chain of same
 			}
 
-			if (ed == null) {
-				ed = new EntryDefinition(JMSCreateConnectionAdvice.class);
-			}
+			ed = getEntryDefinition(ed, JMSCreateConnectionAdvice.class, logger);
 			ed.setEventType(EntryDefinition.EventType.OPEN);
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);

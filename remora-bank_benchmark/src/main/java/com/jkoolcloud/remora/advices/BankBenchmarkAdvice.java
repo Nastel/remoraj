@@ -80,9 +80,8 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (ed == null) {
-				ed = new EntryDefinition(BankBenchmarkAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, BankBenchmarkAdvice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", BankBenchmarkAdvice.class.getName(), "before"));
 			}

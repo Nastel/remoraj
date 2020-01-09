@@ -84,9 +84,8 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (ed == null) {
-				ed = new EntryDefinition(EjbRemoteAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", EjbRemoteAdvice.class.getName(), "before"));
 			}

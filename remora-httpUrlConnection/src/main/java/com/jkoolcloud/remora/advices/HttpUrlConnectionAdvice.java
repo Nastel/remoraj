@@ -84,9 +84,8 @@ public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (ed == null) {
-				ed = new EntryDefinition(HttpUrlConnectionAdvice.class);
-			}
+
+			ed = getEntryDefinition(ed, HttpUrlConnectionAdvice.class, logger);
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", HttpUrlConnectionAdvice.class.getName(), "before"));
 			}

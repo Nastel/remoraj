@@ -37,7 +37,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return nameStartsWith("execute").and(takesArgument(0, String.class)).and(isPublic());
+		return nameStartsWith("execute").and(takesArgument(0, String.class).or(takesArguments(0))).and(isPublic());
 	}
 
 	/**
@@ -78,30 +78,38 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Statement thiz, //
-			@Advice.Argument(0) String sql, //
+			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (isChainedClassInterception(JDBCStatementAdvice.class, logging ? logger : null)) {
-				return;
-			}
-			if (ed == null) {
-				ed = new EntryDefinition(JDBCStatementAdvice.class);
-			}
+			// if (isChainedClassInterception(JDBCStatementAdvice.class, logging ? logger : null)) {
+			// return;
+			// }
+
+			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, logger);
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JDBCStatementAdvice.class.getName(), "before",
-						thiz.getClass().getName());
+				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCStatementAdvice.class.getName(), "before",
+						thiz.getClass().getName(), method.getName());
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
-			ed.addPropertyIfExist("SQL", sql);
 
-			if (sql.toUpperCase().startsWith("SELECT")) {
-				ed.setEventType(EntryDefinition.EventType.RECEIVE);
+			String sql = ed.getProperties().get("SQL");
+
+			if (arguments != null && arguments.length > 0 && arguments[0] instanceof String) {
+				sql = (String) arguments[0];
 			}
 
-			if (sql.toUpperCase().startsWith("UPDATE") || sql.toUpperCase().startsWith("INSERT")) {
-				ed.setEventType(EntryDefinition.EventType.SEND);
+			if (sql != null) {
+				ed.addPropertyIfExist("SQL", sql);
+
+				if (sql.toUpperCase().startsWith("SELECT")) {
+					ed.setEventType(EntryDefinition.EventType.RECEIVE);
+				}
+
+				if (sql.toUpperCase().startsWith("UPDATE") || sql.toUpperCase().startsWith("INSERT")) {
+					ed.setEventType(EntryDefinition.EventType.SEND);
+				}
 			}
 
 			try {
@@ -146,7 +154,6 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Statement thiz, //
-			@Advice.Argument(0) String sql, //
 			@Advice.Origin Method method, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //

@@ -60,11 +60,7 @@ public class SimpleTest extends BaseTransformers {
 		try {
 			logger.info("BEFORE METHOD CALL");
 			System.out.println("BEFORE METHOD CALL");
-			if (ed == null) {
-				ed = new EntryDefinition(SimpleTest.class);
-				System.out.println("NEW entry def");
-				logger.info("NEW entry def");
-			}
+			ed = getEntryDefinition(ed, SimpleTest.class, logger);
 
 			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addProperty("URI", uri.toString());
