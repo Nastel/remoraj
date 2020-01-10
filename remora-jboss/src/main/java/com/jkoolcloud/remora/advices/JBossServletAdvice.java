@@ -67,7 +67,8 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 			@Advice.Local("startTime") long startTime) {
 		try {
 
-			ed = getEntryDefinition(ed, JBossServletAdvice.class, logger);
+			ed = getEntryDefinition(ed, JBossServletAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info("Entering: {0} {1} from {2}", JBossServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());

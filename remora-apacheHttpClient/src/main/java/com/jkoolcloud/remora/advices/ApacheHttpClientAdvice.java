@@ -92,7 +92,8 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 				return; // return if its chain of same
 			}
 
-			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logger);
+			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", ApacheHttpClientAdvice.class.getName(), "before"));
 			}

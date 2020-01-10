@@ -69,7 +69,8 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		try {
 
-			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, logger);
+			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", WebsocketEndpointAdvice.class.getName(), "before"));
 			}

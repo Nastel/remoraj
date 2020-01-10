@@ -103,7 +103,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 				return; // return if its chain of same
 			}
 
-			ed = getEntryDefinition(ed, JavaxServletAdvice.class, logger);
+			ed = getEntryDefinition(ed, JavaxServletAdvice.class, logging ? logger : null);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null && req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
@@ -167,13 +167,17 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 						}
 					}
 				} catch (Throwable t) {
-					logger.info("Failed getting some of properties" + req);
-					logger.error(t);
+					if (logging) {
+						logger.info("Failed getting some of properties" + req);
+						logger.error(t);
+					}
 
 				}
 
 			} else {
-				logger.info("## Request null");
+				if (logging) {
+                    logger.info("## Request null");
+                }
 			}
 
 		} catch (Throwable t) {

@@ -91,7 +91,8 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCCallableStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
 			}
-			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, logger);
+			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, logging ? logger : null);
+			;
 			stackThreadLocal.get().push(ed);
 			if (parameterName instanceof String) {
 				ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());

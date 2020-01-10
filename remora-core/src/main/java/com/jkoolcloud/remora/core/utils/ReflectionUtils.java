@@ -15,7 +15,6 @@ public class ReflectionUtils {
 					Object o = field.get(workingObject);
 					workingObject = o;
 				} catch (NoSuchFieldException e) {
-					e.printStackTrace();
 					break;
 				} catch (IllegalAccessException e) {
 					// we set it accessible
