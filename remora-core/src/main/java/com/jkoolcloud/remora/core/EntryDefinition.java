@@ -63,11 +63,25 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public void addProperty(String key, String value) {
-		properties.put(key, value);
+		String lastValue = value;
+		int iteration = 0;
+		while (lastValue != null) {
+
+			if (iteration == 0) {
+				lastValue = properties.put(key, lastValue);
+			} else {
+				lastValue = properties.put(key + "_" + iteration, lastValue);
+			}
+			iteration++;
+
+		}
 	}
 
-	public void addProperties(Map map) {
-		properties.putAll(map);
+	public void addProperties(Map<Object, Object> map) {
+		for (Map.Entry<Object, Object> e : map.entrySet()) {
+			addProperty(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+		}
+
 	}
 
 	public void addPropertyIfExist(String key, String value) {
@@ -107,6 +121,9 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public void setClazz(String clazz) {
+		if (clazz != null) {
+			addProperty("SCLASS", clazz);
+		}
 		this.clazz = clazz;
 	}
 
@@ -185,6 +202,10 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public void setResource(String resource, ResourceType resourceType) {
 		this.resource = resourceType.name() + "=" + resource;
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
 	}
 
 	public void stop() {

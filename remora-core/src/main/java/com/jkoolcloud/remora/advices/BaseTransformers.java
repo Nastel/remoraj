@@ -189,9 +189,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger) {
+	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger,
+			EntryDefinition lastED) {
 		try {
-			if (adviceClass.getSimpleName().equals(stackThreadLocal.get().peek().getAdviceClass())) {
+			if (adviceClass.getSimpleName().equals(lastED.getAdviceClass())) {
 				if (logger != null) {
 					logger.info(("Stack contains the same advice"));
 				}
@@ -251,31 +252,37 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-                    logger.debug("Transparent advice, last ED is transparent, returning last");
-                }
+					logger.debug("Transparent advice, last ED is transparent, returning last");
+				}
 				return lastED;
 			} else {
 				if (logger != null) {
-                    logger.debug("Transparent advice, no previous transparent advice, returning new");
-                }
+					logger.debug("Transparent advice, no previous transparent advice, returning new");
+				}
 				EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
 				entryDefinition.setTransparent();
+				entryDefinition.setMode(EntryDefinition.Mode.STOP);
 				return entryDefinition;
 			}
 
 		} else {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-                    logger.debug("Nontransparent advice, previous transparent advice, returning last");
-                }
+					logger.debug("Nontransparent advice, previous transparent advice, returning last");
+				}
 				lastED.setAdviceClass(adviceClass);
 				lastED.setTransparent(false);
+				lastED.setMode(EntryDefinition.Mode.RUNNING);
 				return lastED;
 			} else {
 				if (logger != null) {
-                    logger.debug("Nontransparent advice, previous non transparent advice, returning new");
-                }
-				return new EntryDefinition(adviceClass);
+					logger.debug("Nontransparent advice, previous non transparent advice, returning new");
+				}
+				if (isChainedClassInterception(adviceClass, logger, lastED)) {
+					return lastED;
+				} else {
+					return new EntryDefinition(adviceClass);
+				}
 			}
 		}
 	}

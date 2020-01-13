@@ -61,7 +61,7 @@ public class BaseTransformersTest {
 	public void getEntryDefinitionNonTrasperentAdviceContinueStack() {
 		EntryDefinition ed = null;
 		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
-		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class);
+		EntryDefinition stack1 = new EntryDefinition(GeneralAdvice.class);
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
 		assertNotNull(returned);

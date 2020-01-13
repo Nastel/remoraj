@@ -78,13 +78,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 				logger.info("Entering: {0} {1} from {2}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(JMSSendAdvice.class, logging ? logger : null)) {
-				return; // return if its chain of same
-			}
 
 			ed = getEntryDefinition(ed, JMSSendAdvice.class, logging ? logger : null);
-			;
-			ed.setEventType(EntryDefinition.EventType.SEND);
+            ed.setEventType(EntryDefinition.EventType.SEND);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (thiz instanceof QueueSender) {

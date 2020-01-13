@@ -99,9 +99,6 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 				logger.info("Entering: {0} {1} from {2}", JavaxServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(JavaxServletAdvice.class, logging ? logger : null)) {
-				return; // return if its chain of same
-			}
 
 			ed = getEntryDefinition(ed, JavaxServletAdvice.class, logging ? logger : null);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -176,8 +173,8 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 			} else {
 				if (logging) {
-                    logger.info("## Request null");
-                }
+					logger.info("## Request null");
+				}
 			}
 
 		} catch (Throwable t) {
