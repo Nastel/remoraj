@@ -27,4 +27,10 @@ if [ "$MAINCLASS" == "" ]; then
 	MAINCLASS="com.jkoolcloud.tnt4j.streams.StreamsAgent"
 fi
 
+if [ "$JAVA_HOME" == "" ]; then
+  echo '"JAVA_HOME" env. variable is not defined!..'
+else
+  echo 'Will use java from: "$JAVA_HOME"'
+fi
+
 "$JAVA_HOME/bin/java" $STREAMSOPTS -classpath "$LIBPATH" $MAINCLASS -f:tnt-data-source.xml
