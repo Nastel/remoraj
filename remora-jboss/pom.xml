@@ -108,37 +108,32 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
-                    <finalName>remora</finalName>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <minimizeJar>false</minimizeJar>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
                     <relocations>
                         <relocation>
-                            <pattern>org</pattern>
-                            <shadedPattern>com.jkoolcloud.remora.shaded.org</shadedPattern>
-                        </relocation>
-                        <!--<relocation>-->
-                        <!--<pattern>java</pattern>-->
-                        <!--<shadedPattern>com.jkoolcloud.remora.shaded.java</shadedPattern>-->
-                        <!--</relocation>-->
-                        <relocation>
-                            <pattern>net</pattern>
-                            <shadedPattern>com.jkoolcloud.remora.shaded.net</shadedPattern>
-                            <excludes>
-                                <exclude>net.bytebuddy.**</exclude>
-                            </excludes>
-                        </relocation>
-                        <relocation>
-                            <pattern>com</pattern>
-                            <shadedPattern>com.jkoolcloud.remora.shaded.com</shadedPattern>
-                            <excludes>
-                                <exclude>com.jkoolcloud.remora.**</exclude>
-                            </excludes>
-                        </relocation>
-                        <relocation>
-                            <pattern>software</pattern>
-                            <shadedPattern>com.jkoolcloud.remora.shaded.software</shadedPattern>
+                            <pattern>org.tinylog</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.org.tinylog</shadedPattern>
                         </relocation>
                     </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <artifactSet>
+
+                        <includes>
+                            <include>com.jkoolcloud.remora:remora-jboss</include>
+                        </includes>
+                    </artifactSet>
                 </configuration>
                 <executions>
                     <execution>

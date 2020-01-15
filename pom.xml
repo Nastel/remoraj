@@ -22,7 +22,7 @@
         <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
         <byte.buddy.version>1.10.6</byte.buddy.version>
-		<!--DO NOT CHANGE chronicle version!!!-->
+        <!--DO NOT CHANGE chronicle version!!!-->
         <chronicle.version>5.17.17</chronicle.version>
         <powermock.version>2.0.4</powermock.version>
         <tinylog.version>2.0.1</tinylog.version>
@@ -131,7 +131,7 @@
         <module>remora-kafka</module>
         <module>remora-ejb3</module>
         <module>remora-spring</module>
-        <!--        <module>remora-bank_benchmark</module>-->
+        <!--<module>remora-bank_benchmark</module>-->
         <module>remora--package</module>
 
     </modules>
