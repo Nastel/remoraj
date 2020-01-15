@@ -71,7 +71,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("startTime") long startTime) {
 		try {
 
-			ed = getEntryDefinition(ed, KafkaProducerAdvice.class, logger);
+			ed = getEntryDefinition(ed, KafkaProducerAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", KafkaProducerAdvice.class.getName(), "before"));
 			}

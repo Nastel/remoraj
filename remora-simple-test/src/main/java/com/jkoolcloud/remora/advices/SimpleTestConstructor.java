@@ -62,7 +62,8 @@ public class SimpleTestConstructor extends BaseTransformers {
 	{
 		try {
 			System.out.println("BEFORE METHOD CALL");
-			ed = getEntryDefinition(ed, SimpleTestConstructor.class, logger);
+			ed = getEntryDefinition(ed, SimpleTestConstructor.class, logging ? logger : null);
+			;
 
 			if (args != null && args[0] instanceof String) {
 

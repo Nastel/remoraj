@@ -90,12 +90,9 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 				logger.info("Entering: {0} {1} from {2}", IBMAdapterRSA.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(IBMAdapterRSA.class, logging ? logger : null)) {
-				return; // return if its chain of same
-			}
 
-			ed = getEntryDefinition(ed, IBMAdapterRSA.class, logger);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			ed = getEntryDefinition(ed, IBMAdapterRSA.class, logging ? logger : null);
+            startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			if (arguments != null && arguments.length >= 1 && arguments[0] instanceof String) {
 				ed.addProperty("SQL", arguments[0].toString());
 

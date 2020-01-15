@@ -96,12 +96,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				logger.info("Entering: {0} {1} from {2}", WASAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
-			if (isChainedClassInterception(WASAdvice.class, logging ? logger : null)) {
-				return; // return if its chain of same
-			}
 
-			ed = getEntryDefinition(ed, WASAdvice.class, logger);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			ed = getEntryDefinition(ed, WASAdvice.class, logging ? logger : null);
+            startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null) {
 				try {

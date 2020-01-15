@@ -88,12 +88,8 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (isChainedClassInterception(ApacheHttpClientAdvice.class, logging ? logger : null)) {
-				return; // return if its chain of same
-			}
-
-			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logger);
-			if (logging) {
+			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
+            if (logging) {
 				logger.info(format("Entering: {0} {1}", ApacheHttpClientAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);

@@ -68,7 +68,8 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		try {
 
-			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logger);
+			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", KafkaConsumerClientAdvice.class.getName(), "before"));
 			}

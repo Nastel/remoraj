@@ -83,7 +83,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	{
 		try {
 
-			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logger);
+			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", KafkaConsumerAdvice.class.getName(), "before"));
 			}

@@ -81,7 +81,8 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("startTime") long startTime) {
 		try {
 
-			ed = getEntryDefinition(ed, SpringServiceAdvice.class, logger);
+			ed = getEntryDefinition(ed, SpringServiceAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", SpringServiceAdvice.class.getName(), "before"));
 			}

@@ -18,11 +18,9 @@
         <release.deploy.dir>../../build/${release.deploy.name}</release.deploy.dir>
         <release.deploy.finalName>${release.deploy.name}-${project.version}</release.deploy.finalName>
         <!--<release.deploy.zip.assembly>src/assembly/zipDeployAssembly.xml</release.deploy.zip.assembly>-->
-        <!--<release.deploy.gz.assembly>src/assembly/gzDeployAssembly.xml</release.deploy.gz.assembly>-->
+        <release.deploy.gz.assembly>src/assembly/unixDeployAssembly.xml</release.deploy.gz.assembly>
         <release.deploy.dir.assembly>src/assembly/dirDeployAssembly.xml</release.deploy.dir.assembly>
         <build.assemblies.attach>false</build.assemblies.attach>
-
-        <assembly.line.endings>unix</assembly.line.endings>
     </properties>
 
     <build>
@@ -63,7 +61,7 @@
                             <descriptors>
                                 <descriptor>${release.deploy.dir.assembly}</descriptor>
                                 <!--<descriptor>${release.deploy.zip.assembly}</descriptor>-->
-                                <!--<descriptor>${release.deploy.gz.assembly}</descriptor>-->
+                                <descriptor>${release.deploy.gz.assembly}</descriptor>
                             </descriptors>
                             <outputDirectory>${release.deploy.dir}</outputDirectory>
                             <attach>${build.assemblies.attach}</attach>

@@ -85,7 +85,8 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		try {
 
-			ed = getEntryDefinition(ed, SpringTransactionAdvice.class, logger);
+			ed = getEntryDefinition(ed, SpringTransactionAdvice.class, logging ? logger : null);
+			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", SpringTransactionAdvice.class.getName(), "before"));
 			}

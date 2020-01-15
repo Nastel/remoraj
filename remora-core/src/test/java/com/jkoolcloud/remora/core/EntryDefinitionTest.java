@@ -59,4 +59,16 @@ public class EntryDefinitionTest {
 		}
 	}
 
+	@Test
+	public void testPropertyShift() {
+		EntryDefinition entryDefinition = new EntryDefinition(EntryDefinitionTest.class);
+		entryDefinition.addProperty("TEST", "1");
+		entryDefinition.addProperty("TEST", "2");
+		entryDefinition.addProperty("TEST", "3");
+		assertEquals("3", entryDefinition.getProperties().get("TEST"));
+		assertEquals("2", entryDefinition.getProperties().get("TEST_1"));
+		assertEquals("1", entryDefinition.getProperties().get("TEST_2"));
+		System.out.println(entryDefinition.getProperties());
+	}
+
 }
