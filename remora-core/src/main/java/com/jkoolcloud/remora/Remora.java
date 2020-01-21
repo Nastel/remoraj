@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.output.OutputManager;
 import com.jkoolcloud.remora.core.utils.RemoraClassLoader;
 
@@ -56,8 +57,19 @@ public class Remora {
 		// logger.info("Initializing advices: " + appClass);
 		initializeAdvices.invoke(instance, inst, bootLoader);
 		logger = Logger.tag("INIT");
+		EntryDefinition.setVmIdentification(System.getProperty("remoraVMIdentification", getDefaultVM()));
 		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
 		OutputManager outputManager = OutputManager.INSTANCE; //
+	}
+
+	private static String getDefaultVM() {
+		String processName;
+		try {
+			processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+		} catch (Exception e) {
+			processName = "NA";
+		}
+		return processName;
 	}
 
 	public static URL[] findJars(String location) throws MalformedURLException {

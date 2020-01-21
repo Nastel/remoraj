@@ -88,8 +88,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			// }
 
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
+            if (logging) {
 				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
 			}
@@ -117,7 +116,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 				try {
 					String resource = getFieldValue(thiz, String.class, "connection.myURL", "wrappedConn.mc.myURL",
 							"jndiName");
-					ed.setResource(resource, EntryDefinition.ResourceType.DATACENTER);
+					ed.setResource(resource, EntryDefinition.ResourceType.DATABASE);
 					ed.addPropertyIfExist("RESOURCE", resource);
 					if (logging) {
 						logger.info("Adding resource reflection {0}", resource);

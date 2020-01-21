@@ -50,6 +50,7 @@
         <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
         <field name="Message" locator="StackTrace" locator-type="Label"/>
         <field name="ServerName" locator="server" locator-type="Label"/>
+        <field name="VmIdentification" locator="vmIdentification" locator-type="Label"/>
 
         <embedded-activity name="properties" locator="properties" locator-type="Label">
             <parser-ref name="propertiesParser"/>
@@ -67,7 +68,7 @@
 
     <stream name="ChronicleStream" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
         <property name="BuildSourceFQNFromStreamedData" value="true"/>
-        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}"/>
+        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${VmIdentification}"/>
         <property name="HaltIfNoParser" value="false"/>
         <property name="FileName" value="../../queue"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.EntryDefinition"/>

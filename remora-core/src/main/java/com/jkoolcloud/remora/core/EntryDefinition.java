@@ -22,6 +22,10 @@ public class EntryDefinition extends AbstractMarshallable {
 	private String application;
 	private String server;
 
+    //Workaround for serializatiom, static fields not serialised
+	private static String vmIdentificationStatic;
+	private String vmIdentification;
+
 	private String resource;
 	private ResourceType resourceType;
 
@@ -40,6 +44,7 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public EntryDefinition(Class adviceClass) {
 		this.adviceClass = adviceClass.getSimpleName();
+		vmIdentification = vmIdentificationStatic;
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			setTransparent();
 		}
@@ -220,6 +225,10 @@ public class EntryDefinition extends AbstractMarshallable {
 		return server;
 	}
 
+	public static void setVmIdentification(String vmIdentification) {
+		EntryDefinition.vmIdentificationStatic = vmIdentification;
+	}
+
 	public void setException(Throwable exception) {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -249,6 +258,6 @@ public class EntryDefinition extends AbstractMarshallable {
 	}
 
 	public enum ResourceType {
-		GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL, NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE, SERVICE, QUEUE, FILE, TOPIC, HTTP
+		GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL, NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE, SERVICE, QUEUE, FILE, TOPIC, DATABASE, HTTP
 	}
 }

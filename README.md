@@ -86,6 +86,12 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 RemoraJ configuration file is located `config` folder, file named `remora.properties`.
 See relevant comments in file for advanced config.
 
+## VM identification
+
+To identify VM you can set system property (java -D) `remoraVMIdentification` to any readable token identifying the process remoraJ are attached to. 
+By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result. NOTE: this defautl value might be not available in every VM's implementation and might be platform dependent.
+
+
 # Running
 
 Once the agent attached and TNT4J-Streams configured you can 
