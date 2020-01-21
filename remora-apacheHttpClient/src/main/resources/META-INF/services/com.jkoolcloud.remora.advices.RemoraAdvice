@@ -1,1 +1,2 @@
 com.jkoolcloud.remora.advices.ApacheHttpClientAdvice
+com.jkoolcloud.remora.advices.ApacheLegacyHttpClientAdvice

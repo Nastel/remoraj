@@ -19,9 +19,9 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAdvice {
+public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "ApacheHttpClientAdvice";
+	public static final String ADVICE_NAME = "ApacheLegacyHttpClientAdvice";
 	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
 	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
@@ -39,12 +39,10 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named("execute").and(takesArguments(4))
-				.and(returns(hasSuperType(named("org.apache.http.client.methods.CloseableHttpResponse"))))
-				.and(takesArgument(0, hasSuperType(named("org.apache.http.conn.routing.HttpRoute"))))
-				.and(takesArgument(1, hasSuperType(named("org.apache.http.client.methods.HttpRequestWrapper"))))
-				.and(takesArgument(2, hasSuperType(named("org.apache.http.client.protocol.HttpClientContext"))))
-				.and(takesArgument(3, hasSuperType(named("org.apache.http.client.methods.HttpExecutionAware"))));
+		return named("execute").and(takesArguments(3)).and(returns(hasSuperType(named("org.apache.http.HttpResponse"))))
+				.and(takesArgument(0, hasSuperType(named("org.apache.http.HttpHost"))))
+				.and(takesArgument(1, hasSuperType(named("org.apache.http.HttpRequest"))))
+				.and(takesArgument(2, hasSuperType(named("org.apache.http.protocol.HttpContext"))));
 	}
 
 	/**
@@ -53,7 +51,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named("org.apache.http.impl.execchain.ClientExecChain"));
+		return hasSuperType(named("org.apache.http.client.RequestDirector"));
 	}
 
 	@Override
