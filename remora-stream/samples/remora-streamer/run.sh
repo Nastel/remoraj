@@ -21,7 +21,7 @@ LOG4JOPTS="-Dlog4j.configuration=file:$LOG4J_PROPERTIES"
 #LOG4JOPTS=${LOG4JOPTS:-"-Dlog4j.configuration=file:$SCRIPTPATH/../config/log4j.properties"}
 
 #LOGBACKOPTS="-Dlogback.configurationFile=file:$SCRIPTPATH/../config/logback.xml"
-STREAMSOPTS="$STREAMSOPTS $LOG4JOPTS $TNT4JOPTS"
+STREAMSOPTS="$STREAMSOPTS $LOG4JOPTS $TNT4JOPTS -Dfile.encoding=UTF-8"
 
 if [ "$MAINCLASS" == "" ]; then
 	MAINCLASS="com.jkoolcloud.tnt4j.streams.StreamsAgent"
