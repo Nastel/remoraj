@@ -20,11 +20,10 @@ public class EntryDefinitionTest {
 	 * This test tests creating, writing and reading from chronicle queue output. Object pushed to the queue should be
 	 * the same as dematerialised.
 	 *
-	 * @throws IOException
+	 * @throws Exception
 	 */
-
 	@Test
-	public void testWiteToQueue() throws IOException, InterruptedException {
+	public void testWiteToQueue() throws Exception {
 		Path tempDirectory = Files.createTempDirectory(getClass().getName());
 
 		ChronicleQueue queue = ChronicleQueue.single(tempDirectory.toFile().getAbsolutePath());

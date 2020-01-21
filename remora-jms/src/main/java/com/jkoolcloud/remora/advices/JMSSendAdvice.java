@@ -80,7 +80,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 			ed = getEntryDefinition(ed, JMSSendAdvice.class, logging ? logger : null);
-            ed.setEventType(EntryDefinition.EventType.SEND);
+			ed.setEventType(EntryDefinition.EventType.SEND);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (thiz instanceof QueueSender) {

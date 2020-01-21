@@ -152,9 +152,9 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(ADVICE_NAME);
 		if (load) {
-		    getTransform().with(getListener()).installOn(instrumentation);
+			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-		    logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {0} not enabled", getName());
 		}
 	}
 

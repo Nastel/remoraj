@@ -79,7 +79,7 @@
                     </configuration>
                 </plugin>
             </plugins>
-                </pluginManagement>
+        </pluginManagement>
 
         <plugins>
             <plugin>

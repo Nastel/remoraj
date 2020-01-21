@@ -98,7 +98,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 			ed = getEntryDefinition(ed, WASAdvice.class, logging ? logger : null);
-            startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null) {
 				try {

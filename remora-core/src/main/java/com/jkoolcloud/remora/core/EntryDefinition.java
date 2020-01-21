@@ -22,7 +22,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	private String application;
 	private String server;
 
-    //Workaround for serializatiom, static fields not serialised
+	// Workaround for serializatiom, static fields not serialised
 	private static String vmIdentificationStatic;
 	private String vmIdentification;
 
