@@ -85,7 +85,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		try {
 			if (logging) {
-				logger.info("Entering : {0} {1} from {2}", WebLogicAdvice.class.getName(), "before",
+				logger.info("Entering : {} {} from {}", WebLogicAdvice.class.getName(), "before",
 						thiz.getClass().getName());
 			}
 
@@ -98,7 +98,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 				try {
 					Object httpServer = ReflectionUtils.getFieldValue(thiz, Object.class, "context.httpServer");
 					if (logging) {
-						logger.info("Setting server {0}", httpServer);
+						logger.info("Setting server {}", httpServer);
 					}
 					((CallStack) stack).setServer(httpServer.toString());
 				} catch (IllegalArgumentException e) {
@@ -146,7 +146,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", WebLogicAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", WebLogicAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {

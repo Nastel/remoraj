@@ -84,8 +84,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
-            if (logging) {
-				logger.info(format("Entering: {0} {1}", KafkaConsumerAdvice.class.getName(), "before"));
+			if (logging) {
+				logger.info("Entering: {} {}", KafkaConsumerAdvice.class.getName(), "before");
 			}
 
 			ed.setName("consume");
@@ -127,7 +127,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 
 		try {
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", KafkaConsumerAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", KafkaConsumerAdvice.class.getName(), "after");
 			}
 
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -174,7 +174,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

@@ -88,7 +88,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JMSReceiveAdvice.class.getSimpleName(), "before",
+				logger.info("Entering: {} {} from {}", JMSReceiveAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
 
@@ -141,7 +141,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 		boolean doFinnaly = true;
 		try {
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JMSReceiveAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", JMSReceiveAdvice.class.getName(), "after");
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {

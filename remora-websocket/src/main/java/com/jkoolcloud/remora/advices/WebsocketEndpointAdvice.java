@@ -71,7 +71,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 
 			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, logging ? logger : null);
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", WebsocketEndpointAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", WebsocketEndpointAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
@@ -88,7 +88,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 
 						WebsocketSessionAdvice.sessionHandlers.put(handler, session);
 						if (logging) {
-							logger.info("Adding known handler {0} for session {1}", handler, session);
+							logger.info("Adding known handler {} for session {}", handler, session);
 						}
 					}
 					WebsocketSessionAdvice.sessionEndpoints.put(session.getBasicRemote(), session);
@@ -164,7 +164,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", WebsocketEndpointAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", WebsocketEndpointAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
@@ -203,7 +203,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

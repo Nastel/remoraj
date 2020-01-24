@@ -40,7 +40,7 @@ public class RemoraInit {
 		// need to configure logger first
 		adviceList.forEach(advice -> {
 			advice.install(inst);
-			Logger.tag("INIT").info("Installed {0}", advice.getName());
+			Logger.tag("INIT").info("Installed {}", advice.getName());
 		});
 		// LOGGER.info("Loading finished");
 

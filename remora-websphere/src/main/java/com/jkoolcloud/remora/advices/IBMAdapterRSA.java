@@ -87,12 +87,12 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	) {
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", IBMAdapterRSA.class.getSimpleName(), "before",
+				logger.info("Entering: {} {} from {}", IBMAdapterRSA.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
 
 			ed = getEntryDefinition(ed, IBMAdapterRSA.class, logging ? logger : null);
-            startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			if (arguments != null && arguments.length >= 1 && arguments[0] instanceof String) {
 				ed.addProperty("SQL", arguments[0].toString());
 
@@ -144,7 +144,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", IBMAdapterRSA.class.getName(), "after"));
+				logger.info("Exiting: {} {}", IBMAdapterRSA.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} finally {

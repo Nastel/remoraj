@@ -75,7 +75,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
+				logger.info("Entering: {} {} from {}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
 
@@ -138,7 +138,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			// noinspection Duplicates
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JMSSendAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", JMSSendAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {

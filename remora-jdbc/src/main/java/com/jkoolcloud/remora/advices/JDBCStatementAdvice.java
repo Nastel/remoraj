@@ -89,7 +89,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, logging ? logger : null);
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCStatementAdvice.class.getName(), "before",
+				logger.info("Entering: {} {} from {}.{}()", JDBCStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -119,14 +119,14 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 					ed.setResource(resource, EntryDefinition.ResourceType.DATABASE);
 					ed.addPropertyIfExist("RESOURCE", resource);
 					if (logging) {
-						logger.info("Adding resource reflection {0}", resource);
+						logger.info("Adding resource reflection {}", resource);
 					}
 				} catch (IllegalArgumentException e) {
 				}
 
 			} catch (Exception e1) {
 				if (logging) {
-					logger.info("Exception: {0}", e1);
+					logger.info("Exception: {}", e1);
 				}
 			}
 
@@ -168,7 +168,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info("Exiting: {0} {1}", JDBCStatementAdvice.class.getName(), "after");
+				logger.info("Exiting: {} {}", JDBCStatementAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 
@@ -193,7 +193,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

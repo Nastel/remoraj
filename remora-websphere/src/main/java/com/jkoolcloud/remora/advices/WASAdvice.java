@@ -93,12 +93,12 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", WASAdvice.class.getSimpleName(), "before",
+				logger.info("Entering: {} {} from {}", WASAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
 
 			ed = getEntryDefinition(ed, WASAdvice.class, logging ? logger : null);
-            startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			if (req != null) {
 				try {
@@ -171,7 +171,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", WASAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", WASAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 			ed.addProperty("RespContext", resp.getContentType());

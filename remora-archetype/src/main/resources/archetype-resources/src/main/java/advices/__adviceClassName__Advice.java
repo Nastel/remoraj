@@ -90,7 +90,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 
 			ed = getEntryDefinition(ed, ${adviceClassName}Advice.class, logging ? logger : null);;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}",${adviceClassName}Advice.class.getName(), "before"));
+				logger.info("Entering: {} {}",${adviceClassName}Advice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
@@ -130,7 +130,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}",${adviceClassName}Advice.class.getName(), "after"));
+				logger.info("Exiting: {} {}",${adviceClassName}Advice.class.getName(), "after"));
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
 		} catch (Throwable t) {
@@ -154,7 +154,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 		if (load) {
 		    getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-		    logger.info("Advice {0} not enabled", getName());
+		    logger.info("Advice {} not enabled", getName());
 		}
 	}
 

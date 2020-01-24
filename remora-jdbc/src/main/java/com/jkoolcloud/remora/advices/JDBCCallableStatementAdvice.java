@@ -88,7 +88,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Local("startTime") long startTime) {
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCCallableStatementAdvice.class.getName(), "before",
+				logger.info("Entering: {} {} from {}.{}()", JDBCCallableStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
 			}
 			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, logging ? logger : null);
@@ -145,7 +145,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

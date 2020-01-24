@@ -112,7 +112,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 		if (logger != null) {
 			logger.info(
-					format("Exception {0} occurred in method {1}", exception.getMessage(), entryDefinition.getClazz()));
+					format("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz()));
 		}
 	}
 
@@ -154,7 +154,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 		} catch (Throwable t) {
 			if (logger != null) {
-				logger.info(format("####Advice error/fillDefaultValuesBefore: {0}", t));
+				logger.info("####Advice error/fillDefaultValuesBefore: {}", t);
 			}
 		}
 		return System.nanoTime();
@@ -250,7 +250,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static void handleAdviceException(Throwable t, String adviceName, TaggedLogger logger) {
 		if (logger != null) {
-			logger.info("{0} threw an exception {2} {1}", adviceName, t.getMessage(), t.getClass().getName());
+			logger.info("{} threw an exception {} {}", adviceName, t.getMessage(), t.getClass().getName());
 			logger.info(Arrays.toString(t.getStackTrace()));
 		}
 	}
@@ -294,14 +294,14 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-					logger.debug("Transparent advice, last ED is transparent, returning last {0}", lastED.getId());
+					logger.debug("Transparent advice, last ED is transparent, returning last {}", lastED.getId());
 				}
 				return lastED;
 			} else {
 
 				EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
 				if (logger != null) {
-					logger.debug("Transparent advice, no previous transparent advice, returning new {0}",
+					logger.debug("Transparent advice, no previous transparent advice, returning new {}",
 							entryDefinition.getId());
 				}
 				entryDefinition.setTransparent();
@@ -312,7 +312,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		} else {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-					logger.debug("Nontransparent advice, previous transparent advice, returning last {0}",
+					logger.debug("Nontransparent advice, previous transparent advice, returning last {}",
 							lastED.getId());
 				}
 				lastED.setAdviceClass(adviceClass);
@@ -325,7 +325,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 					lastED.setChained();
 					if (logger != null) {
 						logger.debug(
-								"Nontransparent advice, previous non transparent advice, chained, returning last {0}",
+								"Nontransparent advice, previous non transparent advice, chained, returning last {}",
 								lastED.getId());
 					}
 					return lastED;
@@ -333,7 +333,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 					EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
 					if (logger != null) {
-						logger.debug("Nontransparent advice, previous non transparent advice, returning new {0}",
+						logger.debug("Nontransparent advice, previous non transparent advice, returning new {}",
 								entryDefinition.getId());
 					}
 					return entryDefinition;
@@ -354,11 +354,11 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
 				boolean loaded, DynamicType dynamicType) {
 			if (logger == null) {
-				System.out.println(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(),
+				System.out.println(format(PREFIX + " TRANSFORM {} [{}, {}, loaded={}]", typeDescription.getName(),
 						classLoader, module, loaded));
 			} else {
-				logger.info(format(PREFIX + " TRANSFORM {0} [{1}, {2}, loaded={3}]", typeDescription.getName(),
-						classLoader, module, typeDescription));
+				logger.info(PREFIX + " TRANSFORM {} [{}, {}, loaded={}]", typeDescription.getName(), classLoader,
+						module, typeDescription);
 
 			}
 		}
@@ -369,11 +369,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 			if (logger == null) {
 				System.out.println(
-						format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
+						format(PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module, loaded));
 				throwable.printStackTrace();
 			} else {
-				logger.info(
-						format(PREFIX + " ERROR {0} [{1}, {2}, loaded={3}] \n", typeName, classLoader, module, loaded));
+				logger.info(PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module, loaded);
 				logger.info(throwable.getMessage());
 				logger.info(Arrays.toString(throwable.getStackTrace()));
 			}
