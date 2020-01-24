@@ -20,8 +20,14 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
+		// if (contains(item)) {
+		// logger.info("Stack already contains ED");
+		// return item;
+		//
+		// }
+
 		if (logger != null) {
-			logger.info("Stack push: " + (size() + 1));
+			logger.info("Stack push: {}, {} : {}", (size() + 1), item.getAdviceClass(), item.getId());
 		}
 		item.setApplication(application);
 		item.setServer(server);
@@ -32,10 +38,12 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	@Override
 	public synchronized EntryDefinition pop() {
+		EntryDefinition pop = super.pop();
 		if (logger != null) {
-			logger.info("Stack pop: " + (size() - 1));
+			logger.info("Stack pop: {} : {} ", size(), pop.getId());
 		}
-		return super.pop();
+
+		return pop;
 	}
 
 	public String getApplication() {

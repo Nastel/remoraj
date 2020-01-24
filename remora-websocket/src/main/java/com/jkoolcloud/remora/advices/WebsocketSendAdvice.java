@@ -89,7 +89,6 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, WebsocketSendAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
 				logger.info(format("Entering: {0} {1}", WebsocketSendAdvice.class.getName(), "before"));
 			}
@@ -176,7 +175,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

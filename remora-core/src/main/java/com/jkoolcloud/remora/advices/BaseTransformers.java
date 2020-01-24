@@ -81,6 +81,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static void fillDefaultValuesAfter(EntryDefinition entryDefinition, long startTime,
 			@Advice.Thrown Throwable exception, TaggedLogger logger) {
+		if (entryDefinition.isChained()) {
+			entryDefinition.setChained(false);
+			return;
+		}
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
 		entryDefinition.setDuration((long) duration);
 
@@ -114,6 +118,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
 			ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
+		if (entryDefinition.isChained()) {
+			return 0;
+		}
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -177,20 +184,54 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return sb.toString();
 	}
 
-	public static void doFinally() {
-		if (stackThreadLocal != null) {
-			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
-			if (entryDefinitions != null) {
-				entryDefinitions.pop();
-				if (entryDefinitions.size() == 0) {
-					stackThreadLocal.remove();
+	public static void doFinally(TaggedLogger logger) {
+		if (logger != null) {
+			logger.debug("DoFinnaly");
+		}
+		try {
+
+			if (stackThreadLocal != null) {
+				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+				if (entryDefinitions != null) {
+					EntryDefinition pop;
+					if (entryDefinitions.peek() != null) {
+						// boolean notChained = !entryDefinitions.peek().isChained();
+						// if (notChained) {
+						do {
+							pop = entryDefinitions.pop();
+						} while (pop.isTransparent());
+						// } else {
+						// if (logger != null) {
+						// logger.info("Not popping ED, chained");
+						// }
+						// entryDefinitions.peek().setChained(false);
+
+						// }
+					}
+					if (entryDefinitions.size() <= 0) {
+						stackThreadLocal.remove();
+						if (logger != null) {
+							logger.info("Stack end;");
+						}
+					}
 				}
+			} else {
+				if (logger != null) {
+					logger.info("No stackThread");
+				}
+			}
+		} catch (Exception e) {
+			if (logger != null) {
+				logger.info(e);
 			}
 		}
 	}
 
 	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger,
 			EntryDefinition lastED) {
+		if (lastED == null) {
+			return false;
+		}
 		try {
 			if (adviceClass.getSimpleName().equals(lastED.getAdviceClass())) {
 				if (logger != null) {
@@ -200,7 +241,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 		} catch (Exception e) {
 			if (logger != null) {
-				logger.info(("Can't check if advice stack has stacked common advices"));
+				logger.info("Can't check if advice stack has stacked common advices");
+				logger.info(e);
 			}
 		}
 		return false;
@@ -252,14 +294,16 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-					logger.debug("Transparent advice, last ED is transparent, returning last");
+					logger.debug("Transparent advice, last ED is transparent, returning last {0}", lastED.getId());
 				}
 				return lastED;
 			} else {
-				if (logger != null) {
-					logger.debug("Transparent advice, no previous transparent advice, returning new");
-				}
+
 				EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
+				if (logger != null) {
+					logger.debug("Transparent advice, no previous transparent advice, returning new {0}",
+							entryDefinition.getId());
+				}
 				entryDefinition.setTransparent();
 				entryDefinition.setMode(EntryDefinition.Mode.STOP);
 				return entryDefinition;
@@ -268,20 +312,31 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		} else {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-					logger.debug("Nontransparent advice, previous transparent advice, returning last");
+					logger.debug("Nontransparent advice, previous transparent advice, returning last {0}",
+							lastED.getId());
 				}
 				lastED.setAdviceClass(adviceClass);
 				lastED.setTransparent(false);
 				lastED.setMode(EntryDefinition.Mode.RUNNING);
 				return lastED;
 			} else {
-				if (logger != null) {
-					logger.debug("Nontransparent advice, previous non transparent advice, returning new");
-				}
+
 				if (isChainedClassInterception(adviceClass, logger, lastED)) {
+					lastED.setChained();
+					if (logger != null) {
+						logger.debug(
+								"Nontransparent advice, previous non transparent advice, chained, returning last {0}",
+								lastED.getId());
+					}
 					return lastED;
 				} else {
-					return new EntryDefinition(adviceClass);
+
+					EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
+					if (logger != null) {
+						logger.debug("Nontransparent advice, previous non transparent advice, returning new {0}",
+								entryDefinition.getId());
+					}
+					return entryDefinition;
 				}
 			}
 		}

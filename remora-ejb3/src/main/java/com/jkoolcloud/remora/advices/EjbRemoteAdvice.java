@@ -86,8 +86,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 		try {
 
 			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
+            if (logging) {
 				logger.info(format("Entering: {0} {1}", EjbRemoteAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -149,7 +148,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

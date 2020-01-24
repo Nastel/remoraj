@@ -86,8 +86,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 		try {
 
 			ed = getEntryDefinition(ed, SpringTransactionAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
+            if (logging) {
 				logger.info(format("Entering: {0} {1}", SpringTransactionAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -137,7 +136,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

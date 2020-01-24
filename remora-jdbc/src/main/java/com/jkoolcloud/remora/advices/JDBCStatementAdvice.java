@@ -88,7 +88,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			// }
 
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, logging ? logger : null);
-            if (logging) {
+			if (logging) {
 				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
 			}
@@ -176,7 +176,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

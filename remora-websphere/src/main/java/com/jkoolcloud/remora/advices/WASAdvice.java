@@ -179,7 +179,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

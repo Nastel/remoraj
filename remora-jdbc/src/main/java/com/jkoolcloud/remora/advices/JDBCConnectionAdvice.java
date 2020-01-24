@@ -85,7 +85,6 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 		try {
 
 			ed = getEntryDefinition(ed, JDBCConnectionAdvice.class, logging ? logger : null);
-			;
 
 			if (logging) {
 				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCConnectionAdvice.class.getName(), "before",
@@ -126,6 +125,11 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
+		try {
+			stackThreadLocal.get().pop();
+		} catch (Exception e) {
+
+		}
 	}
 
 	@Override

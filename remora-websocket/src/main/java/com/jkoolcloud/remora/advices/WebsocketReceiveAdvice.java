@@ -88,8 +88,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 		try {
 
 			ed = getEntryDefinition(ed, WebsocketReceiveAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
+            if (logging) {
 				logger.info(format("Entering: {0} {1}", WebsocketReceiveAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -119,8 +118,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 				}
 
 				if (logging) {
-					logger.info("Attached correlator {0}, server {1}, application {2}", correlator, server,
-							application);
+					logger.info("Attached correlator {0}, server {1}, application {2}", correlator, server, application);
 				}
 			}
 
@@ -170,7 +168,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

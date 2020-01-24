@@ -92,7 +92,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 						thiz.getClass().getName(), method.getName());
 			}
 			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, logging ? logger : null);
-			;
 			stackThreadLocal.get().push(ed);
 			if (parameterName instanceof String) {
 				ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
@@ -128,7 +127,11 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
+		try {
+			stackThreadLocal.get().pop();
+		} catch (Exception e) {
 
+		}
 	}
 
 	@Override

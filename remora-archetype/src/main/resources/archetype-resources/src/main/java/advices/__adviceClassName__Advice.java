@@ -137,7 +137,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null  );
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

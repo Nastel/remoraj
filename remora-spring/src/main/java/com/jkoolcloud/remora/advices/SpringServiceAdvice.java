@@ -82,8 +82,7 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, SpringServiceAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
+            if (logging) {
 				logger.info(format("Entering: {0} {1}", SpringServiceAdvice.class.getName(), "before"));
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -133,7 +132,7 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

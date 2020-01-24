@@ -82,7 +82,7 @@ public class SimpleTest extends BaseTransformers {
 			System.out.println("###AFTER METHOD CALL");
 			// fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
 		} finally {
-			doFinally();
+			doFinally(logger);
 		}
 
 	}

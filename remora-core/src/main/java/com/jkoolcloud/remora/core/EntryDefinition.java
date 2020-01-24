@@ -13,6 +13,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	protected final String id = new JUGFactoryImpl().newUUID();
 
 	private boolean transparent;
+	private boolean chained;
 
 	private String adviceClass;
 	protected String name;
@@ -22,7 +23,7 @@ public class EntryDefinition extends AbstractMarshallable {
 	private String application;
 	private String server;
 
-    //Workaround for serializatiom, static fields not serialised
+	// Workaround for serializatiom, static fields not serialised
 	private static String vmIdentificationStatic;
 	private String vmIdentification;
 
@@ -241,12 +242,38 @@ public class EntryDefinition extends AbstractMarshallable {
 		return transparent;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof EntryDefinition) {
+			return ((EntryDefinition) o).getId().equals(getId());
+		} else {
+            return false;
+        }
+	}
+
+	@Override
+	public int hashCode() {
+		return id.getBytes()[0];
+	}
+
 	public void setTransparent() {
 		transparent = true;
 	}
 
 	public void setTransparent(boolean b) {
 		transparent = b;
+	}
+
+	public boolean isChained() {
+		return chained;
+	}
+
+	public void setChained(boolean chained) {
+		this.chained = chained;
+	}
+
+	public void setChained() {
+		chained = true;
 	}
 
 	public enum EventType {

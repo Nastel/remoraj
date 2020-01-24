@@ -63,9 +63,8 @@ public class SimpleTestConstructor extends BaseTransformers {
 		try {
 			System.out.println("BEFORE METHOD CALL");
 			ed = getEntryDefinition(ed, SimpleTestConstructor.class, logging ? logger : null);
-			;
 
-			if (args != null && args[0] instanceof String) {
+            if (args != null && args[0] instanceof String) {
 
 				System.out.println("OK");
 			} else {
@@ -116,7 +115,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

@@ -69,8 +69,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 		try {
 
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
+            if (logging) {
 				logger.info(format("Entering: {0} {1}", KafkaConsumerClientAdvice.class.getName(), "before"));
 			}
 			ed.setTransparent();
@@ -82,7 +81,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 				String groupId = getFieldValue(thiz, String.class, "groupId");
 				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 				if (entryDefinitions != null) {
-					String application = MessageFormat.format("clientId={}, groupId={}", clientId, groupId);
+					String application = MessageFormat.format("clientId={0}, groupId={0}", clientId, groupId);
 					((CallStack) entryDefinitions).setApplication(application);
 					if (logging) {
 						logger.info(format("Setting the application", application));
@@ -133,7 +132,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
