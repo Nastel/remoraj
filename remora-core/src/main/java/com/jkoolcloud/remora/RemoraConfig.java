@@ -60,7 +60,7 @@ public enum RemoraConfig {
 							}
 						}
 						if (appliedValue != null) {
-							// logger.info(format("Setting {0} class config field \"{2}\" as {1}",
+							// logger.info(format("Setting {} class config field \"{}\" as {}",
 							// object.getClass().getName(), appliedValue.toString(), field.getName()));
 							field.set(object, appliedValue);
 						}
@@ -99,10 +99,10 @@ public enum RemoraConfig {
 		File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
 		try (FileInputStream inStream = new FileInputStream(file)) {
 			config.load(inStream);
-			// logger.info(format("Sucessfully loaded {0} properties from configuration file", config.size()));
+			// logger.info("Sucessfully loaded {} properties from configuration file", config.size()));
 		} catch (IOException e) {
 			// logger.error("Failed loading properties file");
-			// logger.info(format("Exception: {0} {1} \n {2}", "RemoraConfig", "init", e));
+			// logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e));
 		}
 	}
 

@@ -72,9 +72,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, KafkaProducerAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", KafkaProducerAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", KafkaProducerAdvice.class.getName(), "before");
 			}
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -87,7 +86,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 					String application = ReflectionUtils.getFieldValue(thiz, String.class, "clientId");
 					((CallStack) entryDefinitions).setApplication(application);
 					if (logging) {
-						logger.info(format("Setting the application", application));
+						logger.info("Setting the application", application);
 					}
 				} catch (IllegalArgumentException e) {
 
@@ -137,14 +136,14 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", KafkaProducerAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", KafkaProducerAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -175,7 +174,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

@@ -86,9 +86,8 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 		try {
 
 			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", EjbRemoteAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", EjbRemoteAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			if (stackThreadLocal.get() != null) {
@@ -142,14 +141,14 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", EjbRemoteAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", EjbRemoteAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -166,7 +165,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

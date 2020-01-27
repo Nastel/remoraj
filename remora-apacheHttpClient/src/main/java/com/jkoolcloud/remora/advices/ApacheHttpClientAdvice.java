@@ -90,7 +90,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 		try {
 			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", ApacheHttpClientAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addPropertyIfExist("URI", request.getURI().toString());
@@ -100,7 +100,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			request.addHeader(headerCorrIDName, ed.getId());
 			ed.addProperty(headerCorrIDName, ed.getId());
 			if (logging) {
-				logger.info("Atached correlator:  {0}", ed.getId());
+				logger.info("Atached correlator:  {}", ed.getId());
 			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
@@ -142,14 +142,14 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", ApacheHttpClientAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", ApacheHttpClientAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

@@ -40,7 +40,7 @@ public class RemoraClassLoader extends URLClassLoader {
 				// logger.info(
 				// this + " findClass(" + name + "), loader=" + (clazz != null ? clazz.getClassLoader() : null));
 				if (error != null) {
-					// logger.info(format("Exception: {0} {1} \n {2}", "RemoraClassLoader", "finClass", error));
+					// logger.info("Exception: {} {} \n {}", "RemoraClassLoader", "finClass", error));
 				}
 			}
 		}

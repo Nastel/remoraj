@@ -82,9 +82,8 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, SpringServiceAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", SpringServiceAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", SpringServiceAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
@@ -126,14 +125,14 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", SpringServiceAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", SpringServiceAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -150,7 +149,7 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

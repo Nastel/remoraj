@@ -96,7 +96,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	{
 		try {
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}", JavaxServletAdvice.class.getSimpleName(), "before",
+				logger.info("Entering: {} {} from {}", JavaxServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
 			}
 
@@ -219,7 +219,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", JavaxServletAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", JavaxServletAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 
@@ -228,7 +228,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

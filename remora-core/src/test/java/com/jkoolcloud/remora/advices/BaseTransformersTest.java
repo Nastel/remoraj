@@ -112,6 +112,53 @@ public class BaseTransformersTest {
 		assertNotNull(returned3.getProperties().get("PARAM4"));
 	}
 
+	@Test
+	public void getEntryDefinitionCompleteTest2() {
+		EntryDefinition ed = null;
+		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
+		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class); // Service call
+		stack1.addProperty("PARAM1", "PARAM");
+		BaseTransformers.stackThreadLocal.get().push(stack1);
+
+		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, TransparentAdviceInstance.class, logger); // setParam
+		returned.addProperty("PARAM1", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned);
+		EntryDefinition returned1 = BaseTransformers.getEntryDefinition(ed, TransparentAdviceInstance.class, logger); // setParam
+		returned.addProperty("PARAM2", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned1);
+		EntryDefinition returned2 = BaseTransformers.getEntryDefinition(ed, TransparentAdviceInstance.class, logger); // setParam
+		returned.addProperty("PARAM3", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned2);
+		EntryDefinition returned3 = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger); // execute
+		returned.addProperty("PARAM4", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned3);
+
+		EntryDefinition returned4 = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger); // execute
+																															// chained
+		BaseTransformers.stackThreadLocal.get().push(returned4);
+
+		EntryDefinition returned5 = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger); // execute
+																															// chained
+		BaseTransformers.stackThreadLocal.get().push(returned5);
+
+		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger); // execute
+		BaseTransformers.stackThreadLocal.get().pop(); // setParam
+		BaseTransformers.stackThreadLocal.get().pop(); // setParam
+		BaseTransformers.stackThreadLocal.get().pop(); // setParam
+
+		BaseTransformers.doFinally(logger); // ServiceCall
+
+		assertNotNull(returned);
+		assertFalse(returned3.isTransparent());
+		assertEquals(returned3.getAdviceClass(), NonTransparentAdviceInstance.class.getSimpleName());
+		assertNotNull(returned3.getProperties().get("PARAM1"));
+		assertNotNull(returned3.getProperties().get("PARAM2"));
+		assertNotNull(returned3.getProperties().get("PARAM3"));
+		assertNotNull(returned3.getProperties().get("PARAM4"));
+	}
+
 	public static class NonTransparentAdviceInstance extends BaseTransformers {
 
 		@Override

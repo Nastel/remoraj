@@ -69,9 +69,8 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 		try {
 
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", KafkaConsumerClientAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", KafkaConsumerClientAdvice.class.getName(), "before");
 			}
 			ed.setTransparent();
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -82,10 +81,10 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 				String groupId = getFieldValue(thiz, String.class, "groupId");
 				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 				if (entryDefinitions != null) {
-					String application = MessageFormat.format("clientId={}, groupId={}", clientId, groupId);
+					String application = MessageFormat.format("clientId={0}, groupId={0}", clientId, groupId);
 					((CallStack) entryDefinitions).setApplication(application);
 					if (logging) {
-						logger.info(format("Setting the application", application));
+						logger.info("Setting the application", application);
 					}
 				}
 			} catch (IllegalArgumentException e) {
@@ -126,14 +125,14 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", KafkaConsumerClientAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", KafkaConsumerClientAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -164,7 +163,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

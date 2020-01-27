@@ -63,7 +63,6 @@ public class SimpleTestConstructor extends BaseTransformers {
 		try {
 			System.out.println("BEFORE METHOD CALL");
 			ed = getEntryDefinition(ed, SimpleTestConstructor.class, logging ? logger : null);
-			;
 
 			if (args != null && args[0] instanceof String) {
 
@@ -109,14 +108,14 @@ public class SimpleTestConstructor extends BaseTransformers {
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", SimpleTestConstructor.class.getName(), "after"));
+				logger.info("Exiting: {} {}", SimpleTestConstructor.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 

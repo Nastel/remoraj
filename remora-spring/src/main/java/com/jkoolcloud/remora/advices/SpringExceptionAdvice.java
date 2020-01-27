@@ -85,9 +85,8 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 		try {
 
 			ed = getEntryDefinition(ed, SpringExceptionAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", SpringExceptionAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", SpringExceptionAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.setException(exception);
@@ -130,14 +129,14 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", SpringExceptionAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", SpringExceptionAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -154,7 +153,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

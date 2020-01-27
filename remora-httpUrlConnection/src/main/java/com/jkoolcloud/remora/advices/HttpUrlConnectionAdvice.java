@@ -86,9 +86,8 @@ public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraA
 		try {
 
 			ed = getEntryDefinition(ed, HttpUrlConnectionAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", HttpUrlConnectionAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", HttpUrlConnectionAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addPropertyIfExist("URI", thiz.getURL().toString());
@@ -134,14 +133,14 @@ public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraA
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", HttpUrlConnectionAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", HttpUrlConnectionAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -158,7 +157,7 @@ public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraA
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

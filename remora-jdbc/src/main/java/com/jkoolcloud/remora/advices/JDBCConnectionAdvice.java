@@ -85,16 +85,15 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 		try {
 
 			ed = getEntryDefinition(ed, JDBCConnectionAdvice.class, logging ? logger : null);
-			;
 
 			if (logging) {
-				logger.info("Entering: {0} {1} from {2}.{3}()", JDBCConnectionAdvice.class.getName(), "before",
+				logger.info("Entering: {} {} from {}.{}()", JDBCConnectionAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
 			}
 			stackThreadLocal.get().push(ed);
 			ed.addPropertyIfExist("SQL", sql);
 			if (logging) {
-				logger.debug("Adding SQL: {0}", sql);
+				logger.debug("Adding SQL: {}", sql);
 			}
 
 		} catch (Throwable t) {
@@ -126,6 +125,11 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
+		try {
+			stackThreadLocal.get().pop();
+		} catch (Exception e) {
+
+		}
 	}
 
 	@Override
@@ -139,7 +143,7 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

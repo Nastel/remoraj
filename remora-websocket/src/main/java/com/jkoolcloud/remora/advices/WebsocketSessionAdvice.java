@@ -95,7 +95,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			if (args != null && args.length == 2 && args[1] instanceof MessageHandler) {
 				handler = (MessageHandler) args[1];
 			}
-			logger.info("Found new Handler {0} - session {1}", handler, thiz);
+			logger.info("Found new Handler {} - session {}", handler, thiz);
 			sessionHandlers.put(handler, thiz);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
@@ -128,7 +128,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 

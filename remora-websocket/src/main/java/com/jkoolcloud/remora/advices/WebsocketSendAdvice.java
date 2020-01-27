@@ -89,9 +89,8 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, WebsocketSendAdvice.class, logging ? logger : null);
-			;
 			if (logging) {
-				logger.info(format("Entering: {0} {1}", WebsocketSendAdvice.class.getName(), "before"));
+				logger.info("Entering: {} {}", WebsocketSendAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.setEventType(EntryDefinition.EventType.SEND);
@@ -124,8 +123,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 				}
 
 				if (logging) {
-					logger.info("Attached correlator {0}, server {1}, application {2}", correlator, server,
-							application);
+					logger.info("Attached correlator {}, server {}, application {}", correlator, server, application);
 				}
 			} else {
 				logger.info("No session found");
@@ -169,14 +167,14 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info(format("Exiting: {0} {1}", WebsocketSendAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", WebsocketSendAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally();
+				doFinally(logger);
 			}
 		}
 
@@ -193,7 +191,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {0} not enabled", getName());
+			logger.info("Advice {} not enabled", getName());
 		}
 	}
 
