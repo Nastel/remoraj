@@ -82,9 +82,8 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, BankBenchmarkAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
-				logger.info("Entering: {} {}", BankBenchmarkAdvice.class.getName(), "before"));
+            if (logging) {
+				logger.info("Entering: {} {}", BankBenchmarkAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
@@ -126,7 +125,7 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info("Exiting: {} {}", BankBenchmarkAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", BankBenchmarkAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
