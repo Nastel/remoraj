@@ -39,25 +39,29 @@ public enum OutputManager {
 		} else {
 			output = new ChronicleOutput();
 		}
-		RemoraConfig.INSTANCE.configure(output);
-		synchronized (output) {
-			try {
-				outputListeners.forEach(listener -> listener.onInitialize());
-				output.init();
-			} catch (AgentOutput.OutputException e) {
-				outputListeners.forEach(l -> l.onInitialized(e));
-			}
-			outputListeners.forEach(l -> l.onInitialized(null));
-
-		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		try {
+			RemoraConfig.INSTANCE.configure(output);
 			synchronized (output) {
-				shutdown = true;
-				outputListeners.forEach(l -> l.onShutdown());
-				output.shutdown();
+				try {
+					outputListeners.forEach(listener -> listener.onInitialize());
+					output.init();
+				} catch (AgentOutput.OutputException e) {
+					outputListeners.forEach(l -> l.onInitialized(e));
+				}
+				outputListeners.forEach(l -> l.onInitialized(null));
+
 			}
-		}));
+
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				synchronized (output) {
+					shutdown = true;
+					outputListeners.forEach(l -> l.onShutdown());
+					output.shutdown();
+				}
+			}));
+		} catch (Exception e) {
+			logger.error("Failed Starting OutputManager");
+		}
 
 	}
 

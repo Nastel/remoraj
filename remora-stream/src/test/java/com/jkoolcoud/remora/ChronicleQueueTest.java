@@ -29,6 +29,7 @@ import com.jkoolcloud.tnt4j.streams.configure.StreamProperties;
 import com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream;
 import com.jkoolcloud.tnt4j.streams.inputs.StreamThread;
 import com.jkoolcloud.tnt4j.streams.outputs.NullActivityOutput;
+import com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
@@ -78,10 +79,12 @@ public class ChronicleQueueTest {
 		ExcerptAppender appender = queue.acquireAppender();
 
 		stream.setProperty(StreamProperties.PROP_FILENAME, testQueue.toFile().getAbsolutePath());
-		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.javaam.EntryDefinition");
+		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.remora.core.EntryDefinition");
 		stream.addReference(new NullActivityOutput());
+		stream.addParser(new ActivityJavaObjectParser());
 
 		StreamThread streamThread = new StreamThread(stream);
+
 		streamThread.start();
 
 		expect = new EntryDefinition(ChronicleQueueTest.class);

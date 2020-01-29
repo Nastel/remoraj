@@ -30,7 +30,7 @@ public enum RemoraConfig {
 		init();
 	}
 
-	public void configure(Object object) {
+	public void configure(Object object) throws IllegalAccessException {
 
 		Class<?> aClass = object.getClass();
 
@@ -40,10 +40,12 @@ public enum RemoraConfig {
 				if (field.isAnnotationPresent(Configurable.class)) {
 					field.setAccessible(true);
 
-					try {
-						String configValue = getConfigValue(object.getClass(), field.getName());
-						Object appliedValue = null;
-						if (configValue != null) {
+					String configValue = getConfigValue(object.getClass(), field.getName());
+					Object appliedValue = null;
+					if (configValue != null) {
+						if (field.getType().isEnum()) {
+							appliedValue = Enum.valueOf((Class<Enum>) field.getType(), configValue);
+						} else {
 							switch (field.getType().getName()) {
 							case "java.lang.String":
 								appliedValue = configValue;
@@ -59,15 +61,13 @@ public enum RemoraConfig {
 
 							}
 						}
-						if (appliedValue != null) {
-							// logger.info(format("Setting {} class config field \"{}\" as {}",
-							// object.getClass().getName(), appliedValue.toString(), field.getName()));
-							field.set(object, appliedValue);
-						}
-
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
 					}
+					if (appliedValue != null) {
+						// logger.info(format("Setting {} class config field \"{}\" as {}",
+						// object.getClass().getName(), appliedValue.toString(), field.getName()));
+						field.set(object, appliedValue);
+					}
+
 				}
 			}
 			aClass = aClass.getSuperclass();
