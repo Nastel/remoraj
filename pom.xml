@@ -131,7 +131,7 @@
         <module>remora-kafka</module>
         <module>remora-ejb3</module>
         <module>remora-spring</module>
-        <!--<module>remora-bank_benchmark</module>-->
+        <module>remora-bank_benchmark</module>
         <module>remora--package</module>
 
     </modules>
