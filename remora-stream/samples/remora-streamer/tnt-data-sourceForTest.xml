@@ -65,9 +65,8 @@
     </parser>
 
     <stream name="ChronicleStream" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
-
         <property name="HaltIfNoParser" value="false"/>
-        <property name="FileName" value="c:\workspace\build\remora\remora-0.1.1-SNAPSHOT\queue\"/>
+        <property name="FileName" value="../../queue/"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.EntryDefinition"/>
 
         <!--<reference name="Null"/>-->
