@@ -1,3 +1,23 @@
+/*
+ *
+ * Copyright (c) 2019-2020 NasTel Technologies, Inc. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of NasTel
+ * Technologies, Inc. ("Confidential Information").  You shall not disclose
+ * such Confidential Information and shall use it only in accordance with
+ * the terms of the license agreement you entered into with NasTel
+ * Technologies.
+ *
+ * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
+ * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * CopyrightVersion 1.0
+ */
+
 package com.jkoolcloud.remora;
 
 import static com.jkoolcloud.remora.Remora.REMORA_PATH;
@@ -5,7 +25,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -17,6 +36,10 @@ import org.junit.Test;
 public class RemoraConfigTest {
 
 	private Path remoraTempDir;
+
+	public enum TestEnum {
+		ONE, TWO, THREE
+	}
 
 	public static class TestForSingleStringConfigrable {
 		@RemoraConfig.Configurable
@@ -35,12 +58,17 @@ public class RemoraConfigTest {
 		boolean testField;
 	}
 
+	public static class TestForEnumConfigurable {
+		@RemoraConfig.Configurable
+		TestEnum testField = TestEnum.THREE;
+	}
+
 	public static class TestForListConfigrableSuperClass extends TestForListConfigrable {
 
 	}
 
 	@Test
-	public void configTestHappyPath() throws IOException {
+	public void configTestHappyPath() throws Exception {
 		Properties properties = new Properties() {
 			{
 				put(TestForSingleStringConfigrable.class.getName() + "." + "testField", "TEST");
@@ -55,7 +83,7 @@ public class RemoraConfigTest {
 	}
 
 	@Test
-	public void configTestBooleanHappyPath() throws IOException {
+	public void configTestBooleanHappyPath() throws Exception {
 		Properties properties = new Properties() {
 			{
 				put(TestForBooleanConfigrable.class.getName() + "." + "testField", "true");
@@ -70,7 +98,7 @@ public class RemoraConfigTest {
 	}
 
 	@Test
-	public void configTestHappyPathList() throws IOException {
+	public void configTestHappyPathList() throws Exception {
 		Properties properties = new Properties() {
 			{
 				put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
@@ -86,7 +114,22 @@ public class RemoraConfigTest {
 	}
 
 	@Test
-	public void configTestHappyPathSuperClass() throws IOException {
+	public void configTestHappyPathEnum() throws Exception {
+		Properties properties = new Properties() {
+			{
+				put(TestForEnumConfigurable.class.getName() + "." + "testField", "ONE");
+			}
+		};
+		prepareConfigFile(properties);
+		TestForEnumConfigurable test = new TestForEnumConfigurable();
+		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
+		RemoraConfig.INSTANCE.configure(test);
+		cleanup();
+		assertEquals("Configurring field failed", test.testField, TestEnum.ONE);
+	}
+
+	@Test
+	public void configTestHappyPathSuperClass() throws Exception {
 		Properties properties = new Properties() {
 			{
 				put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
@@ -103,7 +146,7 @@ public class RemoraConfigTest {
 		assertEquals("Not all of expected list values parsed", 3, test.testField.size());
 	}
 
-	public void prepareConfigFile(Properties properties) throws IOException {
+	public void prepareConfigFile(Properties properties) throws Exception {
 		remoraTempDir = Files.createTempDirectory("remoraTempDir");
 		System.setProperty(REMORA_PATH, remoraTempDir.toAbsolutePath().toString());
 
@@ -120,7 +163,7 @@ public class RemoraConfigTest {
 	public void cleanup() {
 		try {
 			FileUtils.deleteDirectory(remoraTempDir.toFile());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

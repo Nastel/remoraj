@@ -1,3 +1,23 @@
+/*
+ *
+ * Copyright (c) 2019-2020 NasTel Technologies, Inc. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of NasTel
+ * Technologies, Inc. ("Confidential Information").  You shall not disclose
+ * such Confidential Information and shall use it only in accordance with
+ * the terms of the license agreement you entered into with NasTel
+ * Technologies.
+ *
+ * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
+ * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * CopyrightVersion 1.0
+ */
+
 package com.jkoolcloud.remora;
 
 import static com.jkoolcloud.remora.Remora.REMORA_PATH;
@@ -30,7 +50,7 @@ public enum RemoraConfig {
 		init();
 	}
 
-	public void configure(Object object) {
+	public void configure(Object object) throws IllegalAccessException {
 
 		Class<?> aClass = object.getClass();
 
@@ -40,10 +60,12 @@ public enum RemoraConfig {
 				if (field.isAnnotationPresent(Configurable.class)) {
 					field.setAccessible(true);
 
-					try {
-						String configValue = getConfigValue(object.getClass(), field.getName());
-						Object appliedValue = null;
-						if (configValue != null) {
+					String configValue = getConfigValue(object.getClass(), field.getName());
+					Object appliedValue = null;
+					if (configValue != null) {
+						if (field.getType().isEnum()) {
+							appliedValue = Enum.valueOf((Class<Enum>) field.getType(), configValue);
+						} else {
 							switch (field.getType().getName()) {
 							case "java.lang.String":
 								appliedValue = configValue;
@@ -59,15 +81,13 @@ public enum RemoraConfig {
 
 							}
 						}
-						if (appliedValue != null) {
-							// logger.info(format("Setting {} class config field \"{}\" as {}",
-							// object.getClass().getName(), appliedValue.toString(), field.getName()));
-							field.set(object, appliedValue);
-						}
-
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
 					}
+					if (appliedValue != null) {
+						// logger.info(format("Setting {} class config field \"{}\" as {}",
+						// object.getClass().getName(), appliedValue.toString(), field.getName()));
+						field.set(object, appliedValue);
+					}
+
 				}
 			}
 			aClass = aClass.getSuperclass();

@@ -1,17 +1,21 @@
 /*
- * Copyright 2014-2019 JKOOL, LLC.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2019-2020 NasTel Technologies, Inc. All Rights Reserved.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * This software is the confidential and proprietary information of NasTel
+ * Technologies, Inc. ("Confidential Information").  You shall not disclose
+ * such Confidential Information and shall use it only in accordance with
+ * the terms of the license agreement you entered into with NasTel
+ * Technologies.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
+ * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * CopyrightVersion 1.0
  */
 
 package com.jkoolcoud.remora;
@@ -29,6 +33,7 @@ import com.jkoolcloud.tnt4j.streams.configure.StreamProperties;
 import com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream;
 import com.jkoolcloud.tnt4j.streams.inputs.StreamThread;
 import com.jkoolcloud.tnt4j.streams.outputs.NullActivityOutput;
+import com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
@@ -78,10 +83,12 @@ public class ChronicleQueueTest {
 		ExcerptAppender appender = queue.acquireAppender();
 
 		stream.setProperty(StreamProperties.PROP_FILENAME, testQueue.toFile().getAbsolutePath());
-		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.javaam.EntryDefinition");
+		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.remora.core.EntryDefinition");
 		stream.addReference(new NullActivityOutput());
+		stream.addParser(new ActivityJavaObjectParser());
 
 		StreamThread streamThread = new StreamThread(stream);
+
 		streamThread.start();
 
 		expect = new EntryDefinition(ChronicleQueueTest.class);

@@ -1,3 +1,23 @@
+/*
+ *
+ * Copyright (c) 2019-2020 NasTel Technologies, Inc. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of NasTel
+ * Technologies, Inc. ("Confidential Information").  You shall not disclose
+ * such Confidential Information and shall use it only in accordance with
+ * the terms of the license agreement you entered into with NasTel
+ * Technologies.
+ *
+ * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
+ * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * CopyrightVersion 1.0
+ */
+
 package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
@@ -82,9 +102,8 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, BankBenchmarkAdvice.class, logging ? logger : null);
-			;
-			if (logging) {
-				logger.info("Entering: {} {}", BankBenchmarkAdvice.class.getName(), "before"));
+            if (logging) {
+				logger.info("Entering: {} {}", BankBenchmarkAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
@@ -126,7 +145,7 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			if (logging) {
-				logger.info("Exiting: {} {}", BankBenchmarkAdvice.class.getName(), "after"));
+				logger.info("Exiting: {} {}", BankBenchmarkAdvice.class.getName(), "after");
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {

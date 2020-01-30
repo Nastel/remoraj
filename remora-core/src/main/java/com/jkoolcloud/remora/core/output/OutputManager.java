@@ -1,3 +1,23 @@
+/*
+ *
+ * Copyright (c) 2019-2020 NasTel Technologies, Inc. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of NasTel
+ * Technologies, Inc. ("Confidential Information").  You shall not disclose
+ * such Confidential Information and shall use it only in accordance with
+ * the terms of the license agreement you entered into with NasTel
+ * Technologies.
+ *
+ * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
+ * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * CopyrightVersion 1.0
+ */
+
 package com.jkoolcloud.remora.core.output;
 
 import java.util.ArrayList;
@@ -39,25 +59,29 @@ public enum OutputManager {
 		} else {
 			output = new ChronicleOutput();
 		}
-		RemoraConfig.INSTANCE.configure(output);
-		synchronized (output) {
-			try {
-				outputListeners.forEach(listener -> listener.onInitialize());
-				output.init();
-			} catch (AgentOutput.OutputException e) {
-				outputListeners.forEach(l -> l.onInitialized(e));
-			}
-			outputListeners.forEach(l -> l.onInitialized(null));
-
-		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		try {
+			RemoraConfig.INSTANCE.configure(output);
 			synchronized (output) {
-				shutdown = true;
-				outputListeners.forEach(l -> l.onShutdown());
-				output.shutdown();
+				try {
+					outputListeners.forEach(listener -> listener.onInitialize());
+					output.init();
+				} catch (AgentOutput.OutputException e) {
+					outputListeners.forEach(l -> l.onInitialized(e));
+				}
+				outputListeners.forEach(l -> l.onInitialized(null));
+
 			}
-		}));
+
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				synchronized (output) {
+					shutdown = true;
+					outputListeners.forEach(l -> l.onShutdown());
+					output.shutdown();
+				}
+			}));
+		} catch (Exception e) {
+			logger.error("Failed Starting OutputManager");
+		}
 
 	}
 

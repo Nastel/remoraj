@@ -1,7 +1,28 @@
+/*
+ *
+ * Copyright (c) 2019-2020 NasTel Technologies, Inc. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of NasTel
+ * Technologies, Inc. ("Confidential Information").  You shall not disclose
+ * such Confidential Information and shall use it only in accordance with
+ * the terms of the license agreement you entered into with NasTel
+ * Technologies.
+ *
+ * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+ * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
+ * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+ * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * CopyrightVersion 1.0
+ */
+
 package com.jkoolcloud.remora;
 
 import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -21,6 +42,7 @@ public class RemoraInit {
 		ServiceLoader<RemoraAdvice> advices = ServiceLoader.load(RemoraAdvice.class, classLoader);
 		Iterator<RemoraAdvice> iterator = advices.iterator();
 		ArrayList<RemoraAdvice> adviceList = new ArrayList<>();
+		HashMap<RemoraAdvice, Exception> failedList = new HashMap<>();
 
 		while (iterator.hasNext()) {
 			RemoraAdvice remoraAdvice = iterator.next();
@@ -31,8 +53,13 @@ public class RemoraInit {
 			Configuration.set(key + ".format", " {level}: {message}");
 			Configuration.set(key + ".tag", adviceName);
 			Configuration.set(key + ".level", "debug");
-			RemoraConfig.INSTANCE.configure(remoraAdvice);
-			adviceList.add(remoraAdvice);
+			try {
+				RemoraConfig.INSTANCE.configure(remoraAdvice);
+				adviceList.add(remoraAdvice);
+			} catch (Exception e) {
+				failedList.put(remoraAdvice, e);
+			}
+
 			// LOGGER.info("\t Found module: " + remoraAdvice);
 
 		}
@@ -41,6 +68,11 @@ public class RemoraInit {
 		adviceList.forEach(advice -> {
 			advice.install(inst);
 			Logger.tag("INIT").info("Installed {}", advice.getName());
+		});
+
+		failedList.forEach((advice, exc) -> {
+			Logger.tag("INIT").info("Failed configuring: ", advice.getName());
+			Logger.tag("INIT").info(exc);
 		});
 		// LOGGER.info("Loading finished");
 
