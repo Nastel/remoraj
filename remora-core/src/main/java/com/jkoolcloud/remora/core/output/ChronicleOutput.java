@@ -21,7 +21,11 @@
 package com.jkoolcloud.remora.core.output;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -33,6 +37,8 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.RollCycles;
+import net.openhft.chronicle.queue.impl.RollingChronicleQueue;
+import net.openhft.chronicle.queue.impl.StoreFileListener;
 import net.openhft.chronicle.wire.UnrecoverableTimeoutException;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
@@ -50,16 +56,44 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 	@RemoraConfig.Configurable
 	Long timeout = 5000L;
 
+	@RemoraConfig.Configurable
+	Integer keepQueueRolls = 2;
+
+	Deque<File> unusedQueues;
+
 	@Override
 	public void init() {
 		File queueDir = Paths.get(queuePath).toFile();
+		unusedQueues = new LinkedBlockingDeque<>(keepQueueRolls);
+		File[] cq4s = queueDir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.getName().endsWith("cq4");
+			}
+		});
+		if (cq4s != null) {
+            unusedQueues.addAll(Arrays.asList(cq4s));
+        }
 
 		logger.info("Writing to " + queueDir.getAbsolutePath());
 
-		queue = ChronicleQueue.singleBuilder(queueDir.getPath()).rollCycle(rollCycle).timeoutMS(timeout).build();
+		queue = ChronicleQueue.singleBuilder(queueDir.getPath()).rollCycle(rollCycle).timeoutMS(timeout)
+				.storeFileListener(new StoreFileListener() {
+
+					@Override
+					public void onReleased(int cycle, File file) {
+						while (!unusedQueues.offer(file)) {
+							unusedQueues.removeFirst().delete();
+						}
+
+					}
+				}).build();
 
 		if (queue != null) {
 			logger.info("Queue initialized " + this);
+			if (queue instanceof RollingChronicleQueue) {
+				((RollingChronicleQueue) queue).storeForCycle(((RollingChronicleQueue) queue).cycle(), 0, false);
+			}
 		} else {
 			logger.error("Queue failed");
 		}
