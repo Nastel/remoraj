@@ -25,8 +25,10 @@ import java.io.FileFilter;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
@@ -39,19 +41,17 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.queue.impl.RollingChronicleQueue;
 import net.openhft.chronicle.queue.impl.StoreFileListener;
-import net.openhft.chronicle.wire.UnrecoverableTimeoutException;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
 
 	TaggedLogger logger = Logger.tag("INIT");
 
-	private ExcerptAppender appender;
 	private ChronicleQueue queue;
 	@RemoraConfig.Configurable
 	String queuePath = System.getProperty(Remora.REMORA_PATH) + "/queue";
 
 	@RemoraConfig.Configurable
-	RollCycles rollCycle = RollCycles.valueOf("DAILY");
+	RollCycles rollCycle = RollCycles.valueOf("HOURLY");
 
 	@RemoraConfig.Configurable
 	Long timeout = 5000L;
@@ -59,10 +59,30 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 	@RemoraConfig.Configurable
 	Integer keepQueueRolls = 2;
 
+	@RemoraConfig.Configurable
+	Integer intermediateQueueSize = 1000;
+
+	@RemoraConfig.Configurable
+	Integer workerSize = 2;
+
 	Deque<File> unusedQueues;
+
+	AtomicInteger failCount = new AtomicInteger(0);
+	private ExecutorService queueWorkers;
 
 	@Override
 	public void init() {
+		Executors.newFixedThreadPool(4);
+
+		ThreadFactory threadFactory = new ThreadFactory() {
+			@Override
+			public Thread newThread(@NotNull Runnable r) {
+				logger.info("New thread created");
+				ChronicleAppenderThread chronicleAppenderThread = new ChronicleAppenderThread(r);
+				return chronicleAppenderThread;
+			}
+		};
+
 		File queueDir = Paths.get(queuePath).toFile();
 		unusedQueues = new LinkedBlockingDeque<>(keepQueueRolls);
 		File[] cq4s = queueDir.listFiles(new FileFilter() {
@@ -72,8 +92,8 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 			}
 		});
 		if (cq4s != null) {
-            unusedQueues.addAll(Arrays.asList(cq4s));
-        }
+			unusedQueues.addAll(Arrays.asList(cq4s));
+		}
 
 		logger.info("Writing to " + queueDir.getAbsolutePath());
 
@@ -98,23 +118,24 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 			logger.error("Queue failed");
 		}
 
-		appender = queue.acquireAppender();
-		if (appender != null) {
-			logger.info("Appender initialized");
-		} else {
-			logger.error("Appender failed");
-		}
+		queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<>(intermediateQueueSize), threadFactory,
+				(r, executor) -> failCount.incrementAndGet());
 
 	}
 
 	@Override
 	public void send(EntryDefinition entry) {
-		try {
-			appender.writeDocument(entry);
-		} catch (UnrecoverableTimeoutException e) {
-			logger.error(e);
-		}
-
+		queueWorkers.submit(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					((ChronicleAppenderThread) Thread.currentThread()).getAppender().writeDocument(entry);
+				} catch (Exception e) {
+					failCount.incrementAndGet();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -125,4 +146,22 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		}
 	}
 
+	private class ChronicleAppenderThread extends Thread {
+
+		private final ExcerptAppender threadAppender;
+
+		public ExcerptAppender getAppender() {
+			return threadAppender;
+		}
+
+		public ChronicleAppenderThread(Runnable r) {
+			super(r);
+			threadAppender = queue.acquireAppender();
+			if (threadAppender != null) {
+				logger.info("Appender initialized");
+			} else {
+				logger.error("Appender failed");
+			}
+		}
+	}
 }
