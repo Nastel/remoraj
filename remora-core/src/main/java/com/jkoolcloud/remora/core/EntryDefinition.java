@@ -26,10 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jkoolcloud.remora.advices.TransparentAdvice;
+import com.jkoolcloud.remora.core.output.ChronicleOutput;
 
 import net.openhft.chronicle.wire.AbstractMarshallable;
 
-public class EntryDefinition extends AbstractMarshallable {
+public class EntryDefinition extends AbstractMarshallable implements Runnable {
 	protected final String id = new JUGFactoryImpl().newUUID();
 
 	private boolean transparent;
@@ -267,8 +268,8 @@ public class EntryDefinition extends AbstractMarshallable {
 		if (o != null && o instanceof EntryDefinition) {
 			return ((EntryDefinition) o).getId().equals(getId());
 		} else {
-            return false;
-        }
+			return false;
+		}
 	}
 
 	@Override
@@ -294,6 +295,15 @@ public class EntryDefinition extends AbstractMarshallable {
 
 	public void setChained() {
 		chained = true;
+	}
+
+	@Override
+	public void run() {
+		try {
+			((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender().writeDocument(this);
+		} catch (Exception e) {
+			ChronicleOutput.failCount.incrementAndGet();
+		}
 	}
 
 	public enum EventType {
