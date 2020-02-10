@@ -140,6 +140,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 
 	@Override
 	public void shutdown() {
+		queueWorkers.shutdown();
 		logger.info("Shutting down chronicle queue:" + this);
 		if (queue != null) {
 			queue.close();
