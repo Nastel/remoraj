@@ -177,7 +177,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 						String remoraHeader = ((HttpServletRequest) req).getHeader(headerCorrIDName);
 						if (remoraHeader == null) {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, ed.getId());
-							logger.info("Added header: " + headerCorrIDName + ed.getId());
+							if (logging) {
+								logger.info("Added header: " + headerCorrIDName + ed.getId());
+							}
 						} else {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, remoraHeader);
 							ed.addPropertyIfExist(headerCorrIDName, remoraHeader);
@@ -248,7 +250,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 

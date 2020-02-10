@@ -67,7 +67,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 
 	Deque<File> unusedQueues;
 
-	AtomicInteger failCount = new AtomicInteger(0);
+	public static AtomicInteger failCount = new AtomicInteger(0);
 	private ExecutorService queueWorkers;
 
 	@Override
@@ -119,23 +119,14 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		}
 
 		queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<>(intermediateQueueSize), threadFactory,
+				new ArrayBlockingQueue<>(intermediateQueueSize), threadFactory,
 				(r, executor) -> failCount.incrementAndGet());
 
 	}
 
 	@Override
 	public void send(EntryDefinition entry) {
-		queueWorkers.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					((ChronicleAppenderThread) Thread.currentThread()).getAppender().writeDocument(entry);
-				} catch (Exception e) {
-					failCount.incrementAndGet();
-				}
-			}
-		});
+		queueWorkers.submit(entry);
 	}
 
 	@Override
@@ -147,7 +138,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		}
 	}
 
-	private class ChronicleAppenderThread extends Thread {
+	public class ChronicleAppenderThread extends Thread {
 
 		private final ExcerptAppender threadAppender;
 
