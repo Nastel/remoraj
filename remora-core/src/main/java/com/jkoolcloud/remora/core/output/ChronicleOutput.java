@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
@@ -65,9 +64,11 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 	@RemoraConfig.Configurable
 	Integer workerSize = 2;
 
+	@RemoraConfig.Configurable
+	Integer errorReportingSchedule = 2;
+
 	Deque<File> unusedQueues;
 
-	public static AtomicInteger failCount = new AtomicInteger(0);
 	private ExecutorService queueWorkers;
 
 	@Override
@@ -96,6 +97,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		}
 
 		logger.info("Writing to " + queueDir.getAbsolutePath());
+		new ScheduledQueueErrorReporter(logger, errorReportingSchedule);
 
 		queue = ChronicleQueue.singleBuilder(queueDir.getPath()).rollCycle(rollCycle).timeoutMS(timeout)
 				.storeFileListener(new StoreFileListener() {
@@ -120,7 +122,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 
 		queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS,
 				new ArrayBlockingQueue<>(intermediateQueueSize), threadFactory,
-				(r, executor) -> failCount.incrementAndGet());
+				(r, executor) -> ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet());
 
 	}
 

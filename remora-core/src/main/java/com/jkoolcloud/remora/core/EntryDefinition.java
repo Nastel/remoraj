@@ -27,6 +27,7 @@ import java.util.Map;
 
 import com.jkoolcloud.remora.advices.TransparentAdvice;
 import com.jkoolcloud.remora.core.output.ChronicleOutput;
+import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 import net.openhft.chronicle.wire.AbstractMarshallable;
 
@@ -302,7 +303,7 @@ public class EntryDefinition extends AbstractMarshallable implements Runnable {
 		try {
 			((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender().writeDocument(this);
 		} catch (Exception e) {
-			ChronicleOutput.failCount.incrementAndGet();
+			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
 		}
 	}
 
