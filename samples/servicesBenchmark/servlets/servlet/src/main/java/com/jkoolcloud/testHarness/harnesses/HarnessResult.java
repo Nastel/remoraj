@@ -20,15 +20,27 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
-public class SQLHarness extends MeasurableHarness {
-	@Override
-	public void setup() {
+import static java.text.MessageFormat.format;
 
+public class HarnessResult {
+	public long start;
+	public long end;
+	public String result;
+
+	public void start() {
+		start = System.nanoTime();
+	}
+
+	public void end() {
+		end = System.nanoTime();
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 	@Override
-	public String call_() throws InterruptedException {
-		Thread.sleep(10000);
-		return "Sucess";
+	public String toString() {
+		return format("Elapsed time: {0} ns; Result: {1}", end - start, result);
 	}
 }

@@ -26,13 +26,14 @@ import java.io.UnsupportedEncodingException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-public class ApacheHttpClientHarness implements Harness {
+public class ApacheHttpClientHarness extends MeasurableHarness {
 
 	@Configurable
 	public String url = "localhost";
@@ -48,12 +49,14 @@ public class ApacheHttpClientHarness implements Harness {
 
 	private CloseableHttpClient httpClient;
 
+	@Override
 	public void setup() {
 		httpClient = HttpClients.createDefault();
 
 	}
 
-	public void run() {
+	@Override
+	public String call_() throws IOException {
 		HttpRequest request;
 		switch (method) {
 		case GET:
@@ -74,11 +77,8 @@ public class ApacheHttpClientHarness implements Harness {
 			}
 		}
 		HttpHost host = new HttpHost(url, port);
-		try {
-			httpClient.execute(host, request);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		CloseableHttpResponse response = httpClient.execute(host, request);
+		return response.getStatusLine().toString();
 
 	}
 
