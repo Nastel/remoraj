@@ -21,11 +21,13 @@
 package com.jkoolcloud.testHarness.harnesses;
 
 public class WebsocketHarness implements Harness {
-	public void setup() {
+	@Override
+    public void setup() {
 
 	}
 
-	public void run() {
-
+	@Override
+	public HarnessResult call() throws Exception {
+		return null;
 	}
 }

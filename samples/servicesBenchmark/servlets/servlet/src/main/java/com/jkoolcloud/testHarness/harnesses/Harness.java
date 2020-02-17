@@ -20,6 +20,8 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
-public interface Harness extends Runnable {
+import java.util.concurrent.Callable;
+
+public interface Harness extends Callable<HarnessResult> {
 	void setup();
 }

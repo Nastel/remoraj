@@ -20,15 +20,17 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
-public class SQLHarness extends MeasurableHarness {
-	@Override
-	public void setup() {
-
-	}
+public abstract class MeasurableHarness implements Harness {
 
 	@Override
-	public String call_() throws InterruptedException {
-		Thread.sleep(10000);
-		return "Sucess";
+	public HarnessResult call() throws Exception {
+		HarnessResult harnessResult = new HarnessResult();
+		harnessResult.start();
+		harnessResult.setResult(call_());
+		harnessResult.end();
+		return harnessResult;
 	}
+
+	abstract String call_() throws Exception;
+
 }
