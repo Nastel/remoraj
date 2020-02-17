@@ -20,18 +20,18 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
-public abstract class MeasurableHarness implements Harness {
+import static java.text.MessageFormat.format;
 
-	@Override
-	public HarnessResult call() throws Exception {
-		HarnessResult harnessResult = new HarnessResult();
-		harnessResult.start();
-		harnessResult.setResult(call_());
-		harnessResult.end();
-		return harnessResult;
+public class ExceptionResult extends HarnessResult {
 
+	private Exception e;
+
+	public ExceptionResult(Exception e) {
+		this.e = e;
 	}
 
-	abstract String call_() throws Exception;
-
+	@Override
+	public String toString() {
+		return format("Exception: {0} , {1}", e.toString(), e.getMessage());
+	}
 }

@@ -41,9 +41,10 @@ import com.jkoolcloud.testHarness.harnesses.*;
 public class Setup extends HttpServlet {
 
 	public static final String EXECUTOR_SERVICES = "executorServices";
-	public static final int RESULT_SIZE = 100;
-	private Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class };
-	private ArrayList<Harness> runningHarnesses = new ArrayList<>();
+	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class,
+			SQLHarness.class };
+	private static ArrayList<Harness> runningHarnesses = new ArrayList<>();
+	private static ArrayList<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -54,6 +55,7 @@ public class Setup extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PrintWriter out = resp.getWriter();
+		System.out.println("REQUEST");
 		out.println("<html>");
 		out.println("<head>");
 
@@ -202,9 +204,10 @@ public class Setup extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		boolean exception = false;
 		String scheduleType = req.getParameter("scheduleType");
-		Integer numberOfThread = Integer.valueOf(req.getParameter("threads"));
-		Integer scheduleValue = Integer.valueOf(req.getParameter("scheduleValue"));
+		Integer numberOfThread = Integer.valueOf((String) req.getParameter("threads"));
+		Integer scheduleValue = Integer.valueOf((String) req.getParameter("scheduleValue"));
 		String className = req.getParameter("class");
 
 		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) req
@@ -217,20 +220,12 @@ public class Setup extends HttpServlet {
 			switch (scheduleType) {
 			case "Scheduled": {
 				ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(numberOfThread);
-				ConcurrentLinkedQueue<HarnessResult> results = new ConcurrentLinkedQueue<>();
 
-				ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							HarnessResult result = harness.call();
-							results.offer(result);
-						} catch (Exception e) {
-							System.out.println();
-						}
-					}
-				}, 0, scheduleValue, TimeUnit.MILLISECONDS);
-				executorServices.put(scheduledExecutorService, results);
+				PeriodicRunnableHarness command = new PeriodicRunnableHarness(harness);
+				ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(command, 0,
+						scheduleValue, TimeUnit.MILLISECONDS);
+				scheduledFutures.add(scheduledFuture);
+				executorServices.put(scheduledExecutorService, command);
 
 			}
 				break;
@@ -239,51 +234,59 @@ public class Setup extends HttpServlet {
 				ExecutorService executorService = Executors.newFixedThreadPool(numberOfThread);
 				ArrayList results = new ArrayList();
 				for (int i = 0; i <= scheduleValue; i++) {
-					results.add(executorService.submit(harness));
+					Future<HarnessResult> submit = executorService.submit(harness);
+					results.add(submit);
 				}
 				executorServices.put(executorService, results);
 			}
 				break;
 			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+
+		} catch (Exception e) {
+			exception = true;
+			e.printStackTrace(resp.getWriter());
 		}
-		doGet(req, resp);
+		if (!exception) {
+			resp.sendRedirect(req.getContextPath());
+		}
 	}
 
-	private void setup(Harness harness, Map<String, String[]> parameterMap) {
-		try {
-			for (Field field : harness.getClass().getDeclaredFields()) {
-				if (!field.isAnnotationPresent(Configurable.class)) {
-					continue;
-				}
-				String value = parameterMap.get(field.getName())[0];
-				Class<?> type = field.getType();
-				try {
-					if (type.equals(String.class)) {
-						field.set(harness, value);
-					}
-					if (type.equals(Integer.class)) {
-						field.set(harness, Integer.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
-					}
-					if (type.equals(Long.class)) {
-						field.set(harness, Long.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
-					}
-					if (type.isEnum()) {
-						field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
-					}
+	@Override
+	public void destroy() {
+		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) getServletContext()
+				.getAttribute(EXECUTOR_SERVICES);
+		if (executorServices != null) {
+			executorServices.keySet().forEach(executorService -> executorService.shutdown());
+		}
+		super.destroy();
+	}
 
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
+	private void setup(Harness harness, Map<String, String[]> parameterMap) throws Exception {
 
+		for (Field field : harness.getClass().getDeclaredFields()) {
+			if (!field.isAnnotationPresent(Configurable.class)) {
+				continue;
 			}
-		} catch (Exception e) {
-			System.out.println();
+			String value = parameterMap.get(field.getName())[0];
+			Class<?> type = field.getType();
+			try {
+				if (type.equals(String.class)) {
+					field.set(harness, value);
+				}
+				if (type.equals(Integer.class)) {
+					field.set(harness, Integer.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
+				}
+				if (type.equals(Long.class)) {
+					field.set(harness, Long.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
+				}
+				if (type.isEnum()) {
+					field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
+				}
+
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+
 		}
 		harness.setup();
 	}
