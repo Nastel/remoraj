@@ -23,7 +23,9 @@ package com.jkoolcloud.testHarness;
 
 import static java.text.MessageFormat.format;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -41,9 +43,10 @@ import com.jkoolcloud.testHarness.harnesses.*;
 public class Setup extends HttpServlet {
 
 	public static final String EXECUTOR_SERVICES = "executorServices";
-	public static final int RESULT_SIZE = 100;
-	private Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class };
-	private ArrayList<Harness> runningHarnesses = new ArrayList<>();
+	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class,
+			MQReceiveHarness.class };
+	private static ArrayList<Harness> runningHarnesses = new ArrayList<>();
+	private static ArrayList<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -54,9 +57,22 @@ public class Setup extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PrintWriter out = resp.getWriter();
+
+		if (req.getRequestURI().endsWith("/js/script.js")) {
+			resp.setContentType("application/javascript");
+			resp.getWriter().write(getString(req.getServletContext().getResourceAsStream("/static/script/script.js")));
+			return;
+		}
+
+		if (req.getRequestURI().endsWith("/css/style.css")) {
+			resp.setContentType("text/css");
+			resp.getWriter().write(getString(req.getServletContext().getResourceAsStream("/static/css/style.css")));
+			return;
+		}
 		out.println("<html>");
 		out.println("<head>");
-
+		outputStyle(out, req.getContextPath());
+		outputScript(out, req.getContextPath());
 		out.println("</head>");
 		out.println("<body>");
 		out.println("<h1>Test harnesses</h1>");
@@ -97,6 +113,7 @@ public class Setup extends HttpServlet {
 	}
 
 	private void printRunningExecutors(PrintWriter out, ServletContext servletContext) {
+
 		out.println("<h1>Running executors</h1>");
 		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) servletContext
 				.getAttribute(EXECUTOR_SERVICES);
@@ -128,7 +145,22 @@ public class Setup extends HttpServlet {
 
 			out.println("<td>");
 			for (Object o : executorServices.get(service)) {
-				out.println(o);
+				if (o instanceof Future) {
+					if (((Future) o).isDone()) {
+						try {
+							out.println(((Future) o).get());
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							out.println(format("Exception: {0}, {1}", e.getClass().getSimpleName(), e.getMessage()));
+						}
+					} else {
+						out.println("Scheduled..");
+					}
+
+				} else {
+					out.println(o);
+				}
 				out.println("<br>");
 			}
 			out.println("</td>");
@@ -161,6 +193,7 @@ public class Setup extends HttpServlet {
 				Harness tempObj = harnessClass.newInstance();
 
 				if (field.getType().isEnum()) {
+					out.println(format("<div>{0}</div>", field.getName()));
 					out.print(format("<select name={0}>", field.getName()));
 					for (String constant : getNames((Class<? extends Enum<?>>) field.getType())) {
 						out.println(format("<option name='{0}' value='{1}' selected='{2}'>{3}</option>", constant,
@@ -171,7 +204,7 @@ public class Setup extends HttpServlet {
 					out.println(format("<div>{0}</div>", field.getName()));
 
 					out.println(format("<input size='30' name=\"{0}\" value=\"{1}\">", field.getName(),
-							field.get(tempObj)));
+							field.get(tempObj) == null ? "" : field.get(tempObj)));
 				}
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
@@ -202,9 +235,10 @@ public class Setup extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		boolean exception = false;
 		String scheduleType = req.getParameter("scheduleType");
-		Integer numberOfThread = Integer.valueOf(req.getParameter("threads"));
-		Integer scheduleValue = Integer.valueOf(req.getParameter("scheduleValue"));
+		Integer numberOfThread = Integer.valueOf((String) req.getParameter("threads"));
+		Integer scheduleValue = Integer.valueOf((String) req.getParameter("scheduleValue"));
 		String className = req.getParameter("class");
 
 		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) req
@@ -217,20 +251,12 @@ public class Setup extends HttpServlet {
 			switch (scheduleType) {
 			case "Scheduled": {
 				ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(numberOfThread);
-				ConcurrentLinkedQueue<HarnessResult> results = new ConcurrentLinkedQueue<>();
 
-				ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							HarnessResult result = harness.call();
-							results.offer(result);
-						} catch (Exception e) {
-							System.out.println();
-						}
-					}
-				}, 0, scheduleValue, TimeUnit.MILLISECONDS);
-				executorServices.put(scheduledExecutorService, results);
+				PeriodicRunnableHarness command = new PeriodicRunnableHarness(harness);
+				ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(command, 0,
+						scheduleValue, TimeUnit.MILLISECONDS);
+				scheduledFutures.add(scheduledFuture);
+				executorServices.put(scheduledExecutorService, command);
 
 			}
 				break;
@@ -239,53 +265,83 @@ public class Setup extends HttpServlet {
 				ExecutorService executorService = Executors.newFixedThreadPool(numberOfThread);
 				ArrayList results = new ArrayList();
 				for (int i = 0; i <= scheduleValue; i++) {
-					results.add(executorService.submit(harness));
+					Future<HarnessResult> submit = executorService.submit(harness);
+					results.add(submit);
 				}
 				executorServices.put(executorService, results);
 			}
 				break;
 			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+
+		} catch (Exception e) {
+			exception = true;
+			e.printStackTrace(resp.getWriter());
 		}
-		doGet(req, resp);
+		if (!exception) {
+			resp.sendRedirect(req.getContextPath());
+		}
 	}
 
-	private void setup(Harness harness, Map<String, String[]> parameterMap) {
-		try {
-			for (Field field : harness.getClass().getDeclaredFields()) {
-				if (!field.isAnnotationPresent(Configurable.class)) {
-					continue;
-				}
-				String value = parameterMap.get(field.getName())[0];
-				Class<?> type = field.getType();
-				try {
-					if (type.equals(String.class)) {
-						field.set(harness, value);
-					}
-					if (type.equals(Integer.class)) {
-						field.set(harness, Integer.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
-					}
-					if (type.equals(Long.class)) {
-						field.set(harness, Long.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
-					}
-					if (type.isEnum()) {
-						field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
-					}
+	@Override
+	public void destroy() {
+		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) getServletContext()
+				.getAttribute(EXECUTOR_SERVICES);
+		if (executorServices != null) {
+			executorServices.keySet().forEach(executorService -> executorService.shutdown());
+		}
+		super.destroy();
+	}
 
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
+	private void setup(Harness harness, Map<String, String[]> parameterMap) throws Exception {
 
+		for (Field field : harness.getClass().getDeclaredFields()) {
+			if (!field.isAnnotationPresent(Configurable.class)) {
+				continue;
 			}
-		} catch (Exception e) {
-			System.out.println();
+			String value = parameterMap.get(field.getName())[0];
+			Class<?> type = field.getType();
+			try {
+				if (type.equals(String.class)) {
+					field.set(harness, value);
+				}
+				if (type.equals(Integer.class)) {
+					field.set(harness, Integer.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
+				}
+				if (type.equals(Long.class)) {
+					field.set(harness, Long.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
+				}
+				if (type.isEnum()) {
+					field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 		harness.setup();
+	}
+
+	private static void outputStyle(PrintWriter out, String cp) {
+		out.println("<link rel=\"stylesheet\" href=\"" + cp + "/static/css/style.css\">");
+	}
+
+	private static void outputScript(PrintWriter out, String cp) {
+		out.println("<script src=\"" + cp + "/static/js/script.js\"></script>");
+	}
+
+	private static String getString(InputStream inputStream) throws IOException {
+		try {
+			ByteArrayOutputStream result = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = inputStream.read(buffer)) != -1) {
+				result.write(buffer, 0, length);
+			}
+			return result.toString();
+		} catch (Exception e) {
+			return "N/A";
+		}
 	}
 
 }

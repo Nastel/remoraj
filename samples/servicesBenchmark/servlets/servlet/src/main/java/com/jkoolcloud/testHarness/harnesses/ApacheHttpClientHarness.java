@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -78,8 +79,10 @@ public class ApacheHttpClientHarness extends MeasurableHarness {
 		}
 		HttpHost host = new HttpHost(url, port);
 		CloseableHttpResponse response = httpClient.execute(host, request);
-		return response.getStatusLine().toString();
 
+		StatusLine statusLine = response.getStatusLine();
+		response.close();
+		return statusLine.toString();
 	}
 
 	public enum Method {

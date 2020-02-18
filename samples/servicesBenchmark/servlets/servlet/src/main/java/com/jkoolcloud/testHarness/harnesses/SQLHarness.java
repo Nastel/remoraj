@@ -20,15 +20,40 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
+import java.sql.*;
+
 public class SQLHarness extends MeasurableHarness {
+
+	@Configurable
+	public String url = "jdbc:mysql://172.16.6.75:3306/bank";
+
+	@Configurable
+	public Integer port = 3306;
+
+	@Configurable
+	public String username = "root";
+
+	@Configurable
+	public String password = "password";
+
+	@Configurable
+	public String sql = "SELECT 1";
+
+	private Statement statement;
+
 	@Override
-	public void setup() {
+	public void setup() throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Connection connection = DriverManager.getConnection(url, username, password);
+		statement = connection.createStatement();
 
 	}
 
 	@Override
-	public String call_() throws InterruptedException {
-		Thread.sleep(10000);
-		return "Sucess";
+	public String call_() throws SQLException {
+		ResultSet resultSet = statement.executeQuery(sql);
+		String s = String.valueOf(resultSet.getFetchSize());
+		resultSet.close();
+		return s;
 	}
 }

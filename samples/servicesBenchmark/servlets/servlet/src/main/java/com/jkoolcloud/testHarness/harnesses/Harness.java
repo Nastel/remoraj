@@ -23,5 +23,5 @@ package com.jkoolcloud.testHarness.harnesses;
 import java.util.concurrent.Callable;
 
 public interface Harness extends Callable<HarnessResult> {
-	void setup();
+	void setup() throws Exception;
 }

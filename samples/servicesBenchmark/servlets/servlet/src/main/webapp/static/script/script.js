@@ -18,20 +18,3 @@
  * CopyrightVersion 1.0
  */
 
-package com.jkoolcloud.testHarness.harnesses;
-
-public abstract class MeasurableHarness implements Harness {
-
-	@Override
-	public HarnessResult call() throws Exception {
-		HarnessResult harnessResult = new HarnessResult();
-		harnessResult.start();
-		harnessResult.setResult(call_());
-		harnessResult.end();
-		return harnessResult;
-
-	}
-
-	abstract String call_() throws Exception;
-
-}
