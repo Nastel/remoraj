@@ -41,8 +41,8 @@ import com.jkoolcloud.testHarness.harnesses.*;
 public class Setup extends HttpServlet {
 
 	public static final String EXECUTOR_SERVICES = "executorServices";
-	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class,
-			SQLHarness.class };
+	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class,
+			MQReceiveHarness.class };
 	private static ArrayList<Harness> runningHarnesses = new ArrayList<>();
 	private static ArrayList<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 
@@ -283,7 +283,7 @@ public class Setup extends HttpServlet {
 					field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
 				}
 
-			} catch (IllegalAccessException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 

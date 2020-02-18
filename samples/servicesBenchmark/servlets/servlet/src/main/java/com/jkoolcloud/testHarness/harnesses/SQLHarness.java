@@ -25,7 +25,7 @@ import java.sql.*;
 public class SQLHarness extends MeasurableHarness {
 
 	@Configurable
-	public String url = "Localhost";
+	public String url = "jdbc:mysql://172.16.6.75:3306/bank";
 
 	@Configurable
 	public Integer port = 3306;
@@ -42,7 +42,8 @@ public class SQLHarness extends MeasurableHarness {
 	private Statement statement;
 
 	@Override
-	public void setup() throws SQLException {
+	public void setup() throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
 		Connection connection = DriverManager.getConnection(url, username, password);
 		statement = connection.createStatement();
 
