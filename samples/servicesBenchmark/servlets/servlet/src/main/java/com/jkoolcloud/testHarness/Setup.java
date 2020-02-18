@@ -23,7 +23,9 @@ package com.jkoolcloud.testHarness;
 
 import static java.text.MessageFormat.format;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -55,10 +57,22 @@ public class Setup extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PrintWriter out = resp.getWriter();
-		System.out.println("REQUEST");
+
+		if (req.getRequestURI().endsWith("/js/script.js")) {
+			resp.setContentType("application/javascript");
+			resp.getWriter().write(getString(req.getServletContext().getResourceAsStream("/static/script/script.js")));
+			return;
+		}
+
+		if (req.getRequestURI().endsWith("/css/style.css")) {
+			resp.setContentType("text/css");
+			resp.getWriter().write(getString(req.getServletContext().getResourceAsStream("/static/css/style.css")));
+			return;
+		}
 		out.println("<html>");
 		out.println("<head>");
-
+		outputStyle(out, req.getContextPath());
+		outputScript(out, req.getContextPath());
 		out.println("</head>");
 		out.println("<body>");
 		out.println("<h1>Test harnesses</h1>");
@@ -99,6 +113,7 @@ public class Setup extends HttpServlet {
 	}
 
 	private void printRunningExecutors(PrintWriter out, ServletContext servletContext) {
+
 		out.println("<h1>Running executors</h1>");
 		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) servletContext
 				.getAttribute(EXECUTOR_SERVICES);
@@ -130,7 +145,22 @@ public class Setup extends HttpServlet {
 
 			out.println("<td>");
 			for (Object o : executorServices.get(service)) {
-				out.println(o);
+				if (o instanceof Future) {
+					if (((Future) o).isDone()) {
+						try {
+							out.println(((Future) o).get());
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							out.println(format("Exception: {0}, {1}", e.getClass().getSimpleName(), e.getMessage()));
+						}
+					} else {
+						out.println("Scheduled..");
+					}
+
+				} else {
+					out.println(o);
+				}
 				out.println("<br>");
 			}
 			out.println("</td>");
@@ -163,6 +193,7 @@ public class Setup extends HttpServlet {
 				Harness tempObj = harnessClass.newInstance();
 
 				if (field.getType().isEnum()) {
+					out.println(format("<div>{0}</div>", field.getName()));
 					out.print(format("<select name={0}>", field.getName()));
 					for (String constant : getNames((Class<? extends Enum<?>>) field.getType())) {
 						out.println(format("<option name='{0}' value='{1}' selected='{2}'>{3}</option>", constant,
@@ -173,7 +204,7 @@ public class Setup extends HttpServlet {
 					out.println(format("<div>{0}</div>", field.getName()));
 
 					out.println(format("<input size='30' name=\"{0}\" value=\"{1}\">", field.getName(),
-							field.get(tempObj)));
+							field.get(tempObj) == null ? "" : field.get(tempObj)));
 				}
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
@@ -289,6 +320,28 @@ public class Setup extends HttpServlet {
 
 		}
 		harness.setup();
+	}
+
+	private static void outputStyle(PrintWriter out, String cp) {
+		out.println("<link rel=\"stylesheet\" href=\"" + cp + "/static/css/style.css\">");
+	}
+
+	private static void outputScript(PrintWriter out, String cp) {
+		out.println("<script src=\"" + cp + "/static/js/script.js\"></script>");
+	}
+
+	private static String getString(InputStream inputStream) throws IOException {
+		try {
+			ByteArrayOutputStream result = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = inputStream.read(buffer)) != -1) {
+				result.write(buffer, 0, length);
+			}
+			return result.toString();
+		} catch (Exception e) {
+			return "N/A";
+		}
 	}
 
 }
