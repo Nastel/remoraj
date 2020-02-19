@@ -20,32 +20,30 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
-import javax.jms.MessageConsumer;
+import static java.text.MessageFormat.format;
+
+import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 
 import com.ibm.mq.jms.MQQueue;
 
-public class MQReceiveHarness extends BaseMQHarness {
+public class MQSendHarness extends BaseMQHarness {
 
+	private MessageProducer producer;
 	@Configurable
-	public long receiveTimeout = 100L;
-
-	private MessageConsumer consumer;
+	public String messageBody;
 
 	@Override
 	String call_() throws Exception {
-		TextMessage message = (TextMessage) consumer.receive(receiveTimeout);
-		if (message != null) {
-			message.acknowledge();
-		}
-		return message == null ? "No message" : message.getText();
+		TextMessage textMessage = session.createTextMessage(messageBody);
+		producer.send(textMessage);
+		return format("Sent textMessage {0}", textMessage.getJMSMessageID());
 	}
 
 	@Override
 	public void setup() throws Exception {
 		super.setup();
 		MQQueue queue = new MQQueue(queueManager, destination);
-		consumer = session.createConsumer(queue);
+		producer = session.createProducer(queue);
 	}
-
 }
