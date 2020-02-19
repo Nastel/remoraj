@@ -32,7 +32,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +43,7 @@ public class Setup extends HttpServlet {
 
 	public static final String EXECUTOR_SERVICES = "executorServices";
 	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class,
-			MQReceiveHarness.class };
+			MQReceiveHarness.class, MQSendHarness.class };
 	private static ArrayList<Harness> runningHarnesses = new ArrayList<>();
 	private static ArrayList<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
 
@@ -96,13 +95,9 @@ public class Setup extends HttpServlet {
 			out.println("</tr>");
 			out.println("</form>");
 		}
-
 		out.println("</table>");
-
-		out.println("<form action=\"" + req.getContextPath() + "\" method=\"delete\">");
 		out.println("<table>");
-
-		printRunningExecutors(out, req.getServletContext());
+		printRunningExecutors(out, req);
 
 		out.println("</form>");
 		out.println("</table>");
@@ -112,11 +107,11 @@ public class Setup extends HttpServlet {
 
 	}
 
-	private void printRunningExecutors(PrintWriter out, ServletContext servletContext) {
+	private void printRunningExecutors(PrintWriter out, HttpServletRequest req) {
 
 		out.println("<h1>Running executors</h1>");
-		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) servletContext
-				.getAttribute(EXECUTOR_SERVICES);
+		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) req
+				.getServletContext().getAttribute(EXECUTOR_SERVICES);
 		for (ExecutorService service : executorServices.keySet()) {
 
 			// out.println("<tr><td>");
@@ -165,8 +160,37 @@ public class Setup extends HttpServlet {
 			}
 			out.println("</td>");
 
+			out.println("<td>");
+			out.println(format("<form action=\"{0}\" method=\"POST\">", req.getContextPath()));
+			out.println("<input type='submit' value='Remove'>");
+			out.println(format("<input type='hidden' name='service' value=\"{0,number,#}\">", service.hashCode()));
+			out.println("</form>");
+
+			out.println("</td>");
+
 			out.println("</tr>");
 		}
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) req
+				.getServletContext().getAttribute(EXECUTOR_SERVICES);
+		Integer serviceHash = Integer.valueOf(req.getParameter("service"));
+
+		ExecutorService toRemove = null;
+		for (ExecutorService service : executorServices.keySet()) {
+			if (service.hashCode() == serviceHash.intValue()) {
+				service.shutdown();
+				toRemove = service;
+				break;
+			}
+		}
+		if (toRemove != null) {
+			executorServices.remove(toRemove);
+		}
+
+		resp.sendRedirect(req.getContextPath());
 	}
 
 	private void printScheduleSelection(PrintWriter out, Class<? extends Harness> harnessClass) {
@@ -179,39 +203,50 @@ public class Setup extends HttpServlet {
 		out.println(format("<input size='30' name='threads' value='1'>"));
 	}
 
-	private void printConfigurables(PrintWriter out, Class<? extends Harness> harnessClass) {
+	protected static void printConfigurables(PrintWriter out, Class<? extends Harness> harnessClass) {
 
 		out.println("<div>");
-		for (Field field : harnessClass.getDeclaredFields()) {
-			if (!field.isAnnotationPresent(Configurable.class)) {
-				continue;
-			}
-			out.println("<div>");
+		Class workingClass = harnessClass;
 
-			field.getName();
-			try {
-				Harness tempObj = harnessClass.newInstance();
+		Harness tempObj = null;
+		try {
+			tempObj = harnessClass.newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 
-				if (field.getType().isEnum()) {
-					out.println(format("<div>{0}</div>", field.getName()));
-					out.print(format("<select name={0}>", field.getName()));
-					for (String constant : getNames((Class<? extends Enum<?>>) field.getType())) {
-						out.println(format("<option name='{0}' value='{1}' selected='{2}'>{3}</option>", constant,
-								constant, constant.equalsIgnoreCase(((Enum) field.get(tempObj)).name()), constant));
-					}
-					out.print("</select>");
-				} else {
-					out.println(format("<div>{0}</div>", field.getName()));
-
-					out.println(format("<input size='30' name=\"{0}\" value=\"{1}\">", field.getName(),
-							field.get(tempObj) == null ? "" : field.get(tempObj)));
+		while (!workingClass.equals(Object.class)) {
+			INNER: for (Field field : workingClass.getDeclaredFields()) {
+				if (!field.isAnnotationPresent(Configurable.class)) {
+					continue INNER;
 				}
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
+				out.println("<div>");
+				field.getName();
+				try {
+
+					if (field.getType().isEnum()) {
+						out.println(format("<div>{0}</div>", field.getName()));
+						out.print(format("<select name={0}>", field.getName()));
+						for (String constant : getNames((Class<? extends Enum<?>>) field.getType())) {
+							out.println(format("<option name='{0}' value='{1}' selected='{2}'>{3}</option>", constant,
+									constant, constant.equalsIgnoreCase(((Enum) field.get(tempObj)).name()), constant));
+						}
+						out.print("</select>");
+					} else {
+						out.println(format("<div>{0}</div>", field.getName()));
+
+						out.println(format("<input size='30' name=\"{0}\" value=\"{1}\">", field.getName(),
+								field.get(tempObj) == null ? "" : field.get(tempObj)));
+					}
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				out.println("</div>");
+
 			}
-			out.println("</div>");
+			workingClass = workingClass.getSuperclass();
 		}
 		out.println("</div>");
 	}
@@ -235,6 +270,15 @@ public class Setup extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String service = req.getParameter("service");
+		if (service != null) {
+			doDelete(req, resp);
+		} else {
+			createNewHarness(req, resp);
+		}
+	}
+
+	private void createNewHarness(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		boolean exception = false;
 		String scheduleType = req.getParameter("scheduleType");
 		Integer numberOfThread = Integer.valueOf((String) req.getParameter("threads"));
@@ -294,30 +338,34 @@ public class Setup extends HttpServlet {
 
 	private void setup(Harness harness, Map<String, String[]> parameterMap) throws Exception {
 
-		for (Field field : harness.getClass().getDeclaredFields()) {
-			if (!field.isAnnotationPresent(Configurable.class)) {
-				continue;
-			}
-			String value = parameterMap.get(field.getName())[0];
-			Class<?> type = field.getType();
-			try {
-				if (type.equals(String.class)) {
-					field.set(harness, value);
+		Class workingClass = harness.getClass();
+		while (!workingClass.equals(Object.class)) {
+			for (Field field : workingClass.getDeclaredFields()) {
+				if (!field.isAnnotationPresent(Configurable.class)) {
+					continue;
 				}
-				if (type.equals(Integer.class)) {
-					field.set(harness, Integer.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
-				}
-				if (type.equals(Long.class)) {
-					field.set(harness, Long.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
-				}
-				if (type.isEnum()) {
-					field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
+				String value = parameterMap.get(field.getName())[0];
+				Class<?> type = field.getType();
+				try {
+					if (type.equals(String.class)) {
+						field.set(harness, value);
+					}
+					if (type.equals(Integer.class)) {
+						field.set(harness, Integer.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
+					}
+					if (type.equals(Long.class)) {
+						field.set(harness, Long.valueOf(value.replaceAll("(\\h*)|(\\h*$)", "")));
+					}
+					if (type.isEnum()) {
+						field.set(harness, getEnumValue((Class<? extends Enum<?>>) type, value));
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-
+			workingClass = workingClass.getSuperclass();
 		}
 		harness.setup();
 	}
