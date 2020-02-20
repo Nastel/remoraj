@@ -37,15 +37,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jkoolcloud.testHarness.endpoints.WebsocketEchoEndpoint;
 import com.jkoolcloud.testHarness.harnesses.*;
 
 public class Setup extends HttpServlet {
 
 	public static final String EXECUTOR_SERVICES = "executorServices";
 	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class,
-			MQReceiveHarness.class, MQSendHarness.class };
-	private static ArrayList<Harness> runningHarnesses = new ArrayList<>();
-	private static ArrayList<ScheduledFuture<?>> scheduledFutures = new ArrayList<>();
+			MQReceiveHarness.class, MQSendHarness.class, WebsocketSendHarness.class, KafkaConsumerHarness.class,
+			KafkaProducerHarness.class };
+	private static HashMap<ExecutorService, Harness> runningHarnesses = new HashMap<>();
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -114,16 +115,16 @@ public class Setup extends HttpServlet {
 				.getServletContext().getAttribute(EXECUTOR_SERVICES);
 		for (ExecutorService service : executorServices.keySet()) {
 
-			// out.println("<tr><td>");
-			// out.println(service.);
-			// out.println("</td>");
-
 			out.println("<tr><td>");
-			out.println(service.isTerminated());
+			out.println(runningHarnesses.get(service));
 			out.println("</td>");
 
 			out.println("<td>");
-			out.println(service.isShutdown());
+			out.println(service.isTerminated() ? "Terminated" : "Running");
+			out.println("</td>");
+
+			out.println("<td>");
+			out.println(service.isShutdown() ? "Shutdown" : "Running");
 			out.println("</td>");
 
 			out.println("<td>");
@@ -188,6 +189,7 @@ public class Setup extends HttpServlet {
 		}
 		if (toRemove != null) {
 			executorServices.remove(toRemove);
+			runningHarnesses.remove(toRemove);
 		}
 
 		resp.sendRedirect(req.getContextPath());
@@ -197,9 +199,11 @@ public class Setup extends HttpServlet {
 		out.println(format("<input size='30' type='hidden' name=\"class\" value=\"{0}\">", harnessClass.getName()));
 		out.print("<select name='scheduleType'>");
 		out.println("<option name='NumberOfTimes' value='NumberOfTimes'>Number Of Times</option>");
-		out.println("<option name='Scheduled' value='Scheduled'>Scheduled</option>");
+		out.println("<option name='Scheduled' value='Scheduled' selected=\"true\">Scheduled</option>");
 		out.print("</select>");
-		out.println(format("<input size='30' name='scheduleValue' value='1'>"));
+		out.print("<label for='scheduleValue'># of times, or ms</label>");
+		out.println(format("<input size='30' name='scheduleValue' value='500'>"));
+		out.print("<label for='threads'>Threads</label>");
 		out.println(format("<input size='30' name='threads' value='1'>"));
 	}
 
@@ -291,7 +295,7 @@ public class Setup extends HttpServlet {
 		try {
 			Harness harness = (Harness) Class.forName(className).newInstance();
 			setup(harness, req.getParameterMap());
-			runningHarnesses.add(harness);
+
 			switch (scheduleType) {
 			case "Scheduled": {
 				ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(numberOfThread);
@@ -299,8 +303,8 @@ public class Setup extends HttpServlet {
 				PeriodicRunnableHarness command = new PeriodicRunnableHarness(harness);
 				ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(command, 0,
 						scheduleValue, TimeUnit.MILLISECONDS);
-				scheduledFutures.add(scheduledFuture);
 				executorServices.put(scheduledExecutorService, command);
+				runningHarnesses.put(scheduledExecutorService, harness);
 
 			}
 				break;
@@ -313,6 +317,8 @@ public class Setup extends HttpServlet {
 					results.add(submit);
 				}
 				executorServices.put(executorService, results);
+				runningHarnesses.put(executorService, harness);
+
 			}
 				break;
 			}
@@ -392,4 +398,9 @@ public class Setup extends HttpServlet {
 		}
 	}
 
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		WebsocketEchoEndpoint endpoint = new WebsocketEchoEndpoint();
+	}
 }

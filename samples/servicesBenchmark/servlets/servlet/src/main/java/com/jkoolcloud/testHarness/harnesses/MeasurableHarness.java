@@ -20,6 +20,8 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
+import java.lang.reflect.Field;
+
 public abstract class MeasurableHarness implements Harness {
 
 	@Override
@@ -34,4 +36,31 @@ public abstract class MeasurableHarness implements Harness {
 
 	abstract String call_() throws Exception;
 
+	@Override
+	public String toString() {
+		Class workngClass = getClass();
+		StringBuilder result = new StringBuilder();
+		result.append("<H4>");
+		result.append(getClass().getSimpleName());
+		result.append("</H4>");
+		while (!workngClass.equals(Object.class)) {
+			INNER: for (Field field : workngClass.getDeclaredFields()) {
+
+				if (!field.isAnnotationPresent(Configurable.class)) {
+                    continue INNER;
+                }
+				result.append(field.getName());
+				result.append("=");
+				try {
+					result.append(field.get(this));
+
+				} catch (IllegalAccessException e) {
+					result.append("N/A");
+				}
+				result.append("<br>");
+			}
+			workngClass = workngClass.getSuperclass();
+		}
+		return result.toString();
+	}
 }
