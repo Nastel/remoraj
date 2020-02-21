@@ -40,12 +40,13 @@ public class ScheduledQueueErrorReporter {
 		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutorService.scheduleAtFixedRate(() -> {
 			if (logger != null) {
-				if (lastReportedErrorCount < (chronicleQueueFailCount.get() + intermediateQueueFailCount.get())) {
+				int newErrorCount = chronicleQueueFailCount.get() + intermediateQueueFailCount.get();
+				if (lastReportedErrorCount < newErrorCount) {
+					logger.error(
+							"Intermediate queue failure occurred. Failed write to intermediateQueue count: {}, failed write to chronicle queue count: {} ",
+							intermediateQueueFailCount.get(), chronicleQueueFailCount.get());
+					lastReportedErrorCount = newErrorCount;
 				}
-				logger.error(
-						"Intermediate queue failure occurred. Failed write to intermediateQueue count: {}, failed write to chronicle queue count: {} ",
-						intermediateQueueFailCount.get(), chronicleQueueFailCount.get());
-
 			}
 		}, 0, delay, TimeUnit.SECONDS);
 	}

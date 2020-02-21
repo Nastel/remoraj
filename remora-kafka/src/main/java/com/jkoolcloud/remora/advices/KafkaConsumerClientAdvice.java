@@ -152,7 +152,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 

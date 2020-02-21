@@ -100,7 +100,7 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 		try {
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} finally {
-			doFinally(logger);
+			doFinally(logging ? logger : null);
 		}
 
 	}
