@@ -82,7 +82,9 @@ public class Setup extends HttpServlet {
 			out.println("<form action=\"" + req.getContextPath() + "\" method=\"post\">");
 
 			out.println("<tr><td>");
+			out.println("<H4>");
 			out.println(harnessClass.getSimpleName());
+			out.println("</H4>");
 			out.println("</td>");
 			out.println("<td>");
 			printScheduleSelection(out, harnessClass);
@@ -111,8 +113,27 @@ public class Setup extends HttpServlet {
 	private void printRunningExecutors(PrintWriter out, HttpServletRequest req) {
 
 		out.println("<h1>Running executors</h1>");
+
 		HashMap<ExecutorService, Collection> executorServices = (HashMap<ExecutorService, Collection>) req
 				.getServletContext().getAttribute(EXECUTOR_SERVICES);
+
+		out.println("<h2>Summary</h2>");
+
+		int size = executorServices.size();
+		int totalActiveCount = 0;
+		long totalCompletedTaskCount = 0;
+		for (ExecutorService service : executorServices.keySet()) {
+
+			totalActiveCount += ((ThreadPoolExecutor) service).getPoolSize();
+			totalCompletedTaskCount += ((ThreadPoolExecutor) service).getCompletedTaskCount();
+		}
+
+		out.println(format("Total harnesses: {0}", size));
+		out.println(format("Total active threads: {0}", totalActiveCount));
+		out.println(format("Total complete Jobs: {0}", totalCompletedTaskCount));
+
+		out.println("<h2>Details</h2>");
+
 		for (ExecutorService service : executorServices.keySet()) {
 
 			out.println("<tr><td>");
@@ -130,6 +151,7 @@ public class Setup extends HttpServlet {
 			out.println("<td>");
 			if (service instanceof ThreadPoolExecutor) {
 				out.println(((ThreadPoolExecutor) service).getQueue().size());
+
 			}
 			out.println("</td>");
 
@@ -140,6 +162,13 @@ public class Setup extends HttpServlet {
 			out.println("</td>");
 
 			out.println("<td>");
+
+			out.println("<button name=\"openDetails\">Details</button>");
+			out.println("<div name='details' class='modal'>");
+			out.println("<div class=\"modal-content\">");
+
+			out.println("<span name='close' class=\"close\">&times;</span>");
+
 			for (Object o : executorServices.get(service)) {
 				if (o instanceof Future) {
 					if (((Future) o).isDone()) {
@@ -159,6 +188,8 @@ public class Setup extends HttpServlet {
 				}
 				out.println("<br>");
 			}
+			out.println("</div>");
+			out.println("</div>");
 			out.println("</td>");
 
 			out.println("<td>");
