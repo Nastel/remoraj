@@ -26,7 +26,7 @@ import javax.jms.Session;
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
 
-public class BaseMQHarness extends MeasurableHarness {
+public abstract class BaseMQHarness extends MeasurableHarness {
 	@Configurable
 	public String queueManager = "T2";
 	@Configurable
@@ -45,11 +45,6 @@ public class BaseMQHarness extends MeasurableHarness {
 	public String destination;
 
 	protected Session session;
-
-	@Override
-	String call_() throws Exception {
-		return null;
-	}
 
 	@Override
 	public void setup() throws Exception {

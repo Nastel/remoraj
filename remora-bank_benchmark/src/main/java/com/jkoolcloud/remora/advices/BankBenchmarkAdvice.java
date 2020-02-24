@@ -102,7 +102,7 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 		try {
 
 			ed = getEntryDefinition(ed, BankBenchmarkAdvice.class, logging ? logger : null);
-            if (logging) {
+			if (logging) {
 				logger.info("Entering: {} {}", BankBenchmarkAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
@@ -152,7 +152,7 @@ public class BankBenchmarkAdvice extends BaseTransformers implements RemoraAdvic
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 

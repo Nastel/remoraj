@@ -20,6 +20,7 @@
 
 package com.jkoolcloud.testHarness;
 
+import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import com.jkoolcloud.testHarness.harnesses.MQReceiveHarness;
 import com.jkoolcloud.testHarness.harnesses.PeriodicRunnableHarness;
 import com.jkoolcloud.testHarness.harnesses.SoutHarness;
 
@@ -52,6 +54,13 @@ public class SetupTest {
 			System.out.println("Run");
 			return 1;
 		}
+	}
+
+	@Test
+	public void testPrintConfigurables() {
+		PrintWriter printWriter = new PrintWriter(System.out);
+		Setup.printConfigurables(printWriter, MQReceiveHarness.class);
+		printWriter.flush();
 	}
 
 }

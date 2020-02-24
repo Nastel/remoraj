@@ -182,7 +182,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinnaly) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 

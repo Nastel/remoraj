@@ -191,7 +191,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 	}

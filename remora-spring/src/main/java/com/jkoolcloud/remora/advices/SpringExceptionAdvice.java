@@ -156,7 +156,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 

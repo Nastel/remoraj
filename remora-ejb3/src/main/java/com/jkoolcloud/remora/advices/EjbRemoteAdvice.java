@@ -168,7 +168,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 

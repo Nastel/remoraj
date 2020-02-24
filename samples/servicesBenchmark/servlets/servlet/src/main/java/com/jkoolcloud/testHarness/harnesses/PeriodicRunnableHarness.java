@@ -41,7 +41,6 @@ public class PeriodicRunnableHarness implements Runnable, Collection<HarnessResu
 		try {
 			result = harness.call();
 			results.offer(result);
-			System.out.println("calling");
 		} catch (Exception e) {
 			results.offer(new ExceptionResult(e));
 		}
