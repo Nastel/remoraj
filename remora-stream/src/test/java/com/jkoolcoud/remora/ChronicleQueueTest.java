@@ -83,7 +83,7 @@ public class ChronicleQueueTest {
 		ExcerptAppender appender = queue.acquireAppender();
 
 		stream.setProperty(StreamProperties.PROP_FILENAME, testQueue.toFile().getAbsolutePath());
-		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.remora.core.EntryDefinition");
+		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.remora.core.Exit");
 		stream.addReference(new NullActivityOutput());
 		stream.addParser(new ActivityJavaObjectParser());
 
@@ -93,21 +93,21 @@ public class ChronicleQueueTest {
 
 		expect = new EntryDefinition(ChronicleQueueTest.class);
 		expect.setName("AAA");
-		appender.writeDocument(expect);
+		appender.writeDocument(expect.entry);
 		Thread.sleep(300);
 		expect = new EntryDefinition(ChronicleQueueTest.class);
 		expect.setDuration(400L);
 
-		appender.writeDocument(expect);
+		appender.writeDocument(expect.exit);
 
 		Thread.sleep(300);
 
 		expect = new EntryDefinition(ChronicleQueueTest.class);
 		expect.setException("Exeption");
-		appender.writeDocument(expect);
+		appender.writeDocument(expect.entry);
 		Thread.sleep(300);
 		expect = new EntryDefinition(ChronicleQueueTest.class);
-		appender.writeDocument(expect);
+		appender.writeDocument(expect.exit);
 		Thread.sleep(300);
 	}
 }

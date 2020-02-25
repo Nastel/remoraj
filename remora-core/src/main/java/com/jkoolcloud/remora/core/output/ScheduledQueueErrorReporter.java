@@ -31,7 +31,11 @@ public class ScheduledQueueErrorReporter {
 
 	public static AtomicInteger chronicleQueueFailCount = new AtomicInteger(0);
 	public static AtomicInteger intermediateQueueFailCount = new AtomicInteger(0);
-	private long lastReportedErrorCount = 0L;
+	public static Exception lastException;
+	public static long lastIndexAppender;
+	private int lastReportedMemoryQueueErrorCount = 0;
+	private int lastReportedPersistentQueueErrorCount = 0;
+
 	private final TaggedLogger logger;
 	private final ScheduledExecutorService scheduledExecutorService;
 
@@ -40,13 +44,23 @@ public class ScheduledQueueErrorReporter {
 		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutorService.scheduleAtFixedRate(() -> {
 			if (logger != null) {
-				int newErrorCount = chronicleQueueFailCount.get() + intermediateQueueFailCount.get();
-				if (lastReportedErrorCount < newErrorCount) {
+				int newIntermediateErrorCount = intermediateQueueFailCount.get();
+				if (newIntermediateErrorCount < lastReportedMemoryQueueErrorCount) {
 					logger.error(
-							"Intermediate queue failure occurred. Failed write to intermediateQueue count: {}, failed write to chronicle queue count: {} ",
-							intermediateQueueFailCount.get(), chronicleQueueFailCount.get());
-					lastReportedErrorCount = newErrorCount;
+							// put all stats, queue size, etc
+							"Failed to write to mem queue: failure count = {}", intermediateQueueFailCount.get());
+					lastReportedMemoryQueueErrorCount = newIntermediateErrorCount;
 				}
+				int newPersistentErrorCount = chronicleQueueFailCount.get();
+				if (newPersistentErrorCount > lastReportedPersistentQueueErrorCount) {
+					logger.error(
+							"Failed to write to persistent queue: failure count={}, last appender index = {}, error={} {}",
+							chronicleQueueFailCount.get(), lastIndexAppender, lastException.getClass().getSimpleName(),
+							lastException.getMessage());
+					logger.debug(lastException);
+					lastReportedPersistentQueueErrorCount = newPersistentErrorCount;
+				}
+
 			}
 		}, 0, delay, TimeUnit.SECONDS);
 	}

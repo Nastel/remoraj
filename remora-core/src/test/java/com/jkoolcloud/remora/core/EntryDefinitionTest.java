@@ -56,13 +56,15 @@ public class EntryDefinitionTest {
 		ed.setException("Exception");
 		ed.addProperty("Key", "TEST_value");
 
-		appender.writeDocument(ed);
+		appender.methodWriter(EntryDefinitionDescription.class).entry(ed.entry);
+		// appender.writeDocument(ed);
 
 		EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class);
-		boolean s = tailer.readDocument(edRead);
+		boolean s = tailer.methodReader(edRead).readOne();
+
 		System.out.println(edRead);
-		assertEquals("Name field deserialization fault", "AAA", ed.name);
-		assertEquals("Exception field deserialization fault", "Exception", ed.exception);
+		assertEquals("Name field deserialization fault", "AAA", ed.entry.name);
+		assertEquals("Exception field deserialization fault", "Exception", ed.exit.exception);
 		assertEquals("Properties field entry deserialization fault", "TEST_value", ed.getProperties().get("Key"));
 		assertNotNull("Id field should be filled", ed.id);
 

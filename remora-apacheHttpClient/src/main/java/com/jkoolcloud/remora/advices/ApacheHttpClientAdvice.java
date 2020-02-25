@@ -149,7 +149,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logger);
+				doFinally(logging ? logger : null);
 			}
 		}
 
