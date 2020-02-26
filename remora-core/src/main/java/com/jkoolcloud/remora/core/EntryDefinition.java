@@ -36,7 +36,6 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	public Entry entry = new Entry();
 	public Exit exit = new Exit();
 
-	private EntryDefinitionDescription writer2 = null;
 	private boolean finished;
 
 	public boolean isFinished() {
@@ -45,16 +44,17 @@ public class EntryDefinition implements EntryDefinitionDescription {
 
 	@Override
 	public void entry(Entry entry) {
-		writer2.entry(entry);
+		this.entry = entry;
 	}
 
 	@Override
 	public void exit(Exit exit) {
-		writer2.exit(exit);
+		this.exit = exit;
 	}
 
 	public EntryDefinition(EntryDefinitionDescription writer2) {
-		this.writer2 = writer2;
+
+		System.out.println("#####################################");
 	}
 
 	public EntryDefinition(Class adviceClass) {

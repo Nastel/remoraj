@@ -55,8 +55,6 @@
         <field name="class" locator="clazz" locator-type="Label"/>
 
         <field name="StartTime" locator="startTime" locator-type="Label" units="Milliseconds" datatype="Timestamp" timezone="EET"/>
-        <field name="Correlator" locator="correlator" locator-type="Label"/>
-
         <field name="Thread" locator="thread" locator-type="Label"/>
         <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
         <field name="Message" locator="stackTrace" locator-type="Label"/>
@@ -76,6 +74,8 @@
                 $fieldValue == null ? "INFO" : "ERROR"
             ]]></field-transform>
         </field>
+        <field name="Correlator" locator="correlator" locator-type="Label"/>
+
         <field name="exception" locator="exceptionTrace" locator-type="Label"/>
         <field name="ResourceName" locator="resource" locator-type="Label"/>
         <field name="ApplName" locator="application" locator-type="Label"/>
@@ -104,21 +104,12 @@
         <property name="HaltIfNoParser" value="false"/>
         <property name="FileName" value="../../queue"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.Exit"/>
-        <property name="StartFromLatest" value="false"/>
-
-        <!--<reference name="Null"/>-->
-        <parser-ref name="ExitParser"/>
-    </stream>
-
-    <stream name="ChronicleStreamEntry" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
-        <property name="BuildSourceFQNFromStreamedData" value="true"/>
-        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${VmIdentification}"/>
-        <property name="HaltIfNoParser" value="false"/>
-        <property name="FileName" value="../../queue"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.Entry"/>
-        <property name="StartFromLatest" value="false"/>
+        <property name="StartFromLatest" value="true"/>
 
         <!--<reference name="Null"/>-->
-        <parser-ref name="EntryParser"/>
+        <parser-ref name="ExitParser" tags="EXIT"/>
+        <parser-ref name="EntryParser" tags="ENTRY"/>
     </stream>
+
 </tnt-data-source>
