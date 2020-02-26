@@ -22,86 +22,71 @@ package com.jkoolcloud.remora.core;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.jkoolcloud.remora.advices.TransparentAdvice;
-import com.jkoolcloud.remora.core.output.ChronicleOutput;
-import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
-import net.openhft.chronicle.wire.AbstractMarshallable;
+public class EntryDefinition implements EntryDefinitionDescription {
 
-public class EntryDefinition extends AbstractMarshallable implements Runnable {
 	protected final String id = new JUGFactoryImpl().newUUID();
-
 	private boolean transparent;
 	private boolean chained;
+	public static String vmIdentificationStatic;
 
-	private String adviceClass;
-	protected String name;
-	private String clazz;
-	private Map<String, String> properties = new HashMap<>();
+	public Entry entry = new Entry();
+	public Exit exit = new Exit();
 
-	private String application;
-	private String server;
+	private EntryDefinitionDescription writer2 = null;
+	private boolean finished;
 
-	// Workaround for serializatiom, static fields not serialised
-	private static String vmIdentificationStatic;
-	private String vmIdentification;
+	public boolean isFinished() {
+		return finished;
+	}
 
-	private String resource;
-	private ResourceType resourceType;
+	@Override
+	public void entry(Entry entry) {
+		writer2.entry(entry);
+	}
 
-	private EventType eventType = EventType.CALL;
-	private Mode mode = Mode.RUNNING;
+	@Override
+	public void exit(Exit exit) {
+		writer2.exit(exit);
+	}
 
-	private String returnType;
-
-	private String returnValue;
-	protected String exception;
-	private String correlator;
-	private Long startTime;
-
-	private String StackTrace;
-	private String exceptionTrace;
+	public EntryDefinition(EntryDefinitionDescription writer2) {
+		this.writer2 = writer2;
+	}
 
 	public EntryDefinition(Class adviceClass) {
-		this.adviceClass = adviceClass.getSimpleName();
-		vmIdentification = vmIdentificationStatic;
+		entry.id = id;
+		exit.id = id;
+		entry.adviceClass = adviceClass.getSimpleName();
+		entry.vmIdentification = vmIdentificationStatic;
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			setTransparent();
 		}
 	}
 
-	// public no arg constructor needed for serialization, thus marked as @Deprecated
-	@Deprecated
-	public EntryDefinition() {
-		adviceClass = null;
-	}
-
 	public void setThread(String thread) {
-		this.thread = thread;
+		entry.thread = thread;
 	}
-
-	String thread;
-	Long duration;
 
 	public Map<String, String> getProperties() {
-		return properties;
+		return exit.properties;
 	}
 
 	public void addProperty(String key, String value) {
 		String lastValue = value;
 		int iteration = 0;
 		while (lastValue != null) {
-
+			// synchronized (properties) {
 			if (iteration == 0) {
-				lastValue = properties.put(key, lastValue);
+				lastValue = exit.properties.put(key, lastValue);
 			} else {
-				lastValue = properties.put(key + "_" + iteration, lastValue);
+				lastValue = exit.properties.put(key + "_" + iteration, lastValue);
 			}
 			iteration++;
-
+			// }
 		}
 	}
 
@@ -137,67 +122,55 @@ public class EntryDefinition extends AbstractMarshallable implements Runnable {
 	}
 
 	public String getClazz() {
-		return clazz;
+		return entry.clazz;
 	}
 
 	public void setStartTime(Long startTime) {
-		this.startTime = startTime;
+		entry.startTime = startTime;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		entry.name = name;
 	}
 
 	public void setClazz(String clazz) {
 		if (clazz != null) {
 			addProperty("SCLASS", clazz);
 		}
-		this.clazz = clazz;
+		entry.clazz = clazz;
 	}
 
 	public void setAdviceClass(Class adviceClass) {
-		this.adviceClass = adviceClass.getSimpleName();
-	}
-
-	public void setReturnType(String returnType) {
-		this.returnType = returnType;
-	}
-
-	public void setReturnValue(String returnValue) {
-		this.returnValue = returnValue;
+		entry.adviceClass = adviceClass.getSimpleName();
 	}
 
 	public void setException(String exception) {
-		mode = Mode.EXCEPTION;
-		this.exception = exception;
+		exit.mode = Mode.EXCEPTION;
+		exit.exception = exception;
 	}
 
 	public void setStackTrace(String stackTrace) {
-		StackTrace = stackTrace;
+		entry.stackTrace = stackTrace;
 	}
 
 	public void setExceptionTrace(String exceptionTrace) {
-		this.exceptionTrace = exceptionTrace;
-	}
-
-	public Long getDuration() {
-		return duration;
+		exit.exceptionTrace = exceptionTrace;
 	}
 
 	public void setDuration(Long duration) {
-		this.duration = duration;
+		exit.duration = duration;
 	}
 
 	public void setCorrelator(String correlator) {
-		this.correlator = correlator;
+		exit.correlator = correlator;
 	}
 
 	public String getCorrelator() {
-		return correlator;
+		return exit.correlator;
 	}
 
 	public String getAdviceClass() {
-		return adviceClass;
+		return entry.adviceClass;
 	}
 
 	public String getId() {
@@ -205,47 +178,44 @@ public class EntryDefinition extends AbstractMarshallable implements Runnable {
 	}
 
 	public void setEventType(EventType eventType) {
-		this.eventType = eventType;
+		exit.eventType = eventType;
 	}
 
 	public void setEventType(int eventType) {
 		try {
-			this.eventType = EventType.values()[eventType];
+			exit.eventType = EventType.values()[eventType];
 		} catch (Exception e) {
-			this.eventType = EventType.CALL;
+			exit.eventType = EventType.CALL;
 		}
 	}
 
-	public String getApplication() {
-		return application;
-	}
-
 	public void setApplication(String application) {
-		this.application = application;
+		exit.application = application;
 	}
 
 	public String getResource() {
-		return resource;
+		return exit.resource;
 	}
 
 	public void setResource(String resource, ResourceType resourceType) {
-		this.resource = resourceType.name() + "=" + resource;
+		exit.resource = resourceType.name() + "=" + resource;
 	}
 
 	public void setMode(Mode mode) {
-		this.mode = mode;
+		exit.mode = mode;
 	}
 
 	public void stop() {
-		mode = Mode.STOP;
+		finished = true;
+		exit.mode = Mode.STOP;
 	}
 
 	public void setServer(String server) {
-		this.server = server;
+		exit.server = server;
 	}
 
 	public String getServer() {
-		return server;
+		return exit.server;
 	}
 
 	public static void setVmIdentification(String vmIdentification) {
@@ -253,6 +223,7 @@ public class EntryDefinition extends AbstractMarshallable implements Runnable {
 	}
 
 	public void setException(Throwable exception) {
+
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		exception.printStackTrace(printWriter);
@@ -266,7 +237,7 @@ public class EntryDefinition extends AbstractMarshallable implements Runnable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o != null && o instanceof EntryDefinition) {
+		if (o instanceof EntryDefinition) {
 			return ((EntryDefinition) o).getId().equals(getId());
 		} else {
 			return false;
@@ -296,15 +267,6 @@ public class EntryDefinition extends AbstractMarshallable implements Runnable {
 
 	public void setChained() {
 		chained = true;
-	}
-
-	@Override
-	public void run() {
-		try {
-			((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender().writeDocument(this);
-		} catch (Exception e) {
-			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
-		}
 	}
 
 	public enum EventType {

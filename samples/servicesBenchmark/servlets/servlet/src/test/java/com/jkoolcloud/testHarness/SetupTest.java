@@ -63,4 +63,22 @@ public class SetupTest {
 		printWriter.flush();
 	}
 
+	@Test
+	public void testMe() throws NoSuchFieldException, IllegalAccessException {
+		Entity entity = new Entity();
+		Entity2 entity2 = (Entity2) entity;
+		System.out.println(entity.getClass().getField("aa").get(entity));
+		System.out.println(entity2.getClass().getField("aa").get(entity2));
+
+	}
+
+	public class Entity {
+		public String aa = "AA";
+
+	}
+
+	public class Entity2 extends Entity {
+		public String aa = "BB";
+	}
+
 }

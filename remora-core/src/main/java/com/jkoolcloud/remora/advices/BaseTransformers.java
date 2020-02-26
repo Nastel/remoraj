@@ -107,9 +107,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
 		entryDefinition.setDuration((long) duration);
 
-		if (exception == null) {
-			entryDefinition.stop();
-		} else {
+		entryDefinition.stop();
+
+		if (exception != null) {
 			handleInstrumentedMethodException(entryDefinition, exception, logger);
 		}
 

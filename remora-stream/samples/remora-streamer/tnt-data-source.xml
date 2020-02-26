@@ -44,9 +44,28 @@
         <field name="all" locator="#"/>
     </parser>
 
-    <parser name="TokenParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser">
+    <parser name="EntryParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser">
 
         <field name="eventName" locator="name" locator-type="Label"/>
+        <field name="guid" locator="id" locator-type="Label">
+            <field-transform name="ETHTokenSymbolTransform" lang="groovy"><![CDATA[
+                $fieldValue.trim()
+            ]]></field-transform>
+        </field>
+        <field name="class" locator="clazz" locator-type="Label"/>
+
+        <field name="StartTime" locator="startTime" locator-type="Label" units="Milliseconds" datatype="Timestamp" timezone="EET"/>
+        <field name="Correlator" locator="correlator" locator-type="Label"/>
+
+        <field name="Thread" locator="thread" locator-type="Label"/>
+        <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
+        <field name="Message" locator="stackTrace" locator-type="Label"/>
+        <field name="VmIdentification" locator="vmIdentification" locator-type="Label"/>
+        <field name="MODE" locator="mode" locator-type="Label"/>
+
+    </parser>
+
+    <parser name="ExitParser" class="com.jkoolcloud.tnt4j.streams.parsers.ActivityJavaObjectParser">
         <field name="guid" locator="id" locator-type="Label">
             <field-transform name="ETHTokenSymbolTransform" lang="groovy"><![CDATA[
                 $fieldValue.trim()
@@ -57,44 +76,49 @@
                 $fieldValue == null ? "INFO" : "ERROR"
             ]]></field-transform>
         </field>
-        <field name="class" locator="clazz" locator-type="Label"/>
         <field name="exception" locator="exceptionTrace" locator-type="Label"/>
         <field name="ResourceName" locator="resource" locator-type="Label"/>
         <field name="ApplName" locator="application" locator-type="Label"/>
         <field name="exceptionMessage" locator="exception" locator-type="Label"/>
         <field name="ElapsedTime" locator="duration" locator-type="Label" units="Microseconds" datatype="Timestamp"/>
-        <field name="StartTime" locator="startTime" locator-type="Label" units="Milliseconds" datatype="Timestamp" timezone="EET"/>
-        <field name="Correlator" locator="correlator" locator-type="Label"/>
-
-        <field name="Thread" locator="thread" locator-type="Label"/>
-        <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
-        <field name="Message" locator="StackTrace" locator-type="Label"/>
         <field name="ServerName" locator="server" locator-type="Label"/>
-        <field name="VmIdentification" locator="vmIdentification" locator-type="Label"/>
-
         <embedded-activity name="properties" locator="properties" locator-type="Label">
             <parser-ref name="propertiesParser"/>
         </embedded-activity>
         <field name="EventType" locator="eventType" locator-type="Label"/>
         <field name="MODE" locator="mode" locator-type="Label"/>
-        <field name="MessageAge" datatype="Number" value-type="age.usec">
-            <field-locator id="TimestampRAW" locator="startTime" locator-type="Label" datatype="AsInput">
-                <field-transform lang="groovy" phase="raw"><![CDATA[
-					import java.util.concurrent.TimeUnit
-                    $fieldValue != null && ${ElapsedTime} != null ? (TimeUnit.MILLISECONDS.toMicros(new Date().getTime() - $fieldValue - ${ElapsedTime})) : null
-                ]]></field-transform>
-            </field-locator>
-        </field>
+        <!-- <field name="MessageAge" datatype="Number" value-type="age.usec"> -->
+        <!-- <field-locator id="TimestampRAW" locator="startTime" locator-type="Label" datatype="AsInput"> -->
+        <!-- <field-transform lang="groovy" phase="raw"><![CDATA[ -->
+        <!-- import java.util.concurrent.TimeUnit -->
+        <!-- $fieldValue != null && ${ElapsedTime} != null ? (TimeUnit.MILLISECONDS.toMicros(new Date().getTime() - $fieldValue - ${ElapsedTime})) : null -->
+        <!-- ]]></field-transform> -->
+        <!-- </field-locator> -->
+        <!-- </field> -->
     </parser>
 
-    <stream name="ChronicleStream" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
+
+    <stream name="ChronicleStreamExit" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
         <property name="BuildSourceFQNFromStreamedData" value="true"/>
         <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${VmIdentification}"/>
         <property name="HaltIfNoParser" value="false"/>
         <property name="FileName" value="../../queue"/>
-        <property name="MarshallClass" value="com.jkoolcloud.remora.core.EntryDefinition"/>
+        <property name="MarshallClass" value="com.jkoolcloud.remora.core.Exit"/>
+        <property name="StartFromLatest" value="false"/>
 
         <!--<reference name="Null"/>-->
-        <parser-ref name="TokenParser"/>
+        <parser-ref name="ExitParser"/>
+    </stream>
+
+    <stream name="ChronicleStreamEntry" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
+        <property name="BuildSourceFQNFromStreamedData" value="true"/>
+        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${VmIdentification}"/>
+        <property name="HaltIfNoParser" value="false"/>
+        <property name="FileName" value="../../queue"/>
+        <property name="MarshallClass" value="com.jkoolcloud.remora.core.Entry"/>
+        <property name="StartFromLatest" value="false"/>
+
+        <!--<reference name="Null"/>-->
+        <parser-ref name="EntryParser"/>
     </stream>
 </tnt-data-source>
