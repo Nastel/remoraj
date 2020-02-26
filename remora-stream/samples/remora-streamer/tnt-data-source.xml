@@ -97,7 +97,6 @@
         <!-- </field> -->
     </parser>
 
-
     <stream name="ChronicleStreamExit" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
         <property name="BuildSourceFQNFromStreamedData" value="true"/>
         <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${VmIdentification}"/>
@@ -108,8 +107,8 @@
         <property name="StartFromLatest" value="true"/>
 
         <!--<reference name="Null"/>-->
-        <parser-ref name="ExitParser" tags="EXIT"/>
-        <parser-ref name="EntryParser" tags="ENTRY"/>
+        <parser-ref name="ExitParser" tags="Exit"/>
+        <parser-ref name="EntryParser" tags="Entry"/>
     </stream>
 
 </tnt-data-source>
