@@ -40,7 +40,7 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.ReadMarshallable;
 
 /**
- * @author slb
+ * @author akausinis
  * @version 1.0
  * @created 2019-10-31 11:29
  */
