@@ -129,9 +129,9 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 	@Override
 	public void send(EntryDefinition entry) {
 		if (entry.isFinished()) {
-			queueWorkers.submit(entry.entry);
-		} else {
 			queueWorkers.submit(entry.exit);
+		} else {
+			queueWorkers.submit(entry.entry);
 		}
 
 	}
