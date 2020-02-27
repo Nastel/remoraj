@@ -55,4 +55,8 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return id;
+	}
 }

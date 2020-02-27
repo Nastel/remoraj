@@ -31,6 +31,7 @@ import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
 public class Exit extends SelfDescribingMarshallable implements Runnable {
 	String id;
+	String name;
 	EntryDefinition.Mode mode = EntryDefinition.Mode.STOP;
 	String resource;
 	EntryDefinition.ResourceType resourceType;
@@ -61,4 +62,10 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 			ScheduledQueueErrorReporter.lastException = e;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return id;
+	}
+
 }
