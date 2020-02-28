@@ -106,7 +106,6 @@
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.Entry"/>
         <property name="StartFromLatest" value="true"/>
 
-        <!--<reference name="Null"/>-->
         <parser-ref name="ExitParser" tags="Exit"/>
         <parser-ref name="EntryParser" tags="Entry"/>
     </stream>
