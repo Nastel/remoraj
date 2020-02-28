@@ -75,7 +75,7 @@
             ]]></field-transform>
         </field>
         <field name="Correlator" locator="correlator" locator-type="Label"/>
-
+        <field name="eventName" locator="name" locator-type="Label"/>
         <field name="exception" locator="exceptionTrace" locator-type="Label"/>
         <field name="ResourceName" locator="resource" locator-type="Label"/>
         <field name="ApplName" locator="application" locator-type="Label"/>

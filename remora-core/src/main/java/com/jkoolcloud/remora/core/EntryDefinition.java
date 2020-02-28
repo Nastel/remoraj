@@ -131,6 +131,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 
 	public void setName(String name) {
 		entry.name = name;
+		exit.name = name;
 	}
 
 	public void setClazz(String clazz) {
