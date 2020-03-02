@@ -106,8 +106,9 @@
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.Entry"/>
         <property name="StartFromLatest" value="true"/>
 
-        <parser-ref name="ExitParser" tags="Exit"/>
-        <parser-ref name="EntryParser" tags="Entry"/>
+        <!--<reference name="Null"/>-->
+        <parser-ref name="ExitParser" tags="EXIT"/>
+        <parser-ref name="EntryParser" tags="ENTRY"/>
     </stream>
 
 </tnt-data-source>
