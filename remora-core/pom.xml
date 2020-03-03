@@ -136,6 +136,7 @@
                             <manifestEntries>
                                 <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
                                 <Main-Class>com.jkoolcloud.remora.Remora</Main-Class>
+                                <Class-Path>./</Class-Path>
                             </manifestEntries>
                         </transformer>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
