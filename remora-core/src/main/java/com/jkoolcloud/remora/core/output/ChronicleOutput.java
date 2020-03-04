@@ -43,6 +43,7 @@ import net.openhft.chronicle.queue.impl.StoreFileListener;
 
 public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
 
+	public static final String DISABLE_PROXY_CODEGEN = "disableProxyCodegen";
 	TaggedLogger logger = Logger.tag("INIT");
 
 	private ChronicleQueue queue;
@@ -73,7 +74,10 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 
 	@Override
 	public void init() {
-		Executors.newFixedThreadPool(4);
+		if (System.getProperty(DISABLE_PROXY_CODEGEN) == null) {
+			// Disable proxy codegen by default
+			System.setProperty(DISABLE_PROXY_CODEGEN, "true");
+		}
 
 		ThreadFactory threadFactory = new ThreadFactory() {
 			@Override

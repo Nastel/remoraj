@@ -28,7 +28,8 @@ import com.jkoolcloud.remora.advices.TransparentAdvice;
 
 public class EntryDefinition implements EntryDefinitionDescription {
 
-	protected final String id = new JUGFactoryImpl().newUUID();
+	private static final JUGFactoryImpl jugFactory = new JUGFactoryImpl();
+	protected final String id = jugFactory.newUUID();
 	private boolean transparent;
 	private boolean chained;
 	public static String vmIdentificationStatic;

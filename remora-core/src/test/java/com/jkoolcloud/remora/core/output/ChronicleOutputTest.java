@@ -20,16 +20,25 @@
 
 package com.jkoolcloud.remora.core.output;
 
+import static com.jkoolcloud.remora.core.EntryTest.getTestEntry;
+import static com.jkoolcloud.remora.core.ExitTest.getTestExit;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
 
 import com.google.common.io.Files;
+import com.jkoolcloud.remora.core.Entry;
 import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.EntryDefinitionDescription;
+import com.jkoolcloud.remora.core.Exit;
+import com.jkoolcloud.remora.testClasses.TestUtils;
 
+import net.openhft.chronicle.queue.ExcerptAppender;
+import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.queue.RollCycles;
 
 public class ChronicleOutputTest {
@@ -59,6 +68,31 @@ public class ChronicleOutputTest {
 			}
 		});
 		tempDir.delete();
+	}
+
+	@Test
+	public void testCompatibleWrite() throws IOException {
+		try (TestUtils.TempQueue queue = new TestUtils.TempQueue()) {
+			ExcerptAppender excerptAppender = queue.acquireAppender();
+			ExcerptTailer tailer = queue.createTailer();
+
+			Entry entry = getTestEntry();
+			Exit exit = getTestExit();
+
+			excerptAppender.methodWriter(EntryDefinitionDescription.class).entry(entry);
+			entry.write(excerptAppender);
+
+			EntryDefinition entryDefinition = new EntryDefinition(getClass());
+
+			tailer.methodReader(entryDefinition).readOne();
+
+			assertEquals(entry, entryDefinition.entry);
+			tailer.methodReader(entryDefinition).readOne();
+			assertEquals(entry, entryDefinition.entry);
+
+			System.out.println(queue.getQueue().dump());
+
+		}
 	}
 
 }

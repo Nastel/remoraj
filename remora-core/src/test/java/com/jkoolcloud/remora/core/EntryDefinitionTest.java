@@ -23,14 +23,10 @@ package com.jkoolcloud.remora.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import net.openhft.chronicle.queue.ChronicleQueue;
+import com.jkoolcloud.remora.testClasses.TestUtils;
+
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
 
@@ -44,39 +40,27 @@ public class EntryDefinitionTest {
 	 */
 	@Test
 	public void testWiteToQueue() throws Exception {
-		Path tempDirectory = Files.createTempDirectory(getClass().getName());
+		try (TestUtils.TempQueue queue = new TestUtils.TempQueue()) {
 
-		ChronicleQueue queue = ChronicleQueue.single(tempDirectory.toFile().getAbsolutePath());
-		ExcerptAppender appender = queue.acquireAppender();
-		ExcerptTailer tailer = queue.createTailer();
+			ExcerptAppender appender = queue.acquireAppender();
+			ExcerptTailer tailer = queue.createTailer();
 
-		EntryDefinition ed = new EntryDefinition(EntryDefinitionTest.class);
-		ed.setName("AAA");
-		ed.setException("Exception");
-		ed.addProperty("Key", "TEST_value");
+			EntryDefinition ed = new EntryDefinition(EntryDefinitionTest.class);
+			ed.setName("AAA");
+			ed.setException("Exception");
+			ed.addProperty("Key", "TEST_value");
 
-		appender.methodWriter(EntryDefinitionDescription.class).entry(ed.entry);
-		// appender.writeDocument(ed);
+			appender.methodWriter(EntryDefinitionDescription.class).entry(ed.entry);
+			// appender.writeDocument(ed);
 
-		EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class);
-		boolean s = tailer.methodReader(edRead).readOne();
+			EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class);
+			boolean s = tailer.methodReader(edRead).readOne();
 
-		System.out.println(edRead);
-		assertEquals("Name field deserialization fault", "AAA", ed.entry.name);
-		assertEquals("Exception field deserialization fault", "Exception", ed.exit.exception);
-		assertEquals("Properties field entry deserialization fault", "TEST_value", ed.getProperties().get("Key"));
-		assertNotNull("Id field should be filled", ed.id);
-
-		queue.close();
-		boolean success = false;
-		while (!success) {
-			try {
-				Thread.sleep(900);
-				FileUtils.deleteDirectory(tempDirectory.toFile());
-				success = true;
-			} catch (IOException e) {
-				success = false;
-			}
+			System.out.println(edRead);
+			assertEquals("Name field deserialization fault", "AAA", ed.entry.name);
+			assertEquals("Exception field deserialization fault", "Exception", ed.exit.exception);
+			assertEquals("Properties field entry deserialization fault", "TEST_value", ed.getProperties().get("Key"));
+			assertNotNull("Id field should be filled", ed.id);
 		}
 	}
 

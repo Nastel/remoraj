@@ -22,6 +22,7 @@ package com.jkoolcloud.remora.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.jkoolcloud.remora.core.output.ChronicleOutput;
 import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
@@ -30,20 +31,20 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
 public class Exit extends SelfDescribingMarshallable implements Runnable {
-	String id;
-	String name;
-	EntryDefinition.Mode mode = EntryDefinition.Mode.STOP;
-	String resource;
-	EntryDefinition.ResourceType resourceType;
-	String application;
-	Map<String, String> properties = new HashMap<>();
-	EntryDefinition.EventType eventType = EntryDefinition.EventType.CALL;
-	String server;
-	// Workaround for serialization, static fields not serialised
-	String exception;
-	String correlator;
-	String exceptionTrace;
-	Long duration;
+	protected static final int modelVersion = 1;
+	protected String id;
+	protected String name;
+	protected EntryDefinition.Mode mode = EntryDefinition.Mode.STOP;
+	protected String resource;
+	protected EntryDefinition.ResourceType resourceType;
+	protected String application;
+	protected Map<String, String> properties = new HashMap<>();
+	protected EntryDefinition.EventType eventType = EntryDefinition.EventType.CALL;
+	protected String server;
+	protected String exception;
+	protected String correlator;
+	protected String exceptionTrace;
+	protected Long duration;
 
 	@Override
 	public void run() {
@@ -51,7 +52,8 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 		try {
 			appender = ((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender();
 			// synchronized (properties) {
-			appender.methodWriter(EntryDefinitionDescription.class).exit(this);
+			// appender.methodWriter(EntryDefinitionDescription.class).exit(this);
+			write(appender);
 
 			// }
 		} catch (Exception e) {
@@ -61,6 +63,46 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
 			ScheduledQueueErrorReporter.lastException = e;
 		}
+	}
+
+	public void write(ExcerptAppender appender) {
+		appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
+				.write("name").text(name)//
+				.write("mode").text(mode.name())//
+				.write("resource").text(resource)//
+				.write("resourceType").text(resourceType.name())//
+				.write("application").text(application)//
+				.write("properties").marshallable(properties)//
+				.write("eventType").text(eventType.name())//
+				.write("exception").text(exception)//
+				.write("correlator").text(correlator)//
+				.write("exceptionTrace").text(exceptionTrace)//
+
+		));
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		Exit exit = (Exit) o;
+		return Objects.equals(id, exit.id) && Objects.equals(name, exit.name) && mode == exit.mode
+				&& Objects.equals(resource, exit.resource) && resourceType == exit.resourceType
+				&& Objects.equals(application, exit.application) && Objects.equals(properties, exit.properties)
+				&& eventType == exit.eventType && Objects.equals(server, exit.server)
+				&& Objects.equals(exception, exit.exception) && Objects.equals(correlator, exit.correlator)
+				&& Objects.equals(exceptionTrace, exit.exceptionTrace) && Objects.equals(duration, exit.duration);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), id, name, mode, resource, resourceType, application, properties,
+				eventType, server, exception, correlator, exceptionTrace, duration);
 	}
 
 	@Override

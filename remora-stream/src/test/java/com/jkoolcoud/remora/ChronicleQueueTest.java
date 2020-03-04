@@ -31,6 +31,7 @@ import com.jkoolcloud.remora.core.Entry;
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.EntryDefinitionDescription;
 import com.jkoolcloud.remora.core.Exit;
+import com.jkoolcloud.remora.testClasses.TestUtils;
 import com.jkoolcloud.tnt4j.streams.configure.ChronicleQueueProperties;
 import com.jkoolcloud.tnt4j.streams.configure.StreamProperties;
 import com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream;
@@ -85,39 +86,40 @@ public class ChronicleQueueTest {
 				return item;
 			}
 		};
-
 		Path testQueue = Files.createTempDirectory("testQueue");
 
-		ChronicleQueue queue = ChronicleQueue.single(testQueue.toFile().getAbsolutePath());
-		ExcerptAppender appender = queue.acquireAppender();
+		try (TestUtils.TempQueue queue = new TestUtils.TempQueue()) {
+			ExcerptAppender appender = queue.acquireAppender();
 
-		stream.setProperty(StreamProperties.PROP_FILENAME, testQueue.toFile().getAbsolutePath());
-		stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.remora.core.Exit");
-		stream.addReference(new NullActivityOutput());
-		stream.addParser(new ActivityJavaObjectParser());
+			stream.setProperty(StreamProperties.PROP_FILENAME, testQueue.toFile().getAbsolutePath());
+			stream.setProperty(ChronicleQueueProperties.PROP_MARSHALL_CLASS, "com.jkoolcloud.remora.core.Exit");
+			stream.addReference(new NullActivityOutput());
+			stream.addParser(new ActivityJavaObjectParser());
 
-		StreamThread streamThread = new StreamThread(stream);
+			StreamThread streamThread = new StreamThread(stream);
 
-		streamThread.start();
+			streamThread.start();
 
-		expect = new EntryDefinition(ChronicleQueueTest.class);
-		expect.setName("AAA");
-		appender.writeDocument(expect.entry);
-		Thread.sleep(300);
-		expect = new EntryDefinition(ChronicleQueueTest.class);
-		expect.setDuration(400L);
+			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect.setName("AAA");
+			appender.writeDocument(expect.entry);
+			Thread.sleep(300);
+			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect.setDuration(400L);
 
-		appender.writeDocument(expect.exit);
+			appender.writeDocument(expect.exit);
 
-		Thread.sleep(300);
+			Thread.sleep(300);
 
-		expect = new EntryDefinition(ChronicleQueueTest.class);
-		expect.setException("Exeption");
-		appender.writeDocument(expect.entry);
-		Thread.sleep(300);
-		expect = new EntryDefinition(ChronicleQueueTest.class);
-		appender.writeDocument(expect.exit);
-		Thread.sleep(300);
+			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect.setException("Exeption");
+			appender.writeDocument(expect.entry);
+			Thread.sleep(300);
+			expect = new EntryDefinition(ChronicleQueueTest.class);
+			appender.writeDocument(expect.exit);
+			Thread.sleep(300);
+		}
+
 	}
 
 	int countEntry = 0;
@@ -158,6 +160,7 @@ public class ChronicleQueueTest {
 		while (readOne0(tailer)) {
 
 		}
+
 		System.out.println(countEntry + " " + countExit + " " + countOther);
 
 		assertEquals(countEntry, countEntryMethod);
@@ -210,4 +213,5 @@ public class ChronicleQueueTest {
 		bytes.readPosition(r);
 		return true;
 	}
+
 }
