@@ -29,7 +29,7 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
 public class Entry extends SelfDescribingMarshallable implements Runnable {
-	protected static final int modelVersion = 1;
+	protected static final byte modelVersion = 1;
 	protected String id;
 	protected EntryDefinition.Mode mode = EntryDefinition.Mode.RUNNING;
 	protected String adviceClass;
@@ -61,16 +61,20 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 	}
 
 	public void write(ExcerptAppender appender) {
-		appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
-				.write("mode").text(mode.name())//
-				.write("adviceClass").text(adviceClass)//
-				.write("startTime").writeLong(startTime)//
-				.write("name").text(name)//
-				.write("clazz").text(clazz)//
-				.write("stackTrace").text(stackTrace)//
-				.write("vmIdentification").text(vmIdentification)//
-				.write("thread").text(thread)//
-		));
+		try {
+			appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
+					.write("v").fixedInt8(modelVersion).write("mode").text(mode.name())//
+					.write("adviceClass").text(adviceClass)//
+					.write("startTime").fixedInt64((long) startTime)//
+					.write("name").text(name)//
+					.write("clazz").text(clazz)//
+					.write("stackTrace").text(stackTrace)//
+					.write("vmIdentification").text(vmIdentification)//
+					.write("thread").text(thread)//
+			));
+		} catch (Exception e) {
+			System.out.println();
+		}
 	}
 
 	@Override
@@ -83,9 +87,10 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 		}
 
 		Entry entry = (Entry) o;
-		return Objects.equals(id, entry.id) && mode == entry.mode && Objects.equals(adviceClass, entry.adviceClass)
-				&& Objects.equals(startTime, entry.startTime) && Objects.equals(name, entry.name)
-				&& Objects.equals(clazz, entry.clazz) && Objects.equals(stackTrace, entry.stackTrace)
+		return Objects.equals(modelVersion, entry.modelVersion) && Objects.equals(id, entry.id) && mode == entry.mode
+				&& Objects.equals(adviceClass, entry.adviceClass) && Objects.equals(startTime, entry.startTime)
+				&& Objects.equals(name, entry.name) && Objects.equals(clazz, entry.clazz)
+				&& Objects.equals(stackTrace, entry.stackTrace)
 				&& Objects.equals(vmIdentification, entry.vmIdentification) && Objects.equals(thread, entry.thread);
 	}
 

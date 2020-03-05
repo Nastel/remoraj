@@ -78,17 +78,23 @@ public class ChronicleOutputTest {
 
 			Entry entry = getTestEntry();
 			Exit exit = getTestExit();
+			EntryDefinition entryDefinition = new EntryDefinition(getClass());
 
 			excerptAppender.methodWriter(EntryDefinitionDescription.class).entry(entry);
 			entry.write(excerptAppender);
 
-			EntryDefinition entryDefinition = new EntryDefinition(getClass());
-
 			tailer.methodReader(entryDefinition).readOne();
 
 			assertEquals(entry, entryDefinition.entry);
 			tailer.methodReader(entryDefinition).readOne();
 			assertEquals(entry, entryDefinition.entry);
+
+			excerptAppender.methodWriter(EntryDefinitionDescription.class).exit(exit);
+			exit.write(excerptAppender);
+			tailer.methodReader(entryDefinition).readOne();
+			assertEquals(exit, entryDefinition.exit);
+			tailer.methodReader(entryDefinition).readOne();
+			assertEquals(exit, entryDefinition.exit);
 
 			System.out.println(queue.getQueue().dump());
 

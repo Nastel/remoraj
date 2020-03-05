@@ -26,6 +26,7 @@ import org.tinylog.TaggedLogger;
 
 public class CallStack<T> extends Stack<EntryDefinition> {
 	private final TaggedLogger logger;
+	private static final JUGFactoryImpl jugFactory = new JUGFactoryImpl();
 
 	private String application;
 
@@ -35,7 +36,7 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	public CallStack(TaggedLogger logger) {
 		this.logger = logger;
-		stackCorrelator = new JUGFactoryImpl().newUUID();
+		stackCorrelator = jugFactory.newUUID();
 	}
 
 	@Override

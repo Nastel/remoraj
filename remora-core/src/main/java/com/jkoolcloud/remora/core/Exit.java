@@ -31,7 +31,7 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
 public class Exit extends SelfDescribingMarshallable implements Runnable {
-	protected static final int modelVersion = 1;
+	protected static final byte modelVersion = 1;
 	protected String id;
 	protected String name;
 	protected EntryDefinition.Mode mode = EntryDefinition.Mode.STOP;
@@ -67,6 +67,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 
 	public void write(ExcerptAppender appender) {
 		appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
+				.write("v").fixedInt8(modelVersion)//
 				.write("name").text(name)//
 				.write("mode").text(mode.name())//
 				.write("resource").text(resource)//
@@ -91,12 +92,13 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 		}
 
 		Exit exit = (Exit) o;
-		return Objects.equals(id, exit.id) && Objects.equals(name, exit.name) && mode == exit.mode
-				&& Objects.equals(resource, exit.resource) && resourceType == exit.resourceType
-				&& Objects.equals(application, exit.application) && Objects.equals(properties, exit.properties)
-				&& eventType == exit.eventType && Objects.equals(server, exit.server)
-				&& Objects.equals(exception, exit.exception) && Objects.equals(correlator, exit.correlator)
-				&& Objects.equals(exceptionTrace, exit.exceptionTrace) && Objects.equals(duration, exit.duration);
+		return Objects.equals(modelVersion, exit.modelVersion) && Objects.equals(id, exit.id)
+				&& Objects.equals(name, exit.name) && mode == exit.mode && Objects.equals(resource, exit.resource)
+				&& resourceType == exit.resourceType && Objects.equals(application, exit.application)
+				&& Objects.equals(properties, exit.properties) && eventType == exit.eventType
+				&& Objects.equals(server, exit.server) && Objects.equals(exception, exit.exception)
+				&& Objects.equals(correlator, exit.correlator) && Objects.equals(exceptionTrace, exit.exceptionTrace)
+				&& Objects.equals(duration, exit.duration);
 	}
 
 	@Override
