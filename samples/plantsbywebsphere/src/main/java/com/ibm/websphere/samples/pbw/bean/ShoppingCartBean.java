@@ -26,11 +26,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import com.ibm.websphere.samples.pbw.jpa.BackOrder;
-import com.ibm.websphere.samples.pbw.jpa.Customer;
-import com.ibm.websphere.samples.pbw.jpa.Inventory;
-import com.ibm.websphere.samples.pbw.jpa.Order;
-import com.ibm.websphere.samples.pbw.jpa.OrderItem;
+import com.ibm.websphere.samples.pbw.jpa.*;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
@@ -65,7 +61,9 @@ public class ShoppingCartBean implements Serializable {
 		}
 		// Add this item to shopping cart, if it is a brand new item.
 		if (!added)
+		{
 			items.add(new_item);
+		}
 	}
 
 	/**
@@ -127,23 +125,21 @@ public class ShoppingCartBean implements Serializable {
 	/**
 	 * Get the contents of the shopping cart.
 	 *
-	 * @return The contents of the shopping cart. / public ShoppingCartContents getCartContents() {
-	 *         ShoppingCartContents cartContents = new ShoppingCartContents(); // Fill it with data.
-	 *         for (int i = 0; i < items.size(); i++) { cartContents.addItem((ShoppingCartItem)
-	 *         items.get(i)); } return cartContents; }
+	 * @return The contents of the shopping cart. / public ShoppingCartContents getCartContents() { ShoppingCartContents
+	 *         cartContents = new ShoppingCartContents(); // Fill it with data. for (int i = 0; i < items.size(); i++) {
+	 *         cartContents.addItem((ShoppingCartItem) items.get(i)); } return cartContents; }
 	 */
 
 	/**
 	 * Create a shopping cart.
 	 *
 	 * @param cartContents
-	 *            Contents to populate cart with. / public void setCartContents(ShoppingCartContents
-	 *            cartContents) { items = new ArrayList<ShoppingCartItem>(); int qty; String
-	 *            inventoryID; ShoppingCartItem si; Inventory inv; for (int i = 0; i <
-	 *            cartContents.size(); i++) { inventoryID = cartContents.getInventoryID(i); qty =
-	 *            cartContents.getQuantity(inventoryID); inv = em.find(Inventory.class,
-	 *            inventoryID); // clone so we can use Qty as qty to purchase, not inventory in
-	 *            stock si = new ShoppingCartItem(inv); si.setQuantity(qty); addItem(si); } }
+	 *            Contents to populate cart with. / public void setCartContents(ShoppingCartContents cartContents) {
+	 *            items = new ArrayList<ShoppingCartItem>(); int qty; String inventoryID; ShoppingCartItem si; Inventory
+	 *            inv; for (int i = 0; i < cartContents.size(); i++) { inventoryID = cartContents.getInventoryID(i); qty
+	 *            = cartContents.getQuantity(inventoryID); inv = em.find(Inventory.class, inventoryID); // clone so we
+	 *            can use Qty as qty to purchase, not inventory in stock si = new ShoppingCartItem(inv);
+	 *            si.setQuantity(qty); addItem(si); } }
 	 */
 
 	/**
@@ -161,8 +157,7 @@ public class ShoppingCartBean implements Serializable {
 	}
 
 	/**
-	 * Method checkInventory. Check the inventory level of a store item. Order additional inventory
-	 * when necessary.
+	 * Method checkInventory. Check the inventory level of a store item. Order additional inventory when necessary.
 	 *
 	 * @param si
 	 *            - Store item
@@ -254,27 +249,10 @@ public class ShoppingCartBean implements Serializable {
 	 *            vector of StoreItems ordered
 	 * @return OrderInfo
 	 */
-	public Order createOrder(String customerID,
-			String billName,
-			String billAddr1,
-			String billAddr2,
-			String billCity,
-			String billState,
-			String billZip,
-			String billPhone,
-			String shipName,
-			String shipAddr1,
-			String shipAddr2,
-			String shipCity,
-			String shipState,
-			String shipZip,
-			String shipPhone,
-			String creditCard,
-			String ccNum,
-			String ccExpireMonth,
-			String ccExpireYear,
-			String cardHolder,
-			int shippingMethod,
+	public Order createOrder(String customerID, String billName, String billAddr1, String billAddr2, String billCity,
+			String billState, String billZip, String billPhone, String shipName, String shipAddr1, String shipAddr2,
+			String shipCity, String shipState, String shipZip, String shipPhone, String creditCard, String ccNum,
+			String ccExpireMonth, String ccExpireYear, String cardHolder, int shippingMethod,
 			Collection<Inventory> items) {
 		Order order = null;
 		Util.debug("ShoppingCartBean.createOrder:  Creating Order");

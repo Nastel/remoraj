@@ -16,20 +16,12 @@
 //
 package com.ibm.websphere.samples.pbw.war;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Vector;
 
-import com.ibm.websphere.samples.pbw.bean.BackOrderMgr;
-import com.ibm.websphere.samples.pbw.bean.CatalogMgr;
-import com.ibm.websphere.samples.pbw.bean.CustomerMgr;
-import com.ibm.websphere.samples.pbw.bean.ResetDBBean;
-import com.ibm.websphere.samples.pbw.bean.ShoppingCartBean;
-import com.ibm.websphere.samples.pbw.bean.SuppliersBean;
+import com.ibm.websphere.samples.pbw.bean.*;
 import com.ibm.websphere.samples.pbw.jpa.Inventory;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
@@ -71,9 +63,8 @@ public class Populate {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void addImage(String itemID,
-			String fileName,
-			CatalogMgr catalog) throws FileNotFoundException, IOException {
+	public static void addImage(String itemID, String fileName, CatalogMgr catalog)
+			throws FileNotFoundException, IOException {
 		URL url = Thread.currentThread().getContextClassLoader().getResource("resources/images/" + fileName);
 		Util.debug("URL: " + url);
 		fileName = url.getPath();
@@ -171,7 +162,8 @@ public class Populate {
 				Util.debug(fields[7]);
 				Util.debug(fields[8]);
 				Util.debug(fields[9]);
-				login.createCustomer(customerID, password, firstName, lastName, addr1, addr2, addrCity, addrState, addrZip, phone);
+				login.createCustomer(customerID, password, firstName, lastName, addr1, addr2, addrCity, addrState,
+						addrZip, phone);
 			}
 		} catch (Exception e) {
 			Util.debug("Unable to populate CUSTOMER table with text data: " + e);
@@ -231,7 +223,9 @@ public class Populate {
 						Util.debug(fields[18]);
 						Util.debug(fields[19]);
 						Util.debug(fields[20]);
-						cart.createOrder(customerID, billName, billAddr1, billAddr2, billCity, billState, billZip, billPhone, shipName, shipAddr1, shipAddr2, shipCity, shipState, shipZip, shipPhone, creditCard, ccNum, ccExpireMonth, ccExpireYear, cardHolder, shippingMethod, items);
+						cart.createOrder(customerID, billName, billAddr1, billAddr2, billCity, billState, billZip,
+								billPhone, shipName, shipAddr1, shipAddr2, shipCity, shipState, shipZip, shipPhone,
+								creditCard, ccNum, ccExpireMonth, ccExpireYear, cardHolder, shippingMethod, items);
 					} else {
 						Util.debug("Property does not contain enough fields: " + values[index]);
 						Util.debug("Fields found were: " + fields);

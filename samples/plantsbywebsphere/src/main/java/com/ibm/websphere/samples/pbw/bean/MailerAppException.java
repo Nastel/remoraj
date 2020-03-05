@@ -17,8 +17,8 @@
 package com.ibm.websphere.samples.pbw.bean;
 
 /**
- * MailerAppException extends the standard Exception. This is thrown by the mailer component when
- * there is some failure sending the mail.
+ * MailerAppException extends the standard Exception. This is thrown by the mailer component when there is some failure
+ * sending the mail.
  */
 public class MailerAppException extends Exception {
 

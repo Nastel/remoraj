@@ -24,10 +24,8 @@ import java.io.PrintWriter;
 /**
  *
  */
-public class UITemplate
-{
-	static public void writeHeader( PrintWriter out)
-	{
+public class UITemplate {
+	static public void writeHeader(PrintWriter out) {
 		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
 		out.println("<html>");
 		out.println("<head>");
@@ -38,8 +36,7 @@ public class UITemplate
 		out.println("<body leftmargin=20 topmargin=20 marginwidth=20 marginheight=20>");
 	}
 
-	static public void writeBanner( PrintWriter out, int item)
-	{
+	static public void writeBanner(PrintWriter out, int item) {
 		out.println("<table width=80% align=center cellpadding=0 cellspacing=0 border=0>");
 		out.println("  <thead>");
 		out.println("    <tr><td colspan=99 align=left><img src='images/logo.gif'></td></tr>");
@@ -50,14 +47,15 @@ public class UITemplate
 		out.println("      <td class='menu menu_cell'><a href='BillPay' class=menu>Pay Bills Online</a></td>");
 		out.println("      <td class='menu menu_cell'><a href='RandomXact' class=menu>Sample Transactions</a></td>");
 		out.println("      <td class='menu menu_cell'><a href='ImportExport' class=menu>Import/Export</a></td>");
-        out.println("      <td class='menu menu_cell'><a href='Interbank' class=menu>Interbank</a></td>");
+		out.println("      <td class='menu menu_cell'><a href='Interbank' class=menu>Interbank</a></td>");
 		out.println("      <td class='menu menu_cell'><a href='benchmark' class=menu>Benchmark</a></td>");
 		out.println("      <td class='menu'><a href='logout.jsp' class=menu>Logout</a></td>");
 		out.println("    </tr>");
 		out.println("  </thead>");
 		out.println("  <tfoot>");
 		out.println("    <tr class=title>");
-		out.println("      <td colspan=6 align=center><a href='http://www.nastel.com' class=title>Nastel</a>'s Sample Bank application showcases the TransactionWorks monitoring system.</td>");
+		out.println(
+				"      <td colspan=6 align=center><a href='http://www.nastel.com' class=title>Nastel</a>'s Sample Bank application showcases the TransactionWorks monitoring system.</td>");
 		out.println("      <td align=right>v" + Constants.BANK_VERSION + "</td>");
 		out.println("    </tr>");
 		out.println("  </tfoot>");
@@ -66,8 +64,7 @@ public class UITemplate
 		out.println("      <tr>");
 	}
 
-	static public void bodyStart( PrintWriter out, String title)
-	{
+	static public void bodyStart(PrintWriter out, String title) {
 		out.println("        <th width=50% valign=center>");
 		out.println("          <table class=thin_border width=100% cellpadding=1 cellspacing=0>");
 		out.println("            <tr class=title><td align=center>" + title + "</td></tr>");
@@ -75,16 +72,14 @@ public class UITemplate
 		out.println("              <th>");
 	}
 
-	static public void bodyEnd( PrintWriter out)
-	{
+	static public void bodyEnd(PrintWriter out) {
 		out.println("              </th>");
 		out.println("            </tr>");
 		out.println("          </table>");
 		out.println("        </th>");
 	}
 
-	static public void infoBox( PrintWriter out, String info)
-	{
+	static public void infoBox(PrintWriter out, String info) {
 		out.println("        <th width=50% valign=center>");
 		out.println("          <table class=thin_border width=100% cellpadding=0 cellspacing=0>");
 		out.println("            <tr class=title><td align=center>Information</td></tr>");
@@ -99,9 +94,7 @@ public class UITemplate
 		out.println("        </th>");
 	}
 
-
-	static public void writeFooter( PrintWriter out)
-	{
+	static public void writeFooter(PrintWriter out) {
 		out.println("      </tr>");
 		out.println("    </table>");
 		out.println("  </th></tr>");

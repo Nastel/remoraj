@@ -20,7 +20,6 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 

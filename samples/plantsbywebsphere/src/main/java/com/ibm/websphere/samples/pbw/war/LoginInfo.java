@@ -21,8 +21,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
- * A JSF backing bean used to store information for the login web page. It is accessed via the
- * account bean.
+ * A JSF backing bean used to store information for the login web page. It is accessed via the account bean.
  *
  */
 public class LoginInfo {

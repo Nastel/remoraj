@@ -23,8 +23,6 @@ package com.jkoolcloud.testHarness.harnesses;
 import java.net.URI;
 import java.util.Collections;
 
-import javax.websocket.*;
-
 @ClientEndpoint(encoders = { WebsocketSendHarness.class }, decoders = { WebsocketSendHarness.class })
 public class WebsocketSendHarness extends MeasurableHarness implements Decoder.Text<String>, Encoder.Text<String> {
 

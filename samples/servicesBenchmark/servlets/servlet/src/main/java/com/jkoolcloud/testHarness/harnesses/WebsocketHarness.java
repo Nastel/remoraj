@@ -22,7 +22,7 @@ package com.jkoolcloud.testHarness.harnesses;
 
 public class WebsocketHarness implements Harness {
 	@Override
-    public void setup() {
+	public void setup() {
 
 	}
 

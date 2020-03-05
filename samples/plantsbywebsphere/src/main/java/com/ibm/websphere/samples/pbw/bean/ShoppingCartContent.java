@@ -60,8 +60,7 @@ public class ShoppingCartContent implements java.io.Serializable {
 	}
 
 	/**
-	 * Return the inventory ID at the index given. The first element is at index 0, the second at
-	 * index 1, and so on.
+	 * Return the inventory ID at the index given. The first element is at index 0, the second at index 1, and so on.
 	 *
 	 * @return The inventory ID at the index, or NULL if not present.
 	 */

@@ -17,8 +17,8 @@
 package com.ibm.websphere.samples.pbw.bean;
 
 /**
- * This class encapsulates the info needed to send an email message. This object is passed to the
- * Mailer EJB sendMail() method.
+ * This class encapsulates the info needed to send an email message. This object is passed to the Mailer EJB sendMail()
+ * method.
  */
 public class EMailMessage implements java.io.Serializable {
 	/**

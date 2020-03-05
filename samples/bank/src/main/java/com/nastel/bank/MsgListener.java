@@ -28,30 +28,26 @@ public class MsgListener implements MessageListener {
 		msgsReceived++;
 
 		try {
-			if (rspMsg != null)
-			{
+			if (rspMsg != null) {
 				logger.info("\t-> received reply (" + msgsReceived + " of " + msgsExpected + ")");
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("\t  message class=" + rspMsg.getClass().getName());
 					logger.debug("\t  msgId=" + rspMsg.getJMSMessageID());
-					logger.debug("\t  correlId="+ rspMsg.getJMSCorrelationID());
+					logger.debug("\t  correlId=" + rspMsg.getJMSCorrelationID());
 
 					Enumeration<?> props = rspMsg.getPropertyNames();
 					while (props.hasMoreElements()) {
-						String prop = (String)props.nextElement();
+						String prop = (String) props.nextElement();
 						logger.debug("\t  " + prop + "=" + rspMsg.getObjectProperty(prop).toString());
 					}
 
 					logger.trace("\treplyMsg=" + rspMsg);
 				}
-			}
-			else
-			{
+			} else {
 				logger.info("!! NULL message received (" + msgsReceived + " of " + msgsExpected + ")");
 			}
-		}
-		catch (JMSException e) {
+		} catch (JMSException e) {
 			logger.error("Error processing message", e);
 		}
 

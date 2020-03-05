@@ -16,19 +16,10 @@
 //
 package com.ibm.websphere.samples.pbw.jpa;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
- * Inventory is the bean mapping for the INVENTORY table. It provides information about products the
- * store has for sale.
+ * Inventory is the bean mapping for the INVENTORY table. It provides information about products the store has for sale.
  * 
  * @see Inventory
  */
@@ -58,7 +49,7 @@ public class Inventory implements Cloneable, java.io.Serializable {
 	private boolean isPublic;
 	private int minThreshold;
 	private int maxThreshold;
-	
+
 	@Version
 	private long version;
 
@@ -257,8 +248,7 @@ public class Inventory implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * Same as getInventoryId. Added for compatability with ShoppingCartItem when used by the Client
-	 * XJB sample
+	 * Same as getInventoryId. Added for compatability with ShoppingCartItem when used by the Client XJB sample
 	 * 
 	 * @return String ID of the inventory item
 	 */
@@ -267,8 +257,7 @@ public class Inventory implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * Same as setInventoryId. Added for compatability with ShoppingCartItem when used by the Client
-	 * XJB sample
+	 * Same as setInventoryId. Added for compatability with ShoppingCartItem when used by the Client XJB sample
 	 * 
 	 */
 	public void setID(String id) {
@@ -303,10 +292,10 @@ public class Inventory implements Cloneable, java.io.Serializable {
 	public void setBackOrder(BackOrder backOrder) {
 		this.backOrder = backOrder;
 	}
-	
+
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "{id=" + inventoryId + "}";
+		return getClass().getSimpleName() + "{id=" + inventoryId + "}";
 	}
 
 }

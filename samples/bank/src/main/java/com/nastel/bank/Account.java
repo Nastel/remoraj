@@ -30,8 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 
  */
-public class Account extends HttpServlet
-{
+public class Account extends HttpServlet {
 	private static final long serialVersionUID = 8568527668394717232L;
 
 	/**
@@ -40,16 +39,15 @@ public class Account extends HttpServlet
 	 * This method is called when a form has its tag value method equals to get.
 	 * 
 	 * @param request
-	 *          the request send by the client to the server
+	 *            the request send by the client to the server
 	 * @param response
-	 *          the response send by the server to the client
+	 *            the response send by the server to the client
 	 * @throws ServletException
-	 *           if an error occurred
+	 *             if an error occurred
 	 * @throws IOException
-	 *           if an error occurred
+	 *             if an error occurred
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
@@ -60,7 +58,8 @@ public class Account extends HttpServlet
 		UITemplate.bodyStart(out, "Account Overview");
 		out.println("<table class=info_body width=100% cellpadding=0 cellspacing=0 border=0>");
 		out.println("  <tr class=info_body>");
-		out.println("    <td class=label style=\"border-bottom: solid 1px white\" align=right width=50%>Account: </td>");
+		out.println(
+				"    <td class=label style=\"border-bottom: solid 1px white\" align=right width=50%>Account: </td>");
 		out.println("    <td class=value align=left> " + DbUtils.DEMO + "</td>");
 		out.println("  </tr>");
 		out.println("  <tr class=info_body>");

@@ -68,8 +68,8 @@ public class AccountServlet extends HttpServlet {
 	 * @param response
 	 *            Object that encapsulates the response from the servlet
 	 */
-	public void doGet(javax.servlet.http.HttpServletRequest request,
-			javax.servlet.http.HttpServletResponse response) throws ServletException, IOException {
+	public void doGet(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
+			throws ServletException, IOException {
 		performTask(request, response);
 	}
 
@@ -81,8 +81,8 @@ public class AccountServlet extends HttpServlet {
 	 * @param response
 	 *            Object that encapsulates the response from the servlet
 	 */
-	public void doPost(javax.servlet.http.HttpServletRequest request,
-			javax.servlet.http.HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
+			throws ServletException, IOException {
 		performTask(request, response);
 	}
 
@@ -161,8 +161,8 @@ public class AccountServlet extends HttpServlet {
 								url = Util.PAGE_PROMO;
 							} else {
 								url = Util.PAGE_SHOPPING;
-								req.setAttribute(Util.ATTR_INVITEMS, catalog
-										.getItemsByCategory(Integer.parseInt(category)));
+								req.setAttribute(Util.ATTR_INVITEMS,
+										catalog.getItemsByCategory(Integer.parseInt(category)));
 							}
 
 							requestDispatch(getServletConfig().getServletContext(), req, resp, url);
@@ -230,8 +230,8 @@ public class AccountServlet extends HttpServlet {
 				url = Util.PAGE_REGISTER;
 			} else {
 				// Create the new user.
-				Customer customer = login
-						.createCustomer(userid, password, firstName, lastName, addr1, addr2, addrCity, addrState, addrZip, phone);
+				Customer customer = login.createCustomer(userid, password, firstName, lastName, addr1, addr2, addrCity,
+						addrState, addrZip, phone);
 
 				if (customer != null) {
 					// Store customer info in HttpSession.
@@ -249,8 +249,8 @@ public class AccountServlet extends HttpServlet {
 							url = Util.PAGE_PROMO;
 						} else {
 							url = Util.PAGE_SHOPPING;
-							req.setAttribute(Util.ATTR_INVITEMS, catalog
-									.getItemsByCategory(Integer.parseInt(category)));
+							req.setAttribute(Util.ATTR_INVITEMS,
+									catalog.getItemsByCategory(Integer.parseInt(category)));
 						}
 					}
 				} else {
@@ -329,10 +329,8 @@ public class AccountServlet extends HttpServlet {
 	/**
 	 * Request dispatch.
 	 */
-	private void requestDispatch(ServletContext ctx,
-			HttpServletRequest req,
-			HttpServletResponse resp,
-			String page) throws ServletException, IOException {
+	private void requestDispatch(ServletContext ctx, HttpServletRequest req, HttpServletResponse resp, String page)
+			throws ServletException, IOException {
 		resp.setContentType("text/html");
 		ctx.getRequestDispatcher(page).include(req, resp);
 	}
