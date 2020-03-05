@@ -65,7 +65,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 	}
 
 	public void write(ExcerptAppender appender) {
-		appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
+		appender.writeDocument(w -> w.write("exit").marshallable(m -> m.write("id").text(id)//
 				.write("v").fixedInt8(modelVersion)//
 				.write("name").text(name)//
 				.write("mode").text(mode.name())//
