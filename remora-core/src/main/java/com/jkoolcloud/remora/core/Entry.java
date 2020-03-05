@@ -65,7 +65,7 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 			appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
 					.write("v").fixedInt8(modelVersion).write("mode").text(mode.name())//
 					.write("adviceClass").text(adviceClass)//
-					.write("startTime").fixedInt64((long) startTime)//
+					.write("startTime").fixedInt64(startTime)//
 					.write("name").text(name)//
 					.write("clazz").text(clazz)//
 					.write("stackTrace").text(stackTrace)//

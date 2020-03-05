@@ -20,8 +20,6 @@
 
 package com.jkoolcloud.testHarness.harnesses;
 
-import java.sql.*;
-
 public class SQLHarness extends MeasurableHarness {
 
 	@Configurable

@@ -47,6 +47,12 @@
             <artifactId>remora-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>javax.jms-api</artifactId>
+            <version>2.0.1</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.ibm</groupId>

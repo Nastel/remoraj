@@ -16,12 +16,8 @@
 //
 package com.ibm.websphere.samples.pbw.bean;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.Vector;
 
@@ -32,13 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
-import javax.persistence.SynchronizationType;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
 import javax.transaction.UserTransaction;
@@ -47,8 +37,8 @@ import com.ibm.websphere.samples.pbw.jpa.Inventory;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
- * ResetDBBean provides a transactional and secure facade to reset all the database information for
- * the PlantsByWebSphere application.
+ * ResetDBBean provides a transactional and secure facade to reset all the database information for the
+ * PlantsByWebSphere application.
  */
 
 @Named(value = "resetbean")
@@ -69,10 +59,10 @@ public class ResetDBBean implements Serializable {
 
 	@PersistenceContext(unitName = "PBW")
 	EntityManager em;
-	
+
 	@Resource
 	UserTransaction tx;
-	
+
 	public void resetDB() {
 		deleteAll();
 		populateDB();
@@ -85,9 +75,8 @@ public class ResetDBBean implements Serializable {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void addImage(String itemID,
-			String fileName,
-			CatalogMgr catalog) throws FileNotFoundException, IOException {
+	public static void addImage(String itemID, String fileName, CatalogMgr catalog)
+			throws FileNotFoundException, IOException {
 		URL url = Thread.currentThread().getContextClassLoader().getResource("resources/images/" + fileName);
 		Util.debug("URL: " + url);
 		fileName = url.getPath();
@@ -177,7 +166,8 @@ public class ResetDBBean implements Serializable {
 				Util.debug(fields[7]);
 				Util.debug(fields[8]);
 				Util.debug(fields[9]);
-				customer.createCustomer(customerID, password, firstName, lastName, addr1, addr2, addrCity, addrState, addrZip, phone);
+				customer.createCustomer(customerID, password, firstName, lastName, addr1, addr2, addrCity, addrState,
+						addrZip, phone);
 			}
 		} catch (Exception e) {
 			Util.debug("Unable to populate CUSTOMER table with text data: " + e);
@@ -238,7 +228,9 @@ public class ResetDBBean implements Serializable {
 						Util.debug(fields[18]);
 						Util.debug(fields[19]);
 						Util.debug(fields[20]);
-						cart.createOrder(customerID, billName, billAddr1, billAddr2, billCity, billState, billZip, billPhone, shipName, shipAddr1, shipAddr2, shipCity, shipState, shipZip, shipPhone, creditCard, ccNum, ccExpireMonth, ccExpireYear, cardHolder, shippingMethod, items);
+						cart.createOrder(customerID, billName, billAddr1, billAddr2, billCity, billState, billZip,
+								billPhone, shipName, shipAddr1, shipAddr2, shipCity, shipState, shipZip, shipPhone,
+								creditCard, ccNum, ccExpireMonth, ccExpireYear, cardHolder, shippingMethod, items);
 					} else {
 						Util.debug("Property does not contain enough fields: " + values[index]);
 						Util.debug("Fields found were: " + fields);
@@ -334,9 +326,9 @@ public class ResetDBBean implements Serializable {
 			Util.debug("ResetDB(deleteAll) -- Error deleting data from the database: " + e);
 			e.printStackTrace();
 			try {
-                tx.setRollbackOnly();
-            } catch (IllegalStateException | SystemException ignore) {
-            }
+				tx.setRollbackOnly();
+			} catch (IllegalStateException | SystemException ignore) {
+			}
 		}
 	}
 

@@ -29,8 +29,7 @@ import com.ibm.websphere.samples.pbw.jpa.Inventory;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
- * The CatalogMgr provides transactional access to the catalog of items the store is willing to sell
- * to customers.
+ * The CatalogMgr provides transactional access to the catalog of items the store is willing to sell to customers.
  * 
  * @see com.ibm.websphere.samples.pbw.jpa.Inventory
  */
@@ -43,9 +42,9 @@ public class CatalogMgr implements Serializable {
 	/**
 	 * Get all inventory items.
 	 *
-	 * @return Vector of Inventorys. / public Vector<Inventory> getItems() { Vector<Inventory> items
-	 *         = new Vector<Inventory>(); int count = Util.getCategoryStrings().length; for (int i =
-	 *         0; i < count; i++) { items.addAll(getItemsByCategory(i)); } return items; }
+	 * @return Vector of Inventorys. / public Vector<Inventory> getItems() { Vector<Inventory> items = new
+	 *         Vector<Inventory>(); int count = Util.getCategoryStrings().length; for (int i = 0; i < count; i++) {
+	 *         items.addAll(getItemsByCategory(i)); } return items; }
 	 */
 
 	/**
@@ -67,10 +66,10 @@ public class CatalogMgr implements Serializable {
 	 *
 	 * @param name
 	 *            String to search names for.
-	 * @return A Vector of Inventorys that match. / public Vector<Inventory> getItemsLikeName(String
-	 *         name) { Query q = em.createNamedQuery("getItemsLikeName"); q.setParameter("name", '%'
-	 *         + name + '%'); //The return type must be Vector because the PBW client ActiveX sample
-	 *         requires Vector return new Vector<Inventory>(q.getResultList()); }
+	 * @return A Vector of Inventorys that match. / public Vector<Inventory> getItemsLikeName(String name) { Query q =
+	 *         em.createNamedQuery("getItemsLikeName"); q.setParameter("name", '%' + name + '%'); //The return type must
+	 *         be Vector because the PBW client ActiveX sample requires Vector return new
+	 *         Vector<Inventory>(q.getResultList()); }
 	 */
 
 	/**
@@ -116,8 +115,7 @@ public class CatalogMgr implements Serializable {
 	 *
 	 * @param item
 	 *            The StoreItem to add.
-	 * @return True, if item added. / public boolean addItem(StoreItem item) { return addItem(new
-	 *         Inventory(item)); }
+	 * @return True, if item added. / public boolean addItem(StoreItem item) { return addItem(new Inventory(item)); }
 	 */
 
 	/**
@@ -125,8 +123,8 @@ public class CatalogMgr implements Serializable {
 	 *
 	 * @param inventoryID
 	 *            The ID of the inventory item to delete.
-	 * @return True, if item deleted. / public boolean deleteItem(String inventoryID) { boolean
-	 *         retval = true; em.remove(em.find(Inventory.class, inventoryID)); return retval; }
+	 * @return True, if item deleted. / public boolean deleteItem(String inventoryID) { boolean retval = true;
+	 *         em.remove(em.find(Inventory.class, inventoryID)); return retval; }
 	 */
 
 	/**

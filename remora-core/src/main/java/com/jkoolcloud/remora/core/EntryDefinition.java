@@ -56,7 +56,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		System.out.println("#####################################");
 	}
 
-	public EntryDefinition(Class adviceClass) {
+	public EntryDefinition(Class<?> adviceClass) {
 		entry.id = id;
 		exit.id = id;
 		entry.adviceClass = adviceClass.getSimpleName();
@@ -102,9 +102,9 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		}
 	}
 
-	public void addPropertiesIfExist(Map<?, ?> value) {
-		for (Map.Entry entry : value.entrySet()) {
-			addProperty(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
+	public void addPropertiesIfExist(Map<String, ?> value) {
+		for (Map.Entry<String, ?> ve : value.entrySet()) {
+			addProperty(ve.getKey(), String.valueOf(ve.getValue()));
 		}
 	}
 
@@ -140,7 +140,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		entry.clazz = clazz;
 	}
 
-	public void setAdviceClass(Class adviceClass) {
+	public void setAdviceClass(Class<?> adviceClass) {
 		entry.adviceClass = adviceClass.getSimpleName();
 	}
 

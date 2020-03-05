@@ -87,8 +87,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -98,7 +96,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	 *            method startTime
 	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Statement thiz, //
 			@Advice.Argument(0) Object parameterName, //
@@ -116,7 +113,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			if (parameterName instanceof String) {
 				ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
 			} else {
-				ed.addPropertyIfExist(parameterPrefix + String.valueOf(parameterName), parameterValue.toString());
+				ed.addPropertyIfExist(parameterPrefix + parameterName, parameterValue.toString());
 			}
 
 		} catch (Throwable t) {
@@ -127,12 +124,10 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	/**
 	 * Method called on instrumented method finished.
 	 *
-	 * @param obj
+	 * @param thiz
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed

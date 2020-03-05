@@ -31,8 +31,8 @@ import com.ibm.websphere.samples.pbw.jpa.Inventory;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
- * The BackOrderMgr provides a transactional and secured facade to access back order information.
- * This bean no longer requires an interface as there is one and only one implementation.
+ * The BackOrderMgr provides a transactional and secured facade to access back order information. This bean no longer
+ * requires an interface as there is one and only one implementation.
  */
 @Dependent
 @RolesAllowed("SampAdmin")
@@ -59,7 +59,8 @@ public class BackOrderMgr implements Serializable {
 				q.setParameter("id", inventoryID);
 				backOrder = (BackOrder) q.getSingleResult();
 				if (!(backOrder.getStatus().equals(Util.STATUS_ORDERSTOCK))) {
-					Util.debug("BackOrderMgr.createBackOrder() - Backorders found but have already been ordered from the supplier");
+					Util.debug(
+							"BackOrderMgr.createBackOrder() - Backorders found but have already been ordered from the supplier");
 					// throw new FinderException();
 				}
 				// Increase the BackOrder quantity for an existing Back Order.
@@ -108,14 +109,11 @@ public class BackOrderMgr implements Serializable {
 	 * Method receiveConfirmation.
 	 * 
 	 * @param backOrderID
-	 *            / public int receiveConfirmation(String backOrderID) { int rc = 0; BackOrder
-	 *            backOrder; Util.debug(
-	 *            "BackOrderMgr.receiveConfirmation() - Finding Back Order for backOrderID=" +
-	 *            backOrderID); backOrder = em.find(BackOrder.class, backOrderID);
-	 *            backOrder.setStatus(Util.STATUS_RECEIVEDSTOCK); Util.debug(
-	 *            "BackOrderMgr.receiveConfirmation() - Updating status(" +
-	 *            Util.STATUS_RECEIVEDSTOCK + ") of backOrderID(" + backOrderID + ")"); return (rc);
-	 *            }
+	 *            / public int receiveConfirmation(String backOrderID) { int rc = 0; BackOrder backOrder; Util.debug(
+	 *            "BackOrderMgr.receiveConfirmation() - Finding Back Order for backOrderID=" + backOrderID); backOrder =
+	 *            em.find(BackOrder.class, backOrderID); backOrder.setStatus(Util.STATUS_RECEIVEDSTOCK); Util.debug(
+	 *            "BackOrderMgr.receiveConfirmation() - Updating status(" + Util.STATUS_RECEIVEDSTOCK + ") of
+	 *            backOrderID(" + backOrderID + ")"); return (rc); }
 	 */
 
 	/**
@@ -123,9 +121,8 @@ public class BackOrderMgr implements Serializable {
 	 * 
 	 * @param backOrderID
 	 * @param quantity
-	 *            / public void orderStock(String backOrderID, int quantity) {
-	 *            this.setBackOrderStatus(backOrderID, Util.STATUS_ORDEREDSTOCK);
-	 *            this.setBackOrderQuantity(backOrderID, quantity);
+	 *            / public void orderStock(String backOrderID, int quantity) { this.setBackOrderStatus(backOrderID,
+	 *            Util.STATUS_ORDEREDSTOCK); this.setBackOrderQuantity(backOrderID, quantity);
 	 *            this.setBackOrderOrderDate(backOrderID); }
 	 */
 
@@ -141,21 +138,20 @@ public class BackOrderMgr implements Serializable {
 
 	/**
 	 * @param backOrderID
-	 *            / public void abortorderStock(String backOrderID) { Util.debug(
-	 *            "backOrderStockBean.abortorderStock() - Aborting orderStock transation for backorderID: "
-	 *            + backOrderID); // Reset the back order status since the order failed.
-	 *            this.setBackOrderStatus(backOrderID, Util.STATUS_ORDERSTOCK); }
+	 *            / public void abortorderStock(String backOrderID) { Util.debug( "backOrderStockBean.abortorderStock()
+	 *            - Aborting orderStock transation for backorderID: " + backOrderID); // Reset the back order status
+	 *            since the order failed. this.setBackOrderStatus(backOrderID, Util.STATUS_ORDERSTOCK); }
 	 */
 
 	/**
 	 * Method getBackOrderID.
 	 * 
 	 * @param backOrderID
-	 * @return String / public String getBackOrderID(String backOrderID) { String retbackOrderID =
-	 *         ""; Util.debug( "BackOrderMgr.getBackOrderID() - Entered"); // BackOrderLocal
-	 *         backOrder = getBackOrderLocalHome().findByPrimaryKey(new BackOrderKey(backOrderID));
-	 *         BackOrder backOrder = em.find(BackOrder.class, backOrderID); retbackOrderID =
-	 *         backOrder.getBackOrderID(); return retbackOrderID; }
+	 * @return String / public String getBackOrderID(String backOrderID) { String retbackOrderID = ""; Util.debug(
+	 *         "BackOrderMgr.getBackOrderID() - Entered"); // BackOrderLocal backOrder =
+	 *         getBackOrderLocalHome().findByPrimaryKey(new BackOrderKey(backOrderID)); BackOrder backOrder =
+	 *         em.find(BackOrder.class, backOrderID); retbackOrderID = backOrder.getBackOrderID(); return
+	 *         retbackOrderID; }
 	 */
 
 	/**

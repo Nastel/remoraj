@@ -35,7 +35,6 @@ import com.ibm.websphere.management.AdminService;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -90,8 +89,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	 * @param thiz
 	 *            reference to method object
 	 * @param req
+	 *            servlet response
 	 * @param resp
-	 *            arguments provided for method
+	 *            servlet request
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -101,7 +101,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            method startTime
 	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
 			@Advice.Argument(0) ServletRequest req, //
@@ -138,10 +137,10 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 						ed.addPropertyIfExist("CELL", cellName);
 						ed.addPropertyIfExist("NODE", nodeName);
 						ed.addPropertyIfExist("DOMAIN", domainName);
-						((CallStack) stackThreadLocal.get()).setServer(cellName + "/" + nodeName + "/" + domainName);
+						stackThreadLocal.get().setServer(cellName + "/" + nodeName + "/" + domainName);
 					} catch (Exception e) {
 						logger.error(e);
-						((CallStack) stackThreadLocal.get()).setServer(req.getLocalName());
+						stackThreadLocal.get().setServer(req.getLocalName());
 					}
 
 				} catch (Throwable t) {
@@ -155,7 +154,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				logger.info("## Request null");
 			}
 
-			if (thiz != null && thiz instanceof WebApp) {
+			if (thiz instanceof WebApp) {
 				try {
 					ed.addPropertyIfExist("CONTEXT_PATH", ((WebApp) thiz).getContextPath());
 				} catch (Throwable t) {

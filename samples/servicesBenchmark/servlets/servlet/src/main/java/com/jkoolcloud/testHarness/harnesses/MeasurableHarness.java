@@ -47,8 +47,8 @@ public abstract class MeasurableHarness implements Harness {
 			INNER: for (Field field : workngClass.getDeclaredFields()) {
 
 				if (!field.isAnnotationPresent(Configurable.class)) {
-                    continue INNER;
-                }
+					continue INNER;
+				}
 				result.append(field.getName());
 				result.append("=");
 				try {

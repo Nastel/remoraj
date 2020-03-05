@@ -16,17 +16,6 @@
 //
 package com.ibm.websphere.samples.pbw.jpa;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
@@ -61,10 +50,10 @@ public class BackOrder {
 	}
 
 	public BackOrder(Inventory inventory, int quantity) {
-			this.setInventory(inventory);
-			this.setQuantity(quantity);
-			this.setStatus(Util.STATUS_ORDERSTOCK);
-			this.setLowDate(System.currentTimeMillis());
+		this.setInventory(inventory);
+		this.setQuantity(quantity);
+		this.setStatus(Util.STATUS_ORDERSTOCK);
+		this.setLowDate(System.currentTimeMillis());
 	}
 
 	public String getBackOrderID() {
@@ -101,7 +90,8 @@ public class BackOrder {
 
 	public void increateQuantity(int delta) {
 		if (!(status.equals(Util.STATUS_ORDERSTOCK))) {
-			Util.debug("BackOrderMgr.createBackOrder() - Backorders found but have already been ordered from the supplier");
+			Util.debug(
+					"BackOrderMgr.createBackOrder() - Backorders found but have already been ordered from the supplier");
 			throw new RuntimeException("cannot increase order size for orders already in progress");
 		}
 		// Increase the BackOrder quantity for an existing Back Order.

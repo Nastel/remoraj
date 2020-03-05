@@ -5,17 +5,14 @@
     <display-name>Services Benchmark</display-name>
     <description>Benchmark for various JAVA services</description>
 
-
     <servlet>
         <servlet-name>Setup</servlet-name>
         <servlet-class>com.jkoolcloud.testHarness.Setup</servlet-class>
     </servlet>
 
-
     <servlet-mapping>
         <servlet-name>Setup</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
 
 </web-app>

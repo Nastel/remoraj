@@ -274,7 +274,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	protected ElementMatcher<NamedElement> getClassIgnores() {
+	protected static ElementMatcher<NamedElement> getClassIgnores() {
 		return nameStartsWith("net.openhft") //
 				.or(nameStartsWith("java.lang")) //
 				.or(nameStartsWith("com.jkoolcloud.remora")) //
@@ -282,7 +282,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				.or(getFromConfig());
 	}
 
-	private ElementMatcher<NamedElement> getFromConfig() {
+	private static ElementMatcher<NamedElement> getFromConfig() {
 		ElementMatcher.Junction<NamedElement> ad = none();
 		if (ignores == null) {
 			return ad;
@@ -300,7 +300,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return MessageFormat.format(pattern, args);
 	}
 
-	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class adviceClass, TaggedLogger logger) {
+	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class<?> adviceClass, TaggedLogger logger) {
 		if (ed != null) {
 			return ed;
 		}

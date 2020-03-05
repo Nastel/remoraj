@@ -21,7 +21,7 @@
 package com.jkoolcloud.remora.core.output;
 
 import java.io.File;
-import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Deque;
@@ -82,20 +82,22 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		ThreadFactory threadFactory = new ThreadFactory() {
 			@Override
 			public Thread newThread(@NotNull Runnable r) {
-				logger.info("New thread created");
-				ChronicleAppenderThread chronicleAppenderThread = new ChronicleAppenderThread(r);
-				return chronicleAppenderThread;
+				logger.info("Creating new thread");
+
+				ExcerptAppender threadAppender = queue.acquireAppender();
+				if (threadAppender != null) {
+					logger.info("Appender initialized");
+				} else {
+					logger.error("Appender failed");
+				}
+
+				return new ChronicleAppenderThread(r, threadAppender);
 			}
 		};
 
 		File queueDir = Paths.get(queuePath).toFile();
 		unusedQueues = new LinkedBlockingDeque<>(keepQueueRolls);
-		File[] cq4s = queueDir.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.getName().endsWith("cq4");
-			}
-		});
+		File[] cq4s = queueDir.listFiles(new CQ4FileFilter());
 		if (cq4s != null) {
 			unusedQueues.addAll(Arrays.asList(cq4s));
 		}
@@ -149,22 +151,25 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		}
 	}
 
-	public class ChronicleAppenderThread extends Thread {
+	private static class CQ4FileFilter implements FilenameFilter {
+		@Override
+		public boolean accept(File path, String name) {
+			String nfn = name.toLowerCase();
+			return nfn.endsWith(".cq4");
+		}
+	}
 
+	public static class ChronicleAppenderThread extends Thread {
 		private final ExcerptAppender threadAppender;
 
 		public ExcerptAppender getAppender() {
 			return threadAppender;
 		}
 
-		public ChronicleAppenderThread(Runnable r) {
+		public ChronicleAppenderThread(Runnable r, ExcerptAppender appender) {
 			super(r);
-			threadAppender = queue.acquireAppender();
-			if (threadAppender != null) {
-				logger.info("Appender initialized");
-			} else {
-				logger.error("Appender failed");
-			}
+
+			this.threadAppender = appender;
 		}
 	}
 }

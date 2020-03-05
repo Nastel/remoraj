@@ -60,7 +60,6 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            method startTime
 	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
@@ -81,8 +80,6 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed

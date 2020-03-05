@@ -11,8 +11,7 @@ import javax.jms.TextMessage;
 
 import com.nastel.bank.DbUtils;
 
-public class DbTransactionsRepository extends ArrayList<Transaction> implements
-JmsMessageRepository {
+public class DbTransactionsRepository extends ArrayList<Transaction> implements JmsMessageRepository {
 
 	private static final long serialVersionUID = 1L;
 	private static final int MAX_SIZE = Integer.getInteger("tworks.samples.bank.jms.max.msg.size", 4096);
@@ -57,9 +56,10 @@ JmsMessageRepository {
 		message.setDoubleProperty("amount", t.amount);
 		message.setDoubleProperty("balance", t.balanceEnd);
 		StringBuilder buffer = new StringBuilder(MAX_SIZE);
-		for (int i=0; i < MAX_SIZE; i++) {
+		for (int i = 0; i < MAX_SIZE; i++) {
 			buffer.append(i);
-			if (buffer.length() >= MAX_SIZE) break;
+			if (buffer.length() >= MAX_SIZE)
+				break;
 		}
 		message.setText(buffer.toString());
 		return message;

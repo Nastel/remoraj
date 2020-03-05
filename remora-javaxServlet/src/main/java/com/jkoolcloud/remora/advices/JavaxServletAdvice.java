@@ -95,8 +95,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * @param thiz
 	 *            reference to method object
 	 * @param req
+	 *            servlet request
 	 * @param resp
-	 *            arguments provided for method
+	 *            servlet response
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -123,7 +124,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			ed = getEntryDefinition(ed, JavaxServletAdvice.class, logging ? logger : null);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
-			if (req != null && req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
+			if (req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
 				try {
 					ed.addPropertyIfExist("CLIENT", req.getRemoteAddr());
 					ed.addPropertyIfExist("SERVER", req.getLocalName());
@@ -143,10 +144,10 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 					if (stackThreadLocal != null && stackThreadLocal.get() != null
 							&& stackThreadLocal.get() instanceof CallStack) {
-						Pattern compile = Pattern.compile("\\/.[^/]*\\/");
+						Pattern compile = Pattern.compile("/.[^/]*/");
 						Matcher matcher = compile.matcher(requestURI);
 						if (matcher.find()) {
-							((CallStack) stackThreadLocal.get()).setApplication(matcher.group(0));
+							stackThreadLocal.get().setApplication(matcher.group(0));
 						}
 					}
 
@@ -158,10 +159,10 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 							ed.addPropertyIfExist(cookiePrefix + cookie.getName(), cookie.getValue());
 						}
 					}
-					Enumeration headerNames = request.getHeaderNames();
+					Enumeration<String> headerNames = request.getHeaderNames();
 					if (headerNames != null) {
 						while (headerNames.hasMoreElements()) {
-							String headerName = (String) headerNames.nextElement();
+							String headerName = headerNames.nextElement();
 							Enumeration<String> headerValues = request.getHeaders(headerName);
 							StringBuilder headerValue = new StringBuilder();
 							while (headerValues.hasMoreElements()) {
@@ -173,7 +174,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 							ed.addPropertyIfExist(headerPrefix + headerName, headerValue.toString());
 						}
 					}
-					if (attachCorrelator && resp != null && resp instanceof HttpServletResponse) {
+					if (attachCorrelator && resp instanceof HttpServletResponse) {
 						String remoraHeader = ((HttpServletRequest) req).getHeader(headerCorrIDName);
 						if (remoraHeader == null) {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, ed.getId());
@@ -212,8 +213,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * @param method
 	 *            instrumented method description
 	 * @param req
+	 *            servlet request
 	 * @param resp
-	 *            arguments provided for method
+	 *            servlet response
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed

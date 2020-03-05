@@ -21,20 +21,7 @@ package com.nastel.bank;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueReceiver;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -62,33 +49,24 @@ public class ImportExport extends HttpServlet {
 	public static final String MSG_FROM_APP = "dbTransactions";
 	public static final String MSG_FROM_FILE = "file";
 
-	private static final long waitInterval = 20000;		// milliseconds
+	private static final long waitInterval = 20000; // milliseconds
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("servletName", "servletToJsp");
 
-		try
-		{
-			getServletConfig().getServletContext().
-				getRequestDispatcher("/importExport.html").forward(request, response);
-		}
-		catch (ServletException e)
-		{
+		try {
+			getServletConfig().getServletContext().getRequestDispatcher("/importExport.html").forward(request,
+					response);
+		} catch (ServletException e) {
 			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HashMap<String, String> params = initParameters(request);
 		String msgSource = params.get("msgSource");
 		int numTrans = 0;
@@ -96,26 +74,24 @@ public class ImportExport extends HttpServlet {
 
 		boolean useBackend = "on".equals(params.get("backend"));
 
-		try
-		{
+		try {
 			numTrans = Integer.parseInt(params.get("xactnum"));
-		}
-		catch (NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			logger.error("!! invalid number of messages", e);
 			response.sendRedirect("ImportExport");
 			return;
 		}
 
-		if (msgSource == null)
-		{
+		if (msgSource == null) {
 			logger.error("!! msgSource is null");
 			response.sendRedirect("ImportExport");
 			return;
 		}
 
 		if (msgSource.equals("file"))
+		{
 			fileData = params.get("file");
+		}
 
 		log(msgSource, numTrans, fileData, useBackend);
 
@@ -125,8 +101,7 @@ public class ImportExport extends HttpServlet {
 	}
 
 	private void performJmsOps(String msgSource, int numTrans, String fileData, boolean useBackend)
-					throws ServletException
-	{
+			throws ServletException {
 		// lookup JNDI resources
 		QueueConnectionFactory queueConnFactory = null;
 		QueueConnection queueConn = null;
@@ -136,41 +111,31 @@ public class ImportExport extends HttpServlet {
 
 		logger.info("looking up JNDI resources...");
 
-		//TODO
+		// TODO
 		/*
-		 * If JNDI lookup failed to find BankConnectionFactory, RequestQueue or ReplyQueue,
-		 * display an appropriate error message.
-		 * Right now, only a non-informative NullPointerException is shown.
+		 * If JNDI lookup failed to find BankConnectionFactory, RequestQueue or ReplyQueue, display an appropriate error
+		 * message. Right now, only a non-informative NullPointerException is shown.
 		 */
 
-		try
-		{
+		try {
 			queueConnFactory = (QueueConnectionFactory) lookup("BankConnectionFactory");
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			String error = "Failed to lookup 'BankConnectionFactory'";
 			logger.error(error, e);
-			throw new ServletException(error,e);
+			throw new ServletException(error, e);
 		}
 
-		try
-		{
+		try {
 			requestQueue = (Queue) lookup("BankRequestQueue");
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			String error = "Failed to lookup 'BankRequestQueue'";
 			logger.error(error, e);
 			throw new ServletException(error);
 		}
 
-		try
-		{
+		try {
 			replyQueue = (Queue) lookup("BankReplyQueue");
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			String error = "Failed to lookup 'BankReplyQueue'";
 			logger.error(error, e);
 
@@ -178,8 +143,7 @@ public class ImportExport extends HttpServlet {
 		}
 
 		// --- Initialize JMS resources ---
-		try
-		{
+		try {
 			queueConn = queueConnFactory.createQueueConnection();
 			queueConn.start();
 
@@ -192,49 +156,30 @@ public class ImportExport extends HttpServlet {
 			JmsMessageRepository msgRepository = null;
 
 			// --- do JMS work ---
-			if (msgSource.equals(MSG_FROM_APP))
-			{
+			if (msgSource.equals(MSG_FROM_APP)) {
 				msgRepository = new DbTransactionsRepository(DbUtils.DEMO, numTrans);
-				doJmsWork(queueSession, requestQueue, replyQueue,
-							msgRepository, numTrans, useBackend);
-			}
-			else if (msgSource.equals(MSG_FROM_FILE))
-			{
+				doJmsWork(queueSession, requestQueue, replyQueue, msgRepository, numTrans, useBackend);
+			} else if (msgSource.equals(MSG_FROM_FILE)) {
 				msgRepository = new FileRepository(fileData, numTrans);
-				doJmsWork(queueSession, requestQueue, replyQueue,
-							msgRepository, numTrans, useBackend);
-			}
-			else
-			{
+				doJmsWork(queueSession, requestQueue, replyQueue, msgRepository, numTrans, useBackend);
+			} else {
 				logger.error("!! Incorrect msgSource=" + msgSource);
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.error("Exception occurred: " + e, e);
 			e.printStackTrace();
-		}
-		finally
-		{
-			if (queueSession != null)
-			{
-				try
-				{
+		} finally {
+			if (queueSession != null) {
+				try {
 					queueSession.close();
-				}
-				catch (JMSException e)
-				{
+				} catch (JMSException e) {
 					e.printStackTrace();
 				}
 			}
-			if (queueConn != null)
-			{
-				try
-				{
+			if (queueConn != null) {
+				try {
 					queueConn.close();
-				}
-				catch (JMSException e)
-				{
+				} catch (JMSException e) {
 					e.printStackTrace();
 				}
 			}
@@ -242,23 +187,19 @@ public class ImportExport extends HttpServlet {
 		}
 	}
 
-	private void log(String msgSource, int numTrans, String fileData, boolean useBackend)
-	{
+	private void log(String msgSource, int numTrans, String fileData, boolean useBackend) {
 		logger.info("< = = = =  Performing JMS operations = = = = >");
 		logger.info("settings");
 		logger.info("\t" + "useBackend?: " + useBackend);
-		logger.info("\t"
-				+ "generate messages from: "
-				+ (msgSource.equals(MSG_FROM_APP) ? "Bank app's DB records"
-						: "file"));
+		logger.info("\t" + "generate messages from: "
+				+ (msgSource.equals(MSG_FROM_APP) ? "Bank app's DB records" : "file"));
 		logger.info("\t" + "# messages to import/export: " + numTrans);
 		logger.trace("\t" + "msg=" + fileData);
 		logger.info("");
 	}
 
 	@SuppressWarnings("unchecked")
-	protected HashMap<String, String> initParameters(HttpServletRequest request) throws IOException
-	{
+	protected HashMap<String, String> initParameters(HttpServletRequest request) throws IOException {
 		HashMap<String, String> params = new HashMap<String, String>();
 
 		// Create a factory for disk-based file items
@@ -269,31 +210,23 @@ public class ImportExport extends HttpServlet {
 
 		// Parse the request
 		List<FileItem> items = null;
-		try
-		{
+		try {
 			items = upload.parseRequest(request);
-		}
-		catch (FileUploadException e)
-		{
+		} catch (FileUploadException e) {
 			e.printStackTrace();
 		}
 
 		// Process the uploaded items
-		for (Iterator<FileItem> iter = items.iterator(); iter.hasNext();)
-		{
+		for (Iterator<FileItem> iter = items.iterator(); iter.hasNext();) {
 			FileItem item = iter.next();
 
-			if (item.isFormField())
-			{
-				if (item.isFormField())
-				{
+			if (item.isFormField()) {
+				if (item.isFormField()) {
 					String name = item.getFieldName();
 					String value = item.getString();
 					params.put(name, value);
 				}
-			}
-			else
-			{
+			} else {
 				InputStream uploadedStream = item.getInputStream();
 				byte[] dataBytes = item.get();
 				params.put("file", new String(dataBytes));
@@ -305,29 +238,30 @@ public class ImportExport extends HttpServlet {
 	}
 
 	protected void doJmsWork(QueueSession session, Queue requestQueue, Queue replyQueue,
-							 JmsMessageRepository msgRepository, int numTrans, boolean useBackend) throws JMSException
-	{
+			JmsMessageRepository msgRepository, int numTrans, boolean useBackend) throws JMSException {
 		logger.info("\t# messages available: " + msgRepository.size());
 
 		int i = 0;
-		boolean useListener = false;	//TODO: Added control/property to set this
+		boolean useListener = false; // TODO: Added control/property to set this
 		Message rspMsg = null;
 		Message message = null;
 
 		QueueSender requestSender = session.createSender(requestQueue);
 		MsgListener listener = new MsgListener(Thread.currentThread(), numTrans);
 
-		while (i++ < numTrans && msgRepository.hasNext())
-		{
-			try
-			{
+		while (i++ < numTrans && msgRepository.hasNext()) {
+			try {
 				// -------------------------------
 				// PREPARE message
 				// -------------------------------
 				if (rspMsg == null)
+				{
 					message = msgRepository.next(session);
+				}
 				else
+				{
 					message = rspMsg;
+				}
 
 				message.setJMSReplyTo(replyQueue);
 
@@ -345,7 +279,9 @@ public class ImportExport extends HttpServlet {
 				requestSender.send(message);
 				logger.trace("\tsendMsg=" + message);
 				if (session.getTransacted())
+				{
 					session.commit();
+				}
 
 				String selector = "JMSCorrelationID = '" + correlId + "'";
 
@@ -354,7 +290,9 @@ public class ImportExport extends HttpServlet {
 				// -------------------------------
 
 				if (!useBackend)
+				{
 					doReceiveAndSend(session, requestQueue, replyQueue, selector);
+				}
 
 				// -------------------------------
 				// RECEIVE message
@@ -362,7 +300,7 @@ public class ImportExport extends HttpServlet {
 
 				QueueReceiver replyReceiver = session.createReceiver(replyQueue, selector);
 
-				logger.info("\t() waiting on "+ replyReceiver.getQueue().getQueueName());
+				logger.info("\t() waiting on " + replyReceiver.getQueue().getQueueName());
 				logger.info("\t      for " + selector);
 
 				if (useListener) {
@@ -373,28 +311,30 @@ public class ImportExport extends HttpServlet {
 
 						// if wait time expires, message not received
 						logger.info("!! Reply has NOT been received");
-					}
-					catch (InterruptedException e) {
+					} catch (InterruptedException e) {
 						// sleep is interrupted when message received
 					}
-				}
-				else {
+				} else {
 					rspMsg = replyReceiver.receive(waitInterval);
 					if (rspMsg == null)
+					{
 						logger.info("!! Reply has NOT been received");
+					}
 					else
+					{
 						listener.onMessage(rspMsg);
+					}
 				}
 
 				if (session.getTransacted())
+				{
 					session.commit();
+				}
 
 				replyReceiver.close();
 
 				logger.info("# # # #  end transaction  # # # #");
-			}
-			catch (JMSException e)
-			{
+			} catch (JMSException e) {
 				logger.error("Failed to create/send/receive JMS message", e);
 			}
 		}
@@ -402,9 +342,8 @@ public class ImportExport extends HttpServlet {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void doReceiveAndSend(QueueSession session, Queue requestQueue,
-									Queue replyQueue, String selector) throws JMSException
-	{
+	protected void doReceiveAndSend(QueueSession session, Queue requestQueue, Queue replyQueue, String selector)
+			throws JMSException {
 		QueueReceiver receiver = session.createReceiver(requestQueue, selector);
 		// QueueReceiver receiver = session.createReceiver(requestQueue);
 		logger.info("\t () waiting on " + receiver.getQueue().getQueueName());
@@ -414,7 +353,9 @@ public class ImportExport extends HttpServlet {
 		receiver.close();
 
 		if (session.getTransacted())
+		{
 			session.commit();
+		}
 
 		if (requestMsg == null) {
 			logger.info("!! Reply has NOT been received");
@@ -427,16 +368,12 @@ public class ImportExport extends HttpServlet {
 		Message replyMsg = session.createMessage();
 		replyMsg.setJMSReplyTo(requestMsg.getJMSReplyTo());
 		replyMsg.setJMSCorrelationID(requestMsg.getJMSCorrelationID());
-		for (Enumeration<String> e = requestMsg.getPropertyNames(); e.hasMoreElements();)
-		{
+		for (Enumeration<String> e = requestMsg.getPropertyNames(); e.hasMoreElements();) {
 			String name = e.nextElement();
 			Object o = requestMsg.getObjectProperty(name);
-			try
-			{
+			try {
 				replyMsg.setStringProperty(name, o.toString());
-			}
-			catch (JMSException ex)
-			{
+			} catch (JMSException ex) {
 				// ignore exception if a property can't be set
 			}
 		}
@@ -446,42 +383,36 @@ public class ImportExport extends HttpServlet {
 		replySender.send(replyMsg);
 		logger.trace("\tsendMsg=" + replyMsg);
 		if (session.getTransacted())
+		{
 			session.commit();
+		}
 		replySender.close();
 	}
 
-	private Object lookup(String name) throws NamingException
-	{
+	private Object lookup(String name) throws NamingException {
 		Context context = null;
-		try
-		{
+		try {
 			context = new InitialContext();
-		}
-		catch (NamingException e)
-		{
+		} catch (NamingException e) {
 			logger.error("Could not create JNDI API " + "context: " + e.toString());
 		}
 
 		if (context == null)
+		{
 			context = new InitialContext();
+		}
 
 		Object o;
-		try
-		{
+		try {
 			o = context.lookup(name);
 			return o;
-		}
-		catch (NamingException e)
-		{
+		} catch (NamingException e) {
 		}
 
-		try
-		{
+		try {
 			o = context.lookup("java:/" + name);
 			return o;
-		}
-		catch (NamingException e)
-		{
+		} catch (NamingException e) {
 		}
 
 		o = context.lookup("java:comp/env/" + name);
