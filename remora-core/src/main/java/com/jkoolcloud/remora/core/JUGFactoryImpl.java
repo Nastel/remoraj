@@ -31,18 +31,18 @@ import com.fasterxml.uuid.impl.TimeBasedGenerator;
  */
 public class JUGFactoryImpl {
 
-	private static TimeBasedGenerator uuidGenerator;
+	private static final TimeBasedGenerator uuidGenerator;
 
 	static {
 		EthernetAddress nic = EthernetAddress.fromInterface();
 		uuidGenerator = Generators.timeBasedGenerator(nic);
 	}
 
-	public String newUUID() {
+	public static String newUUID() {
 		return uuidGenerator.generate().toString();
 	}
 
-	public String newUUID(Object obj) {
+	public static String newUUID(Object obj) {
 		return uuidGenerator.generate().toString();
 	}
 }
