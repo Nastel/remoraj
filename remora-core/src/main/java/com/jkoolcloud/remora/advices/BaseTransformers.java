@@ -274,7 +274,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	protected ElementMatcher<NamedElement> getClassIgnores() {
+	protected static ElementMatcher<NamedElement> getClassIgnores() {
 		return nameStartsWith("net.openhft") //
 				.or(nameStartsWith("java.lang")) //
 				.or(nameStartsWith("com.jkoolcloud.remora")) //

@@ -89,8 +89,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	 * @param thiz
 	 *            reference to method object
 	 * @param req
+	 *            servlet response
 	 * @param resp
-	 *            arguments provided for method
+	 *            servlet request
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -100,7 +101,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	 *            method startTime
 	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Object thiz, //
 			@Advice.Argument(0) ServletRequest req, //

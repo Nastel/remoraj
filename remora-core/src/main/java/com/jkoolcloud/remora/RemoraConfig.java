@@ -51,7 +51,7 @@ public enum RemoraConfig {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void configure(Object object) throws IllegalAccessException {
+	public static void configure(Object object) throws IllegalAccessException {
 		Class<?> aClass = object.getClass();
 
 		while (!aClass.equals(Object.class)) {

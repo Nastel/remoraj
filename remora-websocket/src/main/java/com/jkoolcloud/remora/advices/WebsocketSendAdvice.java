@@ -134,7 +134,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 
 				}
 
-				Pattern compile = Pattern.compile("\\/.[^/]*\\/");
+				Pattern compile = Pattern.compile("/.[^/]*/");
 				Matcher matcher = compile.matcher(requestURI.toASCIIString());
 				String application = null;
 				if (matcher.find()) {

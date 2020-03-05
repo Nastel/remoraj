@@ -119,7 +119,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 				ed.setCorrelator(correlator);
 				ed.addPropertyIfExist("SESSION", correlator);
 
-				Pattern compile = Pattern.compile("\\/.[^/]*\\/");
+				Pattern compile = Pattern.compile("/.[^/]*/");
 				Matcher matcher = compile.matcher(requestURI.toASCIIString());
 				String application = null;
 				CallStack<EntryDefinition> stack = stackThreadLocal.get();
