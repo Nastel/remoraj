@@ -158,12 +158,10 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	/**
 	 * Method called on instrumented method finished.
 	 *
-	 * @param obj
+	 * @param thiz
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed

@@ -35,7 +35,7 @@ public class RemoraInit {
 
 	// private static final Logger LOGGER = LoggerFactory.getLogger(RemoraInit.class.getName());
 
-	public void initializeAdvices(Instrumentation inst, ClassLoader classLoader) {
+	public static void initializeAdvices(Instrumentation inst, ClassLoader classLoader) {
 
 		// LOGGER.info("Initializing advices: " + getClass() + " classloader: " + getClass().getClassLoader());
 

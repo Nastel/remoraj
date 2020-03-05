@@ -23,8 +23,8 @@ package com.jkoolcloud.remora.core.utils;
 import java.lang.reflect.Field;
 
 public class ReflectionUtils {
+	@SuppressWarnings("unchecked")
 	public static <T> T getFieldValue(Object object, Class<T> expectedReturn, String... paths) {
-
 		for (String path : paths) {
 			String[] levels = path.split("\\.");
 

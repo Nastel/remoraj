@@ -50,8 +50,8 @@ public enum RemoraConfig {
 		init();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void configure(Object object) throws IllegalAccessException {
-
 		Class<?> aClass = object.getClass();
 
 		while (!aClass.equals(Object.class)) {
@@ -94,16 +94,16 @@ public enum RemoraConfig {
 		}
 	}
 
-	private List getList(String configValue) {
+	private static List<?> getList(String configValue) {
 		if (configValue == null) {
 			return null;
 		}
 		String[] split = configValue.split(";");
-		return Arrays.asList(split).stream().map(v -> v.trim()).collect(Collectors.toList());
+		return Arrays.stream(split).map(v -> v.trim()).collect(Collectors.toList());
 	}
 
-	private String getConfigValue(Class<?> aClass, String name) {
-		Class workingClass = aClass;
+	private static String getConfigValue(Class<?> aClass, String name) {
+		Class<?> workingClass = aClass;
 		String value = null;
 		while (value == null && !workingClass.equals(Object.class)) {
 			value = RemoraConfig.INSTANCE.config.getProperty(workingClass.getName() + "." + name);

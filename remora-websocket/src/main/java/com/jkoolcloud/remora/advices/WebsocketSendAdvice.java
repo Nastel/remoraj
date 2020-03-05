@@ -125,7 +125,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 				ed.setResource(requestURI.toASCIIString(), EntryDefinition.ResourceType.NETADDR);
 				ed.setCorrelator(correlator);
 				ed.addPropertyIfExist("SESSION", correlator);
-				CallStack<EntryDefinition> stack = (CallStack) stackThreadLocal.get();
+				CallStack<EntryDefinition> stack = stackThreadLocal.get();
 				String server = null;
 				try {
 					server = session.getUserProperties().get("javax.websocket.endpoint.remoteAddress").toString();

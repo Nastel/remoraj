@@ -26,7 +26,6 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.Stack;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.tinylog.Logger;
@@ -82,7 +81,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This Consumer thiz, //
+	public static void before(@Advice.This Consumer<?, ?> thiz, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
@@ -99,10 +98,10 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			try {
 				String clientId = getFieldValue(thiz, String.class, "clientId");
 				String groupId = getFieldValue(thiz, String.class, "groupId");
-				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+				CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 				if (entryDefinitions != null) {
 					String application = MessageFormat.format("clientId={0}, groupId={0}", clientId, groupId);
-					((CallStack) entryDefinitions).setApplication(application);
+					entryDefinitions.setApplication(application);
 					if (logging) {
 						logger.info("Setting the application", application);
 					}
@@ -120,8 +119,6 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	 *
 	 * @param method
 	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed
@@ -131,7 +128,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This Consumer producer, //
+	public static void after(@Advice.This Consumer<?, ?> producer, //
 			@Advice.Origin Method method, //
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {

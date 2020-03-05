@@ -84,8 +84,6 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
 	 * @param ed

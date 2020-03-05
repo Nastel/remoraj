@@ -34,6 +34,7 @@ import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -118,7 +119,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
 			try {
-				Properties fieldValue = getFieldValue(thiz, Properties.class, "factory.properties");
+				Properties fieldValue = ReflectionUtils.getFieldValue(thiz, Properties.class, "factory.properties");
 				if (fieldValue != null) {
 					ed.addProperties(fieldValue);
 				}

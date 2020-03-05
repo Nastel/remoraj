@@ -72,8 +72,8 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	public void setApplication(String application) {
 		this.application = application;
-		for (int i = 0; i < size(); i++) {
-			get(i).setApplication(application);
+		for (EntryDefinition entryDefinition : this) {
+			entryDefinition.setApplication(application);
 		}
 	}
 
@@ -83,8 +83,8 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	public void setServer(String server) {
 		this.server = server;
-		for (int i = 0; i < size(); i++) {
-			get(i).setServer(server);
+		for (EntryDefinition entryDefinition : this) {
+			entryDefinition.setServer(server);
 		}
 	}
 }

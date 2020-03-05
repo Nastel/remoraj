@@ -87,8 +87,6 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 	 *
 	 * @param thiz
 	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -124,7 +122,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 				Pattern compile = Pattern.compile("\\/.[^/]*\\/");
 				Matcher matcher = compile.matcher(requestURI.toASCIIString());
 				String application = null;
-				CallStack<EntryDefinition> stack = (CallStack) stackThreadLocal.get();
+				CallStack<EntryDefinition> stack = stackThreadLocal.get();
 				String server = null;
 				try {
 					server = session.getUserProperties().get("javax.websocket.endpoint.remoteAddress").toString();

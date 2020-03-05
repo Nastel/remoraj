@@ -25,7 +25,6 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.Stack;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -84,8 +83,8 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This KafkaProducer thiz, //
-			@Advice.Argument(0) ProducerRecord record, //
+	public static void before(@Advice.This KafkaProducer<?, ?> thiz, //
+			@Advice.Argument(0) ProducerRecord<?, ?> record, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
@@ -100,11 +99,11 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			String topic = record.topic();
 
-			Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+			CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 			if (entryDefinitions != null) {
 				try {
 					String application = ReflectionUtils.getFieldValue(thiz, String.class, "clientId");
-					((CallStack) entryDefinitions).setApplication(application);
+					entryDefinitions.setApplication(application);
 					if (logging) {
 						logger.info("Setting the application", application);
 					}
@@ -141,7 +140,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This KafkaProducer producer, //
+	public static void after(@Advice.This KafkaProducer<?, ?> producer, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //

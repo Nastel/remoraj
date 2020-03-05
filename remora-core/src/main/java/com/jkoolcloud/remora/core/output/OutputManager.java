@@ -37,13 +37,14 @@ public enum OutputManager {
 	private final TaggedLogger logger = Logger.tag("INFO");
 
 	private static boolean shutdown = false;
-	private static AgentOutput output;
+	private static AgentOutput<EntryDefinition> output;
 	private static List<AgentOutput.OutputListener> outputListeners;
 
 	OutputManager() {
 		install();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void install() {
 		logger.info("Starting OutputManager");
 		outputListeners = new ArrayList<>();
@@ -51,7 +52,7 @@ public enum OutputManager {
 		if (outputClass != null) {
 			try {
 				Class<?> outClass = Class.forName(outputClass);
-				output = (AgentOutput) outClass.newInstance();
+				output = (AgentOutput<EntryDefinition>) outClass.newInstance();
 			} catch (Exception e) {
 				outputListeners.forEach(l -> l.onInitialized(e));
 			}
@@ -85,7 +86,7 @@ public enum OutputManager {
 
 	}
 
-	public void send(EntryDefinition entryDefinition) {
+	public static void send(EntryDefinition entryDefinition) {
 		if (output != null) {
 			outputListeners.forEach(l -> l.onSend());
 			output.send(entryDefinition);
@@ -185,10 +186,7 @@ public enum OutputManager {
 						logger.error("Cannot send the message");
 					}
 				}
-
 			}
-
 		}
-
 	}
 }
