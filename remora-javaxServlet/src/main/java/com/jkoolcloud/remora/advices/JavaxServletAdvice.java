@@ -95,8 +95,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * @param thiz
 	 *            reference to method object
 	 * @param req
+	 *            servlet request
 	 * @param resp
-	 *            arguments provided for method
+	 *            servlet response
 	 * @param method
 	 *            instrumented method description
 	 * @param ed
@@ -143,7 +144,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 					if (stackThreadLocal != null && stackThreadLocal.get() != null
 							&& stackThreadLocal.get() instanceof CallStack) {
-						Pattern compile = Pattern.compile("\\/.[^/]*\\/");
+						Pattern compile = Pattern.compile("/.[^/]*/");
 						Matcher matcher = compile.matcher(requestURI);
 						if (matcher.find()) {
 							stackThreadLocal.get().setApplication(matcher.group(0));
@@ -212,8 +213,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	 * @param method
 	 *            instrumented method description
 	 * @param req
+	 *            servlet request
 	 * @param resp
-	 *            arguments provided for method
+	 *            servlet response
 	 * @param exception
 	 *            exception thrown in method exit (not caught)
 	 * @param ed
