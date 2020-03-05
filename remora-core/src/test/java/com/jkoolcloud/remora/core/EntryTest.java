@@ -23,7 +23,7 @@ package com.jkoolcloud.remora.core;
 public class EntryTest {
 	public static Entry getTestEntry() {
 		Entry entry = new Entry();
-		entry.id = new JUGFactoryImpl().newUUID();
+		entry.id = JUGFactoryImpl.newUUID();
 		entry.adviceClass = "TESTAdvice";
 		entry.startTime = 123456789L;
 		entry.name = "TESTname";

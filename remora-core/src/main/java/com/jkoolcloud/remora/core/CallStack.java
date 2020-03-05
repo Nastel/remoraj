@@ -25,6 +25,8 @@ import java.util.Stack;
 import org.tinylog.TaggedLogger;
 
 public class CallStack<T> extends Stack<EntryDefinition> {
+	private static final long serialVersionUID = 1273371157804943471L;
+
 	private final TaggedLogger logger;
 	private static final JUGFactoryImpl jugFactory = new JUGFactoryImpl();
 

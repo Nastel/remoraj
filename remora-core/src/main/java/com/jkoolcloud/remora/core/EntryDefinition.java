@@ -27,9 +27,7 @@ import java.util.Map;
 import com.jkoolcloud.remora.advices.TransparentAdvice;
 
 public class EntryDefinition implements EntryDefinitionDescription {
-
-	private static final JUGFactoryImpl jugFactory = new JUGFactoryImpl();
-	protected final String id = jugFactory.newUUID();
+	protected final String id = JUGFactoryImpl.newUUID();
 	private boolean transparent;
 	private boolean chained;
 	public static String vmIdentificationStatic;
