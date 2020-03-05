@@ -28,7 +28,6 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 	private static final long serialVersionUID = 1273371157804943471L;
 
 	private final TaggedLogger logger;
-	private static final JUGFactoryImpl jugFactory = new JUGFactoryImpl();
 
 	private String application;
 
@@ -38,7 +37,7 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	public CallStack(TaggedLogger logger) {
 		this.logger = logger;
-		stackCorrelator = jugFactory.newUUID();
+		stackCorrelator = JUGFactoryImpl.newUUID();
 	}
 
 	@Override

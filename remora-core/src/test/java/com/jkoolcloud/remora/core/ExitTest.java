@@ -24,7 +24,7 @@ public class ExitTest {
 
 	public static Exit getTestExit() {
 		Exit exit = new Exit();
-		exit.id = new JUGFactoryImpl().newUUID();
+		exit.id = JUGFactoryImpl.newUUID();
 		exit.name = "TESTName";
 		exit.resource = "http://localhost/test";
 		exit.resourceType = EntryDefinition.ResourceType.NETADDR;
