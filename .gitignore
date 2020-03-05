@@ -33,3 +33,4 @@ hs_err_pid*
 /**/*_dev.*
 *.log
 /samples/sample.plantsbywebsphere-master/.gitignore
+remora-core/log.txt
