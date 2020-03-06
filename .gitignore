@@ -1,6 +1,12 @@
 # Compiled class file
 *.class
 
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -28,8 +34,11 @@ hs_err_pid*
 
 .idea
 /**/*.iml
+/.vs
 
 /**/_dev
 /**/*_dev.*
-*.log
-/samples/sample.plantsbywebsphere-master/.gitignore
+
+*.cq4
+*.cq4t
+log.txt
