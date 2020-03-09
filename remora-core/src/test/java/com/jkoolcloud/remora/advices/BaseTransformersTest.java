@@ -24,6 +24,7 @@ import static org.junit.Assert.*;
 
 import java.lang.instrument.Instrumentation;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.tinylog.Logger;
@@ -86,6 +87,12 @@ public class BaseTransformersTest {
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
 		assertNotNull(returned);
 		assertNotEquals(stack1, returned);
+	}
+
+	@After
+	public void clearStack() {
+		BaseTransformers.stackThreadLocal.set(null);
+		logger.info("Clearing stack");
 	}
 
 	@Test
@@ -177,6 +184,82 @@ public class BaseTransformersTest {
 		assertNotNull(returned3.getProperties().get("PARAM2"));
 		assertNotNull(returned3.getProperties().get("PARAM3"));
 		assertNotNull(returned3.getProperties().get("PARAM4"));
+		assertAllEquals(returned.getCorrelator(), returned1.getCorrelator(), returned2.getCorrelator(),
+				returned3.getCorrelator(), returned4.getCorrelator(), returned5.getCorrelator());
+	}
+
+	@Test
+	public void getEntryDefinitionCompleteTest3() {
+		EntryDefinition ed = null;
+		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
+		EntryDefinition stack1 = new EntryDefinition(JavaXAdvice.class); // JavaX Service call
+		stack1.addProperty("PARAM1", "PARAM");
+		BaseTransformers.stackThreadLocal.get().push(stack1);
+
+		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, JMSSendAdvice.class, logger); // send
+		returned.addProperty("PARAM1", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned);
+		BaseTransformers.doFinally(logger); // execute chained
+		// BaseTransformers.stackThreadLocal.get().pop(); // send
+
+		EntryDefinition returned1 = BaseTransformers.getEntryDefinition(ed, JMSReceive.class, logger); // receive
+		returned.addProperty("PARAM2", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned1);
+		BaseTransformers.doFinally(logger); // execute chained
+		// BaseTransformers.stackThreadLocal.get().pop(); // send
+		EntryDefinition returned2 = BaseTransformers.getEntryDefinition(ed, JMSSendAdvice.class, logger); // send
+		returned.addProperty("PARAM3", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned2);
+		BaseTransformers.doFinally(logger); // execute chained
+		// BaseTransformers.stackThreadLocal.get().pop(); // send
+
+		EntryDefinition returned3 = BaseTransformers.getEntryDefinition(ed, JMSReceive.class, logger); // receive
+		returned.addProperty("PARAM4", "TEST");
+		BaseTransformers.stackThreadLocal.get().push(returned3);
+		BaseTransformers.doFinally(logger); // execute chained
+		// BaseTransformers.stackThreadLocal.get().pop(); // send
+
+		EntryDefinition returned4 = BaseTransformers.getEntryDefinition(ed, JMSSendAdvice.class, logger); // send
+		BaseTransformers.stackThreadLocal.get().push(returned4);
+		BaseTransformers.doFinally(logger); // execute chained
+		// BaseTransformers.stackThreadLocal.get().pop(); // send
+
+		EntryDefinition returned5 = BaseTransformers.getEntryDefinition(ed, JMSReceive.class, logger); // receive
+		BaseTransformers.stackThreadLocal.get().push(returned5);
+		BaseTransformers.doFinally(logger); // execute chained
+		// BaseTransformers.stackThreadLocal.get().pop(); // send
+
+		assertNotNull(returned);
+		assertAllEquals(returned.getCorrelator(), returned1.getCorrelator(), returned2.getCorrelator(),
+				returned3.getCorrelator(), returned4.getCorrelator(), returned5.getCorrelator());
+	}
+
+	private void assertAllEquals(Object... fields) {
+		if (fields.length < 2) {
+			return;
+		}
+
+		Object last = fields[0];
+		for (Object field : fields) {
+			if (field.equals(last)) {
+				continue;
+			}
+			assertEquals(field, last);
+			last = field;
+		}
+
+	}
+
+	public static class JavaXAdvice extends NonTransparentAdviceInstance {
+
+	}
+
+	public static class JMSSendAdvice extends NonTransparentAdviceInstance {
+
+	}
+
+	public static class JMSReceive extends NonTransparentAdviceInstance {
+
 	}
 
 	public static class NonTransparentAdviceInstance extends BaseTransformers {
@@ -235,4 +318,5 @@ public class BaseTransformersTest {
 			return null;
 		}
 	}
+
 }
