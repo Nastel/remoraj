@@ -54,7 +54,6 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 			// synchronized (properties) {
 			// appender.methodWriter(EntryDefinitionDescription.class).exit(this);
 			write(appender);
-
 			// }
 		} catch (Exception e) {
 			if (appender != null) {

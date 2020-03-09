@@ -46,10 +46,8 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 		try {
 			appender = ((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender();
 			// synchronized (properties) {
-
 			// appender.methodWriter(EntryDefinitionDescription.class).entry(this);
 			write(appender);
-
 			// }
 		} catch (Exception e) {
 			if (appender != null) {

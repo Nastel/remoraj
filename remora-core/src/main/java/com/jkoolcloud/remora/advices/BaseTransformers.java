@@ -57,13 +57,13 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public static boolean sendStackTrace;
 
 	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
-	private static AgentBuilder agentBuilder = new AgentBuilder.Default(
+	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
 			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
 
-		private String[] interceptingClass;
+		private final String[] interceptingClass;
 
 		public EnhancedElementMatcher(String[] interceptingClass) {
 			this.interceptingClass = interceptingClass;
