@@ -168,14 +168,14 @@ public class BaseTransformersTest {
 																															// chained
 		BaseTransformers.stackThreadLocal.get().push(returned5);
 
-		BaseTransformers.doFinally(logger); // execute chained
-		BaseTransformers.doFinally(logger); // execute chained
-		BaseTransformers.doFinally(logger); // execute
+		BaseTransformers.doFinally(logger, null); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute
 		BaseTransformers.stackThreadLocal.get().pop(); // setParam
 		BaseTransformers.stackThreadLocal.get().pop(); // setParam
 		BaseTransformers.stackThreadLocal.get().pop(); // setParam
 
-		BaseTransformers.doFinally(logger); // ServiceCall
+		BaseTransformers.doFinally(logger, null); // ServiceCall
 
 		assertNotNull(returned);
 		assertFalse(returned3.isTransparent());
@@ -199,34 +199,34 @@ public class BaseTransformersTest {
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, JMSSendAdvice.class, logger); // send
 		returned.addProperty("PARAM1", "TEST");
 		BaseTransformers.stackThreadLocal.get().push(returned);
-		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
 		// BaseTransformers.stackThreadLocal.get().pop(); // send
 
 		EntryDefinition returned1 = BaseTransformers.getEntryDefinition(ed, JMSReceive.class, logger); // receive
 		returned.addProperty("PARAM2", "TEST");
 		BaseTransformers.stackThreadLocal.get().push(returned1);
-		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
 		// BaseTransformers.stackThreadLocal.get().pop(); // send
 		EntryDefinition returned2 = BaseTransformers.getEntryDefinition(ed, JMSSendAdvice.class, logger); // send
 		returned.addProperty("PARAM3", "TEST");
 		BaseTransformers.stackThreadLocal.get().push(returned2);
-		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
 		// BaseTransformers.stackThreadLocal.get().pop(); // send
 
 		EntryDefinition returned3 = BaseTransformers.getEntryDefinition(ed, JMSReceive.class, logger); // receive
 		returned.addProperty("PARAM4", "TEST");
 		BaseTransformers.stackThreadLocal.get().push(returned3);
-		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
 		// BaseTransformers.stackThreadLocal.get().pop(); // send
 
 		EntryDefinition returned4 = BaseTransformers.getEntryDefinition(ed, JMSSendAdvice.class, logger); // send
 		BaseTransformers.stackThreadLocal.get().push(returned4);
-		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
 		// BaseTransformers.stackThreadLocal.get().pop(); // send
 
 		EntryDefinition returned5 = BaseTransformers.getEntryDefinition(ed, JMSReceive.class, logger); // receive
 		BaseTransformers.stackThreadLocal.get().push(returned5);
-		BaseTransformers.doFinally(logger); // execute chained
+		BaseTransformers.doFinally(logger, null); // execute chained
 		// BaseTransformers.stackThreadLocal.get().pop(); // send
 
 		assertNotNull(returned);

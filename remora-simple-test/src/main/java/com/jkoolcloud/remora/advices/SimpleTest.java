@@ -81,9 +81,8 @@ public class SimpleTest extends BaseTransformers {
 			logger.info("BEFORE METHOD CALL");
 			System.out.println("BEFORE METHOD CALL");
 			ed = getEntryDefinition(ed, SimpleTest.class, logging ? logger : null);
-			;
 
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+            starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.addProperty("URI", uri.toString());
 			ed.addProperty("Arg", arguments.toString());
 
@@ -102,7 +101,7 @@ public class SimpleTest extends BaseTransformers {
 			System.out.println("###AFTER METHOD CALL");
 			// fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
 		} finally {
-			doFinally(logging ? logger : null);
+			doFinally(logging ? logger : null, obj.getClass());
 		}
 
 	}

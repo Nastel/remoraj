@@ -141,7 +141,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodExit
-	public static void after(@Advice.Local("ed") EntryDefinition ed, //
+	public static void after(@Advice.This Object thiz, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 
@@ -163,7 +163,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			handleAdviceException(t, ADVICE_NAME + "stop", logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null);
+				doFinally(logging ? logger : null, thiz.getClass());
 			}
 		}
 

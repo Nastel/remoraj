@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
@@ -203,7 +204,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return sb.toString();
 	}
 
-	public static void doFinally(TaggedLogger logger) {
+	public static void doFinally(TaggedLogger logger, Class caller) {
 		if (logger != null) {
 			logger.debug("DoFinnaly");
 		}
@@ -213,19 +214,13 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 				if (entryDefinitions != null) {
 					EntryDefinition pop;
-					if (entryDefinitions.peek() != null) {
-						// boolean notChained = !entryDefinitions.peek().isChained();
-						// if (notChained) {
-						do {
-							pop = entryDefinitions.pop();
-						} while (pop.isTransparent());
-						// } else {
-						// if (logger != null) {
-						// logger.info("Not popping ED, chained");
-						// }
-						// entryDefinitions.peek().setChained(false);
+					EntryDefinition peek = entryDefinitions.peek();
+					if (peek != null) {
 
-						// }
+						if (Objects.equals(peek.getClazz(), caller.getName())) {
+							pop = entryDefinitions.pop();
+						}
+
 					}
 					if (entryDefinitions.size() <= 0) {
 						stackThreadLocal.remove();

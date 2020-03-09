@@ -182,7 +182,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinnaly) {
-				doFinally(logging ? logger : null);
+				doFinally(logging ? logger : null, obj.getClass());
 			}
 		}
 
@@ -201,6 +201,10 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	@Override
 	public void install(Instrumentation inst) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
+		if (load) {
+			getTransform().with(getListener()).installOn(inst);
+		} else {
+			logger.info("Advice {} not enabled", getName());
+		}
 	}
 }

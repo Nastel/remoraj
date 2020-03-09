@@ -177,7 +177,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null);
+				doFinally(logging ? logger : null, obj.getClass());
 			}
 		}
 
@@ -196,6 +196,10 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	@Override
 	public void install(Instrumentation inst) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
+		if (load) {
+			getTransform().with(getListener()).installOn(inst);
+		} else {
+			logger.info("Advice {} not enabled", getName());
+		}
 	}
 }

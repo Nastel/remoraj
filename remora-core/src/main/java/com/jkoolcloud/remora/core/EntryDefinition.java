@@ -245,6 +245,11 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	}
 
 	@Override
+	public String toString() {
+		return "EntryDefinition{" + "id='" + id + '\'' + ", advice=" + entry.adviceClass + '}';
+	}
+
+	@Override
 	public int hashCode() {
 		return id.getBytes()[0];
 	}

@@ -169,7 +169,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null);
+				doFinally(logging ? logger : null, obj.getClass());
 			}
 		}
 
