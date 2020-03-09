@@ -59,20 +59,16 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 	}
 
 	public void write(ExcerptAppender appender) {
-		try {
-			appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
-					.write("v").fixedInt8(modelVersion).write("mode").text(mode.name())//
-					.write("adviceClass").text(adviceClass)//
-					.write("startTime").fixedInt64(startTime)//
-					.write("name").text(name)//
-					.write("clazz").text(clazz)//
-					.write("stackTrace").text(stackTrace)//
-					.write("vmIdentification").text(vmIdentification)//
-					.write("thread").text(thread)//
-			));
-		} catch (Exception e) {
-			System.out.println();
-		}
+		appender.writeDocument(w -> w.write("entry").marshallable(m -> m.write("id").text(id)//
+				.write("v").fixedInt8(modelVersion).write("mode").text(mode.name())//
+				.write("adviceClass").text(adviceClass)//
+				.write("startTime").fixedInt64(startTime)//
+				.write("name").text(name)//
+				.write("clazz").text(clazz)//
+				.write("stackTrace").text(stackTrace)//
+				.write("vmIdentification").text(vmIdentification)//
+				.write("thread").text(thread)//
+		));
 	}
 
 	@Override
