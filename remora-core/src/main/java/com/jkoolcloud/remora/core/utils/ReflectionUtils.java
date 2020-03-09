@@ -21,6 +21,7 @@
 package com.jkoolcloud.remora.core.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ReflectionUtils {
 	@SuppressWarnings("unchecked")
@@ -70,6 +71,30 @@ public class ReflectionUtils {
 			declaredField.setAccessible(true);
 		}
 		return declaredField;
+	}
+
+	public static Object invokeGetterMethodIfExist(Object object, String name) {
+
+		Object ret = null;
+		try {
+
+			Method method = null;
+			try {
+				method = object.getClass().getDeclaredMethod(name);
+			} catch (NoSuchMethodException e) {
+				if (method == null) {
+				}
+				try {
+					method = object.getClass().getMethod(name);
+				} catch (NoSuchMethodException e2) {
+				}
+			}
+
+			method.setAccessible(true);
+			ret = method.invoke(object);
+		} catch (Exception e) {
+		}
+		return ret;
 	}
 
 }

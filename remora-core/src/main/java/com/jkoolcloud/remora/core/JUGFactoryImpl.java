@@ -20,6 +20,8 @@
 
 package com.jkoolcloud.remora.core;
 
+import java.util.UUID;
+
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
@@ -39,10 +41,62 @@ public class JUGFactoryImpl {
 	}
 
 	public static String newUUID() {
-		return uuidGenerator.generate().toString();
+		return toString(uuidGenerator.generate());
 	}
 
 	public static String newUUID(Object obj) {
-		return uuidGenerator.generate().toString();
+		return toString(uuidGenerator.generate());
 	}
+
+	public static UUID getUUID() {
+		return uuidGenerator.generate();
+	}
+
+	public static final String toString(UUID uuid) {
+		long msb = uuid.getMostSignificantBits();
+		long lsb = uuid.getLeastSignificantBits();
+		char[] uuidChars = new char[36];
+		int cursor = uuidChars.length;
+		while (cursor > 24) {
+			cursor -= 2;
+			System.arraycopy(recode[(int) (lsb & 0xff)], 0, uuidChars, cursor, 2);
+			lsb >>>= 8;
+		}
+		uuidChars[--cursor] = '-';
+		while (cursor > 19) {
+			cursor -= 2;
+			System.arraycopy(recode[(int) (lsb & 0xff)], 0, uuidChars, cursor, 2);
+			lsb >>>= 8;
+		}
+		uuidChars[--cursor] = '-';
+		while (cursor > 14) {
+			cursor -= 2;
+			System.arraycopy(recode[(int) (msb & 0xff)], 0, uuidChars, cursor, 2);
+			msb >>>= 8;
+		}
+		uuidChars[--cursor] = '-';
+		while (cursor > 9) {
+			cursor -= 2;
+			System.arraycopy(recode[(int) (msb & 0xff)], 0, uuidChars, cursor, 2);
+			msb >>>= 8;
+		}
+		uuidChars[--cursor] = '-';
+		while (cursor > 0) {
+			cursor -= 2;
+			System.arraycopy(recode[(int) (msb & 0xff)], 0, uuidChars, cursor, 2);
+			msb >>>= 8;
+		}
+		return new String(uuidChars);
+	}
+
+	private static final char[][] recode = buildByteBlocks();
+
+	private static char[][] buildByteBlocks() {
+		char[][] ret = new char[256][];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = String.format("%02x", i).toCharArray();
+		}
+		return ret;
+	}
+
 }

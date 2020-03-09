@@ -43,6 +43,10 @@ public class ReflectionUtilsTest {
 		public String name = "John";
 		private String health = "Good";
 
+		String getName() {
+			return name;
+		}
+
 	}
 
 	@Test
@@ -58,5 +62,10 @@ public class ReflectionUtilsTest {
 	@Test
 	public void testChainedInaccessibleField() {
 		assertEquals("Good", ReflectionUtils.getFieldValue(new TimeTable(), String.class, "person.health"));
+	}
+
+	@Test
+	public void invokeGetterMethodIfExist() {
+		assertEquals("John", ReflectionUtils.invokeGetterMethodIfExist(new Person(), "getName"));
 	}
 }
