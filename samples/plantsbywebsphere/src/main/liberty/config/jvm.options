@@ -1,4 +1,4 @@
--agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
 
 -javaagent:c:\workspace\build\remora\remora-0.1.4-SNAPSHOT\remora.jar
 
