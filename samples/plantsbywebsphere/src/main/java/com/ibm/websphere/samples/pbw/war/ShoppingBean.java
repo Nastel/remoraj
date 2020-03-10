@@ -18,6 +18,12 @@ package com.ibm.websphere.samples.pbw.war;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;

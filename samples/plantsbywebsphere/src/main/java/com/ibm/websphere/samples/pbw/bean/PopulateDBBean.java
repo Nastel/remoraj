@@ -10,14 +10,14 @@ import com.ibm.websphere.samples.pbw.utils.Util;
 @Singleton
 @Startup
 public class PopulateDBBean {
-
-	@Inject
-	ResetDBBean dbBean;
-
-	@PostConstruct
-	public void initDB() {
-		Util.debug("Initializing database...");
-		// dbBean.populateDB();
-	}
+    
+    @Inject
+    ResetDBBean dbBean;
+    
+    @PostConstruct
+    public void initDB() {
+        Util.debug("Initializing database...");
+        //dbBean.populateDB();
+    }
 
 }

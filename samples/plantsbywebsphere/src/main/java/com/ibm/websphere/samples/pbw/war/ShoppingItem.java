@@ -25,7 +25,8 @@ import com.ibm.websphere.samples.pbw.jpa.BackOrder;
 import com.ibm.websphere.samples.pbw.jpa.Inventory;
 
 /**
- * ShoppingItem wraps the JPA Inventory entity class to provide additional methods needed by the web app.
+ * ShoppingItem wraps the JPA Inventory entity class to provide additional methods needed by the web
+ * app.
  */
 public class ShoppingItem implements Cloneable, Serializable {
 
@@ -231,8 +232,8 @@ public class ShoppingItem implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Property accessor for quantity of items ordered. Quantity may not be less than zero. Bean Validation will ensure
-	 * this is true.
+	 * Property accessor for quantity of items ordered. Quantity may not be less than zero. Bean
+	 * Validation will ensure this is true.
 	 * 
 	 * @return int quantity of items
 	 * @see com.ibm.websphere.samples.pbw.jpa.Inventory#getQuantity()

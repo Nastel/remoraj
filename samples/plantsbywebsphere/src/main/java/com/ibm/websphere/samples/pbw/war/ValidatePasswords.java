@@ -25,7 +25,8 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
 /**
- * A JSF validator class, not implemented in Bean Validation since validation is only required during GUI interaction.
+ * A JSF validator class, not implemented in Bean Validation since validation is only required
+ * during GUI interaction.
  */
 @FacesValidator(value = "validatePasswords")
 public class ValidatePasswords implements Validator {

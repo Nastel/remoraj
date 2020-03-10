@@ -59,8 +59,8 @@ public class ImageServlet extends HttpServlet {
 	 * @param response
 	 *            Object that encapsulates the response from the servlet
 	 */
-	public void doGet(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response) throws ServletException, IOException {
 		performTask(request, response);
 	}
 
@@ -72,8 +72,8 @@ public class ImageServlet extends HttpServlet {
 	 * @param response
 	 *            Object that encapsulates the response from the servlet
 	 */
-	public void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(javax.servlet.http.HttpServletRequest request,
+			javax.servlet.http.HttpServletResponse response) throws ServletException, IOException {
 		performTask(request, response);
 	}
 

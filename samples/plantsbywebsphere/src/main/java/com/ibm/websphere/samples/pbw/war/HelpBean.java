@@ -19,6 +19,7 @@ package com.ibm.websphere.samples.pbw.war;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -72,8 +73,8 @@ public class HelpBean implements Serializable {
 	}
 
 	/**
-	 * Debugging is currently tied to the JavaServer Faces project stage. Any change here is likely to be automatically
-	 * reset.
+	 * Debugging is currently tied to the JavaServer Faces project stage. Any change here is likely
+	 * to be automatically reset.
 	 * 
 	 * @param debug
 	 *            Sets whether debug is on or not.

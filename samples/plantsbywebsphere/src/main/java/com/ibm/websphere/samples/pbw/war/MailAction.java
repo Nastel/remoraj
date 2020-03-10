@@ -49,7 +49,8 @@ public class MailAction implements java.io.Serializable {
 	 * @param orderKey
 	 *            The order number.
 	 */
-	public final void sendConfirmationMessage(Customer customer, String orderKey) {
+	public final void sendConfirmationMessage(Customer customer,
+			String orderKey) {
 		try {
 			System.out.println("mailer=" + mailer);
 			mailer.createAndSendMail(customer, orderKey);

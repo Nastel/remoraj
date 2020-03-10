@@ -38,8 +38,8 @@ import com.ibm.websphere.samples.pbw.jpa.Order;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
- * MailerBean provides a transactional facade for access to Order information and notification of the buyer of order
- * state.
+ * MailerBean provides a transactional facade for access to Order information and notification of
+ * the buyer of order state.
  * 
  */
 

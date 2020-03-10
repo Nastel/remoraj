@@ -35,7 +35,7 @@ public class ProductBean implements Serializable {
 	private int quantity;
 
 	protected ProductBean(Inventory inventory) {
-		Objects.requireNonNull(inventory, "Inventory cannot be null");
+	    Objects.requireNonNull(inventory, "Inventory cannot be null");
 		this.inventory = inventory;
 		this.quantity = 1;
 	}

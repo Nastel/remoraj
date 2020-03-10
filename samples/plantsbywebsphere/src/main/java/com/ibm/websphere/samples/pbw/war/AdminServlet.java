@@ -32,7 +32,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.ibm.websphere.samples.pbw.bean.*;
+import com.ibm.websphere.samples.pbw.bean.BackOrderMgr;
+import com.ibm.websphere.samples.pbw.bean.CatalogMgr;
+import com.ibm.websphere.samples.pbw.bean.CustomerMgr;
+import com.ibm.websphere.samples.pbw.bean.ResetDBBean;
+import com.ibm.websphere.samples.pbw.bean.SuppliersBean;
 import com.ibm.websphere.samples.pbw.jpa.BackOrder;
 import com.ibm.websphere.samples.pbw.jpa.Inventory;
 import com.ibm.websphere.samples.pbw.jpa.Supplier;
@@ -134,8 +138,14 @@ public class AdminServlet extends HttpServlet {
 	 * @param location_url
 	 * @return supplierInfo
 	 */
-	public Supplier updateSupplierInfo(String supplierID, String name, String street, String city, String state,
-			String zip, String phone, String location_url) {
+	public Supplier updateSupplierInfo(String supplierID,
+			String name,
+			String street,
+			String city,
+			String state,
+			String zip,
+			String phone,
+			String location_url) {
 		// Only retrieving info for 1 supplier.
 		Supplier supplier = null;
 		try {
@@ -152,15 +162,13 @@ public class AdminServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public void performSupplierConfig(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void performSupplierConfig(HttpServletRequest req,
+			HttpServletResponse resp) throws ServletException, IOException {
 		Supplier supplier = null;
 		String action = null;
 		action = req.getParameter(Util.ATTR_ACTION);
 		if ((action == null) || (action.equals("")))
-		{
 			action = Util.ACTION_GETSUPPLIER;
-		}
 		Util.debug("AdminServlet.performSupplierConfig() - action=" + action);
 		HttpSession session = req.getSession(true);
 		if (action.equals(Util.ACTION_GETSUPPLIER)) {
@@ -212,14 +220,12 @@ public class AdminServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public void performBackOrder(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void performBackOrder(HttpServletRequest req,
+			HttpServletResponse resp) throws ServletException, IOException {
 		String action = null;
 		action = req.getParameter(Util.ATTR_ACTION);
 		if ((action == null) || (action.equals("")))
-		{
 			action = Util.ACTION_GETBACKORDERS;
-		}
 		Util.debug("AdminServlet.performBackOrder() - action=" + action);
 		HttpSession session = req.getSession(true);
 		if (action.equals(Util.ACTION_GETBACKORDERS)) {
@@ -368,8 +374,10 @@ public class AdminServlet extends HttpServlet {
 	/**
 	 * Request dispatch
 	 */
-	private void requestDispatch(ServletContext ctx, HttpServletRequest req, HttpServletResponse resp, String page)
-			throws ServletException, IOException {
+	private void requestDispatch(ServletContext ctx,
+			HttpServletRequest req,
+			HttpServletResponse resp,
+			String page) throws ServletException, IOException {
 		resp.setContentType("text/html");
 		ctx.getRequestDispatcher(page).forward(req, resp);
 	}

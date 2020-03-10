@@ -47,8 +47,14 @@ public class SuppliersBean implements Serializable {
 	 * @param phone
 	 * @param url
 	 */
-	public void createSupplier(String supplierID, String name, String street, String city, String state, String zip,
-			String phone, String url) {
+	public void createSupplier(String supplierID,
+			String name,
+			String street,
+			String city,
+			String state,
+			String zip,
+			String phone,
+			String url) {
 		try {
 			Util.debug("SuppliersBean.createSupplier() - Entered");
 			Supplier supplier = null;
@@ -95,8 +101,14 @@ public class SuppliersBean implements Serializable {
 	 * @param url
 	 * @return supplierInfo
 	 */
-	public Supplier updateSupplier(String supplierID, String name, String street, String city, String state, String zip,
-			String phone, String url) {
+	public Supplier updateSupplier(String supplierID,
+			String name,
+			String street,
+			String city,
+			String state,
+			String zip,
+			String phone,
+			String url) {
 		Supplier supplier = null;
 		try {
 			Util.debug("SuppliersBean.updateSupplier() - Entered");

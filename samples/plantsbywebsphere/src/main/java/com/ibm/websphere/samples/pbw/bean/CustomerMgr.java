@@ -28,8 +28,8 @@ import com.ibm.websphere.samples.pbw.jpa.Customer;
 import com.ibm.websphere.samples.pbw.utils.Util;
 
 /**
- * The CustomerMgr provides a transactional facade for access to a user DB as well as simple authentication support for
- * those users.
+ * The CustomerMgr provides a transactional facade for access to a user DB as well as simple
+ * authentication support for those users.
  * 
  */
 @Transactional
@@ -63,8 +63,16 @@ public class CustomerMgr implements Serializable {
 	 *            User's phone number.
 	 * @return Customer
 	 */
-	public Customer createCustomer(String customerID, String password, String firstName, String lastName, String addr1,
-			String addr2, String addrCity, String addrState, String addrZip, String phone) {
+	public Customer createCustomer(String customerID,
+			String password,
+			String firstName,
+			String lastName,
+			String addr1,
+			String addr2,
+			String addrCity,
+			String addrState,
+			String addrZip,
+			String phone) {
 		Customer c = new Customer(customerID, password, firstName, lastName, addr1, addr2, addrCity, addrState, addrZip,
 				phone);
 		em.persist(c);
@@ -108,8 +116,15 @@ public class CustomerMgr implements Serializable {
 	 *            User's phone number.
 	 * @return Customer
 	 */
-	public Customer updateUser(String customerID, String firstName, String lastName, String addr1, String addr2,
-			String addrCity, String addrState, String addrZip, String phone) {
+	public Customer updateUser(String customerID,
+			String firstName,
+			String lastName,
+			String addr1,
+			String addr2,
+			String addrCity,
+			String addrState,
+			String addrZip,
+			String phone) {
 		Customer c = em.find(Customer.class, customerID);
 		em.lock(c, LockModeType.WRITE);
 		em.refresh(c);

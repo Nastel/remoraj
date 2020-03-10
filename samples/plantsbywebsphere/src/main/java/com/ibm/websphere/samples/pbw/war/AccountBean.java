@@ -84,17 +84,17 @@ public class AccountBean implements Serializable {
 
 	public String performAccountUpdate() {
 		if (register) {
-			customer = login.createCustomer(loginInfo.getEmail(), loginInfo.getPassword(), newCustomer.getFirstName(),
-					newCustomer.getLastName(), newCustomer.getAddr1(), newCustomer.getAddr2(),
-					newCustomer.getAddrCity(), newCustomer.getAddrState(), newCustomer.getAddrZip(),
-					newCustomer.getPhone());
+			customer = login.createCustomer(loginInfo.getEmail(), loginInfo.getPassword(), newCustomer
+					.getFirstName(), newCustomer.getLastName(), newCustomer.getAddr1(), newCustomer
+							.getAddr2(), newCustomer.getAddrCity(), newCustomer
+									.getAddrState(), newCustomer.getAddrZip(), newCustomer.getPhone());
 			register = false;
 		}
 
 		else {
-			customer = login.updateUser(customer.getCustomerID(), customer.getFirstName(), customer.getLastName(),
-					customer.getAddr1(), customer.getAddr2(), customer.getAddrCity(), customer.getAddrState(),
-					customer.getAddrZip(), customer.getPhone());
+			customer = login.updateUser(customer.getCustomerID(), customer.getFirstName(), customer
+					.getLastName(), customer.getAddr1(), customer.getAddr2(), customer
+							.getAddrCity(), customer.getAddrState(), customer.getAddrZip(), customer.getPhone());
 		}
 
 		return AccountBean.ACTION_PROMO;
@@ -116,24 +116,29 @@ public class AccountBean implements Serializable {
 		app.createValueBinding("#{shopping}").getValue(context);
 
 		// persist the order
-		OrderInfo oi = new OrderInfo(shoppingCart.createOrder(customer.getCustomerID(), orderInfo.getBillName(),
-				orderInfo.getBillAddr1(), orderInfo.getBillAddr2(), orderInfo.getBillCity(), orderInfo.getBillState(),
-				orderInfo.getBillZip(), orderInfo.getBillPhone(), orderInfo.getShipName(), orderInfo.getShipAddr1(),
-				orderInfo.getShipAddr2(), orderInfo.getShipCity(), orderInfo.getShipState(), orderInfo.getShipZip(),
-				orderInfo.getShipPhone(), orderInfo.getCardName(), orderInfo.getCardNum(), orderInfo.getCardExpMonth(),
-				orderInfo.getCardExpYear(), orderInfo.getCardholderName(), orderInfo.getShippingMethod(),
-				shoppingCart.getItems()));
+		OrderInfo oi = new OrderInfo(shoppingCart
+				.createOrder(customer.getCustomerID(), orderInfo.getBillName(), orderInfo.getBillAddr1(), orderInfo
+						.getBillAddr2(), orderInfo.getBillCity(), orderInfo.getBillState(), orderInfo
+								.getBillZip(), orderInfo.getBillPhone(), orderInfo.getShipName(), orderInfo
+										.getShipAddr1(), orderInfo.getShipAddr2(), orderInfo.getShipCity(), orderInfo
+												.getShipState(), orderInfo.getShipZip(), orderInfo
+														.getShipPhone(), orderInfo.getCardName(), orderInfo
+																.getCardNum(), orderInfo.getCardExpMonth(), orderInfo
+																		.getCardExpYear(), orderInfo
+																				.getCardholderName(), orderInfo
+																						.getShippingMethod(), shoppingCart
+																								.getItems()));
 
 		lastOrderNum = oi.getID();
-		BankPaymentProcessor.pay(orderInfo.getCardNum(), shoppingCart.getSubtotalCost(), orderInfo.getID(),
-				orderInfo.getShippingMethodName());
+        BankPaymentProcessor.pay(orderInfo.getCardNum(), shoppingCart.getSubtotalCost(), orderInfo.getID(), orderInfo.getShippingMethodName());
 		Util.debug("Account.performCompleteCheckout: order id =" + orderInfo);
 
 		/*
-		 * // Check the available inventory and backorder if necessary. if (shoppingCart != null) { Inventory si;
-		 * Collection<Inventory> items = shoppingCart.getItems(); for (Object o : items) { si = (Inventory) o;
-		 * shoppingCart.checkInventory(si); Util.debug(
-		 * "ShoppingCart.checkInventory() - checking Inventory quantity of item: " + si.getID()); } }
+		 * // Check the available inventory and backorder if necessary. if (shoppingCart != null) {
+		 * Inventory si; Collection<Inventory> items = shoppingCart.getItems(); for (Object o :
+		 * items) { si = (Inventory) o; shoppingCart.checkInventory(si); Util.debug(
+		 * "ShoppingCart.checkInventory() - checking Inventory quantity of item: " + si.getID()); }
+		 * }
 		 */
 		try {
 			mailer.createAndSendMail(customer, oi.getID());
