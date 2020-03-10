@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.util.*;
+import java.util.concurrent.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,6 +43,7 @@ import com.jkoolcloud.testHarness.harnesses.*;
 public class Setup extends HttpServlet {
 
 	public static final String EXECUTOR_SERVICES = "executorServices";
+	private static final long serialVersionUID = -6008655335514596260L;
 	private static Class<? extends Harness>[] harnesses = new Class[] { ApacheHttpClientHarness.class, SQLHarness.class,
 			MQReceiveHarness.class, MQSendHarness.class, WebsocketSendHarness.class, KafkaConsumerHarness.class,
 			KafkaProducerHarness.class };

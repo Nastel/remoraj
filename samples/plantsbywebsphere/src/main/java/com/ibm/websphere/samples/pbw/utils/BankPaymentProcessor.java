@@ -1,6 +1,6 @@
 package com.ibm.websphere.samples.pbw.utils;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 
 import org.apache.http.client.ClientProtocolException;

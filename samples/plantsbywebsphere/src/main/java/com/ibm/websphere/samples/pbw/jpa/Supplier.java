@@ -16,6 +16,12 @@
 //
 package com.ibm.websphere.samples.pbw.jpa;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
 /**
  * Bean mapping for the SUPPLIER table.
  */
