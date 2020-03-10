@@ -32,7 +32,7 @@ configurations {
 }
 
 dependencies {
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
 	providedCompile 'javax:javaee-api:7.0'
 	serverLibs  'org.apache.derby:derby:10.11.1.1'
 	libertyRuntime 'com.ibm.websphere.appserver.runtime:wlp-javaee7:19.0.0.8'
