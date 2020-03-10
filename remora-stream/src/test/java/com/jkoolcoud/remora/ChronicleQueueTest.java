@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jkoolcloud.remora.core.Entry;
@@ -129,6 +130,7 @@ public class ChronicleQueueTest {
 	int countEntryMethod = 0;
 	int countExitMethod = 0;
 
+	@Ignore // Contains system path
 	@Test
 	public void testReadQueue() {
 
