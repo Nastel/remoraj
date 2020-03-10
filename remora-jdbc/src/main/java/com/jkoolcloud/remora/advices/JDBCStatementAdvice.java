@@ -194,7 +194,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(logging ? logger : null, thiz.getClass());
 			}
 		}
 
