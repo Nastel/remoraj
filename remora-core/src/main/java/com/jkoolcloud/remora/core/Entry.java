@@ -33,7 +33,7 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 	protected String id;
 	protected EntryDefinition.Mode mode = EntryDefinition.Mode.RUNNING;
 	protected String adviceClass;
-	protected Long startTime;
+	protected long startTime;
 	protected String name;
 	protected String clazz;
 	protected String stackTrace;

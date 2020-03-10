@@ -215,7 +215,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				if (entryDefinitions != null) {
 					EntryDefinition pop;
 					EntryDefinition peek = entryDefinitions.peek();
-					if (peek != null) {
+					if (peek != null && caller != null) {
 
 						if (Objects.equals(peek.getClazz(), caller.getName())) {
 							pop = entryDefinitions.pop();
