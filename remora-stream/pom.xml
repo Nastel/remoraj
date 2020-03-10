@@ -70,6 +70,8 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <!--<includeScope>compile</includeScope>-->
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
