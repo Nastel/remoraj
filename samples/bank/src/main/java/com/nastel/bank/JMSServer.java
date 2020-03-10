@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -82,7 +83,7 @@ public class JMSServer extends HttpServlet implements Runnable {
 		//
 		Context ctx = null;
 		try {
-			Hashtable<String, String> ht = new Hashtable<String, String>();
+			Hashtable<String, String> ht = new Hashtable<> ();
 			ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 			ht.put(Context.PROVIDER_URL, "t3://localhost:7001");
 			ctx = new InitialContext(ht);
@@ -94,7 +95,7 @@ public class JMSServer extends HttpServlet implements Runnable {
 		//
 		if (ctx == null) {
 			try {
-				Hashtable<String, String> ht = new Hashtable<String, String>();
+				Hashtable<String, String> ht = new Hashtable<> ();
 				ht.put(Context.INITIAL_CONTEXT_FACTORY, "com.ibm.websphere.naming.WsnInitialContextFactory");
 				ht.put(Context.PROVIDER_URL, "iiop://localhost:2809");
 				ctx = new InitialContext(ht);
@@ -125,6 +126,7 @@ public class JMSServer extends HttpServlet implements Runnable {
 	 * 
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	@SuppressWarnings("rawtypes")
 	public void run() {
 		System.out.println("In JMSServer.run()");

@@ -3,6 +3,8 @@ package com.nastel.bank;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.*;
+
 import com.nastel.bank.data.Transaction;
 
 @Path("/payment")
@@ -13,6 +15,8 @@ public class CheckOutEndpoint {
 	@Produces("application/json")
 	public Map<String, String> get() {
 		return new HashMap<String, String>() {
+			private static final long serialVersionUID = -8280495165221726773L;
+
 			{
 				put("Working", "TRUE");
 			}

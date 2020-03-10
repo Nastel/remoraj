@@ -1,5 +1,6 @@
 package com.nastel.bank;
 
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import org.apache.http.impl.client.HttpClients;
 import com.nastel.bank.data.Transaction;
 
 public class InterbankTransaction extends HttpServlet {
+
+	private static final long serialVersionUID = 7101501874245754456L;
 
 	static void deserializeAndAddtoDB(InputStream entity) throws IOException {
 		ObjectInputStream oos = new ObjectInputStream(entity);

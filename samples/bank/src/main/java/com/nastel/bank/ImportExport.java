@@ -21,7 +21,10 @@ package com.nastel.bank;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.*;
 
+import javax.jms.*;
+import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -88,8 +91,7 @@ public class ImportExport extends HttpServlet {
 			return;
 		}
 
-		if (msgSource.equals("file"))
-		{
+		if (msgSource.equals("file")) {
 			fileData = params.get("file");
 		}
 
@@ -200,7 +202,7 @@ public class ImportExport extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, String> initParameters(HttpServletRequest request) throws IOException {
-		HashMap<String, String> params = new HashMap<String, String>();
+		HashMap<String, String> params = new HashMap<>();
 
 		// Create a factory for disk-based file items
 		FileItemFactory factory = new DiskFileItemFactory();
@@ -254,12 +256,9 @@ public class ImportExport extends HttpServlet {
 				// -------------------------------
 				// PREPARE message
 				// -------------------------------
-				if (rspMsg == null)
-				{
+				if (rspMsg == null) {
 					message = msgRepository.next(session);
-				}
-				else
-				{
+				} else {
 					message = rspMsg;
 				}
 
@@ -278,8 +277,7 @@ public class ImportExport extends HttpServlet {
 				logger.info("\t<- sending to " + requestSender.getQueue().getQueueName());
 				requestSender.send(message);
 				logger.trace("\tsendMsg=" + message);
-				if (session.getTransacted())
-				{
+				if (session.getTransacted()) {
 					session.commit();
 				}
 
@@ -289,8 +287,7 @@ public class ImportExport extends HttpServlet {
 				// use back-end ?
 				// -------------------------------
 
-				if (!useBackend)
-				{
+				if (!useBackend) {
 					doReceiveAndSend(session, requestQueue, replyQueue, selector);
 				}
 
@@ -316,18 +313,14 @@ public class ImportExport extends HttpServlet {
 					}
 				} else {
 					rspMsg = replyReceiver.receive(waitInterval);
-					if (rspMsg == null)
-					{
+					if (rspMsg == null) {
 						logger.info("!! Reply has NOT been received");
-					}
-					else
-					{
+					} else {
 						listener.onMessage(rspMsg);
 					}
 				}
 
-				if (session.getTransacted())
-				{
+				if (session.getTransacted()) {
 					session.commit();
 				}
 
@@ -352,8 +345,7 @@ public class ImportExport extends HttpServlet {
 		Message requestMsg = receiver.receive(waitInterval);
 		receiver.close();
 
-		if (session.getTransacted())
-		{
+		if (session.getTransacted()) {
 			session.commit();
 		}
 
@@ -382,8 +374,7 @@ public class ImportExport extends HttpServlet {
 		logger.info("\t<- sending to " + replySender.getQueue().getQueueName());
 		replySender.send(replyMsg);
 		logger.trace("\tsendMsg=" + replyMsg);
-		if (session.getTransacted())
-		{
+		if (session.getTransacted()) {
 			session.commit();
 		}
 		replySender.close();
@@ -397,8 +388,7 @@ public class ImportExport extends HttpServlet {
 			logger.error("Could not create JNDI API " + "context: " + e.toString());
 		}
 
-		if (context == null)
-		{
+		if (context == null) {
 			context = new InitialContext();
 		}
 

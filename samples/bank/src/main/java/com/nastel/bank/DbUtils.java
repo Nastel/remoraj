@@ -19,6 +19,7 @@
  */
 package com.nastel.bank;
 
+import java.sql.*;
 import java.util.ArrayList;
 
 import javax.naming.Context;
@@ -40,34 +41,29 @@ public class DbUtils {
 
 	/** @return the data source. */
 	public static Connection getConnection() throws NamingException, SQLException {
-		if (ds == null)
-		{
+		if (ds == null) {
 			ds = findDataSource();
 		}
 		return ds.getConnection();
 	}
 
 	private static DataSource findDataSource() throws NamingException {
-		if (context == null)
-		{
+		if (context == null) {
 			context = new InitialContext();
 		}
 
 		Object o = lookup(context, DATA_SOURCE_NAME);
-		if (o instanceof DataSource)
-		{
+		if (o instanceof DataSource) {
 			return (DataSource) o;
 		}
 
 		o = lookup(context, "java:/" + DATA_SOURCE_NAME);
-		if (o instanceof DataSource)
-		{
+		if (o instanceof DataSource) {
 			return (DataSource) o;
 		}
 
 		o = lookup(context, "java:comp/env/" + DATA_SOURCE_NAME);
-		if (o instanceof DataSource)
-		{
+		if (o instanceof DataSource) {
 			return (DataSource) o;
 		}
 
@@ -145,16 +141,14 @@ public class DbUtils {
 	}
 
 	public static int getUserId(String email) {
-		if (email == null)
-		{
+		if (email == null) {
 			email = DEMO;
 		}
 
 		ResultSet rs = null;
 		try {
 			rs = executeQuery("SELECT user_id FROM BankUsers WHERE email='" + email + "'");
-			if (rs.next())
-			{
+			if (rs.next()) {
 				return rs.getInt(1);
 			}
 		} catch (Exception ex) {
@@ -168,16 +162,14 @@ public class DbUtils {
 	}
 
 	public static float getBalance(String email) {
-		if (email == null)
-		{
+		if (email == null) {
 			email = DEMO;
 		}
 
 		ResultSet rs = null;
 		try {
 			rs = executeQuery("SELECT balance FROM BankUsers WHERE email='" + email + "'");
-			if (rs.next())
-			{
+			if (rs.next()) {
 				return rs.getFloat(1);
 			}
 		} catch (Exception ex) {
@@ -191,12 +183,11 @@ public class DbUtils {
 	}
 
 	public static ArrayList<Transaction> getTransactions(int uId) {
-		ArrayList<Transaction> xacts = new ArrayList<Transaction>();
+		ArrayList<Transaction> xacts = new ArrayList<>();
 		ResultSet rs = null;
 		try {
 			rs = executeQuery("SELECT * FROM Transactions WHERE user_id=" + uId);
-			while (rs.next())
-			{
+			while (rs.next()) {
 				xacts.add(new Transaction(rs));
 			}
 		} catch (Exception ex) {
@@ -219,8 +210,7 @@ public class DbUtils {
 			Statement s = connection.createStatement();
 			try {
 				ResultSet result = s.executeQuery("SELECT MAX(tId) FROM Transactions");
-				if (result.next())
-				{
+				if (result.next()) {
 					id = result.getInt(1);
 				}
 				id += 10;
@@ -267,8 +257,7 @@ public class DbUtils {
 		ResultSet rs = null;
 		try {
 			rs = executeQuery("SELECT * FROM Merchants WHERE mId=" + mId);
-			if (rs.next())
-			{
+			if (rs.next()) {
 				return new Merchant(rs);
 			}
 		} catch (Exception ex) {
@@ -282,12 +271,11 @@ public class DbUtils {
 	}
 
 	public static ArrayList<Merchant> getMerchants(int uId) {
-		ArrayList<Merchant> merchants = new ArrayList<Merchant>();
+		ArrayList<Merchant> merchants = new ArrayList<>();
 		ResultSet rs = null;
 		try {
 			rs = executeQuery("SELECT * FROM Merchants WHERE user_id=" + uId);
-			while (rs.next())
-			{
+			while (rs.next()) {
 				merchants.add(new Merchant(rs));
 			}
 		} catch (Exception ex) {
@@ -310,8 +298,7 @@ public class DbUtils {
 
 			int id = 0;
 			ResultSet result = s.executeQuery("SELECT MAX(mId) FROM Merchants");
-			if (result.next())
-			{
+			if (result.next()) {
 				id = result.getInt(1);
 			}
 			id += 10;
