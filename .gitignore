@@ -42,3 +42,4 @@ hs_err_pid*
 *.cq4
 *.cq4t
 log.txt
+.gradle
