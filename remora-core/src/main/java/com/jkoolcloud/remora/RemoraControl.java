@@ -22,11 +22,19 @@ package com.jkoolcloud.remora;
 
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.advices.RemoraAdvice;
+
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.threads.Pauser;
@@ -53,10 +61,7 @@ public enum RemoraControl {
 			public void run() {
 				for (;;) {
 					if (!tailer.methodReader(new ControlImpl()).readOne()) {
-						logger.debug("READ");
-
 						pauser.pause();
-
 					}
 				}
 			}
@@ -74,6 +79,43 @@ public enum RemoraControl {
 		return tailer;
 	}
 
+	public void report(List<RemoraAdvice> adviceList) {
+		ExcerptAppender excerptAppender = queue.acquireAppender();
+		for (RemoraAdvice advice : adviceList) {
+
+			List<String> availableConfigurationFields = getConfigurableFields(advice);
+			Map<String, String> stringObjectMap = mapToCurrentValues(advice, availableConfigurationFields);
+			excerptAppender.methodWriter(Info.class).inform(new AdviceConfigInfo(advice.getClass(), stringObjectMap));
+		}
+	}
+
+	@NotNull
+	private Map<String, String> mapToCurrentValues(RemoraAdvice advice, List<String> availableConfigurationFields) {
+		return availableConfigurationFields.stream().collect(Collectors.toMap(fName -> fName, fName -> {
+
+			try {
+				Field declaredField = advice.getClass().getDeclaredField(fName);
+				declaredField.setAccessible(true);
+				return String.valueOf(declaredField.get(advice));
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			}
+			return "N/A";
+		}));
+	}
+
+	public static List<String> getConfigurableFields(RemoraAdvice advice) {
+		return Stream.of(advice.getClass().getDeclaredFields())
+				.filter(field -> field.isAnnotationPresent(RemoraConfig.Configurable.class))
+				.map(field -> field.getName()).collect(Collectors.toList());
+	}
+
+	interface Info {
+		void inform(AdviceConfigInfo info);
+	}
+
 	interface Control {
 		ControlResponse control(ControlCommand command);
 	}
@@ -84,7 +126,7 @@ public enum RemoraControl {
 			try {
 				Field field = command.adviceClass.getField(command.property);
 				field.set(null, command.value);
-				logger.debug("SETTING");
+				logger.debug("SETTING configuration: {}", command);
 			} catch (Throwable e) {
 				logger.debug("No such field");
 				return new ControlResponse(e);
@@ -104,6 +146,12 @@ public enum RemoraControl {
 			this.property = property;
 			this.value = value;
 		}
+
+		@Override
+		public String toString() {
+			return "ControlCommand{" + "adviceClass=" + adviceClass + ", property='" + property + '\'' + ", value='"
+					+ value + '\'' + '}';
+		}
 	}
 
 	public static class ControlResponse {
@@ -116,6 +164,17 @@ public enum RemoraControl {
 
 		public ControlResponse(String message) {
 			this.message = message;
+		}
+	}
+
+	public static class AdviceConfigInfo {
+
+		public Class adviceClass;
+		public Map<String, String> properties;
+
+		public AdviceConfigInfo(Class adviceClass, Map<String, String> properties) {
+			this.adviceClass = adviceClass;
+			this.properties = properties;
 		}
 	}
 }
