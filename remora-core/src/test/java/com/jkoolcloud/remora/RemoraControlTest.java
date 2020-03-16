@@ -31,8 +31,8 @@ import net.openhft.chronicle.queue.ExcerptAppender;
 
 public class RemoraControlTest {
 
-	public class TestClass {
-		public String testField = "Not Set";
+	public static class TestClass {
+		public static String testField = "Not Set";
 	}
 
 	@Test

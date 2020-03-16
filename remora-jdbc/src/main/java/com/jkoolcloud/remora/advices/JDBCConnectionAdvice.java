@@ -45,6 +45,8 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 	public static String INTERCEPTING_METHOD = "prepare";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;

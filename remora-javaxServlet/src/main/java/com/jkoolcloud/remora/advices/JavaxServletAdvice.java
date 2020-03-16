@@ -54,6 +54,8 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	public static String INTERCEPTING_METHOD = "service";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -116,6 +118,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (logging) {
 				logger.info("Entering: {} {} from {}", JavaxServletAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
@@ -235,6 +240,9 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	{
 		boolean doFinally = true;
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
@@ -276,6 +284,10 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	@Override
 	public void install(Instrumentation inst) {
 		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
+		if (load) {
+			getTransform().with(getListener()).installOn(inst);
+		} else {
+			logger.info("Advice {} not enabled", getName());
+		}
 	}
 }

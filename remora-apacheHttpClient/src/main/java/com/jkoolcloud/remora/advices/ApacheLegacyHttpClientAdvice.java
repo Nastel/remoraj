@@ -28,6 +28,8 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 	@RemoraConfig.Configurable
 	public static String headerCorrIDName = "REMORA_CORR";
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -86,6 +88,9 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
+			if (!enabled) {
+				return;
+			}
 			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
 			if (logging) {
 				logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), "before");
@@ -131,7 +136,9 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-
+			if (!enabled) {
+				return;
+			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");

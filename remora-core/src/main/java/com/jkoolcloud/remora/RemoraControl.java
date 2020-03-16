@@ -69,6 +69,7 @@ public enum RemoraControl {
 		}
 
 		tailer = queue.createTailer();
+		tailer.toEnd();
 		controlThread.start();
 		return tailer;
 	}
@@ -84,13 +85,10 @@ public enum RemoraControl {
 				Field field = command.adviceClass.getField(command.property);
 				field.set(null, command.value);
 				logger.debug("SETTING");
-			} catch (NoSuchFieldException e) {
+			} catch (Throwable e) {
 				logger.debug("No such field");
 				return new ControlResponse(e);
 
-			} catch (IllegalAccessException e) {
-				logger.debug("IllegalAccessException");
-				return new ControlResponse(e);
 			}
 			return new ControlResponse("Command ran successful");
 		}
@@ -110,9 +108,9 @@ public enum RemoraControl {
 
 	public static class ControlResponse {
 		String message;
-		Exception exception;
+		Throwable exception;
 
-		public ControlResponse(Exception exception) {
+		public ControlResponse(Throwable exception) {
 			this.exception = exception;
 		}
 

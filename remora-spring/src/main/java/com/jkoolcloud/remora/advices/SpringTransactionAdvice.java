@@ -44,6 +44,8 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 	public static String INTERCEPTING_METHOD = "handle";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -104,7 +106,9 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-
+			if (!enabled) {
+				return;
+			}
 			ed = getEntryDefinition(ed, SpringTransactionAdvice.class, logging ? logger : null);
 			if (logging) {
 				logger.info("Entering: {} {}", SpringTransactionAdvice.class.getName(), "before");
@@ -141,6 +145,9 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");

@@ -48,6 +48,8 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	@RemoraConfig.Configurable
 	public static final String parameterPrefix = "PARAM_";
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -104,6 +106,9 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (logging) {
 				logger.info("Entering: {} {} from {}.{}()", JDBCCallableStatementAdvice.class.getName(), "before",
 						thiz.getClass().getName(), method.getName());
@@ -143,6 +148,9 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
+			if (!enabled) {
+				return;
+			}
 			stackThreadLocal.get().pop();
 		} catch (Exception e) {
 

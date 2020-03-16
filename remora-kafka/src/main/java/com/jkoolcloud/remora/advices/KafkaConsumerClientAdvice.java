@@ -48,6 +48,8 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	public static String INTERCEPTING_METHOD = "poll";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -86,7 +88,9 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-
+			if (!enabled) {
+				return;
+			}
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
 			if (logging) {
 				logger.info("Entering: {} {}", KafkaConsumerClientAdvice.class.getName(), "before");
@@ -134,6 +138,9 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
