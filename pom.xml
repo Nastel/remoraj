@@ -134,6 +134,5 @@
         <module>remora-bank_benchmark</module>
         <module>remora-control</module>
         <module>remora--package</module>
-
     </modules>
 </project>

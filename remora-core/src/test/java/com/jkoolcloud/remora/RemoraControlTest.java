@@ -66,13 +66,13 @@ public class RemoraControlTest {
 		Configuration.set("writerCONTROL.format", "{message}");
 		TestUtils.TempQueue queue = new TestUtils.TempQueue();
 
-		RemoraControl.INSTANCE.queue = queue.getQueue();
-		RemoraControl.INSTANCE.init();
+		RemoraControlQueueType.INSTANCE.queue = queue.getQueue();
+		RemoraControlQueueType.INSTANCE.init();
 
 		ExcerptAppender excerptAppender = queue.acquireAppender();
-		RemoraControl.ControlImpl control = new RemoraControl.ControlImpl();
-		excerptAppender.methodWriter(RemoraControl.Control.class)
-				.control(new RemoraControl.ControlCommand(TestClass.class, "testField", "SET"));
+		RemoraControlQueueType.ControlImpl control = new RemoraControlQueueType.ControlImpl();
+		excerptAppender.methodWriter(RemoraControlQueueType.Control.class)
+				.control(new RemoraControlQueueType.ControlCommand(TestClass.class, "testField", "SET"));
 
 		Thread.sleep(3000);
 
@@ -89,8 +89,8 @@ public class RemoraControlTest {
 		Configuration.set("writerCONTROL.format", "{message}");
 		TestUtils.TempQueue queue = new TestUtils.TempQueue();
 
-		RemoraControl.INSTANCE.queue = queue.getQueue();
-		RemoraControl.INSTANCE.report(Collections.singletonList(new TestClass()));
+		RemoraControlQueueType.INSTANCE.queue = queue.getQueue();
+		RemoraControlQueueType.INSTANCE.report(Collections.singletonList(new TestClass()));
 
 		System.out.println(queue.getQueue().dump());
 
@@ -100,7 +100,7 @@ public class RemoraControlTest {
 
 	@Test
 	public void testgetConfigurableFields() throws IOException, InterruptedException {
-		List<String> configurableFields = RemoraControl.INSTANCE.getConfigurableFields(new TestClass());
+		List<String> configurableFields = RemoraControlQueueType.INSTANCE.getConfigurableFields(new TestClass());
 		System.out.println(StringUtil.join(configurableFields, " "));
 		assertEquals(2, configurableFields.size());
 	}

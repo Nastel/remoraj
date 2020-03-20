@@ -18,36 +18,23 @@
  * CopyrightVersion 1.0
  */
 
-package com.jkoolcloud.remora.testClasses;
+package com.jkoolcloud.remora.advices;
 
-import java.lang.instrument.Instrumentation;
+import java.util.Arrays;
 
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
+import org.junit.Test;
 
-import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
+import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.testClasses.Advice1;
+import com.jkoolcloud.remora.testClasses.Advice2;
 
-public class Advice2 implements RemoraAdvice {
-	private static final TaggedLogger LOGGER = Logger.tag("INFO");
-	private static final String ADVICE_NAME = "2";
+public class RemoraControlAdviceTest {
 
-	@RemoraConfig.Configurable
-	public String test = "TEST2";
-	@RemoraConfig.Configurable
-	public boolean enabled = false;
-
-	public Advice2() {
-		LOGGER.info("Initialsed1");
+	@Test
+	public void testFormatResponse() {
+		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
+		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
+		System.out.println(RemoraControlAdvice.formatResponse());
 	}
 
-	@Override
-	public void install(Instrumentation inst) {
-
-	}
-
-	@Override
-	public String getName() {
-		return ADVICE_NAME;
-	}
 }

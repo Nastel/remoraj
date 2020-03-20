@@ -39,7 +39,7 @@ import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.threads.Pauser;
 
-public enum RemoraControl {
+public enum RemoraControlQueueType {
 	INSTANCE;
 
 	ExcerptTailer tailer;
@@ -51,7 +51,7 @@ public enum RemoraControl {
 
 	static TaggedLogger logger = Logger.tag("CONTROL");
 
-	RemoraControl() {
+	RemoraControlQueueType() {
 	}
 
 	public ExcerptTailer init() {
