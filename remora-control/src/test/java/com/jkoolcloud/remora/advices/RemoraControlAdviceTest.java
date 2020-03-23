@@ -20,21 +20,85 @@
 
 package com.jkoolcloud.remora.advices;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.URL;
+import java.text.ParseException;
 import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.testClasses.Advice1;
 import com.jkoolcloud.remora.testClasses.Advice2;
+import com.sun.net.httpserver.HttpServer;
 
 public class RemoraControlAdviceTest {
 
+	public static final String TEST_BODY = "{\n" + "\t\"advice\": \"advice1\",\n" + "\t\"property\": \"enabled\",\n"
+			+ "\t\"value\": \"false\"\n" + "}\n";
+
 	@Test
-	public void testFormatResponse() {
+	public void testFormatResponse() throws IOException {
 		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
 		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
-		System.out.println(RemoraControlAdvice.formatResponse());
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = RemoraControlAdvice.formatResponse().toString();
+		JsonNode jsonNode = mapper.readTree(jsonInString);
+		System.out.println(jsonInString);
 	}
 
+	@Test
+	public void testgetValueForKey() throws ParseException {
+		assertEquals("advice1", RemoraControlAdvice.getValueForKey("advice", TEST_BODY));
+		assertEquals("enabled", RemoraControlAdvice.getValueForKey("property", TEST_BODY));
+		assertEquals("false", RemoraControlAdvice.getValueForKey("value", TEST_BODY));
+	}
+
+	@Test
+	public void testPropertiesChangeHandler() throws IOException {
+		ServerSocket socket = new ServerSocket(7366);
+		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
+				.getInetSocketAddress();
+		HttpServer httpServer = HttpServer.create(inetSocketAddress, 10);
+		httpServer.createContext("/change", new RemoraControlAdvice.PropertiesChangeHandler());
+		httpServer.setExecutor(null);
+		// contextBuilder = new HttpContextBuilder();
+		// contextBuilder.getDeployment().getActualResourceClasses().add(RestResource.class);
+		// HttpContext context = contextBuilder.bind(httpServer);
+		// context.getAttributes().put("some.config.info", "42");
+		httpServer.start();
+
+		URL url = new URL("http://localhost:" + inetSocketAddress.getPort() + "/change");
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("POST");
+		con.setRequestProperty("Content-Type", "application/json; utf-8");
+		con.setRequestProperty("Accept", "application/json");
+		con.setDoOutput(true);
+		try (OutputStream out = con.getOutputStream()) {
+			byte[] input = TEST_BODY.getBytes();
+			out.write(input, 0, input.length);
+			out.flush();
+		}
+
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
+			StringBuilder response = new StringBuilder();
+			String responseLine = null;
+			while ((responseLine = br.readLine()) != null) {
+				response.append(responseLine.trim());
+			}
+			System.out.println(response.toString());
+			assertEquals("OK", response.toString());
+		}
+		httpServer.stop(0);
+	}
 }
