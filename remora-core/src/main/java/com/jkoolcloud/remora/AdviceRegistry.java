@@ -22,6 +22,7 @@
 package com.jkoolcloud.remora;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ import com.jkoolcloud.remora.advices.RemoraAdvice;
 public enum AdviceRegistry {
 	INSTANCE;
 
-	private List<RemoraAdvice> adviceList;
+	private List<RemoraAdvice> adviceList = new ArrayList<>();
 
 	public void report(List<RemoraAdvice> adviceList) {
 		this.adviceList = adviceList;

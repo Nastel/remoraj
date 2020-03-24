@@ -30,6 +30,13 @@
         <!--            <artifactId>resteasy-jdk-http</artifactId>-->
         <!--            <version>4.5.0.Final</version>-->
         <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.takes/takes -->
+        <dependency>
+            <groupId>org.takes</groupId>
+            <artifactId>takes</artifactId>
+            <version>1.19</version>
+        </dependency>
+
         <dependency>
             <groupId>com.jkoolcloud.remora</groupId>
             <artifactId>remora-core</artifactId>
@@ -96,75 +103,87 @@
             </plugins>
         </pluginManagement>
 
-        <!--        <plugins>-->
-        <!--            <plugin>-->
-        <!--                <groupId>org.apache.maven.plugins</groupId>-->
-        <!--                <artifactId>maven-shade-plugin</artifactId>-->
-        <!--                <version>3.2.1</version>-->
-        <!--                <configuration>-->
-        <!--                    <finalName>${project.name}-${project.version}</finalName>-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <finalName>${project.name}-${project.version}</finalName>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>com.jkoolcloud.remora:remora-core</exclude>
+                            <exclude>net.openhft:*</exclude>
+                            <exclude>net.bytebuddy:*</exclude>
+                            <exclude>org.tinylog:*</exclude>
 
+                            <exclude>com.intellij:*</exclude>
+                            <exclude>com.fasterxml.uuid:java-uuid-generator</exclude>
 
-        <!--                    <transformers>-->
-        <!--                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-        <!--                            <manifestEntries>-->
-        <!--                                <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>-->
-        <!--                                <Class-Path>./</Class-Path>-->
-        <!--                            </manifestEntries>-->
-        <!--                        </transformer>-->
-        <!--                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
-        <!--                    </transformers>-->
-        <!--                    <createDependencyReducedPom>false</createDependencyReducedPom>-->
-        <!--                    <relocations>-->
-        <!--                        <relocation>-->
-        <!--                            <pattern>org.tinylog</pattern>-->
-        <!--                            <shadedPattern>com.jkoolcloud.remora.shaded.org.tinylog</shadedPattern>-->
-        <!--                        </relocation>-->
-        <!--                        <relocation>-->
-        <!--                            <pattern>org.jboss</pattern>-->
-        <!--                            <shadedPattern>com.jkoolcloud.remora.shaded.org.jboss</shadedPattern>-->
-        <!--                        </relocation>-->
-        <!--                    </relocations>-->
-        <!--                    <filters>-->
-        <!--                        <filter>-->
-        <!--                            <artifact>*:*</artifact>-->
-        <!--                            <excludes>-->
-        <!--                                <exclude>META-INF/*.SF</exclude>-->
-        <!--                                <exclude>META-INF/*.DSA</exclude>-->
-        <!--                                <exclude>META-INF/*.RSA</exclude>-->
-        <!--                            </excludes>-->
-        <!--                        </filter>-->
-        <!--                        <filter>-->
-        <!--                            <artifact>org.jboss.resteasy:resteasy-jdk-http</artifact>-->
-        <!--                            <includes>-->
-        <!--                                <include>**</include>-->
-        <!--                            </includes>-->
-        <!--                        </filter>-->
-        <!--                        <filter>-->
-        <!--                            <artifact>*:*</artifact>-->
-        <!--                            <excludes>-->
-        <!--                                <exclude>**</exclude>-->
-        <!--                            </excludes>-->
-        <!--                        </filter>-->
+                            <exclude>net.java.dev.jna:*</exclude>
+                            <exclude>commons-cli:*</exclude>
+                            <exclude>org.slf4j:*</exclude>
+                            <exclude>org.openjdk.jmh:*</exclude>-->
+                            <exclude>net.sf.jopt-simple:*</exclude>-->
+                            <exclude>org.apache.commons:commons-math3</exclude>-->
+                            <exclude>org.openjdk.jmh:*</exclude>-->
+                        </excludes>
+                    </artifactSet>
 
-        <!--                        <filter>-->
-        <!--                            <artifact>org.jboss.resteasy:resteasy-jdk-http</artifact>-->
-        <!--                            <includes>-->
-        <!--                                <include>**</include>-->
-        <!--                            </includes>-->
-        <!--                        </filter>-->
-        <!--                    </filters>-->
-        <!--                </configuration>-->
-        <!--                <executions>-->
-        <!--                    <execution>-->
-        <!--                        <phase>package</phase>-->
-        <!--                        <goals>-->
-        <!--                            <goal>shade</goal>-->
-        <!--                        </goals>-->
-        <!--                    </execution>-->
-        <!--                </executions>-->
-        <!--            </plugin>-->
-        <!--        </plugins>-->
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <manifestEntries>
+                                <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
+                                <Class-Path>./</Class-Path>
+                            </manifestEntries>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.tinylog</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.org.tinylog</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.jboss</pattern>
+                            <shadedPattern>com.jkoolcloud.remora.shaded.org.jboss</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                        <!--                        <filter>-->
+                        <!--                            <artifact>*:*</artifact>-->
+                        <!--                            <excludes>-->
+                        <!--                                <exclude>**</exclude>-->
+                        <!--                            </excludes>-->
+                        <!--                        </filter>-->
+
+                        <filter>
+                            <artifact>org.takes:takes</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

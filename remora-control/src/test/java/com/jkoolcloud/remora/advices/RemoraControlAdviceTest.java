@@ -69,15 +69,24 @@ public class RemoraControlAdviceTest {
 		ServerSocket socket = new ServerSocket(7366);
 		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
 				.getInetSocketAddress();
-		HttpServer httpServer = HttpServer.create(inetSocketAddress, 10);
-		httpServer.createContext("/change", new RemoraControlAdvice.PropertiesChangeHandler());
-		httpServer.setExecutor(null);
-		// contextBuilder = new HttpContextBuilder();
-		// contextBuilder.getDeployment().getActualResourceClasses().add(RestResource.class);
-		// HttpContext context = contextBuilder.bind(httpServer);
-		// context.getAttributes().put("some.config.info", "42");
-		httpServer.start();
+		RemoraControlAdvice.startHttpServer(inetSocketAddress);
 
+		makeRequest(inetSocketAddress);
+
+	}
+
+	@Test
+	public void testPropertiesChangeHandler2() throws IOException {
+		ServerSocket socket = new ServerSocket(7366);
+		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
+				.getInetSocketAddress();
+		RemoraControlAdvice.startHttpServer2(inetSocketAddress);
+
+		makeRequest(inetSocketAddress);
+
+	}
+
+	private void makeRequest(InetSocketAddress inetSocketAddress) throws IOException {
 		URL url = new URL("http://localhost:" + inetSocketAddress.getPort() + "/change");
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
@@ -99,6 +108,15 @@ public class RemoraControlAdviceTest {
 			System.out.println(response.toString());
 			assertEquals("OK", response.toString());
 		}
-		httpServer.stop(0);
+	}
+
+	@Test
+	public void testAdminReporter() throws IOException {
+		HttpServer server = HttpServer.create(new InetSocketAddress(7736), 10);
+		server.createContext("/", t -> {
+			t.getRequestBody();
+		});
+		RemoraControlAdvice.AdminReporter reporter = new RemoraControlAdvice.AdminReporter("", 7667, "test");
+
 	}
 }

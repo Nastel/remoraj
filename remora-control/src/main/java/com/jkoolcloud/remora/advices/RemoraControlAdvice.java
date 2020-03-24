@@ -2,12 +2,9 @@ package com.jkoolcloud.remora.advices;
 
 import static java.text.MessageFormat.format;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.instrument.Instrumentation;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
+import java.net.*;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +17,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.fork.FkMethods;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TkFork;
+import org.takes.http.Exit;
+import org.takes.http.FtBasic;
+import org.takes.rs.RsText;
+import org.takes.tk.TkOnce;
 
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.sun.net.httpserver.HttpExchange;
@@ -44,24 +51,59 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		scheduledExecutorService.schedule(() -> {
 			try {
-				HttpServer httpServer = null;
-
-				httpServer = HttpServer.create(new AvailableInetSocketAddress(port).getInetSocketAddress(), 10);
-				httpServer.createContext("/", new GetCapabilitiesHandler());
-				httpServer.createContext("/change", new PropertiesChangeHandler());
-				httpServer.setExecutor(null);
-				// contextBuilder = new HttpContextBuilder();
-				// contextBuilder.getDeployment().getActualResourceClasses().add(RestResource.class);
-				// HttpContext context = contextBuilder.bind(httpServer);
-				// context.getAttributes().put("some.config.info", "42");
-				httpServer.start();
+				startHttpServer2(new AvailableInetSocketAddress(port).getInetSocketAddress());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}, 3, TimeUnit.MINUTES);
 	}
 
-	private void destroy(HttpServer httpServer) {
+	protected static void startHttpServer(InetSocketAddress address) throws IOException {
+		HttpServer httpServer = null;
+
+		httpServer = HttpServer.create(address, 10);
+		httpServer.createContext("/", new GetCapabilitiesHandler());
+		httpServer.createContext("/change", new PropertiesChangeHandler());
+		httpServer.setExecutor(null);
+		// contextBuilder = new HttpContextBuilder();
+		// contextBuilder.getDeployment().getActualResourceClasses().add(RestResource.class);
+		// HttpContext context = contextBuilder.bind(httpServer);
+		// context.getAttributes().put("some.config.info", "42");
+		httpServer.start();
+	}
+
+	protected static void startHttpServer2(InetSocketAddress address) throws IOException {
+		Executors.newSingleThreadExecutor().submit(() -> {
+			try {
+				new FtBasic(//
+						new TkFork(//
+								new FkRegex("/", formatResponse().toString()), //
+								new FkRegex("/change", //
+										new TkFork(//
+												new FkMethods("POST", new TkOnce(new Take() {
+													@Override
+													public Response act(Request request) throws Exception {
+														String body = getBody(request.body());
+														String adviceName = getValueForKey("advice", body);
+														String property = getValueForKey("property", body);
+														String value = getValueForKey("property", body);
+														applyChanges(adviceName, property, value);
+														return new RsText("OK");
+													}
+												}))))), //
+
+						address.getPort()).start(Exit.NEVER);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+    private static boolean applyChanges(String adviceName, String property, String value) {
+	    Class.forName(adviceName)
+    }
+
+    private void destroy(HttpServer httpServer) {
 		// contextBuilder.cleanup();
 		httpServer.stop(0);
 	}
@@ -124,15 +166,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			if (Optional.of(t.getRequestHeaders().get("Content-length")).get().get(0).length() > 2) {
 				generateError(t, "Oversize request", 413);
 			}
-			StringBuilder bodySB = new StringBuilder();
-			try (InputStreamReader reader = new InputStreamReader(t.getRequestBody())) {
-				char[] buffer = new char[256];
-				int read;
-				while ((read = reader.read(buffer)) != -1) {
-					bodySB.append(buffer, 0, read);
-				}
-			}
-			String body = bodySB.toString();
+			String body = getBody(t.getRequestBody());
 
 			try {
 				String adviceName = getValueForKey("advice", body);
@@ -148,6 +182,19 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			os.close();
 		}
 
+	}
+
+	@NotNull
+	protected static String getBody(InputStream t) throws IOException {
+		StringBuilder bodySB = new StringBuilder();
+		try (InputStreamReader reader = new InputStreamReader(t)) {
+			char[] buffer = new char[256];
+			int read;
+			while ((read = reader.read(buffer)) != -1) {
+				bodySB.append(buffer, 0, read);
+			}
+		}
+		return bodySB.toString();
 	}
 
 	protected static String getValueForKey(String key, String body) throws ParseException {
@@ -192,6 +239,53 @@ public class RemoraControlAdvice implements RemoraAdvice {
 
 		public InetSocketAddress getInetSocketAddress() {
 			return delegate;
+		}
+	}
+
+	public static class AdminReporter {
+
+		private final int port;
+		private final String name;
+		private String REPORT_MESSAGE_TEMPLATE = "{\n" + "\t\"adress\": \"{}}\",\n" + "\t\"port\": {}},\n"
+				+ "\t\"vmIdentification\": \"{}}\"\n" + "}";
+		private final String localAddress;
+		private URL url;
+
+		public AdminReporter(String address, int port, String name) throws IOException {
+			url = new URL(address);
+
+			Socket socket = new Socket();
+			socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
+			InetAddress localAddress1 = socket.getLocalAddress();
+			localAddress = localAddress1.getHostAddress();
+
+			this.port = port;
+			this.name = name;
+			url = url;
+			report();
+
+		}
+
+		protected boolean report() throws IOException {
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json; utf-8");
+			con.setRequestProperty("Accept", "application/json");
+			con.setDoOutput(true);
+			try (OutputStream out = con.getOutputStream()) {
+				byte[] input = format(REPORT_MESSAGE_TEMPLATE, localAddress, port, name).getBytes();
+				out.write(input, 0, input.length);
+				out.flush();
+			}
+
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
+				StringBuilder response = new StringBuilder();
+				String responseLine = null;
+				while ((responseLine = br.readLine()) != null) {
+					response.append(responseLine.trim());
+				}
+			}
+			return true;
 		}
 	}
 }
