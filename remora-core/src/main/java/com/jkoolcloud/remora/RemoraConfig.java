@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.Nullable;
+
 public enum RemoraConfig {
 	INSTANCE;
 
@@ -61,27 +63,7 @@ public enum RemoraConfig {
 					field.setAccessible(true);
 
 					String configValue = getConfigValue(object.getClass(), field.getName());
-					Object appliedValue = null;
-					if (configValue != null) {
-						if (field.getType().isEnum()) {
-							appliedValue = Enum.valueOf((Class<Enum>) field.getType(), configValue);
-						} else {
-							switch (field.getType().getName()) {
-							case "java.lang.String":
-								appliedValue = configValue;
-								break;
-							case "java.util.List":
-								appliedValue = getList(configValue);
-								break;
-							case "boolean":
-								appliedValue = Boolean.parseBoolean(configValue);
-								break;
-							case "default":
-								// logger.info("Unsupported property");
-
-							}
-						}
-					}
+					Object appliedValue = getAppliedValue(field, configValue);
 					if (appliedValue != null) {
 						// logger.info(format("Setting {} class config field \"{}\" as {}",
 						// object.getClass().getName(), appliedValue.toString(), field.getName()));
@@ -92,6 +74,32 @@ public enum RemoraConfig {
 			}
 			aClass = aClass.getSuperclass();
 		}
+	}
+
+	@Nullable
+	public static Object getAppliedValue(Field field, String configValue) {
+		Object appliedValue = null;
+		if (configValue != null) {
+			if (field.getType().isEnum()) {
+				appliedValue = Enum.valueOf((Class<Enum>) field.getType(), configValue);
+			} else {
+				switch (field.getType().getName()) {
+				case "java.lang.String":
+					appliedValue = configValue;
+					break;
+				case "java.util.List":
+					appliedValue = getList(configValue);
+					break;
+				case "boolean":
+					appliedValue = Boolean.parseBoolean(configValue);
+					break;
+				case "default":
+					// logger.info("Unsupported property");
+
+				}
+			}
+		}
+		return appliedValue;
 	}
 
 	private static List<?> getList(String configValue) {

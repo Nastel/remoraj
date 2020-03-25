@@ -4,6 +4,7 @@ import static java.text.MessageFormat.format;
 
 import java.io.*;
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Field;
 import java.net.*;
 import java.text.ParseException;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.takes.rs.RsText;
 import org.takes.tk.TkOnce;
 
 import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.RemoraConfig;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -86,9 +88,9 @@ public class RemoraControlAdvice implements RemoraAdvice {
 														String body = getBody(request.body());
 														String adviceName = getValueForKey("advice", body);
 														String property = getValueForKey("property", body);
-														String value = getValueForKey("property", body);
-														applyChanges(adviceName, property, value);
-														return new RsText("OK");
+														String value = getValueForKey("value", body);
+
+														return new RsText(applyChanges(adviceName, property, value));
 													}
 												}))))), //
 
@@ -99,11 +101,26 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		});
 	}
 
-    private static boolean applyChanges(String adviceName, String property, String value) {
-	    Class.forName(adviceName)
-    }
+	private static String applyChanges(String adviceName, String property, String value) {
+		try {
+			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(adviceName);
+			Field field = adviceByName.getClass().getField(property);
+			if (!field.isAnnotationPresent(RemoraConfig.Configurable.class)) {
+				throw new NoSuchFieldException();
+			}
+			Object appliedValue = RemoraConfig.getAppliedValue(field, value);
+			field.set(null, appliedValue);
+			return "OK";
+		} catch (ClassNotFoundException e) {
+			return "No such advice";
+		} catch (IllegalAccessException e) {
+			return "Cant change advices:" + property + " property: " + property;
+		} catch (NoSuchFieldException e) {
+			return "No such property";
+		}
+	}
 
-    private void destroy(HttpServer httpServer) {
+	private void destroy(HttpServer httpServer) {
 		// contextBuilder.cleanup();
 		httpServer.stop(0);
 	}

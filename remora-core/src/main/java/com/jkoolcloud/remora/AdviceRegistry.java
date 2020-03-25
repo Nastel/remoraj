@@ -23,6 +23,7 @@ package com.jkoolcloud.remora;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,13 +35,24 @@ public enum AdviceRegistry {
 	INSTANCE;
 
 	private List<RemoraAdvice> adviceList = new ArrayList<>();
+	private Map<String, RemoraAdvice> adviceMap = new HashMap<>();
 
 	public void report(List<RemoraAdvice> adviceList) {
+
 		this.adviceList = adviceList;
+		adviceMap = adviceList.stream()
+				.collect(Collectors.toMap(entry -> entry.getClass().getSimpleName(), entry -> entry));
 	}
 
 	public List<RemoraAdvice> getRegisteredAdvices() {
 		return adviceList;
+	}
+
+	public RemoraAdvice getAdviceByName(String name) throws ClassNotFoundException {
+		if (!adviceMap.containsKey(name)) {
+			throw new ClassNotFoundException();
+		}
+		return adviceMap.get(name);
 	}
 
 	public static List<String> getConfigurableFields(RemoraAdvice advice) {
