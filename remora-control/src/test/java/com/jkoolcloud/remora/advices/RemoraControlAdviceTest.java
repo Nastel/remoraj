@@ -40,12 +40,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.testClasses.Advice1;
 import com.jkoolcloud.remora.testClasses.Advice2;
-import com.sun.net.httpserver.HttpServer;
 
 public class RemoraControlAdviceTest {
 
-	public static final String TEST_BODY = "{\n" + "\t\"advice\": \"advice1\",\n" + "\t\"property\": \"enabled\",\n"
-			+ "\t\"value\": \"false\"\n" + "}\n";
+	public static final String TEST_BODY = "{\n" + "\t\"advice\": \"Advice1\",\n" + "\t\"property\": \"test\",\n"
+			+ "\t\"value\": \"test\"\n" + "}\n";
 
 	@Test
 	public void testFormatResponse() throws IOException {
@@ -59,25 +58,17 @@ public class RemoraControlAdviceTest {
 
 	@Test
 	public void testgetValueForKey() throws ParseException {
-		assertEquals("advice1", RemoraControlAdvice.getValueForKey("advice", TEST_BODY));
-		assertEquals("enabled", RemoraControlAdvice.getValueForKey("property", TEST_BODY));
-		assertEquals("false", RemoraControlAdvice.getValueForKey("value", TEST_BODY));
-	}
-
-	@Test
-	public void testPropertiesChangeHandler() throws IOException {
-		ServerSocket socket = new ServerSocket(7366);
-		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
-				.getInetSocketAddress();
-		RemoraControlAdvice.startHttpServer(inetSocketAddress);
-
-		makeRequest(inetSocketAddress);
-
+		assertEquals("Advice1", RemoraControlAdvice.getValueForKey("advice", TEST_BODY));
+		assertEquals("test", RemoraControlAdvice.getValueForKey("property", TEST_BODY));
+		assertEquals("test", RemoraControlAdvice.getValueForKey("value", TEST_BODY));
 	}
 
 	@Test
 	public void testPropertiesChangeHandler2() throws IOException {
 		ServerSocket socket = new ServerSocket(7366);
+
+		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
+		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
 		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
 				.getInetSocketAddress();
 		RemoraControlAdvice.startHttpServer2(inetSocketAddress);
@@ -110,13 +101,13 @@ public class RemoraControlAdviceTest {
 		}
 	}
 
-	@Test
-	public void testAdminReporter() throws IOException {
-		HttpServer server = HttpServer.create(new InetSocketAddress(7736), 10);
-		server.createContext("/", t -> {
-			t.getRequestBody();
-		});
-		RemoraControlAdvice.AdminReporter reporter = new RemoraControlAdvice.AdminReporter("", 7667, "test");
-
-	}
+	// @Test
+	// public void testAdminReporter() throws IOException {
+	// new FtBasic(//
+	// new TkFork(//
+	// new FkRegex("/", ,
+	// );
+	// RemoraControlAdvice.AdminReporter reporter = new RemoraControlAdvice.AdminReporter("localhost", 7667, "test");
+	//
+	// }
 }

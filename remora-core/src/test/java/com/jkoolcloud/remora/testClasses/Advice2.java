@@ -33,9 +33,9 @@ public class Advice2 implements RemoraAdvice {
 	private static final String ADVICE_NAME = "2";
 
 	@RemoraConfig.Configurable
-	public String test = "TEST2";
+	public static String test = "TEST2";
 	@RemoraConfig.Configurable
-	public boolean enabled = false;
+	public static boolean enabled = false;
 
 	public Advice2() {
 		LOGGER.info("Initialsed1");

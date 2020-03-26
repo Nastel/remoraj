@@ -33,7 +33,7 @@ public class Advice1 implements RemoraAdvice {
 	private static final String ADVICE_NAME = "1";
 
 	@RemoraConfig.Configurable
-	public String test = "TEST1";
+	public static String test = "TEST1";
 
 	public Advice1() {
 		LOGGER.info("Initialsed");

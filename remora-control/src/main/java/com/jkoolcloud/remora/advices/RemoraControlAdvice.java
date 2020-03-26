@@ -9,7 +9,6 @@ import java.net.*;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -31,9 +30,6 @@ import org.takes.tk.TkOnce;
 
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.RemoraConfig;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 
 //import org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder;
 
@@ -58,20 +54,6 @@ public class RemoraControlAdvice implements RemoraAdvice {
 				e.printStackTrace();
 			}
 		}, 3, TimeUnit.MINUTES);
-	}
-
-	protected static void startHttpServer(InetSocketAddress address) throws IOException {
-		HttpServer httpServer = null;
-
-		httpServer = HttpServer.create(address, 10);
-		httpServer.createContext("/", new GetCapabilitiesHandler());
-		httpServer.createContext("/change", new PropertiesChangeHandler());
-		httpServer.setExecutor(null);
-		// contextBuilder = new HttpContextBuilder();
-		// contextBuilder.getDeployment().getActualResourceClasses().add(RestResource.class);
-		// HttpContext context = contextBuilder.bind(httpServer);
-		// context.getAttributes().put("some.config.info", "42");
-		httpServer.start();
 	}
 
 	protected static void startHttpServer2(InetSocketAddress address) throws IOException {
@@ -120,26 +102,9 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		}
 	}
 
-	private void destroy(HttpServer httpServer) {
-		// contextBuilder.cleanup();
-		httpServer.stop(0);
-	}
-
 	@Override
 	public String getName() {
 		return ADVICE_NAME;
-	}
-
-	static class GetCapabilitiesHandler implements HttpHandler {
-		@Override
-		public void handle(HttpExchange t) throws IOException {
-			StringBuilder response = formatResponse();
-
-			t.sendResponseHeaders(200, response.length());
-			OutputStream os = t.getResponseBody();
-			os.write(String.valueOf(response).getBytes());
-			os.close();
-		}
 	}
 
 	@NotNull
@@ -173,34 +138,6 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		return response;
 	}
 
-	static class PropertiesChangeHandler implements HttpHandler {
-		@Override
-		public void handle(HttpExchange t) throws IOException {
-			if (!t.getRequestMethod().equals("POST")) {
-				generateError(t, "Method not allowed", 405);
-			}
-
-			if (Optional.of(t.getRequestHeaders().get("Content-length")).get().get(0).length() > 2) {
-				generateError(t, "Oversize request", 413);
-			}
-			String body = getBody(t.getRequestBody());
-
-			try {
-				String adviceName = getValueForKey("advice", body);
-			} catch (ParseException e) {
-				generateError(t, e.getMessage(), 500);
-			}
-
-			String response = "OK";
-
-			t.sendResponseHeaders(200, response.length());
-			OutputStream os = t.getResponseBody();
-			os.write(response.getBytes());
-			os.close();
-		}
-
-	}
-
 	@NotNull
 	protected static String getBody(InputStream t) throws IOException {
 		StringBuilder bodySB = new StringBuilder();
@@ -223,12 +160,6 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			throw new ParseException(format("Cannot extract {} from \n {}", key, body), 0);
 		}
 
-	}
-
-	protected static void generateError(HttpExchange t, String message, int code) throws IOException {
-		t.sendResponseHeaders(code, message.length());
-		OutputStream responseBody = t.getResponseBody();
-		responseBody.write(message.getBytes());
 	}
 
 	public static class AvailableInetSocketAddress {
