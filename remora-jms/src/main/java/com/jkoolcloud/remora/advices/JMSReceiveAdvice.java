@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.QueueReceiver;
+import javax.jms.TextMessage;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -110,8 +111,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		try {
 			if (!enabled) {
-                return;
-            }
+				return;
+			}
 			if (logging) {
 				logger.info("Entering: {} {} from {}", JMSReceiveAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
@@ -166,8 +167,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 		boolean doFinnaly = true;
 		try {
 			if (!enabled) {
-                return;
-            }
+				return;
+			}
 			if (logging) {
 				logger.info("Exiting: {} {}", JMSReceiveAdvice.class.getName(), "after");
 			}
@@ -183,7 +184,9 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
 				ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
 				ed.addPropertyIfExist("TYPE", message.getJMSType());
-
+				if (message instanceof TextMessage) {
+					ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
+				}
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {

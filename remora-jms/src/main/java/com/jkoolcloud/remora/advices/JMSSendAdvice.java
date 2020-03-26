@@ -26,10 +26,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.QueueSender;
+import javax.jms.*;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -128,6 +125,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 					ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
 					ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
 					ed.addPropertyIfExist("TYPE", message.getJMSType());
+					if (message instanceof TextMessage) {
+						ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
+					}
 					try {
 						message.setObjectProperty("JanusMessageSignature", ed.getCorrelator());
 					} catch (Exception e) {
