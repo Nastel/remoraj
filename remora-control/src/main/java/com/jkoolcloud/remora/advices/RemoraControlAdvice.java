@@ -27,8 +27,11 @@ import org.takes.http.Exit;
 import org.takes.http.FtBasic;
 import org.takes.rs.RsText;
 import org.takes.tk.TkOnce;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 
 //import org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder;
@@ -36,24 +39,48 @@ import com.jkoolcloud.remora.RemoraConfig;
 public class RemoraControlAdvice implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "RemoraControlAdvice";
-
+	protected static TaggedLogger logger;
 	// @RemoraConfig.Configurable
 	// public static boolean load = true;
 	// @RemoraConfig.Configurable
 	// public static boolean logging = false;
-	public int port = 7366;
-	// public HttpContextBuilder contextBuilder;
+	@RemoraConfig.Configurable
+	public static int port = 7366;
+	@RemoraConfig.Configurable
+	public static String adminURL = null;
+	@RemoraConfig.Configurable
+	public static int reporterSchedule = 300;
 
 	@Override
 	public void install(Instrumentation instrumentation) {
+		logger = Logger.tag(ADVICE_NAME);
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+		AvailableInetSocketAddress[] availableInetSocketAddress = { null };
+
 		scheduledExecutorService.schedule(() -> {
 			try {
-				startHttpServer2(new AvailableInetSocketAddress(port).getInetSocketAddress());
+				availableInetSocketAddress[0] = new AvailableInetSocketAddress(port);
+				InetSocketAddress inetSocketAddress = availableInetSocketAddress[0].getInetSocketAddress();
+				startHttpServer2(inetSocketAddress);
+				logger.info("Initialised Remora control instance on {}, port: {}", inetSocketAddress.getHostName(),
+						inetSocketAddress.getPort());
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Cannot initialize remora control instance. \n {}", e);
 			}
 		}, 3, TimeUnit.MINUTES);
+
+		if (adminURL != null) {
+			AdminReporter adminReporter = new AdminReporter(adminURL,
+					availableInetSocketAddress[0] == null ? 0
+							: availableInetSocketAddress[0].getInetSocketAddress().getPort(),
+					System.getProperty(Remora.REMORA_VM_IDENTIFICATION));
+			logger.info("Admin reporter initialised, wil invoke every {} seconds", reporterSchedule);
+			ScheduledExecutorService adminServiceQuery = Executors.newScheduledThreadPool(1);
+			adminServiceQuery.scheduleAtFixedRate(() -> adminReporter.report(), 0, reporterSchedule, TimeUnit.SECONDS);
+		} else {
+			logger.info("Admin reporter will be not initialised, admin reporter endpoint not set");
+		}
+
 	}
 
 	protected static void startHttpServer2(InetSocketAddress address) throws IOException {
@@ -78,13 +105,15 @@ public class RemoraControlAdvice implements RemoraAdvice {
 
 						address.getPort()).start(Exit.NEVER);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}
 		});
 	}
 
 	private static String applyChanges(String adviceName, String property, String value) {
 		try {
+			logger.info("Ivoked remote request for \"{}\" property \"{}\" change. New value: {} ", adviceName, property,
+					value);
 			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(adviceName);
 			Field field = adviceByName.getClass().getField(property);
 			if (!field.isAnnotationPresent(RemoraConfig.Configurable.class)) {
@@ -94,11 +123,18 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			field.set(null, appliedValue);
 			return "OK";
 		} catch (ClassNotFoundException e) {
-			return "No such advice";
+			String m = "No such advice";
+			logger.error("\t " + m + "\n {}", e);
+
+			return m;
 		} catch (IllegalAccessException e) {
-			return "Cant change advices:" + property + " property: " + property;
+			String m = "Cant change advices:" + property + " property: " + property;
+			logger.error("\t " + m + "\n {}", e);
+			return m;
 		} catch (NoSuchFieldException e) {
-			return "No such property";
+			String m = "No such property";
+			logger.error("\t " + m + "\n {}", e);
+			return m;
 		}
 	}
 
@@ -168,6 +204,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		public AvailableInetSocketAddress(int port) {
 			do {
 				if (!isLocalPortFree(port)) {
+					logger.info("Port {} is used, setting next", port);
 					port++;
 					continue;
 				}
@@ -196,42 +233,50 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		private final String name;
 		private String REPORT_MESSAGE_TEMPLATE = "{\n" + "\t\"adress\": \"{}}\",\n" + "\t\"port\": {}},\n"
 				+ "\t\"vmIdentification\": \"{}}\"\n" + "}";
-		private final String localAddress;
+		private String localAddress = null;
 		private URL url;
 
-		public AdminReporter(String address, int port, String name) throws IOException {
-			url = new URL(address);
-
-			Socket socket = new Socket();
-			socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
-			InetAddress localAddress1 = socket.getLocalAddress();
-			localAddress = localAddress1.getHostAddress();
-
+		public AdminReporter(String address, int port, String name) {
 			this.port = port;
 			this.name = name;
-			url = url;
-			report();
+
+			try {
+				url = new URL(address);
+
+				Socket socket = new Socket();
+				socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
+				InetAddress localAddress1 = socket.getLocalAddress();
+				localAddress = localAddress1.getHostAddress();
+
+				url = url;
+			} catch (Exception e) {
+				logger.error("Cannot initialize admin reporter: \n {}", e);
+			}
 
 		}
 
-		protected boolean report() throws IOException {
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-Type", "application/json; utf-8");
-			con.setRequestProperty("Accept", "application/json");
-			con.setDoOutput(true);
-			try (OutputStream out = con.getOutputStream()) {
-				byte[] input = format(REPORT_MESSAGE_TEMPLATE, localAddress, port, name).getBytes();
-				out.write(input, 0, input.length);
-				out.flush();
-			}
-
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
-				StringBuilder response = new StringBuilder();
-				String responseLine = null;
-				while ((responseLine = br.readLine()) != null) {
-					response.append(responseLine.trim());
+		protected boolean report() {
+			try {
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.setRequestMethod("POST");
+				con.setRequestProperty("Content-Type", "application/json; utf-8");
+				con.setRequestProperty("Accept", "application/json");
+				con.setDoOutput(true);
+				try (OutputStream out = con.getOutputStream()) {
+					byte[] input = format(REPORT_MESSAGE_TEMPLATE, localAddress, port, name).getBytes();
+					out.write(input, 0, input.length);
+					out.flush();
 				}
+
+				try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
+					StringBuilder response = new StringBuilder();
+					String responseLine = null;
+					while ((responseLine = br.readLine()) != null) {
+						response.append(responseLine.trim());
+					}
+				}
+			} catch (IOException e) {
+				return false;
 			}
 			return true;
 		}

@@ -33,7 +33,9 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.Arrays;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.tinylog.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +47,11 @@ public class RemoraControlAdviceTest {
 
 	public static final String TEST_BODY = "{\n" + "\t\"advice\": \"Advice1\",\n" + "\t\"property\": \"test\",\n"
 			+ "\t\"value\": \"test\"\n" + "}\n";
+
+	@BeforeClass
+	public static void setupLogger() {
+		RemoraControlAdvice.logger = Logger.tag("TEST");
+	}
 
 	@Test
 	public void testFormatResponse() throws IOException {

@@ -41,6 +41,7 @@ import com.jkoolcloud.remora.core.utils.RemoraClassLoader;
 
 public class Remora {
 
+	public static final String REMORA_VM_IDENTIFICATION = "remoraVMIdentification";
 	public static TaggedLogger logger;
 
 	public static final boolean DEBUG_BOOT_LOADER = true;
@@ -77,7 +78,7 @@ public class Remora {
 		// logger.info("Initializing advices: " + appClass);
 		initializeAdvices.invoke(instance, inst, bootLoader);
 		logger = Logger.tag("INIT");
-		EntryDefinition.setVmIdentification(System.getProperty("remoraVMIdentification", getDefaultVM()));
+		EntryDefinition.setVmIdentification(System.getProperty(REMORA_VM_IDENTIFICATION, getDefaultVM()));
 		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
 		OutputManager outputManager = OutputManager.INSTANCE; //
 	}
