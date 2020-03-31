@@ -4,6 +4,8 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.regex.Pattern;
 
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.conn.routing.HttpRoute;
@@ -34,6 +36,10 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
+	@RemoraConfig.Configurable
+	public static boolean extractParams = true;
+	@RemoraConfig.Configurable
+	public static String paramPrefix = "PAR_";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -98,9 +104,42 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 				logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), "before");
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
-			ed.addPropertyIfExist("URI", request.getURI().toString());
+			if (request != null) {
+				URI uri = request.getURI();
+
+				if (uri != null) {
+					String uriStr = uri.toString();
+					ed.addPropertyIfExist("URI", uriStr);
+					int queryIndex = uriStr.indexOf("?");
+					ed.setResource(queryIndex == -1 ? uriStr : uriStr.substring(0, queryIndex),
+							EntryDefinition.ResourceType.NETADDR);
+					if (extractParams) {
+						String query = uri.getQuery();
+						if (query != null) {
+							String[] params = query.split(Pattern.quote("&"));
+							for (String param : params) {
+								String[] chunks = param.split(Pattern.quote("="));
+								String name = chunks[0], value = null;
+								if (chunks.length > 1) {
+									logger.info("8");
+									value = chunks[1];
+								}
+								ed.addPropertyIfExist(paramPrefix + name, value);
+							}
+						}
+					}
+				} else {
+					if (logging) {
+						logger.info("URI is null");
+					}
+				}
+			} else {
+				if (logging) {
+					logger.info("Request is null");
+				}
+			}
+
 			ed.addPropertyIfExist("HOST", route.getTargetHost().getHostName());
-			ed.setResource(request.getURI().toString(), EntryDefinition.ResourceType.NETADDR);
 
 			request.addHeader(headerCorrIDName, ed.getId());
 			ed.addProperty(headerCorrIDName, ed.getId());
