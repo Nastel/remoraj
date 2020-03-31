@@ -24,8 +24,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Set;
+
+import javax.management.*;
 
 import org.junit.Test;
 
@@ -69,4 +73,62 @@ public class RemoraTest {
 
 	}
 
+	@Test
+	public void testRegisterMbean2() throws NotCompliantMBeanException, InstanceAlreadyExistsException,
+			MBeanRegistrationException, MalformedObjectNameException {
+		String objectName = "com.javacodegeeks.snippets.enterprise:type=Hello";
+
+		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+
+		// Construct the ObjectName for the Hello MBean we will register
+		ObjectName mbeanName = new ObjectName(objectName);
+
+		Hello mbean = new Hello();
+
+		server.registerMBean(mbean, mbeanName);
+
+		Set<ObjectInstance> instances = server.queryMBeans(new ObjectName(objectName), null);
+
+		ObjectInstance instance = (ObjectInstance) instances.toArray()[0];
+
+		System.out.println("Class Name:t" + instance.getClassName());
+		System.out.println("Object Name:t" + instance.getObjectName());
+
+	}
+
+	public static class Hello implements HelloMBean {
+
+		private String message = "Hello World";
+
+		@Override
+		public String getMessage() {
+			return message;
+		}
+
+		@Override
+		public void sayHello() {
+			System.out.println(message);
+		}
+
+		@Override
+		public void setMessage(String message) {
+			this.message = message;
+		}
+
+	}
+
+	public static interface HelloMBean {
+
+		// operations
+
+		public void sayHello();
+
+		// attributes
+
+		// a read-write attribute called Message of type String
+		public String getMessage();
+
+		public void setMessage(String message);
+
+	}
 }

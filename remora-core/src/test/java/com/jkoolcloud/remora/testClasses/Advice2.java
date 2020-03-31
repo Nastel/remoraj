@@ -25,11 +25,17 @@ import java.lang.instrument.Instrumentation;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 
 public class Advice2 implements RemoraAdvice {
 	private static final TaggedLogger LOGGER = Logger.tag("INFO");
 	private static final String ADVICE_NAME = "2";
+
+	@RemoraConfig.Configurable
+	public static String test = "TEST2";
+	@RemoraConfig.Configurable
+	public static boolean enabled = false;
 
 	public Advice2() {
 		LOGGER.info("Initialsed1");

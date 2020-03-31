@@ -5,7 +5,7 @@
 
     <groupId>com.jkoolcloud.remora</groupId>
     <artifactId>remora</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>remora</name>
@@ -132,7 +132,7 @@
         <module>remora-ejb3</module>
         <module>remora-spring</module>
         <module>remora-bank_benchmark</module>
+        <module>remora-control</module>
         <module>remora--package</module>
-
     </modules>
 </project>

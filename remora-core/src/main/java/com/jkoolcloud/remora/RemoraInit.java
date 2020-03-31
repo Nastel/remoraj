@@ -70,6 +70,8 @@ public class RemoraInit {
 			Logger.tag("INIT").info("Installed {}", advice.getName());
 		});
 
+		AdviceRegistry.INSTANCE.report(adviceList);
+
 		failedList.forEach((advice, exc) -> {
 			Logger.tag("INIT").info("Failed configuring: ", advice.getName());
 			Logger.tag("INIT").info(exc);

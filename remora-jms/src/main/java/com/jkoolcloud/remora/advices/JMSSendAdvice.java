@@ -26,10 +26,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.QueueSender;
+import javax.jms.*;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -49,6 +46,8 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageProducer" };
 	public static String INTERCEPTING_METHOD = "send";
 
+	@RemoraConfig.Configurable
+	public static boolean enabled = true;
 	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
@@ -94,6 +93,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (logging) {
 				logger.info("Entering: {} {} from {}", JMSSendAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
@@ -123,6 +125,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 					ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
 					ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
 					ed.addPropertyIfExist("TYPE", message.getJMSType());
+					if (message instanceof TextMessage) {
+						ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
+					}
 					try {
 						message.setObjectProperty("JanusMessageSignature", ed.getCorrelator());
 					} catch (Exception e) {
@@ -148,6 +153,9 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (ed == null) // noinspection Duplicates
 			{ // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {

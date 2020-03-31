@@ -49,6 +49,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	public static String INTERCEPTING_METHOD = "ConsumerRecord";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -102,7 +104,9 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	//
 	{
 		try {
-
+			if (!enabled) {
+				return;
+			}
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
 			if (logging) {
 				logger.info("Entering: {} {}", KafkaConsumerAdvice.class.getName(), "before");
@@ -146,6 +150,10 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 		boolean doFinally = true;
 
 		try {
+
+			if (!enabled) {
+				return;
+			}
 			if (logging) {
 				logger.info("Exiting: {} {}", KafkaConsumerAdvice.class.getName(), "after");
 			}

@@ -54,6 +54,8 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	public static Map<RemoteEndpoint, Session> sessionEndpoints = new HashMap<>();
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -108,6 +110,9 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
+			if (!enabled) {
+				return;
+			}
 			MessageHandler handler = null;
 			if (args != null && args.length == 1 && args[0] instanceof MessageHandler) {
 				handler = (MessageHandler) args[0];
@@ -134,7 +139,9 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method) {
-
+		if (!enabled) {
+			return;
+		}
 	}
 
 	@Override

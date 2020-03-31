@@ -50,6 +50,8 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "handleRequest";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled = true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
@@ -111,6 +113,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
+			if (!enabled) {
+				return;
+			}
 			if (logging) {
 				logger.info("Entering: {} {} from {}", WASAdvice.class.getSimpleName(), "before",
 						thiz.getClass().getName());
@@ -179,7 +184,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-
+		if (!enabled) {
+			return;
+		}
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

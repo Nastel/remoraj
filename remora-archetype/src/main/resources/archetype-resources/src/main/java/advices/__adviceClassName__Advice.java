@@ -29,6 +29,8 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
 	@RemoraConfig.Configurable
+	public static boolean enabled= true;
+	@RemoraConfig.Configurable
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
