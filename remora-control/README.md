@@ -1,7 +1,7 @@
 # Remora control 
 
 Remora control plugin enables you to control remoraJ  java agent on demand locally or remotely.
-Remora control uses RESt for communication.
+Remora control uses REST for communication.
 By default it will work on port 7366. If the port is already used it will switch to next available.
 
 # Requests 
