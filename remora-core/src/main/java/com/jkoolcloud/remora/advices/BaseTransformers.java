@@ -60,6 +60,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
 			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
+	@RemoraConfig.Configurable
+	public static boolean checkLastPropertyValue = true;
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
@@ -313,7 +315,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				return lastED;
 			} else {
 
-				EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
+				EntryDefinition entryDefinition = new EntryDefinition(adviceClass, checkLastPropertyValue);
 				if (logger != null) {
 					logger.debug("Transparent advice, no previous transparent advice, returning new {}",
 							entryDefinition.getId());
@@ -345,7 +347,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 					return lastED;
 				} else {
 
-					EntryDefinition entryDefinition = new EntryDefinition(adviceClass);
+					EntryDefinition entryDefinition = new EntryDefinition(adviceClass, checkLastPropertyValue);
 					if (logger != null) {
 						logger.debug("Nontransparent advice, previous non transparent advice, returning new {}",
 								entryDefinition.getId());

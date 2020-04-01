@@ -146,7 +146,10 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	@NotNull
 	protected static StringBuilder formatResponse() {
 		StringBuilder response = new StringBuilder();
-		response.append("[");
+		response.append("{\n");
+		response.append("\"remoraJVersion\" : \"" + Remora.getVersion() + "\",\n");
+		response.append("\"vmIdentification\" : \"" + System.getProperty(Remora.REMORA_VM_IDENTIFICATION) + "\",\n");
+		response.append("\"advices\" : [");
 		List<RemoraAdvice> registeredAdvices = AdviceRegistry.INSTANCE.getRegisteredAdvices();
 		for (int i = 0; i < registeredAdvices.size(); i++) {
 			RemoraAdvice advice = registeredAdvices.get(i);
@@ -171,6 +174,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			}
 		}
 		response.append("]\n");
+		response.append("}\n");
 		return response;
 	}
 
@@ -232,7 +236,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		private final int port;
 		private final String name;
 		private String REPORT_MESSAGE_TEMPLATE = "{\n" + "\t\"adress\": \"{}}\",\n" + "\t\"port\": {}},\n"
-				+ "\t\"vmIdentification\": \"{}}\"\n" + "}";
+				+ "\t\"vmIdentification\": \"{}}\"\n" + "\t\"version\": \"{}}\"\n }";
 		private String localAddress = null;
 		private URL url;
 
@@ -263,7 +267,8 @@ public class RemoraControlAdvice implements RemoraAdvice {
 				con.setRequestProperty("Accept", "application/json");
 				con.setDoOutput(true);
 				try (OutputStream out = con.getOutputStream()) {
-					byte[] input = format(REPORT_MESSAGE_TEMPLATE, localAddress, port, name).getBytes();
+					byte[] input = format(REPORT_MESSAGE_TEMPLATE, localAddress, port, name, Remora.getVersion())
+							.getBytes();
 					out.write(input, 0, input.length);
 					out.flush();
 				}

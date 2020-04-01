@@ -1,0 +1,1266 @@
+Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T18:41:47+02:00)
+Maven home: C:\maven\apache-maven-3.3.9\bin\..
+Java version: 1.8.0_102, vendor: Oracle Corporation
+Java home: C:\Program Files\Java\jdk1.8.0_102\jre
+Default locale: en_US, platform encoding: Cp1257
+OS name: "windows 10", version: "10.0", arch: "amd64", family: "dos"
+[DEBUG] Created new class realm maven.api
+[DEBUG] Importing foreign packages into class realm maven.api
+[DEBUG]   Imported: javax.enterprise.inject.* < plexus.core
+[DEBUG]   Imported: javax.enterprise.util.* < plexus.core
+[DEBUG]   Imported: javax.inject.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.artifact < plexus.core
+[DEBUG]   Imported: org.apache.maven.classrealm < plexus.core
+[DEBUG]   Imported: org.apache.maven.cli < plexus.core
+[DEBUG]   Imported: org.apache.maven.configuration < plexus.core
+[DEBUG]   Imported: org.apache.maven.exception < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution.scope < plexus.core
+[DEBUG]   Imported: org.apache.maven.lifecycle < plexus.core
+[DEBUG]   Imported: org.apache.maven.model < plexus.core
+[DEBUG]   Imported: org.apache.maven.monitor < plexus.core
+[DEBUG]   Imported: org.apache.maven.plugin < plexus.core
+[DEBUG]   Imported: org.apache.maven.profiles < plexus.core
+[DEBUG]   Imported: org.apache.maven.project < plexus.core
+[DEBUG]   Imported: org.apache.maven.reporting < plexus.core
+[DEBUG]   Imported: org.apache.maven.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.rtinfo < plexus.core
+[DEBUG]   Imported: org.apache.maven.settings < plexus.core
+[DEBUG]   Imported: org.apache.maven.toolchain < plexus.core
+[DEBUG]   Imported: org.apache.maven.usability < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authentication < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authorization < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.events < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.observers < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.proxy < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.resource < plexus.core
+[DEBUG]   Imported: org.codehaus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.* < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.component < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.configuration < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.container < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.context < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.lifecycle < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.logging < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.personality < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.Xpp3Dom < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParser < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParserException < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlSerializer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.* < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.artifact < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.collection < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.deployment < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.graph < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.installation < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.internal.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.metadata < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.repository < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.resolution < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.spi < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.transfer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.version < plexus.core
+[DEBUG]   Imported: org.slf4j.* < plexus.core
+[DEBUG]   Imported: org.slf4j.helpers.* < plexus.core
+[DEBUG]   Imported: org.slf4j.spi.* < plexus.core
+[DEBUG] Populating class realm maven.api
+[INFO] Error stacktraces are turned on.
+[DEBUG] Reading global settings from C:\maven\apache-maven-3.3.9\bin\..\conf\settings.xml
+[DEBUG] Reading user settings from C:\Users\slabs\.m2\settings.xml
+[DEBUG] Reading global toolchains from C:\maven\apache-maven-3.3.9\bin\..\conf\toolchains.xml
+[DEBUG] Reading user toolchains from C:\Users\slabs\.m2\toolchains.xml
+[DEBUG] Using local repository at C:\Users\slabs\.m2\repository
+[DEBUG] Using manager EnhancedLocalRepositoryManager with priority 10.0 for C:\Users\slabs\.m2\repository
+[INFO] Scanning for projects...
+[DEBUG] Extension realms for project com.jkoolcloud.remora:remora-control:jar:0.1.5-SNAPSHOT: (none)
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project com.jkoolcloud.remora:remora:pom:0.1.5-SNAPSHOT: (none)
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[plexus.core, parent: null]
+[DEBUG] === REACTOR BUILD PLAN ================================================
+[DEBUG] Project: com.jkoolcloud.remora:remora-control:jar:0.1.5-SNAPSHOT
+[DEBUG] Tasks:   [clean, package]
+[DEBUG] Style:   Regular
+[DEBUG] =======================================================================
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building remora-control 0.1.5-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] === PROJECT BUILD PLAN ================================================
+[DEBUG] Project:       com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT
+[DEBUG] Dependencies (collect): []
+[DEBUG] Dependencies (resolve): [compile, runtime, test]
+[DEBUG] Repositories (dependencies): [central (https://repo.maven.apache.org/maven2, default, releases)]
+[DEBUG] Repositories (plugins)     : [central (https://repo.maven.apache.org/maven2, default, releases)]
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-clean-plugin:3.1.0:clean (default-clean)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <directory default-value="${project.build.directory}"/>
+  <excludeDefaultDirectories default-value="false">${maven.clean.excludeDefaultDirectories}</excludeDefaultDirectories>
+  <failOnError default-value="true">${maven.clean.failOnError}</failOnError>
+  <followSymLinks default-value="false">${maven.clean.followSymLinks}</followSymLinks>
+  <outputDirectory default-value="${project.build.outputDirectory}"/>
+  <reportDirectory default-value="${project.build.outputDirectory}"/>
+  <retryOnError default-value="true">${maven.clean.retryOnError}</retryOnError>
+  <skip default-value="false">${maven.clean.skip}</skip>
+  <testOutputDirectory default-value="${project.build.testOutputDirectory}"/>
+  <verbose>${maven.clean.verbose}</verbose>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-resources-plugin:3.0.2:resources (default-resources)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <addDefaultExcludes default-value="true"/>
+  <buildFilters default-value="${project.build.filters}"/>
+  <encoding default-value="${project.build.sourceEncoding}"/>
+  <escapeWindowsPaths default-value="true"/>
+  <fileNameFiltering default-value="false"/>
+  <includeEmptyDirs default-value="false"/>
+  <outputDirectory default-value="${project.build.outputDirectory}"/>
+  <overwrite default-value="false"/>
+  <project default-value="${project}"/>
+  <resources default-value="${project.resources}"/>
+  <session default-value="${session}"/>
+  <skip default-value="false">${maven.resources.skip}</skip>
+  <supportMultiLineFiltering default-value="false"/>
+  <useBuildFilters default-value="true"/>
+  <useDefaultDelimiters default-value="true"/>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-compiler-plugin:3.8.0:compile (default-compile)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <basedir default-value="${basedir}"/>
+  <buildDirectory default-value="${project.build.directory}"/>
+  <compilePath default-value="${project.compileClasspathElements}"/>
+  <compileSourceRoots default-value="${project.compileSourceRoots}"/>
+  <compilerId default-value="javac">${maven.compiler.compilerId}</compilerId>
+  <compilerReuseStrategy default-value="${reuseCreated}">${maven.compiler.compilerReuseStrategy}</compilerReuseStrategy>
+  <compilerVersion>${maven.compiler.compilerVersion}</compilerVersion>
+  <debug default-value="true">${maven.compiler.debug}</debug>
+  <debuglevel>${maven.compiler.debuglevel}</debuglevel>
+  <encoding default-value="${project.build.sourceEncoding}">${encoding}</encoding>
+  <executable>${maven.compiler.executable}</executable>
+  <failOnError default-value="true">${maven.compiler.failOnError}</failOnError>
+  <failOnWarning default-value="false">${maven.compiler.failOnWarning}</failOnWarning>
+  <forceJavacCompilerUse default-value="false">${maven.compiler.forceJavacCompilerUse}</forceJavacCompilerUse>
+  <fork default-value="false">${maven.compiler.fork}</fork>
+  <generatedSourcesDirectory default-value="${project.build.directory}/generated-sources/annotations"/>
+  <maxmem>${maven.compiler.maxmem}</maxmem>
+  <meminitial>${maven.compiler.meminitial}</meminitial>
+  <mojoExecution default-value="${mojoExecution}"/>
+  <optimize default-value="false">${maven.compiler.optimize}</optimize>
+  <outputDirectory default-value="${project.build.outputDirectory}"/>
+  <parameters default-value="false">${maven.compiler.parameters}</parameters>
+  <project default-value="${project}"/>
+  <projectArtifact default-value="${project.artifact}"/>
+  <release>${maven.compiler.release}</release>
+  <session default-value="${session}"/>
+  <showDeprecation default-value="false">${maven.compiler.showDeprecation}</showDeprecation>
+  <showWarnings default-value="false">${maven.compiler.showWarnings}</showWarnings>
+  <skipMain>${maven.main.skip}</skipMain>
+  <skipMultiThreadWarning default-value="false">${maven.compiler.skipMultiThreadWarning}</skipMultiThreadWarning>
+  <source default-value="1.6">${maven.compiler.source}</source>
+  <staleMillis default-value="0">${lastModGranularityMs}</staleMillis>
+  <target default-value="1.6">${maven.compiler.target}</target>
+  <useIncrementalCompilation default-value="true">${maven.compiler.useIncrementalCompilation}</useIncrementalCompilation>
+  <verbose default-value="false">${maven.compiler.verbose}</verbose>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-resources-plugin:3.0.2:testResources (default-testResources)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <addDefaultExcludes default-value="true"/>
+  <buildFilters default-value="${project.build.filters}"/>
+  <encoding default-value="${project.build.sourceEncoding}"/>
+  <escapeWindowsPaths default-value="true"/>
+  <fileNameFiltering default-value="false"/>
+  <includeEmptyDirs default-value="false"/>
+  <outputDirectory default-value="${project.build.testOutputDirectory}"/>
+  <overwrite default-value="false"/>
+  <project default-value="${project}"/>
+  <resources default-value="${project.testResources}"/>
+  <session default-value="${session}"/>
+  <skip default-value="false">${maven.test.skip}</skip>
+  <supportMultiLineFiltering default-value="false"/>
+  <useBuildFilters default-value="true"/>
+  <useDefaultDelimiters default-value="true"/>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-compiler-plugin:3.8.0:testCompile (default-testCompile)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <basedir default-value="${basedir}"/>
+  <buildDirectory default-value="${project.build.directory}"/>
+  <compilePath default-value="${project.compileClasspathElements}"/>
+  <compileSourceRoots default-value="${project.testCompileSourceRoots}"/>
+  <compilerId default-value="javac">${maven.compiler.compilerId}</compilerId>
+  <compilerReuseStrategy default-value="${reuseCreated}">${maven.compiler.compilerReuseStrategy}</compilerReuseStrategy>
+  <compilerVersion>${maven.compiler.compilerVersion}</compilerVersion>
+  <debug default-value="true">${maven.compiler.debug}</debug>
+  <debuglevel>${maven.compiler.debuglevel}</debuglevel>
+  <encoding default-value="${project.build.sourceEncoding}">${encoding}</encoding>
+  <executable>${maven.compiler.executable}</executable>
+  <failOnError default-value="true">${maven.compiler.failOnError}</failOnError>
+  <failOnWarning default-value="false">${maven.compiler.failOnWarning}</failOnWarning>
+  <forceJavacCompilerUse default-value="false">${maven.compiler.forceJavacCompilerUse}</forceJavacCompilerUse>
+  <fork default-value="false">${maven.compiler.fork}</fork>
+  <generatedTestSourcesDirectory default-value="${project.build.directory}/generated-test-sources/test-annotations"/>
+  <maxmem>${maven.compiler.maxmem}</maxmem>
+  <meminitial>${maven.compiler.meminitial}</meminitial>
+  <mojoExecution default-value="${mojoExecution}"/>
+  <optimize default-value="false">${maven.compiler.optimize}</optimize>
+  <outputDirectory default-value="${project.build.testOutputDirectory}"/>
+  <parameters default-value="false">${maven.compiler.parameters}</parameters>
+  <project default-value="${project}"/>
+  <release>${maven.compiler.release}</release>
+  <session default-value="${session}"/>
+  <showDeprecation default-value="false">${maven.compiler.showDeprecation}</showDeprecation>
+  <showWarnings default-value="false">${maven.compiler.showWarnings}</showWarnings>
+  <skip>${maven.test.skip}</skip>
+  <skipMultiThreadWarning default-value="false">${maven.compiler.skipMultiThreadWarning}</skipMultiThreadWarning>
+  <source default-value="1.6">${maven.compiler.source}</source>
+  <staleMillis default-value="0">${lastModGranularityMs}</staleMillis>
+  <target default-value="1.6">${maven.compiler.target}</target>
+  <testPath default-value="${project.testClasspathElements}"/>
+  <testRelease>${maven.compiler.testRelease}</testRelease>
+  <testSource>${maven.compiler.testSource}</testSource>
+  <testTarget>${maven.compiler.testTarget}</testTarget>
+  <useIncrementalCompilation default-value="true">${maven.compiler.useIncrementalCompilation}</useIncrementalCompilation>
+  <verbose default-value="false">${maven.compiler.verbose}</verbose>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test (default-test)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <additionalClasspathElements>${maven.test.additionalClasspath}</additionalClasspathElements>
+  <argLine>${argLine}</argLine>
+  <basedir default-value="${basedir}"/>
+  <childDelegation default-value="false">${childDelegation}</childDelegation>
+  <classesDirectory default-value="${project.build.outputDirectory}"/>
+  <classpathDependencyExcludes>${maven.test.dependency.excludes}</classpathDependencyExcludes>
+  <debugForkedProcess>${maven.surefire.debug}</debugForkedProcess>
+  <dependenciesToScan>${dependenciesToScan}</dependenciesToScan>
+  <disableXmlReport default-value="false">${disableXmlReport}</disableXmlReport>
+  <enableAssertions default-value="true">${enableAssertions}</enableAssertions>
+  <encoding default-value="${project.reporting.outputEncoding}">${surefire.encoding}</encoding>
+  <excludedGroups>${excludedGroups}</excludedGroups>
+  <excludesFile>${surefire.excludesFile}</excludesFile>
+  <failIfNoSpecifiedTests>${surefire.failIfNoSpecifiedTests}</failIfNoSpecifiedTests>
+  <failIfNoTests>${failIfNoTests}</failIfNoTests>
+  <forkCount default-value="1">${forkCount}</forkCount>
+  <forkMode default-value="once">${forkMode}</forkMode>
+  <forkedProcessExitTimeoutInSeconds default-value="30">${surefire.exitTimeout}</forkedProcessExitTimeoutInSeconds>
+  <forkedProcessTimeoutInSeconds>${surefire.timeout}</forkedProcessTimeoutInSeconds>
+  <groups>${groups}</groups>
+  <includesFile>${surefire.includesFile}</includesFile>
+  <junitArtifactName default-value="junit:junit">${junitArtifactName}</junitArtifactName>
+  <junitPlatformArtifactName default-value="org.junit.platform:junit-platform-engine">${junitPlatformArtifactName}</junitPlatformArtifactName>
+  <jvm>${jvm}</jvm>
+  <localRepository default-value="${localRepository}"/>
+  <objectFactory>${objectFactory}</objectFactory>
+  <parallel>${parallel}</parallel>
+  <parallelMavenExecution default-value="${session.parallel}"/>
+  <parallelOptimized default-value="true">${parallelOptimized}</parallelOptimized>
+  <parallelTestsTimeoutForcedInSeconds>${surefire.parallel.forcedTimeout}</parallelTestsTimeoutForcedInSeconds>
+  <parallelTestsTimeoutInSeconds>${surefire.parallel.timeout}</parallelTestsTimeoutInSeconds>
+  <perCoreThreadCount default-value="true">${perCoreThreadCount}</perCoreThreadCount>
+  <pluginArtifactMap>${plugin.artifactMap}</pluginArtifactMap>
+  <pluginDescriptor default-value="${plugin}"/>
+  <printSummary default-value="true">${surefire.printSummary}</printSummary>
+  <projectArtifactMap>${project.artifactMap}</projectArtifactMap>
+  <projectBuildDirectory default-value="${project.build.directory}"/>
+  <redirectTestOutputToFile default-value="false">${maven.test.redirectTestOutputToFile}</redirectTestOutputToFile>
+  <remoteRepositories default-value="${project.pluginArtifactRepositories}"/>
+  <reportFormat default-value="brief">${surefire.reportFormat}</reportFormat>
+  <reportNameSuffix default-value="">${surefire.reportNameSuffix}</reportNameSuffix>
+  <reportsDirectory default-value="${project.build.directory}/surefire-reports"/>
+  <rerunFailingTestsCount default-value="0">${surefire.rerunFailingTestsCount}</rerunFailingTestsCount>
+  <reuseForks default-value="true">${reuseForks}</reuseForks>
+  <runOrder default-value="filesystem">${surefire.runOrder}</runOrder>
+  <shutdown default-value="testset">${surefire.shutdown}</shutdown>
+  <skip default-value="false">${maven.test.skip}</skip>
+  <skipAfterFailureCount default-value="0">${surefire.skipAfterFailureCount}</skipAfterFailureCount>
+  <skipExec>${maven.test.skip.exec}</skipExec>
+  <skipTests default-value="false">${skipTests}</skipTests>
+  <suiteXmlFiles>${surefire.suiteXmlFiles}</suiteXmlFiles>
+  <tempDir default-value="surefire">${tempDir}</tempDir>
+  <test>${test}</test>
+  <testClassesDirectory default-value="${project.build.testOutputDirectory}"/>
+  <testFailureIgnore default-value="false">${maven.test.failure.ignore}</testFailureIgnore>
+  <testNGArtifactName default-value="org.testng:testng">${testNGArtifactName}</testNGArtifactName>
+  <testSourceDirectory default-value="${project.build.testSourceDirectory}"/>
+  <threadCount>${threadCount}</threadCount>
+  <threadCountClasses default-value="0">${threadCountClasses}</threadCountClasses>
+  <threadCountMethods default-value="0">${threadCountMethods}</threadCountMethods>
+  <threadCountSuites default-value="0">${threadCountSuites}</threadCountSuites>
+  <trimStackTrace default-value="true">${trimStackTrace}</trimStackTrace>
+  <useFile default-value="true">${surefire.useFile}</useFile>
+  <useManifestOnlyJar default-value="true">${surefire.useManifestOnlyJar}</useManifestOnlyJar>
+  <useSystemClassLoader default-value="true">${surefire.useSystemClassLoader}</useSystemClassLoader>
+  <useUnlimitedThreads default-value="false">${useUnlimitedThreads}</useUnlimitedThreads>
+  <workingDirectory>${basedir}</workingDirectory>
+  <project default-value="${project}"/>
+  <session default-value="${session}"/>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-jar-plugin:3.0.2:jar (default-jar)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <archive>
+    <manifest>
+      <addClasspath>false</addClasspath>
+    </manifest>
+  </archive>
+  <classesDirectory default-value="${project.build.outputDirectory}"/>
+  <finalName default-value="${project.build.finalName}"/>
+  <forceCreation default-value="false">${maven.jar.forceCreation}</forceCreation>
+  <outputDirectory default-value="${project.build.directory}"/>
+  <project default-value="${project}"/>
+  <session default-value="${session}"/>
+  <skipIfEmpty default-value="false"/>
+  <useDefaultManifestFile default-value="false">${jar.useDefaultManifestFile}</useDefaultManifestFile>
+</configuration>
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Goal:          org.apache.maven.plugins:maven-shade-plugin:3.2.1:shade (default)
+[DEBUG] Style:         Regular
+[DEBUG] Configuration: <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <artifactSet>
+    <excludes>
+      <exclude>com.jkoolcloud.remora:remora-core</exclude>
+      <exclude>net.openhft:*</exclude>
+      <exclude>net.bytebuddy:*</exclude>
+      <exclude>org.tinylog:*</exclude>
+      <exclude>com.intellij:*</exclude>
+      <exclude>com.fasterxml.uuid:java-uuid-generator</exclude>
+      <exclude>net.java.dev.jna:*</exclude>
+      <exclude>commons-cli:*</exclude>
+      <exclude>org.slf4j:*</exclude>
+      <exclude>org.openjdk.jmh:*</exclude>
+      <exclude>net.sf.jopt-simple:*</exclude>
+      <exclude>org.apache.commons:commons-math3</exclude>
+      <exclude>org.openjdk.jmh:*</exclude>
+    </excludes>
+  </artifactSet>
+  <createDependencyReducedPom default-value="true">false</createDependencyReducedPom>
+  <dependencyReducedPomLocation default-value="${basedir}/dependency-reduced-pom.xml"/>
+  <filters>
+    <filter>
+      <artifact>*:*</artifact>
+      <excludes>
+        <exclude>META-INF/*.SF</exclude>
+        <exclude>META-INF/*.DSA</exclude>
+        <exclude>META-INF/*.RSA</exclude>
+      </excludes>
+    </filter>
+    <filter>
+      <artifact>org.takes:takes</artifact>
+      <includes>
+        <include>**</include>
+      </includes>
+    </filter>
+  </filters>
+  <finalName>remora-control-0.1.5-SNAPSHOT</finalName>
+  <generateUniqueDependencyReducedPom default-value="false"/>
+  <localRepository default-value="${localRepository}"/>
+  <outputDirectory default-value="${project.build.directory}"/>
+  <project default-value="${project}"/>
+  <relocations>
+    <relocation>
+      <pattern>org.tinylog</pattern>
+      <shadedPattern>com.jkoolcloud.remora.shaded.org.tinylog</shadedPattern>
+    </relocation>
+    <relocation>
+      <pattern>org.jboss</pattern>
+      <shadedPattern>com.jkoolcloud.remora.shaded.org.jboss</shadedPattern>
+    </relocation>
+  </relocations>
+  <remoteArtifactRepositories default-value="${project.remoteArtifactRepositories}"/>
+  <session default-value="${session}"/>
+  <shadeSourcesContent default-value="false">${shadeSourcesContent}</shadeSourcesContent>
+  <shadeTestJar default-value="false"/>
+  <shadedArtifactId default-value="${project.artifactId}"/>
+  <shadedClassifierName default-value="shaded"/>
+  <transformers>
+    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+      <manifestEntries>
+        <Implementation-Version>0.1.5-SNAPSHOT-2020-03-24T08:36:17Z</Implementation-Version>
+        <Class-Path>./</Class-Path>
+      </manifestEntries>
+    </transformer>
+    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+  </transformers>
+  <useBaseVersion default-value="false"/>
+</configuration>
+[DEBUG] =======================================================================
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=1, ConflictMarker.markTime=1, ConflictMarker.nodeCount=90, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=1, ConflictIdSorter.conflictIdCount=42, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=4, ConflictResolver.conflictItemCount=79, DefaultDependencyCollector.collectTime=382, DefaultDependencyCollector.transformTime=9}
+[DEBUG] com.jkoolcloud.remora:remora-control:jar:0.1.5-SNAPSHOT
+[DEBUG]    com.jkoolcloud.remora:remora-core:jar:0.1.5-SNAPSHOT:compile
+[DEBUG]       net.openhft:chronicle-queue:jar:5.17.43:compile
+[DEBUG]          net.openhft:chronicle-core:jar:2.17.35:compile
+[DEBUG]             com.intellij:annotations:jar:12.0:compile
+[DEBUG]          net.openhft:chronicle-bytes:jar:2.17.49:compile
+[DEBUG]          net.openhft:chronicle-wire:jar:2.17.71:compile
+[DEBUG]             net.openhft:compiler:jar:2.3.4:compile
+[DEBUG]          net.openhft:chronicle-threads:jar:2.17.27:compile
+[DEBUG]             net.openhft:affinity:jar:3.2.2:compile
+[DEBUG]                net.java.dev.jna:jna:jar:4.2.1:compile
+[DEBUG]                net.java.dev.jna:jna-platform:jar:4.2.1:compile
+[DEBUG]          commons-cli:commons-cli:jar:1.4:compile
+[DEBUG]          org.slf4j:slf4j-api:jar:1.7.25:compile
+[DEBUG]          com.sun:tools:jar:1.8.0_102:system
+[DEBUG]       com.fasterxml.uuid:java-uuid-generator:jar:4.0:compile
+[DEBUG]       org.openjdk.jmh:jmh-core:jar:1.21:compile
+[DEBUG]          net.sf.jopt-simple:jopt-simple:jar:4.6:compile
+[DEBUG]          org.apache.commons:commons-math3:jar:3.2:compile
+[DEBUG]       org.openjdk.jmh:jmh-generator-annprocess:jar:1.21:compile
+[DEBUG]    org.takes:takes:jar:1.19:compile
+[DEBUG]       org.cactoos:cactoos:jar:0.42:compile
+[DEBUG]       org.apache.commons:commons-text:jar:1.4:compile
+[DEBUG]          org.apache.commons:commons-lang3:jar:3.7:compile
+[DEBUG]    com.jkoolcloud.remora:remora-core:jar:tests:0.1.5-SNAPSHOT:test
+[DEBUG]    com.fasterxml.jackson.core:jackson-databind:jar:2.7.0:test
+[DEBUG]       com.fasterxml.jackson.core:jackson-annotations:jar:2.7.0:test
+[DEBUG]       com.fasterxml.jackson.core:jackson-core:jar:2.7.0:test
+[DEBUG]    net.bytebuddy:byte-buddy:jar:1.10.6:compile
+[DEBUG]    org.tinylog:tinylog-api:jar:2.0.1:compile
+[DEBUG]    org.tinylog:tinylog-impl:jar:2.0.1:compile
+[DEBUG]    junit:junit:jar:4.13:test
+[DEBUG]       org.hamcrest:hamcrest-core:jar:1.3:test
+[DEBUG]    org.powermock:powermock-module-junit4:jar:2.0.5:test
+[DEBUG]       org.powermock:powermock-module-junit4-common:jar:2.0.5:test
+[DEBUG]          org.powermock:powermock-reflect:jar:2.0.5:test
+[DEBUG]             net.bytebuddy:byte-buddy-agent:jar:1.9.10:test
+[DEBUG]          org.powermock:powermock-core:jar:2.0.5:test
+[DEBUG]             org.javassist:javassist:jar:3.25.0-GA:test
+[DEBUG]    org.powermock:powermock-api-mockito2:jar:2.0.5:test
+[DEBUG]       org.powermock:powermock-api-support:jar:2.0.5:test
+[DEBUG]       org.mockito:mockito-core:jar:2.28.2:test
+[DEBUG]          org.objenesis:objenesis:jar:2.6:test
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ remora-control ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=14, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=12, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=1, ConflictResolver.conflictItemCount=14, DefaultDependencyCollector.collectTime=341, DefaultDependencyCollector.transformTime=1}
+[DEBUG] org.apache.maven.plugins:maven-clean-plugin:jar:3.1.0:
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]          org.codehaus.plexus:plexus-utils:jar:2.0.4:compile
+[DEBUG]       org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.codehaus.plexus:plexus-component-annotations:jar:1.7.1:compile
+[DEBUG]          org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]    org.apache.maven.shared:maven-shared-utils:jar:3.2.1:compile
+[DEBUG]       commons-io:commons-io:jar:2.5:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-clean-plugin:3.1.0
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-clean-plugin:3.1.0
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-clean-plugin:3.1.0
+[DEBUG]   Included: org.apache.maven.plugins:maven-clean-plugin:jar:3.1.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:2.0.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.7.1
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.2.1
+[DEBUG]   Included: commons-io:commons-io:jar:2.5
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-clean-plugin:3.1.0:clean from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-clean-plugin:3.1.0, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-clean-plugin:3.1.0:clean' with basic configurator -->
+[DEBUG]   (f) directory = c:\workspace\remoraj\remora-control\target
+[DEBUG]   (f) excludeDefaultDirectories = false
+[DEBUG]   (f) failOnError = true
+[DEBUG]   (f) followSymLinks = false
+[DEBUG]   (f) outputDirectory = c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]   (f) reportDirectory = c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]   (f) retryOnError = true
+[DEBUG]   (f) skip = false
+[DEBUG]   (f) testOutputDirectory = c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG] -- end configuration --
+[INFO] Deleting c:\workspace\remoraj\remora-control\target
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\test-classes\com\jkoolcloud\remora\advices\RemoraControlAdviceTest.class
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\test-classes\com\jkoolcloud\remora\advices
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\test-classes\com\jkoolcloud\remora
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\test-classes\com\jkoolcloud
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\test-classes\com
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\test-classes
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\remora-control-0.1.5-SNAPSHOT.jar
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\original-remora-control-0.1.5-SNAPSHOT.jar
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\testCompile\default-testCompile\inputFiles.lst
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\testCompile\default-testCompile\createdFiles.lst
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\testCompile\default-testCompile
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\testCompile
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\compile\default-compile\inputFiles.lst
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\compile\default-compile\createdFiles.lst
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\compile\default-compile
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin\compile
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-status\maven-compiler-plugin
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-status
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\maven-archiver\pom.properties
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\maven-archiver
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\generated-test-sources
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\generated-sources\annotations
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\generated-sources
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\classes\META-INF\services\com.jkoolcloud.remora.advices.RemoraAdvice
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes\META-INF\services
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes\META-INF
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora\advices\RemoraControlAdvice.class
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora\advices\RemoraControlAdvice$PropertiesChangeHandler.class
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora\advices\RemoraControlAdvice$GetCapabilitiesHandler.class
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora\advices\RemoraControlAdvice$AvailableInetSocketAddress.class
+[INFO] Deleting file C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora\advices\RemoraControlAdvice$AdminReporter.class
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora\advices
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud\remora
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes\com\jkoolcloud
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes\com
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target\classes
+[INFO] Deleting directory C:\workspace\remoraj\remora-control\target
+[DEBUG] Skipping non-existing directory c:\workspace\remoraj\remora-control\target\classes
+[DEBUG] Skipping non-existing directory c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG] Skipping non-existing directory c:\workspace\remoraj\remora-control\target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ remora-control ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=68, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=28, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=0, ConflictResolver.conflictItemCount=67, DefaultDependencyCollector.collectTime=149, DefaultDependencyCollector.transformTime=0}
+[DEBUG] org.apache.maven.plugins:maven-resources-plugin:jar:3.0.2:
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]    org.apache.maven:maven-core:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-aether-provider:jar:3.0:runtime
+[DEBUG]       org.sonatype.aether:aether-impl:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-spi:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-api:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-util:jar:1.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.6:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.0.24:compile
+[DEBUG]    org.apache.maven.shared:maven-filtering:jar:3.1.1:compile
+[DEBUG]       org.apache.maven.shared:maven-shared-utils:jar:3.0.0:compile
+[DEBUG]          com.google.code.findbugs:jsr305:jar:2.0.1:compile
+[DEBUG]       org.sonatype.plexus:plexus-build-api:jar:0.0.7:compile
+[DEBUG]    commons-io:commons-io:jar:2.5:compile
+[DEBUG]    org.codehaus.plexus:plexus-interpolation:jar:1.24:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-resources-plugin:3.0.2
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-resources-plugin:3.0.2
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-resources-plugin:3.0.2
+[DEBUG]   Included: org.apache.maven.plugins:maven-resources-plugin:jar:3.0.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.sonatype.aether:aether-util:jar:1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.6
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.0.24
+[DEBUG]   Included: org.apache.maven.shared:maven-filtering:jar:3.1.1
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.0.0
+[DEBUG]   Included: com.google.code.findbugs:jsr305:jar:2.0.1
+[DEBUG]   Included: org.sonatype.plexus:plexus-build-api:jar:0.0.7
+[DEBUG]   Included: commons-io:commons-io:jar:2.5
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.24
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-resources-plugin:3.0.2:resources from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-resources-plugin:3.0.2, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-resources-plugin:3.0.2:resources' with basic configurator -->
+[DEBUG]   (f) addDefaultExcludes = true
+[DEBUG]   (f) buildFilters = []
+[DEBUG]   (f) encoding = UTF-8
+[DEBUG]   (f) escapeWindowsPaths = true
+[DEBUG]   (f) fileNameFiltering = false
+[DEBUG]   (s) includeEmptyDirs = false
+[DEBUG]   (s) outputDirectory = c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]   (s) overwrite = false
+[DEBUG]   (f) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (s) resources = [Resource {targetPath: null, filtering: false, FileSet {directory: c:\workspace\remoraj\remora-control\src\main\resources, PatternSet [includes: {}, excludes: {}]}}]
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG]   (f) skip = false
+[DEBUG]   (f) supportMultiLineFiltering = false
+[DEBUG]   (f) useBuildFilters = true
+[DEBUG]   (s) useDefaultDelimiters = true
+[DEBUG] -- end configuration --
+[DEBUG] properties used {file.encoding.pkg=sun.io, env.PROMPT=$P$G, user.language.format=lt, env.CONFIGSETROOT=C:\WINDOWS\ConfigSetRoot, java.home=C:\Program Files\Java\jdk1.8.0_102\jre, classworlds.conf=C:\maven\apache-maven-3.3.9\bin\..\bin\m2.conf, java.endorsed.dirs=C:\Program Files\Java\jdk1.8.0_102\jre\lib\endorsed, env.USERNAME=slabs, env.MQ_JRE_PATH=C:\Program Files\IBM\MQ\java\jre, sun.os.patch.level=, java.vendor.url=http://java.oracle.com/, env.INCLUDE=C:\Program Files\IBM\MQ\tools\c\include;C:\Program Files\IBM\MQ\tools\cplus\include, env.COMPUTERNAME=SLABS-MARIUS-PC, env.=C:=c:\workspace\remoraj\remora-control, java.version=1.8.0_102, env.DRIVERDATA=C:\Windows\System32\Drivers\DriverData, env.FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer, java.vendor.url.bug=http://bugreport.sun.com/bugreport/, env.USERPROFILE=C:\Users\slabs, skipTests=true, chronicle.version=5.17.43, user.name=slabs, sun.io.unicode.encoding=UnicodeLittle, sun.jnu.encoding=Cp1257, java.runtime.name=Java(TM) SE Runtime Environment, env.CHOCOLATEYLASTPATHUPDATE=kt spal. 11 10:57:28 2018, env.LOCALAPPDATA=C:\Users\slabs\AppData\Local, env.READYAPPS=C:\SWTOOLS\ReadyApps, env.WINDOWS_TRACING_LOGFILE=C:\BVTBin\Tests\installpackage\csilogfile.log, env.ASL.LOG=Destination=file, env.COMMONPROGRAMW6432=C:\Program Files\Common Files, websphere.install.dir=C://Users//slabs//IBM//WebSphere//AppServer2, env.COMMANDER_EXE=C:\totalcmd\TOTALCMD64.EXE, java.specification.name=Java Platform API Specification, user.timezone=Europe/Helsinki, env.MQ_JAVA_INSTALL_PATH=C:\Program Files\IBM\MQ\java, user.script=, path.separator=;, env.MAVEN_CMD_LINE_ARGS=clean package -DskipTests -X, env.PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 94 Stepping 3, GenuineIntel, file.encoding=Cp1257, env.HOME=C:\Users\slabs, sun.java.command=org.codehaus.plexus.classworlds.launcher.Launcher clean package -DskipTests -X, env.NUMBER_OF_PROCESSORS=8, env.APPDATA=C:\Users\slabs\AppData\Roaming, env.ONEDRIVECONSUMER=C:\Users\slabs\OneDrive, env.POWERMGRPATH=C:\Program Files (x86)\Lenovo\PowerMgr, env.WINDIR=C:\WINDOWS, java.io.tmpdir=C:\Users\slabs\AppData\Local\Temp\, env.TVTCOMMON=C:\Program Files (x86)\Common Files\Lenovo, user.language=en, line.separator=
+, project.baseUri=file:/c:/workspace/remoraj/remora-control/, env.MQ_JAVA_LIB_PATH=C:\Program Files\IBM\MQ\java\lib64;C:\Program Files\IBM\MQ\java\lib, env.COMMONPROGRAMFILES=C:\Program Files\Common Files, java.vm.info=mixed mode, sun.desktop=windows, java.vm.specification.name=Java Virtual Machine Specification, env.MQ_JAVA_DATA_PATH=C:\ProgramData\IBM\MQ, env.M2_HOME=C:\maven\apache-maven-3.3.9\bin\.., env.PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC, env.WDIR=c:\, env.ONEDRIVE=C:\Users\slabs\OneDrive, env.USERDOMAIN_ROAMINGPROFILE=slabs-marius-PC, env.LOGONSERVER=\\SLABS-MARIUS-PC, env.PSMODULEPATH=C:\Users\slabs\Documents\WindowsPowerShell\Modules, java.awt.printerjob=sun.awt.windows.WPrinterJob, env.PUBLIC=C:\Users\Public, byte.buddy.version=1.10.6, env.USERDOMAIN=slabs-marius-PC, skip.assembly.pack=false, user.country.format=LT, env.VBOX_MSI_INSTALL_PATH=C:\Program Files\Oracle\VirtualBox\, env.MQ_FILE_PATH=C:\Program Files\IBM\MQ, env.PROCESSOR_LEVEL=6, env.PROGRAMFILES(X86)=C:\Program Files (x86), maven.build.timestamp=2020-03-24T08:36:18Z, env.CLASSPATH=C:\Program Files\IBM\MQ\java\lib\com.ibm.mqjms.jar;C:\Program Files\IBM\MQ\java\lib\com.ibm.mq.jar, os.name=Windows 10, java.specification.vendor=Oracle Corporation, env.TMP=C:\Users\slabs\AppData\Local\Temp, java.vm.name=Java HotSpot(TM) 64-Bit Server VM, env.OS=Windows_NT, java.library.path=C:\Program Files\Java\jdk1.8.0_102\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\IBM\MQ\java\lib;C:\Program Files\IBM\MQ\java\lib64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Python27\;C:\Python27\Scripts;C:\ProgramData\Boxstarter;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\Lenovo;C:\SWTOOLS\ReadyApps;C:\maven\apache-maven-3.3.9\bin;C:\Program Files (x86)\PuTTY\;C:\Program Files\TortoiseHg\;C:\Program Files (x86)\msb-4.4.6;c:\java\jdk8\bin\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\nastel\AutoPilotM6\bin;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;c:\Program Files\IBM\MQ905\bin64\;c:\Program Files\IBM\MQ905\bin\;c:\leiningen\bin;C:\Program Files\IBM\MQ\bin64;C:\Program Files\IBM\MQ\bin;C:\Program Files\IBM\MQ\tools\c\samples\bin64;C:\Program Files\IBM\MQ\tools\c\samples\bin;C:\Program Files\TortoiseGit\bin;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\Scripts\;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\;C:\Program Files (x86)\Nmap;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;C:\Users\slabs\AppData\Roaming\npm;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;c:\gradle\bin\;., env.PROGRAMW6432=C:\Program Files, env.PATH=C:\Program Files\IBM\MQ\java\lib;C:\Program Files\IBM\MQ\java\lib64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Python27\;C:\Python27\Scripts;C:\ProgramData\Boxstarter;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\Lenovo;C:\SWTOOLS\ReadyApps;C:\maven\apache-maven-3.3.9\bin;C:\Program Files (x86)\PuTTY\;C:\Program Files\TortoiseHg\;C:\Program Files (x86)\msb-4.4.6;c:\java\jdk8\bin\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\nastel\AutoPilotM6\bin;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;c:\Program Files\IBM\MQ905\bin64\;c:\Program Files\IBM\MQ905\bin\;c:\leiningen\bin;C:\Program Files\IBM\MQ\bin64;C:\Program Files\IBM\MQ\bin;C:\Program Files\IBM\MQ\tools\c\samples\bin64;C:\Program Files\IBM\MQ\tools\c\samples\bin;C:\Program Files\TortoiseGit\bin;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\Scripts\;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\;C:\Program Files (x86)\Nmap;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;C:\Users\slabs\AppData\Roaming\npm;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;c:\gradle\bin\, java.class.version=52.0, maven.multiModuleProjectDirectory=c:\workspace\remoraj\remora-control, env.HOMEDRIVE=C:, env.SYSTEMROOT=C:\WINDOWS, env.COMSPEC=C:\WINDOWS\system32\cmd.exe, sun.boot.library.path=C:\Program Files\Java\jdk1.8.0_102\jre\bin, project.build.sourceEncoding=UTF-8, env.SYSTEMDRIVE=C:, env.COMMANDER_PATH=C:\totalcmd, env.PROCESSOR_REVISION=5e03, sun.management.compiler=HotSpot 64-Bit Tiered Compilers, java.awt.graphicsenv=sun.awt.Win32GraphicsEnvironment, user.variant=, env.PROGRAMFILES=C:\Program Files, java.vm.specification.version=1.8, env.MAVEN_JAVA_EXE="C:\Program Files\Java\jdk1.8.0_102\\bin\java.exe", env.PROGRAMDATA=C:\ProgramData, awt.toolkit=sun.awt.windows.WToolkit, powermock.version=2.0.5, sun.cpu.isalist=amd64, sun.stderr.encoding=cp775, env.MAVEN_PROJECTBASEDIR=c:\workspace\remoraj\remora-control, java.ext.dirs=C:\Program Files\Java\jdk1.8.0_102\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext, os.version=10.0, env.ERROR_CODE=0, user.home=C:\Users\slabs, env.CHOCOLATEYINSTALL=C:\ProgramData\chocolatey, java.vm.vendor=Oracle Corporation, env.JAVA_HOME=C:\Program Files\Java\jdk1.8.0_102\, user.dir=c:\workspace\remoraj\remora-control, env.COMMONPROGRAMFILES(X86)=C:\Program Files (x86)\Common Files, env.FP_NO_HOST_CHECK=NO, env.TVT=C:\Program Files (x86)\Lenovo, env.AUTOPILOT_HOME=C:\nastel\AutoPilotM6, sun.cpu.endian=little, env.COMMANDER_DRIVE=C:, env.ALLUSERSPROFILE=C:\ProgramData, env.CLASSWORLDS_LAUNCHER=org.codehaus.plexus.classworlds.launcher.Launcher, env.PROCESSOR_ARCHITECTURE=AMD64, tinylog.version=2.0.1, java.vm.version=25.102-b14, java.class.path=C:\maven\apache-maven-3.3.9\bin\..\boot\plexus-classworlds-2.5.2.jar, env.=::=::\, org.slf4j.simpleLogger.defaultLogLevel=debug, env.HOMEPATH=\Users\slabs, env.EXEC_DIR=c:\workspace\remoraj\remora-control, os.arch=amd64, maven.build.version=Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T18:41:47+02:00), env.SESSIONNAME=RDP-Tcp#48, env.WINDOWS_TRACING_FLAGS=3, sun.java.launcher=SUN_STANDARD, java.vm.specification.vendor=Oracle Corporation, env.SWSHARE=C:\SWSHARE, file.separator=\, java.runtime.version=1.8.0_102-b14, sun.boot.class.path=C:\Program Files\Java\jdk1.8.0_102\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_102\jre\classes, maven.version=3.3.9, env.TEMP=C:\Users\slabs\AppData\Local\Temp, user.country=US, env.FPS_BROWSER_USER_PROFILE_STRING=Default, maven.home=C:\maven\apache-maven-3.3.9\bin\.., env.CLIENTNAME=DESKTOP-O0PF3ID, maven.compiler.target=1.8, env.ERLANG_HOME=C:\Program Files\erl10.0.1, env.LIB=C:\Program Files\IBM\MQ\tools\lib64;C:\Program Files\IBM\MQ\tools\lib, java.vendor=Oracle Corporation, env.COMMANDER_INI=C:\Users\slabs\AppData\Roaming\GHISLER\wincmd.ini, env.CLASSWORLDS_JAR="C:\maven\apache-maven-3.3.9\bin\..\boot\plexus-classworlds-2.5.2.jar", maven.compiler.source=1.8, java.specification.version=1.8, sun.arch.data.model=64}
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[DEBUG] resource with targetPath null
+directory c:\workspace\remoraj\remora-control\src\main\resources
+excludes []
+includes []
+[DEBUG] ignoreDelta true
+[INFO] Copying 1 resource
+[DEBUG] Copying file META-INF\services\com.jkoolcloud.remora.advices.RemoraAdvice
+[DEBUG] file com.jkoolcloud.remora.advices.RemoraAdvice has a filtered file extension
+[DEBUG] copy c:\workspace\remoraj\remora-control\src\main\resources\META-INF\services\com.jkoolcloud.remora.advices.RemoraAdvice to c:\workspace\remoraj\remora-control\target\classes\META-INF\services\com.jkoolcloud.remora.advices.RemoraAdvice
+[DEBUG] no use filter components
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:compile (default-compile) @ remora-control ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=118, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=45, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=2, ConflictResolver.conflictItemCount=72, DefaultDependencyCollector.collectTime=161, DefaultDependencyCollector.transformTime=2}
+[DEBUG] org.apache.maven.plugins:maven-compiler-plugin:jar:3.8.0:
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]    org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-utils:jar:2.0.4:compile
+[DEBUG]    org.apache.maven:maven-core:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-aether-provider:jar:3.0:runtime
+[DEBUG]       org.sonatype.aether:aether-impl:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-spi:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-api:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-util:jar:1.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.14:compile
+[DEBUG]       org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.7.1:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven.shared:maven-shared-utils:jar:3.2.1:compile
+[DEBUG]       commons-io:commons-io:jar:2.5:compile
+[DEBUG]    org.apache.maven.shared:maven-shared-incremental:jar:1.1:compile
+[DEBUG]    org.codehaus.plexus:plexus-java:jar:0.9.10:compile
+[DEBUG]       org.ow2.asm:asm:jar:6.2:compile
+[DEBUG]       com.thoughtworks.qdox:qdox:jar:2.0-M9:compile
+[DEBUG]    org.codehaus.plexus:plexus-compiler-api:jar:2.8.4:compile
+[DEBUG]    org.codehaus.plexus:plexus-compiler-manager:jar:2.8.4:compile
+[DEBUG]    org.codehaus.plexus:plexus-compiler-javac:jar:2.8.4:runtime
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.0
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.0
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.0
+[DEBUG]   Included: org.apache.maven.plugins:maven-compiler-plugin:jar:3.8.0
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:2.0.4
+[DEBUG]   Included: org.sonatype.aether:aether-util:jar:1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.14
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.7.1
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.2.1
+[DEBUG]   Included: commons-io:commons-io:jar:2.5
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-incremental:jar:1.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-java:jar:0.9.10
+[DEBUG]   Included: org.ow2.asm:asm:jar:6.2
+[DEBUG]   Included: com.thoughtworks.qdox:qdox:jar:2.0-M9
+[DEBUG]   Included: org.codehaus.plexus:plexus-compiler-api:jar:2.8.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-compiler-manager:jar:2.8.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-compiler-javac:jar:2.8.4
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-compiler-plugin:3.8.0:compile from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.0, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-compiler-plugin:3.8.0:compile' with basic configurator -->
+[DEBUG]   (f) basedir = c:\workspace\remoraj\remora-control
+[DEBUG]   (f) buildDirectory = c:\workspace\remoraj\remora-control\target
+[DEBUG]   (f) compilePath = [c:\workspace\remoraj\remora-control\target\classes, C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar, C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar, C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar, C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar, C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar, C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar, C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar, C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar, C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar, C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar, C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar, C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar, C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar, C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar, C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar, C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar, C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar, C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar]
+[DEBUG]   (f) compileSourceRoots = [c:\workspace\remoraj\remora-control\src\main\java]
+[DEBUG]   (f) compilerId = javac
+[DEBUG]   (f) debug = true
+[DEBUG]   (f) encoding = UTF-8
+[DEBUG]   (f) failOnError = true
+[DEBUG]   (f) failOnWarning = false
+[DEBUG]   (f) forceJavacCompilerUse = false
+[DEBUG]   (f) fork = false
+[DEBUG]   (f) generatedSourcesDirectory = c:\workspace\remoraj\remora-control\target\generated-sources\annotations
+[DEBUG]   (f) mojoExecution = org.apache.maven.plugins:maven-compiler-plugin:3.8.0:compile {execution: default-compile}
+[DEBUG]   (f) optimize = false
+[DEBUG]   (f) outputDirectory = c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]   (f) parameters = false
+[DEBUG]   (f) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (f) projectArtifact = com.jkoolcloud.remora:remora-control:jar:0.1.5-SNAPSHOT
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG]   (f) showDeprecation = false
+[DEBUG]   (f) showWarnings = false
+[DEBUG]   (f) skipMultiThreadWarning = false
+[DEBUG]   (f) source = 1.8
+[DEBUG]   (f) staleMillis = 0
+[DEBUG]   (s) target = 1.8
+[DEBUG]   (f) useIncrementalCompilation = true
+[DEBUG]   (f) verbose = false
+[DEBUG] -- end configuration --
+[DEBUG] Using compiler 'javac'.
+[DEBUG] Adding c:\workspace\remoraj\remora-control\target\generated-sources\annotations to compile source roots:
+  c:\workspace\remoraj\remora-control\src\main\java
+[DEBUG] New compile source roots:
+  c:\workspace\remoraj\remora-control\src\main\java
+  c:\workspace\remoraj\remora-control\target\generated-sources\annotations
+[DEBUG] CompilerReuseStrategy: reuseCreated
+[DEBUG] useIncrementalCompilation enabled
+[DEBUG] Stale source detected: c:\workspace\remoraj\remora-control\src\main\java\com\jkoolcloud\remora\advices\RemoraControlAdvice.java
+[DEBUG] Stale source detected: c:\workspace\remoraj\remora-control\src\main\java\com\jkoolcloud\remora\advices\RestResource.java
+[INFO] Changes detected - recompiling the module!
+[DEBUG] Classpath:
+[DEBUG]  c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]  C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar
+[DEBUG]  C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar
+[DEBUG] Source roots:
+[DEBUG]  c:\workspace\remoraj\remora-control\src\main\java
+[DEBUG]  c:\workspace\remoraj\remora-control\target\generated-sources\annotations
+[DEBUG] Command line options:
+[DEBUG] -d c:\workspace\remoraj\remora-control\target\classes -classpath c:\workspace\remoraj\remora-control\target\classes;C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar;C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar;C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar;C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar;C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar;C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar;C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar;C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar;C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar;C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar;C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar;C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar;C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar;C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar;C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar;C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar;C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar;C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar;C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar;C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar;C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar; -sourcepath c:\workspace\remoraj\remora-control\src\main\java;c:\workspace\remoraj\remora-control\target\generated-sources\annotations; -s c:\workspace\remoraj\remora-control\target\generated-sources\annotations -g -nowarn -target 1.8 -source 1.8 -encoding UTF-8
+[DEBUG] incrementalBuildHelper#beforeRebuildExecution
+[INFO] Compiling 2 source files to c:\workspace\remoraj\remora-control\target\classes
+[DEBUG] incrementalBuildHelper#afterRebuildExecution
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ remora-control ---
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-resources-plugin:3.0.2:testResources from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-resources-plugin:3.0.2, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-resources-plugin:3.0.2:testResources' with basic configurator -->
+[DEBUG]   (f) addDefaultExcludes = true
+[DEBUG]   (f) buildFilters = []
+[DEBUG]   (f) encoding = UTF-8
+[DEBUG]   (f) escapeWindowsPaths = true
+[DEBUG]   (f) fileNameFiltering = false
+[DEBUG]   (s) includeEmptyDirs = false
+[DEBUG]   (s) outputDirectory = c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG]   (s) overwrite = false
+[DEBUG]   (f) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (s) resources = [Resource {targetPath: null, filtering: false, FileSet {directory: c:\workspace\remoraj\remora-control\src\test\resources, PatternSet [includes: {}, excludes: {}]}}]
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG]   (f) skip = false
+[DEBUG]   (f) supportMultiLineFiltering = false
+[DEBUG]   (f) useBuildFilters = true
+[DEBUG]   (s) useDefaultDelimiters = true
+[DEBUG] -- end configuration --
+[DEBUG] properties used {file.encoding.pkg=sun.io, env.PROMPT=$P$G, user.language.format=lt, env.CONFIGSETROOT=C:\WINDOWS\ConfigSetRoot, java.home=C:\Program Files\Java\jdk1.8.0_102\jre, classworlds.conf=C:\maven\apache-maven-3.3.9\bin\..\bin\m2.conf, java.endorsed.dirs=C:\Program Files\Java\jdk1.8.0_102\jre\lib\endorsed, env.USERNAME=slabs, env.MQ_JRE_PATH=C:\Program Files\IBM\MQ\java\jre, sun.os.patch.level=, java.vendor.url=http://java.oracle.com/, env.INCLUDE=C:\Program Files\IBM\MQ\tools\c\include;C:\Program Files\IBM\MQ\tools\cplus\include, env.COMPUTERNAME=SLABS-MARIUS-PC, env.=C:=c:\workspace\remoraj\remora-control, java.version=1.8.0_102, env.DRIVERDATA=C:\Windows\System32\Drivers\DriverData, env.FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer, java.vendor.url.bug=http://bugreport.sun.com/bugreport/, env.USERPROFILE=C:\Users\slabs, skipTests=true, chronicle.version=5.17.43, user.name=slabs, sun.io.unicode.encoding=UnicodeLittle, sun.jnu.encoding=Cp1257, java.runtime.name=Java(TM) SE Runtime Environment, env.CHOCOLATEYLASTPATHUPDATE=kt spal. 11 10:57:28 2018, env.LOCALAPPDATA=C:\Users\slabs\AppData\Local, env.READYAPPS=C:\SWTOOLS\ReadyApps, env.WINDOWS_TRACING_LOGFILE=C:\BVTBin\Tests\installpackage\csilogfile.log, env.ASL.LOG=Destination=file, env.COMMONPROGRAMW6432=C:\Program Files\Common Files, websphere.install.dir=C://Users//slabs//IBM//WebSphere//AppServer2, env.COMMANDER_EXE=C:\totalcmd\TOTALCMD64.EXE, java.specification.name=Java Platform API Specification, user.timezone=Europe/Helsinki, env.MQ_JAVA_INSTALL_PATH=C:\Program Files\IBM\MQ\java, user.script=, path.separator=;, env.MAVEN_CMD_LINE_ARGS=clean package -DskipTests -X, env.PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 94 Stepping 3, GenuineIntel, file.encoding=Cp1257, env.HOME=C:\Users\slabs, sun.java.command=org.codehaus.plexus.classworlds.launcher.Launcher clean package -DskipTests -X, env.NUMBER_OF_PROCESSORS=8, env.APPDATA=C:\Users\slabs\AppData\Roaming, env.ONEDRIVECONSUMER=C:\Users\slabs\OneDrive, env.POWERMGRPATH=C:\Program Files (x86)\Lenovo\PowerMgr, env.WINDIR=C:\WINDOWS, java.io.tmpdir=C:\Users\slabs\AppData\Local\Temp\, env.TVTCOMMON=C:\Program Files (x86)\Common Files\Lenovo, user.language=en, line.separator=
+, project.baseUri=file:/c:/workspace/remoraj/remora-control/, env.MQ_JAVA_LIB_PATH=C:\Program Files\IBM\MQ\java\lib64;C:\Program Files\IBM\MQ\java\lib, env.COMMONPROGRAMFILES=C:\Program Files\Common Files, java.vm.info=mixed mode, sun.desktop=windows, java.vm.specification.name=Java Virtual Machine Specification, env.MQ_JAVA_DATA_PATH=C:\ProgramData\IBM\MQ, env.M2_HOME=C:\maven\apache-maven-3.3.9\bin\.., env.PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC, env.WDIR=c:\, env.ONEDRIVE=C:\Users\slabs\OneDrive, env.USERDOMAIN_ROAMINGPROFILE=slabs-marius-PC, env.LOGONSERVER=\\SLABS-MARIUS-PC, env.PSMODULEPATH=C:\Users\slabs\Documents\WindowsPowerShell\Modules, java.awt.printerjob=sun.awt.windows.WPrinterJob, env.PUBLIC=C:\Users\Public, byte.buddy.version=1.10.6, env.USERDOMAIN=slabs-marius-PC, skip.assembly.pack=false, user.country.format=LT, env.VBOX_MSI_INSTALL_PATH=C:\Program Files\Oracle\VirtualBox\, env.MQ_FILE_PATH=C:\Program Files\IBM\MQ, env.PROCESSOR_LEVEL=6, env.PROGRAMFILES(X86)=C:\Program Files (x86), maven.build.timestamp=2020-03-24T08:36:20Z, env.CLASSPATH=C:\Program Files\IBM\MQ\java\lib\com.ibm.mqjms.jar;C:\Program Files\IBM\MQ\java\lib\com.ibm.mq.jar, os.name=Windows 10, java.specification.vendor=Oracle Corporation, env.TMP=C:\Users\slabs\AppData\Local\Temp, java.vm.name=Java HotSpot(TM) 64-Bit Server VM, env.OS=Windows_NT, java.library.path=C:\Program Files\Java\jdk1.8.0_102\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\IBM\MQ\java\lib;C:\Program Files\IBM\MQ\java\lib64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Python27\;C:\Python27\Scripts;C:\ProgramData\Boxstarter;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\Lenovo;C:\SWTOOLS\ReadyApps;C:\maven\apache-maven-3.3.9\bin;C:\Program Files (x86)\PuTTY\;C:\Program Files\TortoiseHg\;C:\Program Files (x86)\msb-4.4.6;c:\java\jdk8\bin\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\nastel\AutoPilotM6\bin;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;c:\Program Files\IBM\MQ905\bin64\;c:\Program Files\IBM\MQ905\bin\;c:\leiningen\bin;C:\Program Files\IBM\MQ\bin64;C:\Program Files\IBM\MQ\bin;C:\Program Files\IBM\MQ\tools\c\samples\bin64;C:\Program Files\IBM\MQ\tools\c\samples\bin;C:\Program Files\TortoiseGit\bin;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\Scripts\;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\;C:\Program Files (x86)\Nmap;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;C:\Users\slabs\AppData\Roaming\npm;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;c:\gradle\bin\;., env.PROGRAMW6432=C:\Program Files, env.PATH=C:\Program Files\IBM\MQ\java\lib;C:\Program Files\IBM\MQ\java\lib64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Python27\;C:\Python27\Scripts;C:\ProgramData\Boxstarter;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\Lenovo;C:\SWTOOLS\ReadyApps;C:\maven\apache-maven-3.3.9\bin;C:\Program Files (x86)\PuTTY\;C:\Program Files\TortoiseHg\;C:\Program Files (x86)\msb-4.4.6;c:\java\jdk8\bin\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\nastel\AutoPilotM6\bin;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;c:\Program Files\IBM\MQ905\bin64\;c:\Program Files\IBM\MQ905\bin\;c:\leiningen\bin;C:\Program Files\IBM\MQ\bin64;C:\Program Files\IBM\MQ\bin;C:\Program Files\IBM\MQ\tools\c\samples\bin64;C:\Program Files\IBM\MQ\tools\c\samples\bin;C:\Program Files\TortoiseGit\bin;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\Scripts\;C:\Users\slabs\AppData\Local\Programs\Python\Python37-32\;C:\Program Files (x86)\Nmap;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;C:\Users\slabs\AppData\Roaming\npm;C:\Users\slabs\AppData\Local\Microsoft\WindowsApps;c:\gradle\bin\, java.class.version=52.0, maven.multiModuleProjectDirectory=c:\workspace\remoraj\remora-control, env.HOMEDRIVE=C:, env.SYSTEMROOT=C:\WINDOWS, env.COMSPEC=C:\WINDOWS\system32\cmd.exe, sun.boot.library.path=C:\Program Files\Java\jdk1.8.0_102\jre\bin, project.build.sourceEncoding=UTF-8, env.SYSTEMDRIVE=C:, env.COMMANDER_PATH=C:\totalcmd, env.PROCESSOR_REVISION=5e03, sun.management.compiler=HotSpot 64-Bit Tiered Compilers, java.awt.graphicsenv=sun.awt.Win32GraphicsEnvironment, user.variant=, env.PROGRAMFILES=C:\Program Files, java.vm.specification.version=1.8, env.MAVEN_JAVA_EXE="C:\Program Files\Java\jdk1.8.0_102\\bin\java.exe", env.PROGRAMDATA=C:\ProgramData, awt.toolkit=sun.awt.windows.WToolkit, powermock.version=2.0.5, sun.cpu.isalist=amd64, sun.stderr.encoding=cp775, env.MAVEN_PROJECTBASEDIR=c:\workspace\remoraj\remora-control, java.ext.dirs=C:\Program Files\Java\jdk1.8.0_102\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext, os.version=10.0, env.ERROR_CODE=0, user.home=C:\Users\slabs, env.CHOCOLATEYINSTALL=C:\ProgramData\chocolatey, java.vm.vendor=Oracle Corporation, env.JAVA_HOME=C:\Program Files\Java\jdk1.8.0_102\, user.dir=c:\workspace\remoraj\remora-control, env.COMMONPROGRAMFILES(X86)=C:\Program Files (x86)\Common Files, env.FP_NO_HOST_CHECK=NO, env.TVT=C:\Program Files (x86)\Lenovo, env.AUTOPILOT_HOME=C:\nastel\AutoPilotM6, sun.cpu.endian=little, env.COMMANDER_DRIVE=C:, env.ALLUSERSPROFILE=C:\ProgramData, env.CLASSWORLDS_LAUNCHER=org.codehaus.plexus.classworlds.launcher.Launcher, env.PROCESSOR_ARCHITECTURE=AMD64, tinylog.version=2.0.1, java.vm.version=25.102-b14, java.class.path=C:\maven\apache-maven-3.3.9\bin\..\boot\plexus-classworlds-2.5.2.jar, env.=::=::\, org.slf4j.simpleLogger.defaultLogLevel=debug, env.HOMEPATH=\Users\slabs, env.EXEC_DIR=c:\workspace\remoraj\remora-control, os.arch=amd64, maven.build.version=Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T18:41:47+02:00), env.SESSIONNAME=RDP-Tcp#48, env.WINDOWS_TRACING_FLAGS=3, sun.java.launcher=SUN_STANDARD, java.vm.specification.vendor=Oracle Corporation, env.SWSHARE=C:\SWSHARE, file.separator=\, java.runtime.version=1.8.0_102-b14, sun.boot.class.path=C:\Program Files\Java\jdk1.8.0_102\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_102\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_102\jre\classes, maven.version=3.3.9, env.TEMP=C:\Users\slabs\AppData\Local\Temp, user.country=US, env.FPS_BROWSER_USER_PROFILE_STRING=Default, maven.home=C:\maven\apache-maven-3.3.9\bin\.., env.CLIENTNAME=DESKTOP-O0PF3ID, maven.compiler.target=1.8, env.ERLANG_HOME=C:\Program Files\erl10.0.1, env.LIB=C:\Program Files\IBM\MQ\tools\lib64;C:\Program Files\IBM\MQ\tools\lib, java.vendor=Oracle Corporation, env.COMMANDER_INI=C:\Users\slabs\AppData\Roaming\GHISLER\wincmd.ini, env.CLASSWORLDS_JAR="C:\maven\apache-maven-3.3.9\bin\..\boot\plexus-classworlds-2.5.2.jar", maven.compiler.source=1.8, java.specification.version=1.8, sun.arch.data.model=64}
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[DEBUG] resource with targetPath null
+directory c:\workspace\remoraj\remora-control\src\test\resources
+excludes []
+includes []
+[INFO] skip non existing resourceDirectory c:\workspace\remoraj\remora-control\src\test\resources
+[DEBUG] no use filter components
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:testCompile (default-testCompile) @ remora-control ---
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-compiler-plugin:3.8.0:testCompile from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-compiler-plugin:3.8.0, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-compiler-plugin:3.8.0:testCompile' with basic configurator -->
+[DEBUG]   (f) basedir = c:\workspace\remoraj\remora-control
+[DEBUG]   (f) buildDirectory = c:\workspace\remoraj\remora-control\target
+[DEBUG]   (f) compilePath = [c:\workspace\remoraj\remora-control\target\classes, C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar, C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar, C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar, C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar, C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar, C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar, C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar, C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar, C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar, C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar, C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar, C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar, C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar, C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar, C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar, C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar, C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar, C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar]
+[DEBUG]   (f) compileSourceRoots = [c:\workspace\remoraj\remora-control\src\test\java]
+[DEBUG]   (f) compilerId = javac
+[DEBUG]   (f) debug = true
+[DEBUG]   (f) encoding = UTF-8
+[DEBUG]   (f) failOnError = true
+[DEBUG]   (f) failOnWarning = false
+[DEBUG]   (f) forceJavacCompilerUse = false
+[DEBUG]   (f) fork = false
+[DEBUG]   (f) generatedTestSourcesDirectory = c:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations
+[DEBUG]   (f) mojoExecution = org.apache.maven.plugins:maven-compiler-plugin:3.8.0:testCompile {execution: default-testCompile}
+[DEBUG]   (f) optimize = false
+[DEBUG]   (f) outputDirectory = c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG]   (f) parameters = false
+[DEBUG]   (f) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG]   (f) showDeprecation = false
+[DEBUG]   (f) showWarnings = false
+[DEBUG]   (f) skipMultiThreadWarning = false
+[DEBUG]   (f) source = 1.8
+[DEBUG]   (f) staleMillis = 0
+[DEBUG]   (s) target = 1.8
+[DEBUG]   (f) testPath = [c:\workspace\remoraj\remora-control\target\test-classes, c:\workspace\remoraj\remora-control\target\classes, C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar, C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar, C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar, C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar, C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar, C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar, C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar, C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar, C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar, C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar, C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar, C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar, C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar, C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar, C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar, C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar, C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar, C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT-tests.jar, C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.7.0\jackson-databind-2.7.0.jar, C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.7.0\jackson-annotations-2.7.0.jar, C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.7.0\jackson-core-2.7.0.jar, C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar, C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar, C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar, C:\Users\slabs\.m2\repository\junit\junit\4.13\junit-4.13.jar, C:\Users\slabs\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar, C:\Users\slabs\.m2\repository\org\powermock\powermock-module-junit4\2.0.5\powermock-module-junit4-2.0.5.jar, C:\Users\slabs\.m2\repository\org\powermock\powermock-module-junit4-common\2.0.5\powermock-module-junit4-common-2.0.5.jar, C:\Users\slabs\.m2\repository\org\powermock\powermock-reflect\2.0.5\powermock-reflect-2.0.5.jar, C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy-agent\1.9.10\byte-buddy-agent-1.9.10.jar, C:\Users\slabs\.m2\repository\org\powermock\powermock-core\2.0.5\powermock-core-2.0.5.jar, C:\Users\slabs\.m2\repository\org\javassist\javassist\3.25.0-GA\javassist-3.25.0-GA.jar, C:\Users\slabs\.m2\repository\org\powermock\powermock-api-mockito2\2.0.5\powermock-api-mockito2-2.0.5.jar, C:\Users\slabs\.m2\repository\org\powermock\powermock-api-support\2.0.5\powermock-api-support-2.0.5.jar, C:\Users\slabs\.m2\repository\org\mockito\mockito-core\2.28.2\mockito-core-2.28.2.jar, C:\Users\slabs\.m2\repository\org\objenesis\objenesis\2.6\objenesis-2.6.jar]
+[DEBUG]   (f) useIncrementalCompilation = true
+[DEBUG]   (f) verbose = false
+[DEBUG] -- end configuration --
+[DEBUG] Using compiler 'javac'.
+[DEBUG] Adding c:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations to test-compile source roots:
+  c:\workspace\remoraj\remora-control\src\test\java
+[DEBUG] New test-compile source roots:
+  c:\workspace\remoraj\remora-control\src\test\java
+  c:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations
+[DEBUG] CompilerReuseStrategy: reuseCreated
+[DEBUG] useIncrementalCompilation enabled
+[DEBUG] Stale source detected: c:\workspace\remoraj\remora-control\src\test\java\com\jkoolcloud\remora\advices\RemoraControlAdviceTest.java
+[INFO] Changes detected - recompiling the module!
+[DEBUG] Classpath:
+[DEBUG]  c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG]  c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]  C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar
+[DEBUG]  C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT-tests.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.7.0\jackson-databind-2.7.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.7.0\jackson-annotations-2.7.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.7.0\jackson-core-2.7.0.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\junit\junit\4.13\junit-4.13.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\powermock\powermock-module-junit4\2.0.5\powermock-module-junit4-2.0.5.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\powermock\powermock-module-junit4-common\2.0.5\powermock-module-junit4-common-2.0.5.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\powermock\powermock-reflect\2.0.5\powermock-reflect-2.0.5.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy-agent\1.9.10\byte-buddy-agent-1.9.10.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\powermock\powermock-core\2.0.5\powermock-core-2.0.5.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\javassist\javassist\3.25.0-GA\javassist-3.25.0-GA.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\powermock\powermock-api-mockito2\2.0.5\powermock-api-mockito2-2.0.5.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\powermock\powermock-api-support\2.0.5\powermock-api-support-2.0.5.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\mockito\mockito-core\2.28.2\mockito-core-2.28.2.jar
+[DEBUG]  C:\Users\slabs\.m2\repository\org\objenesis\objenesis\2.6\objenesis-2.6.jar
+[DEBUG] Source roots:
+[DEBUG]  c:\workspace\remoraj\remora-control\src\test\java
+[DEBUG]  c:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations
+[DEBUG] Command line options:
+[DEBUG] -d c:\workspace\remoraj\remora-control\target\test-classes -classpath c:\workspace\remoraj\remora-control\target\test-classes;c:\workspace\remoraj\remora-control\target\classes;C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-queue\5.17.43\chronicle-queue-5.17.43.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-core\2.17.35\chronicle-core-2.17.35.jar;C:\Users\slabs\.m2\repository\com\intellij\annotations\12.0\annotations-12.0.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-bytes\2.17.49\chronicle-bytes-2.17.49.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-wire\2.17.71\chronicle-wire-2.17.71.jar;C:\Users\slabs\.m2\repository\net\openhft\compiler\2.3.4\compiler-2.3.4.jar;C:\Users\slabs\.m2\repository\net\openhft\chronicle-threads\2.17.27\chronicle-threads-2.17.27.jar;C:\Users\slabs\.m2\repository\net\openhft\affinity\3.2.2\affinity-3.2.2.jar;C:\Users\slabs\.m2\repository\net\java\dev\jna\jna\4.2.1\jna-4.2.1.jar;C:\Users\slabs\.m2\repository\net\java\dev\jna\jna-platform\4.2.1\jna-platform-4.2.1.jar;C:\Users\slabs\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar;C:\Users\slabs\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar;C:\Program Files\Java\jdk1.8.0_102\jre\..\lib\tools.jar;C:\Users\slabs\.m2\repository\com\fasterxml\uuid\java-uuid-generator\4.0\java-uuid-generator-4.0.jar;C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-core\1.21\jmh-core-1.21.jar;C:\Users\slabs\.m2\repository\net\sf\jopt-simple\jopt-simple\4.6\jopt-simple-4.6.jar;C:\Users\slabs\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar;C:\Users\slabs\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.21\jmh-generator-annprocess-1.21.jar;C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar;C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar;C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar;C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar;C:\Users\slabs\.m2\repository\com\jkoolcloud\remora\remora-core\0.1.5-SNAPSHOT\remora-core-0.1.5-SNAPSHOT-tests.jar;C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.7.0\jackson-databind-2.7.0.jar;C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.7.0\jackson-annotations-2.7.0.jar;C:\Users\slabs\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.7.0\jackson-core-2.7.0.jar;C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy\1.10.6\byte-buddy-1.10.6.jar;C:\Users\slabs\.m2\repository\org\tinylog\tinylog-api\2.0.1\tinylog-api-2.0.1.jar;C:\Users\slabs\.m2\repository\org\tinylog\tinylog-impl\2.0.1\tinylog-impl-2.0.1.jar;C:\Users\slabs\.m2\repository\junit\junit\4.13\junit-4.13.jar;C:\Users\slabs\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\slabs\.m2\repository\org\powermock\powermock-module-junit4\2.0.5\powermock-module-junit4-2.0.5.jar;C:\Users\slabs\.m2\repository\org\powermock\powermock-module-junit4-common\2.0.5\powermock-module-junit4-common-2.0.5.jar;C:\Users\slabs\.m2\repository\org\powermock\powermock-reflect\2.0.5\powermock-reflect-2.0.5.jar;C:\Users\slabs\.m2\repository\net\bytebuddy\byte-buddy-agent\1.9.10\byte-buddy-agent-1.9.10.jar;C:\Users\slabs\.m2\repository\org\powermock\powermock-core\2.0.5\powermock-core-2.0.5.jar;C:\Users\slabs\.m2\repository\org\javassist\javassist\3.25.0-GA\javassist-3.25.0-GA.jar;C:\Users\slabs\.m2\repository\org\powermock\powermock-api-mockito2\2.0.5\powermock-api-mockito2-2.0.5.jar;C:\Users\slabs\.m2\repository\org\powermock\powermock-api-support\2.0.5\powermock-api-support-2.0.5.jar;C:\Users\slabs\.m2\repository\org\mockito\mockito-core\2.28.2\mockito-core-2.28.2.jar;C:\Users\slabs\.m2\repository\org\objenesis\objenesis\2.6\objenesis-2.6.jar; -sourcepath c:\workspace\remoraj\remora-control\src\test\java;c:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations; -s c:\workspace\remoraj\remora-control\target\generated-test-sources\test-annotations -g -nowarn -target 1.8 -source 1.8 -encoding UTF-8
+[DEBUG] incrementalBuildHelper#beforeRebuildExecution
+[INFO] Compiling 1 source file to c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG] incrementalBuildHelper#afterRebuildExecution
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.1:test (default-test) @ remora-control ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=114, ConflictIdSorter.graphTime=1, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=37, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=2, ConflictResolver.conflictItemCount=79, DefaultDependencyCollector.collectTime=68, DefaultDependencyCollector.transformTime=3}
+[DEBUG] org.apache.maven.plugins:maven-surefire-plugin:jar:2.22.1:
+[DEBUG]    org.apache.maven.surefire:maven-surefire-common:jar:2.22.1:compile
+[DEBUG]       org.apache.maven:maven-plugin-api:jar:2.2.1:compile
+[DEBUG]       org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.5.2:compile
+[DEBUG]       org.apache.maven.surefire:surefire-api:jar:2.22.1:compile
+[DEBUG]          org.apache.maven.surefire:surefire-logger-api:jar:2.22.1:compile
+[DEBUG]       org.apache.maven.surefire:surefire-booter:jar:2.22.1:compile
+[DEBUG]       org.apache.maven:maven-artifact:jar:2.2.1:compile
+[DEBUG]          org.codehaus.plexus:plexus-utils:jar:1.5.15:compile
+[DEBUG]       org.apache.maven:maven-plugin-descriptor:jar:2.2.1:compile
+[DEBUG]          org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile
+[DEBUG]             junit:junit:jar:4.12:compile
+[DEBUG]                org.hamcrest:hamcrest-core:jar:1.3:compile
+[DEBUG]       org.apache.maven:maven-project:jar:2.2.1:compile
+[DEBUG]          org.apache.maven:maven-settings:jar:2.2.1:compile
+[DEBUG]          org.apache.maven:maven-profile:jar:2.2.1:compile
+[DEBUG]          org.apache.maven:maven-artifact-manager:jar:2.2.1:compile
+[DEBUG]             backport-util-concurrent:backport-util-concurrent:jar:3.1:compile
+[DEBUG]          org.apache.maven:maven-plugin-registry:jar:2.2.1:compile
+[DEBUG]          org.codehaus.plexus:plexus-interpolation:jar:1.11:compile
+[DEBUG]       org.apache.maven:maven-model:jar:2.2.1:compile
+[DEBUG]       org.apache.maven:maven-core:jar:2.2.1:compile
+[DEBUG]          org.apache.maven:maven-plugin-parameter-documenter:jar:2.2.1:compile
+[DEBUG]          org.slf4j:slf4j-jdk14:jar:1.5.6:runtime
+[DEBUG]             org.slf4j:slf4j-api:jar:1.5.6:runtime
+[DEBUG]          org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime
+[DEBUG]          org.apache.maven.reporting:maven-reporting-api:jar:3.0:compile
+[DEBUG]          org.apache.maven:maven-repository-metadata:jar:2.2.1:compile
+[DEBUG]          org.apache.maven:maven-error-diagnostics:jar:2.2.1:compile
+[DEBUG]          org.apache.maven:maven-monitor:jar:2.2.1:compile
+[DEBUG]          classworlds:classworlds:jar:1.1:compile
+[DEBUG]          org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]             org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]       org.apache.maven:maven-toolchain:jar:2.2.1:compile
+[DEBUG]       org.codehaus.plexus:plexus-java:jar:0.9.10:compile
+[DEBUG]          org.ow2.asm:asm:jar:6.2:compile
+[DEBUG]          com.thoughtworks.qdox:qdox:jar:2.0-M8:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-surefire-plugin:2.22.1
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-surefire-plugin:2.22.1
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-surefire-plugin:2.22.1
+[DEBUG]   Included: org.apache.maven.plugins:maven-surefire-plugin:jar:2.22.1
+[DEBUG]   Included: org.apache.maven.surefire:maven-surefire-common:jar:2.22.1
+[DEBUG]   Included: org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.5.2
+[DEBUG]   Included: org.apache.maven.surefire:surefire-api:jar:2.22.1
+[DEBUG]   Included: org.apache.maven.surefire:surefire-logger-api:jar:2.22.1
+[DEBUG]   Included: org.apache.maven.surefire:surefire-booter:jar:2.22.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:1.5.15
+[DEBUG]   Included: junit:junit:jar:4.12
+[DEBUG]   Included: org.hamcrest:hamcrest-core:jar:1.3
+[DEBUG]   Included: backport-util-concurrent:backport-util-concurrent:jar:3.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.11
+[DEBUG]   Included: org.slf4j:slf4j-jdk14:jar:1.5.6
+[DEBUG]   Included: org.slf4j:jcl-over-slf4j:jar:1.5.6
+[DEBUG]   Included: org.apache.maven.reporting:maven-reporting-api:jar:3.0
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-java:jar:0.9.10
+[DEBUG]   Included: org.ow2.asm:asm:jar:6.2
+[DEBUG]   Included: com.thoughtworks.qdox:qdox:jar:2.0-M8
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-surefire-plugin:2.22.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test' with basic configurator -->
+[DEBUG]   (s) additionalClasspathElements = []
+[DEBUG]   (s) basedir = c:\workspace\remoraj\remora-control
+[DEBUG]   (s) childDelegation = false
+[DEBUG]   (s) classesDirectory = c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]   (s) classpathDependencyExcludes = []
+[DEBUG]   (s) dependenciesToScan = []
+[DEBUG]   (s) disableXmlReport = false
+[DEBUG]   (s) enableAssertions = true
+[DEBUG]   (f) forkCount = 1
+[DEBUG]   (s) forkMode = once
+[DEBUG]   (s) forkedProcessExitTimeoutInSeconds = 30
+[DEBUG]   (s) junitArtifactName = junit:junit
+[DEBUG]   (s) junitPlatformArtifactName = org.junit.platform:junit-platform-engine
+[DEBUG]   (s) localRepository =       id: local
+      url: file:///C:/Users/slabs/.m2/repository/
+   layout: default
+snapshots: [enabled => true, update => always]
+ releases: [enabled => true, update => always]
+
+[DEBUG]   (f) parallelMavenExecution = false
+[DEBUG]   (s) parallelOptimized = true
+[DEBUG]   (s) perCoreThreadCount = true
+[DEBUG]   (s) pluginArtifactMap = {org.apache.maven.plugins:maven-surefire-plugin=org.apache.maven.plugins:maven-surefire-plugin:maven-plugin:2.22.1:, org.apache.maven.surefire:maven-surefire-common=org.apache.maven.surefire:maven-surefire-common:jar:2.22.1:compile, org.apache.maven:maven-plugin-api=org.apache.maven:maven-plugin-api:jar:2.2.1:compile, org.apache.maven.plugin-tools:maven-plugin-annotations=org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.5.2:compile, org.apache.maven.surefire:surefire-api=org.apache.maven.surefire:surefire-api:jar:2.22.1:compile, org.apache.maven.surefire:surefire-logger-api=org.apache.maven.surefire:surefire-logger-api:jar:2.22.1:compile, org.apache.maven.surefire:surefire-booter=org.apache.maven.surefire:surefire-booter:jar:2.22.1:compile, org.apache.maven:maven-artifact=org.apache.maven:maven-artifact:jar:2.2.1:compile, org.codehaus.plexus:plexus-utils=org.codehaus.plexus:plexus-utils:jar:1.5.15:compile, org.apache.maven:maven-plugin-descriptor=org.apache.maven:maven-plugin-descriptor:jar:2.2.1:compile, org.codehaus.plexus:plexus-container-default=org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile, junit:junit=junit:junit:jar:4.12:compile, org.hamcrest:hamcrest-core=org.hamcrest:hamcrest-core:jar:1.3:compile, org.apache.maven:maven-project=org.apache.maven:maven-project:jar:2.2.1:compile, org.apache.maven:maven-settings=org.apache.maven:maven-settings:jar:2.2.1:compile, org.apache.maven:maven-profile=org.apache.maven:maven-profile:jar:2.2.1:compile, org.apache.maven:maven-artifact-manager=org.apache.maven:maven-artifact-manager:jar:2.2.1:compile, backport-util-concurrent:backport-util-concurrent=backport-util-concurrent:backport-util-concurrent:jar:3.1:compile, org.apache.maven:maven-plugin-registry=org.apache.maven:maven-plugin-registry:jar:2.2.1:compile, org.codehaus.plexus:plexus-interpolation=org.codehaus.plexus:plexus-interpolation:jar:1.11:compile, org.apache.maven:maven-model=org.apache.maven:maven-model:jar:2.2.1:compile, org.apache.maven:maven-core=org.apache.maven:maven-core:jar:2.2.1:compile, org.apache.maven:maven-plugin-parameter-documenter=org.apache.maven:maven-plugin-parameter-documenter:jar:2.2.1:compile, org.slf4j:slf4j-jdk14=org.slf4j:slf4j-jdk14:jar:1.5.6:runtime, org.slf4j:slf4j-api=org.slf4j:slf4j-api:jar:1.5.6:runtime, org.slf4j:jcl-over-slf4j=org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime, org.apache.maven.reporting:maven-reporting-api=org.apache.maven.reporting:maven-reporting-api:jar:3.0:compile, org.apache.maven:maven-repository-metadata=org.apache.maven:maven-repository-metadata:jar:2.2.1:compile, org.apache.maven:maven-error-diagnostics=org.apache.maven:maven-error-diagnostics:jar:2.2.1:compile, org.apache.maven:maven-monitor=org.apache.maven:maven-monitor:jar:2.2.1:compile, classworlds:classworlds=classworlds:classworlds:jar:1.1:compile, org.sonatype.plexus:plexus-sec-dispatcher=org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile, org.sonatype.plexus:plexus-cipher=org.sonatype.plexus:plexus-cipher:jar:1.4:compile, org.apache.maven:maven-toolchain=org.apache.maven:maven-toolchain:jar:2.2.1:compile, org.codehaus.plexus:plexus-java=org.codehaus.plexus:plexus-java:jar:0.9.10:compile, org.ow2.asm:asm=org.ow2.asm:asm:jar:6.2:compile, com.thoughtworks.qdox:qdox=com.thoughtworks.qdox:qdox:jar:2.0-M8:compile}
+[DEBUG]   (f) pluginDescriptor = Component Descriptor: role: 'org.apache.maven.plugin.Mojo', implementation: 'org.apache.maven.plugin.surefire.HelpMojo', role hint: 'org.apache.maven.plugins:maven-surefire-plugin:2.22.1:help'
+role: 'org.apache.maven.plugin.Mojo', implementation: 'org.apache.maven.plugin.surefire.SurefirePlugin', role hint: 'org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test'
+---
+[DEBUG]   (s) printSummary = true
+[DEBUG]   (s) projectArtifactMap = {com.jkoolcloud.remora:remora-core=com.jkoolcloud.remora:remora-core:test-jar:tests:0.1.5-SNAPSHOT:test, net.openhft:chronicle-queue=net.openhft:chronicle-queue:jar:5.17.43:compile, net.openhft:chronicle-core=net.openhft:chronicle-core:jar:2.17.35:compile, com.intellij:annotations=com.intellij:annotations:jar:12.0:compile, net.openhft:chronicle-bytes=net.openhft:chronicle-bytes:jar:2.17.49:compile, net.openhft:chronicle-wire=net.openhft:chronicle-wire:jar:2.17.71:compile, net.openhft:compiler=net.openhft:compiler:jar:2.3.4:compile, net.openhft:chronicle-threads=net.openhft:chronicle-threads:jar:2.17.27:compile, net.openhft:affinity=net.openhft:affinity:jar:3.2.2:compile, net.java.dev.jna:jna=net.java.dev.jna:jna:jar:4.2.1:compile, net.java.dev.jna:jna-platform=net.java.dev.jna:jna-platform:jar:4.2.1:compile, commons-cli:commons-cli=commons-cli:commons-cli:jar:1.4:compile, org.slf4j:slf4j-api=org.slf4j:slf4j-api:jar:1.7.25:compile, com.sun:tools=com.sun:tools:jar:1.8.0_102:system, com.fasterxml.uuid:java-uuid-generator=com.fasterxml.uuid:java-uuid-generator:jar:4.0:compile, org.openjdk.jmh:jmh-core=org.openjdk.jmh:jmh-core:jar:1.21:compile, net.sf.jopt-simple:jopt-simple=net.sf.jopt-simple:jopt-simple:jar:4.6:compile, org.apache.commons:commons-math3=org.apache.commons:commons-math3:jar:3.2:compile, org.openjdk.jmh:jmh-generator-annprocess=org.openjdk.jmh:jmh-generator-annprocess:jar:1.21:compile, org.takes:takes=org.takes:takes:jar:1.19:compile, org.cactoos:cactoos=org.cactoos:cactoos:jar:0.42:compile, org.apache.commons:commons-text=org.apache.commons:commons-text:jar:1.4:compile, org.apache.commons:commons-lang3=org.apache.commons:commons-lang3:jar:3.7:compile, com.fasterxml.jackson.core:jackson-databind=com.fasterxml.jackson.core:jackson-databind:jar:2.7.0:test, com.fasterxml.jackson.core:jackson-annotations=com.fasterxml.jackson.core:jackson-annotations:jar:2.7.0:test, com.fasterxml.jackson.core:jackson-core=com.fasterxml.jackson.core:jackson-core:jar:2.7.0:test, net.bytebuddy:byte-buddy=net.bytebuddy:byte-buddy:jar:1.10.6:compile, org.tinylog:tinylog-api=org.tinylog:tinylog-api:jar:2.0.1:compile, org.tinylog:tinylog-impl=org.tinylog:tinylog-impl:jar:2.0.1:compile, junit:junit=junit:junit:jar:4.13:test, org.hamcrest:hamcrest-core=org.hamcrest:hamcrest-core:jar:1.3:test, org.powermock:powermock-module-junit4=org.powermock:powermock-module-junit4:jar:2.0.5:test, org.powermock:powermock-module-junit4-common=org.powermock:powermock-module-junit4-common:jar:2.0.5:test, org.powermock:powermock-reflect=org.powermock:powermock-reflect:jar:2.0.5:test, net.bytebuddy:byte-buddy-agent=net.bytebuddy:byte-buddy-agent:jar:1.9.10:test, org.powermock:powermock-core=org.powermock:powermock-core:jar:2.0.5:test, org.javassist:javassist=org.javassist:javassist:jar:3.25.0-GA:test, org.powermock:powermock-api-mockito2=org.powermock:powermock-api-mockito2:jar:2.0.5:test, org.powermock:powermock-api-support=org.powermock:powermock-api-support:jar:2.0.5:test, org.mockito:mockito-core=org.mockito:mockito-core:jar:2.28.2:test, org.objenesis:objenesis=org.objenesis:objenesis:jar:2.6:test}
+[DEBUG]   (s) projectBuildDirectory = c:\workspace\remoraj\remora-control\target
+[DEBUG]   (s) redirectTestOutputToFile = false
+[DEBUG]   (s) remoteRepositories = [      id: central
+      url: https://repo.maven.apache.org/maven2
+   layout: default
+snapshots: [enabled => false, update => daily]
+ releases: [enabled => true, update => never]
+]
+[DEBUG]   (s) reportFormat = brief
+[DEBUG]   (s) reportsDirectory = c:\workspace\remoraj\remora-control\target\surefire-reports
+[DEBUG]   (f) rerunFailingTestsCount = 0
+[DEBUG]   (f) reuseForks = true
+[DEBUG]   (s) runOrder = filesystem
+[DEBUG]   (f) shutdown = testset
+[DEBUG]   (s) skip = false
+[DEBUG]   (f) skipAfterFailureCount = 0
+[DEBUG]   (s) skipTests = true
+[DEBUG]   (s) suiteXmlFiles = []
+[DEBUG]   (s) tempDir = surefire
+[DEBUG]   (s) testClassesDirectory = c:\workspace\remoraj\remora-control\target\test-classes
+[DEBUG]   (s) testFailureIgnore = false
+[DEBUG]   (s) testNGArtifactName = org.testng:testng
+[DEBUG]   (s) testSourceDirectory = c:\workspace\remoraj\remora-control\src\test\java
+[DEBUG]   (s) threadCountClasses = 0
+[DEBUG]   (s) threadCountMethods = 0
+[DEBUG]   (s) threadCountSuites = 0
+[DEBUG]   (s) trimStackTrace = true
+[DEBUG]   (s) useFile = true
+[DEBUG]   (s) useManifestOnlyJar = true
+[DEBUG]   (s) useSystemClassLoader = true
+[DEBUG]   (s) useUnlimitedThreads = false
+[DEBUG]   (s) workingDirectory = c:\workspace\remoraj\remora-control
+[DEBUG]   (s) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (s) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG] -- end configuration --
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ remora-control ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=1, ConflictMarker.markTime=0, ConflictMarker.nodeCount=82, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=31, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=0, ConflictResolver.conflictItemCount=75, DefaultDependencyCollector.collectTime=41, DefaultDependencyCollector.transformTime=2}
+[DEBUG] org.apache.maven.plugins:maven-jar-plugin:jar:3.0.2:
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]    org.apache.maven:maven-core:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-aether-provider:jar:3.0:runtime
+[DEBUG]       org.sonatype.aether:aether-impl:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-spi:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-api:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-util:jar:1.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.14:compile
+[DEBUG]       org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.6:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]    org.apache.maven:maven-archiver:jar:3.1.1:compile
+[DEBUG]       org.apache.maven.shared:maven-shared-utils:jar:3.0.1:compile
+[DEBUG]       commons-io:commons-io:jar:2.5:compile
+[DEBUG]    org.codehaus.plexus:plexus-archiver:jar:3.4:compile
+[DEBUG]       org.codehaus.plexus:plexus-io:jar:2.7.1:compile
+[DEBUG]       org.apache.commons:commons-compress:jar:1.11:compile
+[DEBUG]       org.iq80.snappy:snappy:jar:0.4:compile
+[DEBUG]       org.tukaani:xz:jar:1.5:runtime
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.0.24:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-jar-plugin:3.0.2
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-jar-plugin:3.0.2
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-jar-plugin:3.0.2
+[DEBUG]   Included: org.apache.maven.plugins:maven-jar-plugin:jar:3.0.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.sonatype.aether:aether-util:jar:1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.14
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.6
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.apache.maven:maven-archiver:jar:3.1.1
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.0.1
+[DEBUG]   Included: commons-io:commons-io:jar:2.5
+[DEBUG]   Included: org.codehaus.plexus:plexus-archiver:jar:3.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-io:jar:2.7.1
+[DEBUG]   Included: org.apache.commons:commons-compress:jar:1.11
+[DEBUG]   Included: org.iq80.snappy:snappy:jar:0.4
+[DEBUG]   Included: org.tukaani:xz:jar:1.5
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.0.24
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-jar-plugin:3.0.2:jar from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-jar-plugin:3.0.2, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-jar-plugin:3.0.2:jar' with basic configurator -->
+[DEBUG]   (s) addClasspath = false
+[DEBUG]   (s) manifest = org.apache.maven.archiver.ManifestConfiguration@1a47a1e8
+[DEBUG]   (f) archive = org.apache.maven.archiver.MavenArchiveConfiguration@6d2a2560
+[DEBUG]   (f) classesDirectory = c:\workspace\remoraj\remora-control\target\classes
+[DEBUG]   (f) finalName = remora-control-0.1.5-SNAPSHOT
+[DEBUG]   (f) forceCreation = false
+[DEBUG]   (f) outputDirectory = c:\workspace\remoraj\remora-control\target
+[DEBUG]   (f) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG]   (f) skipIfEmpty = false
+[DEBUG]   (f) useDefaultManifestFile = false
+[DEBUG] -- end configuration --
+[DEBUG] isUp2date: false (Destination c:\workspace\remoraj\remora-control\target\remora-control-0.1.5-SNAPSHOT.jar not found.)
+[INFO] Building jar: c:\workspace\remoraj\remora-control\target\remora-control-0.1.5-SNAPSHOT.jar
+[DEBUG] adding directory META-INF/
+[DEBUG] adding entry META-INF/MANIFEST.MF
+[DEBUG] adding directory com/
+[DEBUG] adding directory com/jkoolcloud/
+[DEBUG] adding directory com/jkoolcloud/remora/
+[DEBUG] adding directory com/jkoolcloud/remora/advices/
+[DEBUG] adding directory META-INF/services/
+[DEBUG] adding entry com/jkoolcloud/remora/advices/RemoraControlAdvice$AdminReporter.class
+[DEBUG] adding entry com/jkoolcloud/remora/advices/RemoraControlAdvice$AvailableInetSocketAddress.class
+[DEBUG] adding entry com/jkoolcloud/remora/advices/RemoraControlAdvice$GetCapabilitiesHandler.class
+[DEBUG] adding entry com/jkoolcloud/remora/advices/RemoraControlAdvice$PropertiesChangeHandler.class
+[DEBUG] adding entry com/jkoolcloud/remora/advices/RemoraControlAdvice.class
+[DEBUG] adding entry META-INF/services/com.jkoolcloud.remora.advices.RemoraAdvice
+[DEBUG] adding directory META-INF/maven/
+[DEBUG] adding directory META-INF/maven/com.jkoolcloud.remora/
+[DEBUG] adding directory META-INF/maven/com.jkoolcloud.remora/remora-control/
+[DEBUG] adding entry META-INF/maven/com.jkoolcloud.remora/remora-control/pom.xml
+[DEBUG] adding entry META-INF/maven/com.jkoolcloud.remora/remora-control/pom.properties
+[INFO] 
+[INFO] --- maven-shade-plugin:3.2.1:shade (default) @ remora-control ---
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=101, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=39, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=1, ConflictResolver.conflictItemCount=95, DefaultDependencyCollector.collectTime=98, DefaultDependencyCollector.transformTime=1}
+[DEBUG] org.apache.maven.plugins:maven-shade-plugin:jar:3.2.1:
+[DEBUG]    org.apache.maven:maven-plugin-api:jar:3.0:compile
+[DEBUG]       org.sonatype.sisu:sisu-inject-plexus:jar:1.4.2:compile
+[DEBUG]          org.sonatype.sisu:sisu-inject-bean:jar:1.4.2:compile
+[DEBUG]             org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7:compile
+[DEBUG]    org.apache.maven:maven-model:jar:3.0:compile
+[DEBUG]    org.apache.maven:maven-core:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-settings-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-model-builder:jar:3.0:compile
+[DEBUG]       org.apache.maven:maven-aether-provider:jar:3.0:runtime
+[DEBUG]       org.sonatype.aether:aether-impl:jar:1.7:compile
+[DEBUG]          org.sonatype.aether:aether-spi:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-api:jar:1.7:compile
+[DEBUG]       org.sonatype.aether:aether-util:jar:1.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.14:compile
+[DEBUG]       org.codehaus.plexus:plexus-classworlds:jar:2.2.3:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.7.1:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven:maven-artifact:jar:3.0:compile
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.1.0:compile
+[DEBUG]    org.apache.maven.shared:maven-artifact-transfer:jar:0.10.0:compile
+[DEBUG]       org.apache.maven.shared:maven-common-artifact-filters:jar:3.0.1:compile
+[DEBUG]          org.apache.maven.shared:maven-shared-utils:jar:3.1.0:compile
+[DEBUG]       commons-codec:commons-codec:jar:1.11:compile
+[DEBUG]       org.slf4j:slf4j-api:jar:1.7.5:compile
+[DEBUG]    org.ow2.asm:asm:jar:7.0:compile
+[DEBUG]    org.ow2.asm:asm-commons:jar:7.0:compile
+[DEBUG]       org.ow2.asm:asm-tree:jar:7.0:compile
+[DEBUG]       org.ow2.asm:asm-analysis:jar:7.0:compile
+[DEBUG]    org.jdom:jdom2:jar:2.0.6:compile
+[DEBUG]    org.apache.maven.shared:maven-dependency-tree:jar:3.0.1:compile
+[DEBUG]       org.eclipse.aether:aether-util:jar:0.9.0.M2:compile
+[DEBUG]    commons-io:commons-io:jar:2.5:compile
+[DEBUG]    org.vafer:jdependency:jar:2.1.1:compile
+[DEBUG]       org.ow2.asm:asm-util:jar:7.0-beta:compile
+[DEBUG]    com.google.guava:guava:jar:19.0:compile
+[DEBUG] Created new class realm plugin>org.apache.maven.plugins:maven-shade-plugin:3.2.1
+[DEBUG] Importing foreign packages into class realm plugin>org.apache.maven.plugins:maven-shade-plugin:3.2.1
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm plugin>org.apache.maven.plugins:maven-shade-plugin:3.2.1
+[DEBUG]   Included: org.apache.maven.plugins:maven-shade-plugin:jar:3.2.1
+[DEBUG]   Included: org.sonatype.sisu:sisu-inject-bean:jar:1.4.2
+[DEBUG]   Included: org.sonatype.sisu:sisu-guice:jar:noaop:2.1.7
+[DEBUG]   Included: org.sonatype.aether:aether-util:jar:1.7
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.14
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.7.1
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.1.0
+[DEBUG]   Included: org.apache.maven.shared:maven-artifact-transfer:jar:0.10.0
+[DEBUG]   Included: org.apache.maven.shared:maven-common-artifact-filters:jar:3.0.1
+[DEBUG]   Included: org.apache.maven.shared:maven-shared-utils:jar:3.1.0
+[DEBUG]   Included: commons-codec:commons-codec:jar:1.11
+[DEBUG]   Included: org.ow2.asm:asm:jar:7.0
+[DEBUG]   Included: org.ow2.asm:asm-commons:jar:7.0
+[DEBUG]   Included: org.ow2.asm:asm-tree:jar:7.0
+[DEBUG]   Included: org.ow2.asm:asm-analysis:jar:7.0
+[DEBUG]   Included: org.jdom:jdom2:jar:2.0.6
+[DEBUG]   Included: org.apache.maven.shared:maven-dependency-tree:jar:3.0.1
+[DEBUG]   Included: org.eclipse.aether:aether-util:jar:0.9.0.M2
+[DEBUG]   Included: commons-io:commons-io:jar:2.5
+[DEBUG]   Included: org.vafer:jdependency:jar:2.1.1
+[DEBUG]   Included: org.ow2.asm:asm-util:jar:7.0-beta
+[DEBUG]   Included: com.google.guava:guava:jar:19.0
+[DEBUG] Configuring mojo org.apache.maven.plugins:maven-shade-plugin:3.2.1:shade from plugin realm ClassRealm[plugin>org.apache.maven.plugins:maven-shade-plugin:3.2.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]
+[DEBUG] Configuring mojo 'org.apache.maven.plugins:maven-shade-plugin:3.2.1:shade' with basic configurator -->
+[DEBUG]   (f) excludes = [net.openhft:*, org.apache.commons:commons-math3, org.slf4j:*, net.java.dev.jna:*, net.bytebuddy:*, org.tinylog:*, com.intellij:*, com.jkoolcloud.remora:remora-core, com.fasterxml.uuid:java-uuid-generator, org.openjdk.jmh:*, commons-cli:*, net.sf.jopt-simple:*]
+[DEBUG]   (f) artifactSet = org.apache.maven.plugins.shade.mojo.ArtifactSet@56c8e6f0
+[DEBUG]   (f) createDependencyReducedPom = false
+[DEBUG]   (f) dependencyReducedPomLocation = c:\workspace\remoraj\remora-control\dependency-reduced-pom.xml
+[DEBUG]   (f) artifact = *:*
+[DEBUG]   (f) excludes = [META-INF/*.DSA, META-INF/*.SF, META-INF/*.RSA]
+[DEBUG]   (f) artifact = org.takes:takes
+[DEBUG]   (f) includes = [**]
+[DEBUG]   (f) filters = [org.apache.maven.plugins.shade.mojo.ArchiveFilter@4fb56bea, org.apache.maven.plugins.shade.mojo.ArchiveFilter@5e5beb8a]
+[DEBUG]   (f) finalName = remora-control-0.1.5-SNAPSHOT
+[DEBUG]   (f) generateUniqueDependencyReducedPom = false
+[DEBUG]   (f) localRepository =       id: local
+      url: file:///C:/Users/slabs/.m2/repository/
+   layout: default
+snapshots: [enabled => true, update => always]
+ releases: [enabled => true, update => always]
+
+[DEBUG]   (f) outputDirectory = c:\workspace\remoraj\remora-control\target
+[DEBUG]   (f) project = MavenProject: com.jkoolcloud.remora:remora-control:0.1.5-SNAPSHOT @ c:\workspace\remoraj\remora-control\pom.xml
+[DEBUG]   (f) pattern = org.tinylog
+[DEBUG]   (f) shadedPattern = com.jkoolcloud.remora.shaded.org.tinylog
+[DEBUG]   (f) pattern = org.jboss
+[DEBUG]   (f) shadedPattern = com.jkoolcloud.remora.shaded.org.jboss
+[DEBUG]   (f) relocations = [org.apache.maven.plugins.shade.mojo.PackageRelocation@733ec58b, org.apache.maven.plugins.shade.mojo.PackageRelocation@723877dd]
+[DEBUG]   (f) remoteArtifactRepositories = [      id: central
+      url: https://repo.maven.apache.org/maven2
+   layout: default
+snapshots: [enabled => false, update => daily]
+ releases: [enabled => true, update => daily]
+]
+[DEBUG]   (f) session = org.apache.maven.execution.MavenSession@fac80
+[DEBUG]   (f) shadeSourcesContent = false
+[DEBUG]   (f) shadeTestJar = false
+[DEBUG]   (f) shadedArtifactId = remora-control
+[DEBUG]   (f) shadedClassifierName = shaded
+[DEBUG]   (f) manifestEntries = {Class-Path=./, Implementation-Version=0.1.5-SNAPSHOT-2020-03-24T08:36:17Z}
+[DEBUG]   (f) transformers = [org.apache.maven.plugins.shade.resource.ManifestResourceTransformer@2da99821, org.apache.maven.plugins.shade.resource.ServicesResourceTransformer@62cba181]
+[DEBUG]   (f) useBaseVersion = false
+[DEBUG] -- end configuration --
+[INFO] Excluding com.jkoolcloud.remora:remora-core:jar:0.1.5-SNAPSHOT from the shaded jar.
+[INFO] Excluding net.openhft:chronicle-queue:jar:5.17.43 from the shaded jar.
+[INFO] Excluding net.openhft:chronicle-core:jar:2.17.35 from the shaded jar.
+[INFO] Excluding com.intellij:annotations:jar:12.0 from the shaded jar.
+[INFO] Excluding net.openhft:chronicle-bytes:jar:2.17.49 from the shaded jar.
+[INFO] Excluding net.openhft:chronicle-wire:jar:2.17.71 from the shaded jar.
+[INFO] Excluding net.openhft:compiler:jar:2.3.4 from the shaded jar.
+[INFO] Excluding net.openhft:chronicle-threads:jar:2.17.27 from the shaded jar.
+[INFO] Excluding net.openhft:affinity:jar:3.2.2 from the shaded jar.
+[INFO] Excluding net.java.dev.jna:jna:jar:4.2.1 from the shaded jar.
+[INFO] Excluding net.java.dev.jna:jna-platform:jar:4.2.1 from the shaded jar.
+[INFO] Excluding commons-cli:commons-cli:jar:1.4 from the shaded jar.
+[INFO] Excluding org.slf4j:slf4j-api:jar:1.7.25 from the shaded jar.
+[INFO] Excluding com.fasterxml.uuid:java-uuid-generator:jar:4.0 from the shaded jar.
+[INFO] Excluding org.openjdk.jmh:jmh-core:jar:1.21 from the shaded jar.
+[INFO] Excluding net.sf.jopt-simple:jopt-simple:jar:4.6 from the shaded jar.
+[INFO] Excluding org.apache.commons:commons-math3:jar:3.2 from the shaded jar.
+[INFO] Excluding org.openjdk.jmh:jmh-generator-annprocess:jar:1.21 from the shaded jar.
+[INFO] Including org.takes:takes:jar:1.19 in the shaded jar.
+[INFO] Including org.cactoos:cactoos:jar:0.42 in the shaded jar.
+[INFO] Including org.apache.commons:commons-text:jar:1.4 in the shaded jar.
+[INFO] Including org.apache.commons:commons-lang3:jar:3.7 in the shaded jar.
+[INFO] Excluding net.bytebuddy:byte-buddy:jar:1.10.6 from the shaded jar.
+[INFO] Excluding org.tinylog:tinylog-api:jar:2.0.1 from the shaded jar.
+[INFO] Excluding org.tinylog:tinylog-impl:jar:2.0.1 from the shaded jar.
+[DEBUG] Processing JAR c:\workspace\remoraj\remora-control\target\remora-control-0.1.5-SNAPSHOT.jar
+[DEBUG] Transforming META-INF/services/com.jkoolcloud.remora.advices.RemoraAdvice using org.apache.maven.plugins.shade.resource.ServicesResourceTransformer
+[DEBUG] Processing JAR C:\Users\slabs\.m2\repository\org\takes\takes\1.19\takes-1.19.jar
+[DEBUG] Processing JAR C:\Users\slabs\.m2\repository\org\cactoos\cactoos\0.42\cactoos-0.42.jar
+[DEBUG] Processing JAR C:\Users\slabs\.m2\repository\org\apache\commons\commons-text\1.4\commons-text-1.4.jar
+[DEBUG] Processing JAR C:\Users\slabs\.m2\repository\org\apache\commons\commons-lang3\3.7\commons-lang3-3.7.jar
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] Replacing c:\workspace\remoraj\remora-control\target\remora-control-0.1.5-SNAPSHOT.jar with c:\workspace\remoraj\remora-control\target\remora-control-0.1.5-SNAPSHOT-shaded.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4.539 s
+[INFO] Finished at: 2020-03-24T10:36:21+02:00
+[INFO] Final Memory: 25M/294M
+[INFO] ------------------------------------------------------------------------

@@ -35,7 +35,7 @@ public class BankBenchmarkAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(BankBenchmarkAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(BankBenchmarkAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 

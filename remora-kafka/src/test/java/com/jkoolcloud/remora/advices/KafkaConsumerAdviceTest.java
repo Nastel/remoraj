@@ -35,7 +35,7 @@ public class KafkaConsumerAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(KafkaConsumerAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(KafkaConsumerAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 

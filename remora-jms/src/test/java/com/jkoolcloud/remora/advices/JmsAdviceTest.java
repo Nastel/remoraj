@@ -35,7 +35,7 @@ public class JmsAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(JMSSendAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(JMSSendAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(WebApp.class,"<<interceptingMethod>>");
 

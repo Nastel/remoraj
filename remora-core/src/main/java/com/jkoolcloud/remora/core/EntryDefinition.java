@@ -36,6 +36,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	public Exit exit = new Exit();
 
 	private boolean finished;
+	private boolean checkLastPropertyValue;
 
 	public boolean isFinished() {
 		return finished;
@@ -56,11 +57,12 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		System.out.println("#####################################");
 	}
 
-	public EntryDefinition(Class<?> adviceClass) {
+	public EntryDefinition(Class<?> adviceClass, boolean checkLastPropertyValue) {
 		entry.id = id;
 		exit.id = id;
 		entry.adviceClass = adviceClass.getSimpleName();
 		entry.vmIdentification = vmIdentificationStatic;
+		this.checkLastPropertyValue = checkLastPropertyValue;
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			setTransparent();
 		}
@@ -77,6 +79,13 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	public void addProperty(String key, String value) {
 		String lastValue = value;
 		int iteration = 0;
+		if (checkLastPropertyValue) {
+			String lastActualValue = exit.properties.get(key);
+			if (lastActualValue == value) {
+				return;
+			}
+		}
+
 		while (lastValue != null) {
 			// synchronized (properties) {
 			if (iteration == 0) {
@@ -87,6 +96,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 			iteration++;
 			// }
 		}
+
 	}
 
 	public void addProperties(Map<Object, Object> map) {

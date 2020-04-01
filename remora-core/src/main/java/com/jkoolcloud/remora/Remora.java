@@ -65,6 +65,7 @@ public class Remora {
 		}
 
 		String baseRemoraDir = System.getProperty(Remora.REMORA_PATH);
+		System.out.println("Running RemoraJ " + getVersion());
 
 		// logger.info("Starting from premain; classloader: " + Remora.class.getClassLoader());
 
@@ -133,6 +134,11 @@ public class Remora {
 		} else {
 			logger.info("Found: " + file);
 		}
+	}
+
+	public static String getVersion() {
+		Package sPkg = Remora.class.getPackage();
+		return sPkg.getImplementationVersion();
 	}
 
 }
