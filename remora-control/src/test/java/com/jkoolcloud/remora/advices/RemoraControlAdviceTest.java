@@ -30,7 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -43,31 +42,16 @@ import org.tinylog.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.adviceListeners.CountingAdviceListener;
+import com.jkoolcloud.remora.takes.TKStatistics;
 
 public class RemoraControlAdviceTest {
-
 	public static final String TEST_BODY = "{\n" + "\t\"advice\": \"Advice1\",\n" + "\t\"property\": \"test\",\n"
 			+ "\t\"value\": \"test\"\n" + "}\n";
 
 	@BeforeClass
 	public static void setupLogger() {
 		RemoraControlAdvice.logger = Logger.tag("TEST");
-	}
-
-	@Test
-	public void testFormatResponse() throws IOException {
-		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
-		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
-		String jsonInString = RemoraControlAdvice.formatResponse().toString();
-		JsonNode jsonNode = new ObjectMapper().readTree(jsonInString);
-		System.out.println(jsonInString);
-	}
-
-	@Test
-	public void testgetValueForKey() throws ParseException {
-		assertEquals("Advice1", RemoraControlAdvice.getValueForKey("advice", TEST_BODY));
-		assertEquals("test", RemoraControlAdvice.getValueForKey("property", TEST_BODY));
-		assertEquals("test", RemoraControlAdvice.getValueForKey("value", TEST_BODY));
 	}
 
 	@Test
@@ -78,7 +62,7 @@ public class RemoraControlAdviceTest {
 		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
 		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
 				.getInetSocketAddress();
-		RemoraControlAdvice.startHttpServer2(inetSocketAddress);
+		RemoraControlAdvice.startHttpServer(inetSocketAddress);
 
 		makeRequest(inetSocketAddress);
 
@@ -111,9 +95,10 @@ public class RemoraControlAdviceTest {
 	@Test
 	public void testStatisticsResponse() throws Exception {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
-		RemoraControlAdvice.adviceListener = new RemoraControlAdvice.CountingAdviceListener();
-		String s = new RsPrint(new RemoraControlAdvice.TKStatistics()
-				.act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice1"))).printBody();
+		RemoraControlAdvice.adviceListener = new CountingAdviceListener();
+		String s = new RsPrint(
+				new TKStatistics().act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice1")))
+						.printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(s);
 		JsonNode error = jsonNode.get("error");
 		assertNull(error);
@@ -123,9 +108,10 @@ public class RemoraControlAdviceTest {
 	@Test
 	public void testStatisticsErrorResponse() throws Exception {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
-		RemoraControlAdvice.adviceListener = new RemoraControlAdvice.CountingAdviceListener();
-		String s = new RsPrint(new RemoraControlAdvice.TKStatistics()
-				.act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice2"))).printBody();
+		RemoraControlAdvice.adviceListener = new CountingAdviceListener();
+		String s = new RsPrint(
+				new TKStatistics().act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice2")))
+						.printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(s);
 		JsonNode error = jsonNode.get("error");
 		assertNotNull(error);
