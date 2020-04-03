@@ -50,6 +50,12 @@
             <version>2.7.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19.4</version>
+            <scope>test</scope>
+        </dependency>
 
 
     </dependencies>

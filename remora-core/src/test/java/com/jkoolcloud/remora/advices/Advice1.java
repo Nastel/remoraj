@@ -18,7 +18,7 @@
  * CopyrightVersion 1.0
  */
 
-package com.jkoolcloud.remora.testClasses;
+package com.jkoolcloud.remora.advices;
 
 import java.lang.instrument.Instrumentation;
 
@@ -26,7 +26,6 @@ import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
 
 public class Advice1 implements RemoraAdvice {
 	private static final TaggedLogger LOGGER = Logger.tag("INFO");

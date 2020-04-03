@@ -63,14 +63,12 @@ public class RemoraInit {
 			// LOGGER.info("\t Found module: " + remoraAdvice);
 
 		}
-
+		AdviceRegistry.INSTANCE.report(adviceList);
 		// need to configure logger first
 		adviceList.forEach(advice -> {
 			advice.install(inst);
 			Logger.tag("INIT").info("Installed {}", advice.getName());
 		});
-
-		AdviceRegistry.INSTANCE.report(adviceList);
 
 		failedList.forEach((advice, exc) -> {
 			Logger.tag("INIT").info("Failed configuring: ", advice.getName());

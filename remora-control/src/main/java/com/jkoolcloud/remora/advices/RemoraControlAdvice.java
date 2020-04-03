@@ -4,11 +4,16 @@ import static java.text.MessageFormat.format;
 
 import java.io.*;
 import java.lang.instrument.Instrumentation;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,9 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.fork.FkMethods;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.facets.fork.*;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
 import org.takes.rs.RsText;
@@ -33,6 +36,8 @@ import org.tinylog.TaggedLogger;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 //import org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder;
 
@@ -50,6 +55,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	public static String adminURL = null;
 	@RemoraConfig.Configurable
 	public static int reporterSchedule = 300;
+	protected static CountingAdviceListener adviceListener;
 
 	@Override
 	public void install(Instrumentation instrumentation) {
@@ -81,6 +87,9 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			logger.info("Admin reporter will be not initialised, admin reporter endpoint not set");
 		}
 
+		adviceListener = new CountingAdviceListener();
+		BaseTransformers.registerListener(adviceListener);
+
 	}
 
 	protected static void startHttpServer2(InetSocketAddress address) throws IOException {
@@ -101,7 +110,12 @@ public class RemoraControlAdvice implements RemoraAdvice {
 
 														return new RsText(applyChanges(adviceName, property, value));
 													}
-												}))))), //
+												})))),
+								new FkRegex("/statistics/(?<advice>[^/]+)", new TKStatistics()), //
+								new FkRegex("/queueStatistics", new TkQueueStatistics()), //
+								new FkRegex("/threadDump", new TkThreadDump())//
+
+				), //
 
 						address.getPort()).start(Exit.NEVER);
 			} catch (IOException e) {
@@ -284,6 +298,117 @@ public class RemoraControlAdvice implements RemoraAdvice {
 				return false;
 			}
 			return true;
+		}
+	}
+
+	protected static class CountingAdviceListener implements AdviceListener {
+		ConcurrentHashMap<Class<?>, RemoraStatistic> adviceStatisticsMap = new ConcurrentHashMap<>();
+
+		{
+			for (RemoraAdvice advice : AdviceRegistry.INSTANCE.getRegisteredAdvices()) {
+				adviceStatisticsMap.put(advice.getClass(), new RemoraStatistic());
+			}
+		}
+
+		@Override
+		public void onIntercept(Class<?> adviceClass, Object thiz, Method method) {
+			try {
+				adviceStatisticsMap.get(adviceClass).incInvokeCount();
+			} catch (Throwable t) {
+				System.out.println();
+			}
+		}
+
+		@Override
+		public void onAdviceError(Class<?> adviceClass, Throwable e) {
+			try {
+				adviceStatisticsMap.get(adviceClass).incErrorCount();
+			} catch (Throwable t) {
+				System.out.println();
+			}
+		}
+
+		@Override
+		public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
+			try {
+				adviceStatisticsMap.get(adviceClass).incEventCreateCount();
+			} catch (Throwable t) {
+				System.out.println();
+			}
+		}
+
+	}
+
+	protected static class TKStatistics implements TkRegex {
+
+		public static final String STATISTICS_RESPONSE_BODY = "'{'\n" + "  \"adviceName\" : \"{0}\",\n"
+				+ "  \"invokeCount\" : \"{1}\",\n" + "  \"eventCreateCount\" : \"{2}\",\n"
+				+ "  \"errorCount\": \"{3}\"\n" + "'}'";
+
+		@Override
+		public Response act(RqRegex req) throws Exception {
+			try {
+				String advice = req.matcher().group("advice");
+				if (advice == null) {
+					throw new IllegalArgumentException();
+				}
+				try {
+					Class<?> aClass = Class.forName("com.jkoolcloud.remora.advices." + advice);
+					RemoraStatistic remoraStatistic = adviceListener.adviceStatisticsMap.get(aClass);
+					return new RsText(format(STATISTICS_RESPONSE_BODY, advice, remoraStatistic.getInvokeCount(),
+							remoraStatistic.getEventCreateCount(), remoraStatistic.getErrorCount()));
+
+				} catch (ClassNotFoundException e) {
+					return new RsText("{\"error\": \"No such advice\"}");
+				} catch (NullPointerException e) {
+					return new RsText("{\"error\": \"No such advice statistic\"}");
+				}
+			} catch (IllegalArgumentException e) {
+				return new RsText("{\"error\": \"No advice provided\"}");
+			}
+
+		}
+	}
+
+	private static class TkQueueStatistics implements Take {
+		public static final String QUEUE_STATISTICS_RESPONSE_BODY = "'{'\n" + //
+				"  \"intermediateQueueFailCount\" : \"{0}\",\n" + //
+				"  \"lastChronicleIndex\" : \"{1}\",\n" + //
+				"  \"chronicleErrorCount\" : \"{2}\",\n" + //
+				"  \"lastException\": \"{3}\"\n" + //
+				"'}'";
+
+		@Override
+		public Response act(Request req) throws Exception {
+			return new RsText(format(QUEUE_STATISTICS_RESPONSE_BODY,
+					ScheduledQueueErrorReporter.intermediateQueueFailCount,
+					ScheduledQueueErrorReporter.lastIndexAppender, ScheduledQueueErrorReporter.chronicleQueueFailCount,
+					ScheduledQueueErrorReporter.lastException));
+		}
+
+	}
+
+	private static class TkThreadDump implements Take {
+
+		@Override
+		public Response act(Request req) throws Exception {
+			StringBuilder dump = new StringBuilder();
+			ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
+			for (ThreadInfo threadInfo : threadMxBean.dumpAllThreads(true, true)) {
+				dump.append('"');
+				dump.append(threadInfo.getThreadName());
+				dump.append("\" ");
+				Thread.State state = threadInfo.getThreadState();
+				dump.append("\n   java.lang.Thread.State: ");
+				dump.append(state);
+				StackTraceElement[] stackTraceElements = threadInfo.getStackTrace();
+				for (StackTraceElement stackTraceElement : stackTraceElements) {
+					dump.append("\n        at ");
+					dump.append(stackTraceElement);
+				}
+				dump.append("\n\n");
+			}
+			return new RsText(dump.toString());
 		}
 	}
 }

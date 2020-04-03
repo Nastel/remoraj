@@ -25,14 +25,12 @@ import static net.bytebuddy.matcher.ElementMatchers.none;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -62,6 +60,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
 	@RemoraConfig.Configurable
 	public static boolean checkLastPropertyValue = true;
+
+	public static List<AdviceListener> listeners = new ArrayList<>();
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
@@ -140,6 +140,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
 			ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
+		invokeOnIntercept(entryDefinition.getAdviceClassClass(), thiz, method);
 		if (entryDefinition.isChained()) {
 			return 0;
 		}
@@ -180,6 +181,28 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 		}
 		return System.nanoTime();
+	}
+
+	private static void invokeOnIntercept(Class<?> adviceClass, Object thiz, Method method) {
+		for (AdviceListener listener : listeners) {
+			listener.onIntercept(adviceClass, thiz, method);
+		}
+	}
+
+	private static void invokeEventCreate(Class<?> adviceClass, EntryDefinition ed) {
+		for (AdviceListener listener : listeners) {
+			listener.onCreateEntity(adviceClass, ed);
+		}
+	}
+
+	private static void invokeOnError(Class<?> adviceClass, Throwable e) {
+		for (AdviceListener listener : listeners) {
+			listener.onAdviceError(adviceClass, e);
+		}
+	}
+
+	public static void registerListener(AdviceListener adviceListener) {
+		listeners.add(adviceListener);
 	}
 
 	public static String getStackTrace() {
@@ -265,6 +288,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static void handleAdviceException(Throwable t, String adviceName, TaggedLogger logger) {
+		try {
+			invokeOnError(AdviceRegistry.INSTANCE.getAdviceByName(adviceName).getClass(), t);
+		} catch (ClassNotFoundException e) {
+		}
 		if (logger != null) {
 			logger.info("{} threw an exception {} {}", adviceName, t.getMessage(), t.getClass().getName());
 			logger.info(Arrays.toString(t.getStackTrace()));
@@ -316,6 +343,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			} else {
 
 				EntryDefinition entryDefinition = new EntryDefinition(adviceClass, checkLastPropertyValue);
+				invokeEventCreate(adviceClass, entryDefinition);
 				if (logger != null) {
 					logger.debug("Transparent advice, no previous transparent advice, returning new {}",
 							entryDefinition.getId());
@@ -348,6 +376,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				} else {
 
 					EntryDefinition entryDefinition = new EntryDefinition(adviceClass, checkLastPropertyValue);
+					invokeEventCreate(adviceClass, entryDefinition);
 					if (logger != null) {
 						logger.debug("Nontransparent advice, previous non transparent advice, returning new {}",
 								entryDefinition.getId());

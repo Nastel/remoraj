@@ -74,14 +74,20 @@ Most of advices have properties:
 * enabled - turn off/on advice
 * logging - turn on/off logging
 
-# Other properties 
+# Other properties & Sample response
 
+```
 {
+"remoraJVersion" : "0.1.5-SNAPSHOT-2020-04-03T10:47:28Z",
+"vmIdentification" : "null",
+"advices" : [	{
 	"adviceName": "ApacheHttpClientAdvice",
 	"properties": {
+		"paramPrefix" : "PAR_",
 		"headerCorrIDName" : "REMORA_CORR",
 		"load" : "true",
-		"logging" : "false",
+		"extractParams" : "true",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
@@ -89,20 +95,22 @@ Most of advices have properties:
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "BankBenchmarkAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "RemoraControlAdvice",
 	"properties": {
-
+		"port" : "7366",
+		"reporterSchedule" : "300",
+		"adminURL" : "null"
 	}},
 	{
 	"adviceName": "EjbRemoteAdvice",
@@ -116,7 +124,7 @@ Most of advices have properties:
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
 		"load" : "false",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
@@ -126,7 +134,7 @@ Most of advices have properties:
 		"headerPrefix" : "HDR_",
 		"load" : "true",
 		"attachCorrelator" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true",
 		"cookiePrefix" : "CKIE_"
 	}},
@@ -134,28 +142,28 @@ Most of advices have properties:
 	"adviceName": "JBossAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JBossServletAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JDBCConnectionAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JDBCStatementAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
@@ -163,133 +171,184 @@ Most of advices have properties:
 	"properties": {
 		"load" : "true",
 		"parameterPrefix" : "PARAM_",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JMSCreateConnectionAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JMSReceiveAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JMSSendAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "KafkaConsumerAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "KafkaProducerAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "KafkaConsumerClientAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "SimpleTest",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "SimpleTestConstructor",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "SpringServiceAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "SpringExceptionAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "SpringTransactionAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "WebLogicAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "WebsocketSendAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "WebsocketEndpointAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "WebsocketReceiveAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "WebsocketSessionAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "IBMAdapterRSA",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "WASAdvice",
 	"properties": {
 		"load" : "true",
-		"logging" : "false",
+		"logging" : "true",
 		"enabled" : "true"
 	}}
 ]
+}
+```
+]
+
+
+
+# Statistics
+
+To get statistics query `localhost:7366/statistics/[advice name]`
+
+```
+curl -XGET 'localhost:7366/statistics/JavaxServletAdvice'
+```
+
+Expected response:
+
+```
+{
+  "adviceName" : "JavaxServletAdvice",
+  "invokeCount" : "2",
+  "eventCreateCount" : "2",
+  "errorCount": "0"
+}
+```
+
+
+# QueueStatistics
+
+To get statistics query `localhost:7366/queryStatistics`
+
+```
+curl -XGET 'localhost:7366/queryStatistics'
+```
+
+Expected response:
+
+```
+{
+  "intermediateQueueFailCount" : "0",
+  "lastChronicleIndex" : "0",
+  "chronicleErrorCount" : "0",
+  "lastException": "null"
+}
+```
+#ThreadDump
+
+To get thradDump `localhost:7366/threadDump`
+
+```
+curl -XGET 'localhost:7366/threadDump'
+```

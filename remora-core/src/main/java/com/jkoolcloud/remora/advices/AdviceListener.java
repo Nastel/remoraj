@@ -18,36 +18,16 @@
  * CopyrightVersion 1.0
  */
 
-package com.jkoolcloud.remora.testClasses;
+package com.jkoolcloud.remora.advices;
 
-import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Method;
 
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
+import com.jkoolcloud.remora.core.EntryDefinition;
 
-import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
+public interface AdviceListener {
+	void onIntercept(Class<?> adviceClass, Object thiz, Method method);
 
-public class Advice2 implements RemoraAdvice {
-	private static final TaggedLogger LOGGER = Logger.tag("INFO");
-	private static final String ADVICE_NAME = "2";
+	void onAdviceError(Class<?> adviceClass, Throwable e);
 
-	@RemoraConfig.Configurable
-	public static String test = "TEST2";
-	@RemoraConfig.Configurable
-	public static boolean enabled = false;
-
-	public Advice2() {
-		LOGGER.info("Initialsed1");
-	}
-
-	@Override
-	public void install(Instrumentation inst) {
-
-	}
-
-	@Override
-	public String getName() {
-		return ADVICE_NAME;
-	}
+	void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition);
 }

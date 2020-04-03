@@ -28,6 +28,7 @@ import com.jkoolcloud.remora.advices.TransparentAdvice;
 
 public class EntryDefinition implements EntryDefinitionDescription {
 	protected final String id = JUGFactoryImpl.newUUID();
+	private final Class<?> adviceClass;
 	private boolean transparent;
 	private boolean chained;
 	public static String vmIdentificationStatic;
@@ -52,15 +53,11 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		this.exit = exit;
 	}
 
-	public EntryDefinition(EntryDefinitionDescription writer2) {
-
-		System.out.println("#####################################");
-	}
-
 	public EntryDefinition(Class<?> adviceClass, boolean checkLastPropertyValue) {
 		entry.id = id;
 		exit.id = id;
 		entry.adviceClass = adviceClass.getSimpleName();
+		this.adviceClass = adviceClass;
 		entry.vmIdentification = vmIdentificationStatic;
 		this.checkLastPropertyValue = checkLastPropertyValue;
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
@@ -282,6 +279,10 @@ public class EntryDefinition implements EntryDefinitionDescription {
 
 	public void setChained() {
 		chained = true;
+	}
+
+	public Class<?> getAdviceClassClass() {
+		return adviceClass;
 	}
 
 	public enum EventType {
