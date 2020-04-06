@@ -67,7 +67,7 @@ public class WASAdviceTest {
 		WebApp webApp = mock(WebApp.class);
 		ServletRequest servletRequest = mock(ServletRequest.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class, true);
 
 		ServletResponse servletResponse = mock(ServletResponse.class);
 		// Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
@@ -90,7 +90,7 @@ public class WASAdviceTest {
 		Method method = Whitebox.getMethod(WebApp.class, "handleRequest", ServletRequest.class, ServletResponse.class);
 		Method jmxMethod = Whitebox.getMethod(MessageProducer.class, "send", Message.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class, true);
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 
 		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
@@ -115,7 +115,7 @@ public class WASAdviceTest {
 		Method jmxMethod = Whitebox.getMethod(MessageProducer.class, "send", Message.class);
 		Method jmxReceiveMethod = Whitebox.getMethod(MessageConsumer.class, "receive");
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class, true);
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsReceiveEntryInternal = new EntryDefinition(JMSReceiveAdvice.class);
@@ -158,7 +158,7 @@ public class WASAdviceTest {
 				ServletResponse.class);
 		Method jmxMethod = Whitebox.getMethod(MessageProducer.class, "send", Message.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class, true);
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 

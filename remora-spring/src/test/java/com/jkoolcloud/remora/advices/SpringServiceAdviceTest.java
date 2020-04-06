@@ -35,7 +35,7 @@ public class SpringServiceAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(SpringServiceAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(SpringServiceAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 

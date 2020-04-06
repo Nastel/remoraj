@@ -133,9 +133,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			}
 
 		} catch (Throwable t) {
-			if (logging) {
-				logger.info("Exception: {} {} \n {}", JMSCreateConnectionAdvice.class.getName(), "before", t);
-			}
+			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
 	}
 

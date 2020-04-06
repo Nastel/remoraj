@@ -20,29 +20,35 @@
 
 package com.jkoolcloud.remora.advices;
 
-import org.junit.Test;
+import java.util.concurrent.atomic.AtomicLong;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
+public class RemoraStatistic {
+	private AtomicLong eventCreateCount = new AtomicLong();
+	private AtomicLong invokeCount = new AtomicLong();
+	private AtomicLong errorCount = new AtomicLong();
 
-//Enable power mockito if any of classes failing to mock
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({WebApp.class})
-//@SuppressStaticInitializationFor({""})
-public class BankBenchmarkAdviceTest {
-
-	@Test
-	public void testBankBenchmarkInterceptor() throws NoSuchMethodException {
-		// PowerMockito.mockStatic(<<classToIntercept>>.class);
-		// WebApp webApp=mock(<<classToIntercept>>.class);
-
-		EntryDefinition handleRequestEntry = new EntryDefinition(BankBenchmarkAdvice.class, true);
-
-		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
-
-		// test before method
-		// BankBenchmarkAdvice.before();
-
-		// test after method
-		// BankBenchmarkAdvice.after();
+	public long getEventCreateCount() {
+		return eventCreateCount.get();
 	}
+
+	public long getInvokeCount() {
+		return invokeCount.get();
+	}
+
+	public long getErrorCount() {
+		return errorCount.get();
+	}
+
+	public long incEventCreateCount() {
+		return eventCreateCount.incrementAndGet();
+	}
+
+	public long incInvokeCount() {
+		return invokeCount.incrementAndGet();
+	}
+
+	public long incErrorCount() {
+		return errorCount.incrementAndGet();
+	}
+
 }

@@ -101,22 +101,22 @@ public class ChronicleQueueTest {
 
 			streamThread.start();
 
-			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect = new EntryDefinition(ChronicleQueueTest.class, true);
 			expect.setName("AAA");
 			appender.writeDocument(expect.entry);
 			Thread.sleep(300);
-			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect = new EntryDefinition(ChronicleQueueTest.class, true);
 			expect.setDuration(400L);
 
 			appender.writeDocument(expect.exit);
 
 			Thread.sleep(300);
 
-			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect = new EntryDefinition(ChronicleQueueTest.class, true);
 			expect.setException("Exeption");
 			appender.writeDocument(expect.entry);
 			Thread.sleep(300);
-			expect = new EntryDefinition(ChronicleQueueTest.class);
+			expect = new EntryDefinition(ChronicleQueueTest.class, true);
 			appender.writeDocument(expect.exit);
 			Thread.sleep(300);
 		}

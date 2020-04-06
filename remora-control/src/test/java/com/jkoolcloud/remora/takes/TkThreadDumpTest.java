@@ -18,34 +18,19 @@
  * CopyrightVersion 1.0
  */
 
-package com.jkoolcloud.remora.testClasses;
+package com.jkoolcloud.remora.takes;
 
-import java.lang.instrument.Instrumentation;
+import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
+public class TkThreadDumpTest {
 
-import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
-
-public class Advice1 implements RemoraAdvice {
-	private static final TaggedLogger LOGGER = Logger.tag("INFO");
-	private static final String ADVICE_NAME = "1";
-
-	@RemoraConfig.Configurable
-	public static String test = "TEST1";
-
-	public Advice1() {
-		LOGGER.info("Initialsed");
-	}
-
-	@Override
-	public void install(Instrumentation inst) {
+	@Test
+	public void testThreadDumpResponse() throws Exception {
+		String s = new RsPrint(new TkThreadDump().act(new RqFake())).printBody();
+		System.out.println(s);
 
 	}
 
-	@Override
-	public String getName() {
-		return ADVICE_NAME;
-	}
 }

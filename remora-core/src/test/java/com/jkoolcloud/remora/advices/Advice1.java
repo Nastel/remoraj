@@ -20,29 +20,31 @@
 
 package com.jkoolcloud.remora.advices;
 
-import org.junit.Test;
+import java.lang.instrument.Instrumentation;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
-//Enable power mockito if any of classes failing to mock
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({WebApp.class})
-//@SuppressStaticInitializationFor({""})
-public class BankBenchmarkAdviceTest {
+import com.jkoolcloud.remora.RemoraConfig;
 
-	@Test
-	public void testBankBenchmarkInterceptor() throws NoSuchMethodException {
-		// PowerMockito.mockStatic(<<classToIntercept>>.class);
-		// WebApp webApp=mock(<<classToIntercept>>.class);
+public class Advice1 implements RemoraAdvice {
+	private static final TaggedLogger LOGGER = Logger.tag("INFO");
+	private static final String ADVICE_NAME = "1";
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(BankBenchmarkAdvice.class, true);
+	@RemoraConfig.Configurable
+	public static String test = "TEST1";
 
-		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
+	public Advice1() {
+		LOGGER.info("Initialsed");
+	}
 
-		// test before method
-		// BankBenchmarkAdvice.before();
+	@Override
+	public void install(Instrumentation inst) {
 
-		// test after method
-		// BankBenchmarkAdvice.after();
+	}
+
+	@Override
+	public String getName() {
+		return ADVICE_NAME;
 	}
 }

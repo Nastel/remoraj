@@ -35,7 +35,7 @@ public class JavaxServletAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(JavaxServletAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(JavaxServletAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 

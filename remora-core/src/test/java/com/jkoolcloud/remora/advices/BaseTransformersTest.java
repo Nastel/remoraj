@@ -52,14 +52,14 @@ public class BaseTransformersTest {
 
 	@Test
 	public void getEntryDefinitionEDpresent() {
-		EntryDefinition ed = new EntryDefinition(BaseTransformers.class);
+		EntryDefinition ed = new EntryDefinition(BaseTransformers.class, true);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, TransparentAdviceInstance.class, logger);
 		assertEquals(ed, returned);
 	}
 
 	@Test
 	public void getEntryDefinitionEDpresentNTA() {
-		EntryDefinition ed = new EntryDefinition(BaseTransformers.class);
+		EntryDefinition ed = new EntryDefinition(BaseTransformers.class, true);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
 		assertEquals(ed, returned);
 	}
@@ -82,7 +82,7 @@ public class BaseTransformersTest {
 	public void getEntryDefinitionNonTrasperentAdviceContinueStack() {
 		EntryDefinition ed = null;
 		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
-		EntryDefinition stack1 = new EntryDefinition(GeneralAdvice.class);
+		EntryDefinition stack1 = new EntryDefinition(GeneralAdvice.class, true);
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
 		assertNotNull(returned);
@@ -100,7 +100,7 @@ public class BaseTransformersTest {
 		EntryDefinition ed = null;
 		assertNull(BaseTransformers.stackThreadLocal.get());
 		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
-		EntryDefinition stack1 = new EntryDefinition(TransparentAdviceInstance.class);
+		EntryDefinition stack1 = new EntryDefinition(TransparentAdviceInstance.class, true);
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
 		assertNotNull(returned);
@@ -113,7 +113,7 @@ public class BaseTransformersTest {
 	public void getEntryDefinitionCompleteTest() {
 		EntryDefinition ed = null;
 		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
-		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class); // Service call
+		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class, true); // Service call
 		stack1.addProperty("PARAM1", "PARAM");
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 
@@ -143,7 +143,7 @@ public class BaseTransformersTest {
 	public void getEntryDefinitionCompleteTest2() {
 		EntryDefinition ed = null;
 		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
-		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class); // Service call
+		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class, true); // Service call
 		stack1.addProperty("PARAM1", "PARAM");
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 
@@ -192,7 +192,7 @@ public class BaseTransformersTest {
 	public void getEntryDefinitionCompleteTest3() {
 		EntryDefinition ed = null;
 		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger));
-		EntryDefinition stack1 = new EntryDefinition(JavaXAdvice.class); // JavaX Service call
+		EntryDefinition stack1 = new EntryDefinition(JavaXAdvice.class, true); // JavaX Service call
 		stack1.addProperty("PARAM1", "PARAM");
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 

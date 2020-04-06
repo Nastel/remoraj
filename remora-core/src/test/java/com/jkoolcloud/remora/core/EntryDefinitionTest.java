@@ -45,7 +45,7 @@ public class EntryDefinitionTest {
 			ExcerptAppender appender = queue.acquireAppender();
 			ExcerptTailer tailer = queue.createTailer();
 
-			EntryDefinition ed = new EntryDefinition(EntryDefinitionTest.class);
+			EntryDefinition ed = new EntryDefinition(EntryDefinitionTest.class, true);
 			ed.setName("AAA");
 			ed.setException("Exception");
 			ed.addProperty("Key", "TEST_value");
@@ -53,7 +53,7 @@ public class EntryDefinitionTest {
 			appender.methodWriter(EntryDefinitionDescription.class).entry(ed.entry);
 			// appender.writeDocument(ed);
 
-			EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class);
+			EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class, true);
 			boolean s = tailer.methodReader(edRead).readOne();
 
 			System.out.println(edRead);
@@ -66,14 +66,29 @@ public class EntryDefinitionTest {
 
 	@Test
 	public void testPropertyShift() {
-		EntryDefinition entryDefinition = new EntryDefinition(EntryDefinitionTest.class);
+		EntryDefinition entryDefinition = new EntryDefinition(EntryDefinitionTest.class, true);
 		entryDefinition.addProperty("TEST", "1");
+		entryDefinition.addProperty("TEST", "2");
 		entryDefinition.addProperty("TEST", "2");
 		entryDefinition.addProperty("TEST", "3");
 		assertEquals("3", entryDefinition.getProperties().get("TEST"));
 		assertEquals("2", entryDefinition.getProperties().get("TEST_1"));
 		assertEquals("1", entryDefinition.getProperties().get("TEST_2"));
+		assertEquals("1", entryDefinition.getProperties().get("TEST_2"));
 		System.out.println(entryDefinition.getProperties());
 	}
 
+	@Test
+	public void testPropertyShiftChrckLastPropertyValueFalse() {
+		EntryDefinition entryDefinition = new EntryDefinition(EntryDefinitionTest.class, false);
+		entryDefinition.addProperty("TEST", "1");
+		entryDefinition.addProperty("TEST", "2");
+		entryDefinition.addProperty("TEST", "2");
+		entryDefinition.addProperty("TEST", "3");
+		assertEquals("3", entryDefinition.getProperties().get("TEST"));
+		assertEquals("2", entryDefinition.getProperties().get("TEST_1"));
+		assertEquals("2", entryDefinition.getProperties().get("TEST_2"));
+		assertEquals("1", entryDefinition.getProperties().get("TEST_3"));
+		System.out.println(entryDefinition.getProperties());
+	}
 }

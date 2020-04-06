@@ -38,7 +38,7 @@ public class JBossAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(JBossAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(JBossAdvice.class, true);
 
 		Method method = Whitebox.getMethod(Object.class, "toString");
 

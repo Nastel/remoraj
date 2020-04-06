@@ -35,7 +35,7 @@ public class EjbRemoteAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(EjbRemoteAdvice.class);
+		EntryDefinition handleRequestEntry = new EntryDefinition(EjbRemoteAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 
