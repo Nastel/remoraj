@@ -309,10 +309,10 @@ Most of advices have properties:
 
 # Statistics
 
-To get statistics query `localhost:7366/statistics/[advice name]`
+To get statistics query `localhost:7366/stats/[advice name]`
 
 ```
-curl -XGET 'localhost:7366/statistics/JavaxServletAdvice'
+curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 ```
 
 Expected response:
@@ -329,10 +329,10 @@ Expected response:
 
 # QueueStatistics
 
-To get statistics query `localhost:7366/queryStatistics`
+To get statistics query `localhost:7366/queryStatss`
 
 ```
-curl -XGET 'localhost:7366/queryStatistics'
+curl -XGET 'localhost:7366/queryStats'
 ```
 
 Expected response:
