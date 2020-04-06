@@ -34,7 +34,7 @@ curl -XPOST -d '{
   
 # Available advices
 
-As for version 0.1.5 there are such advices:
+As for version 0.1.6 there are such advices:
 
   "ApacheHttpClientAdvice",
   "ApacheLegacyHttpClientAdvice",
@@ -78,7 +78,7 @@ Most of advices have properties:
 
 ```
 {
-"remoraJVersion" : "0.1.5-SNAPSHOT-2020-04-03T10:47:28Z",
+"remoraJVersion" : "0.1.6-SNAPSHOT-2020-04-03T10:47:28Z",
 "vmIdentification" : "null",
 "advices" : [	{
 	"adviceName": "ApacheHttpClientAdvice",
