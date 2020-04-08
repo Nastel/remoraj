@@ -79,7 +79,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 * Step 4:    Edit the path to where your remora.jar situated
 
 
-### Standalone application
+### Standalone Java Application
 
 To run you standalone application with RemoraJ add option "-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\" to your run script or command line i.e.:
 
