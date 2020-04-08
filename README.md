@@ -127,10 +127,10 @@ Run `remoraJ\tnt4j-streams\remora-streamer\run.sh(run.bat)`.
 If there is some problems running you can always check the logs. Logging might cause seriuos overhead, so by default the logging option is turned off.
 In order to turn on the logging you need to change configuration file, or you can turn it on remotelly if you are using remora-control module.
 
-To turn on logging you need to change option "com.jkoolcloud.remora.advices.BaseTransformers.logging" to `true`in the file remora.properties. You can also turn on logging for individual advices.
+To turn on logging you need to change option 'com.jkoolcloud.remora.advices.BaseTransformers.logging' to `true`in the file 'remora.properties'. You can also turn on logging for individual advices.
 
-Each advice creates it own logging file. You can find all files in your remora's folder under `logs`.
-I.e.: `c:\workspace\build\remora\`
+Each advice creates it own logging file. You can find all files in your remora's folder under `log`.
+I.e.: `c:\workspace\build\remora\log`
 
 
 
