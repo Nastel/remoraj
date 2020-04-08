@@ -78,12 +78,32 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 ```
 * Step 4:    Edit the path to where your remora.jar situated
 
+
+### Standalone application
+
+To run you standalone application with RemoraJ add option "-javaagent:c:\remora\remora-0.1.4\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\" to your run script or command line i.e.:
+
+```
+java -javaagent:c:\remora\remora-0.1.4\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\ -jar <jar-file-name>.jar
+```
+
+if in some cases your run script cannot use `=` char use option to specify the "remora.path" property, i.e.:
+
+```
+java -javaagent:c:\workspace\build\remora\remora-0.1.4\remora.jar
+-Dremora.path=c:\workspace\build\remora\remora-0.1.4 -jar <jar-file-name>.jar
+```
+
+
 ## Configure Streams Agent
 
 * Step 1:    Go to tnt4j streams config
 * Step 2:    Edit `tnt4j-streams.properties` and setup your access Token (`event.sink.factory.EventSinkFactory.prod.Token`)
 * Step 3:    (Optional) Edit tnt `remora-0.1.6-SNAPSHOT\tnt4j-streams\remora-streamer\tnt-data-source.xml` 
 * Step 4:    (Optional) Setup line ```<property name="FileName" value="..\..\queue"/>``` to point to your RemoraJ queue directory.
+
+`
+
 
 # Configuration
 
@@ -101,3 +121,18 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 Once the agent attached and TNT4J-Streams configured you can 
 Run `remoraJ\tnt4j-streams\remora-streamer\run.sh(run.bat)`.
+
+# Troubleshooting and logging
+
+If there is some problems running you can always check the logs. Logging might cause seriuos overhead, so by default the logging option is turned off.
+In order to turn on the logging you need to change configuration file, or you can turn it on remotelly if you are using remora-control module.
+
+To turn on logging you need to change option "com.jkoolcloud.remora.advices.BaseTransformers.logging" to `true`in the file remora.properties. You can also turn on logging for individual advices.
+
+Each advice creates it own logging file. You can find all files in your remora's folder under `logs`.
+I.e.: `c:\workspace\build\remora\`
+
+
+
+
+
