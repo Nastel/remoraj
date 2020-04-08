@@ -73,7 +73,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
            <jvm-options>
            </jvm-options>
                <option value="-agentlib:jdwp=transport=dt_socket,address=5007,server=y,suspend=n"/>
-               <option value="-javaagent:c:\remora\remora-0.1.6-SNAPSHOT\remora.jar=c:\remora\remora-<version>\"/>
+               <option value="-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\"/>
        </jvm>
 ```
 * Step 4:    Edit the path to where your remora.jar situated
@@ -99,7 +99,7 @@ java -javaagent:c:\workspace\build\remora\remora-0.1.4\remora.jar
 
 * Step 1:    Go to tnt4j streams config
 * Step 2:    Edit `tnt4j-streams.properties` and setup your access Token (`event.sink.factory.EventSinkFactory.prod.Token`)
-* Step 3:    (Optional) Edit tnt `remora-0.1.6-SNAPSHOT\tnt4j-streams\remora-streamer\tnt-data-source.xml` 
+* Step 3:    (Optional) Edit tnt `remora-<version>\tnt4j-streams\remora-streamer\tnt-data-source.xml` 
 * Step 4:    (Optional) Setup line ```<property name="FileName" value="..\..\queue"/>``` to point to your RemoraJ queue directory.
 
 `
