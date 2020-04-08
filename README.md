@@ -90,10 +90,9 @@ java -javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>
 if in some cases your run script cannot use `=` char use option to specify the "remora.path" property, i.e.:
 
 ```
-java -javaagent:c:\workspace\build\remora\remora-0.1.4\remora.jar
--Dremora.path=c:\workspace\build\remora\remora-0.1.4 -jar <jar-file-name>.jar
+java -javaagent:c:\workspace\build\remora\remora-<version>\remora.jar
+-Dremora.path=c:\workspace\build\remora\remora-<version> -jar <jar-file-name>.jar
 ```
-
 
 ## Configure Streams Agent
 
@@ -103,7 +102,6 @@ java -javaagent:c:\workspace\build\remora\remora-0.1.4\remora.jar
 * Step 4:    (Optional) Setup line ```<property name="FileName" value="..\..\queue"/>``` to point to your RemoraJ queue directory.
 
 `
-
 
 # Configuration
 
