@@ -78,7 +78,6 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 ```
 * Step 4:    Edit the path to where your remora.jar situated
 
-
 ### Standalone Java Application
 
 To run you standalone application with RemoraJ add option "-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\" to your run script or command line i.e.:
@@ -100,8 +99,6 @@ java -javaagent:c:\workspace\build\remora\remora-<version>\remora.jar
 * Step 2:    Edit `tnt4j-streams.properties` and setup your access Token (`event.sink.factory.EventSinkFactory.prod.Token`)
 * Step 3:    (Optional) Edit tnt `remora-<version>\tnt4j-streams\remora-streamer\tnt-data-source.xml` 
 * Step 4:    (Optional) Setup line ```<property name="FileName" value="..\..\queue"/>``` to point to your RemoraJ queue directory.
-
-`
 
 # Configuration
 
