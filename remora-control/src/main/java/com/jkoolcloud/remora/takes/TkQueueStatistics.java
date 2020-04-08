@@ -22,11 +22,14 @@ package com.jkoolcloud.remora.takes;
 
 import static java.text.MessageFormat.format;
 
+import java.io.File;
+
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.rs.RsText;
 
+import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 public class TkQueueStatistics implements Take {
@@ -35,13 +38,21 @@ public class TkQueueStatistics implements Take {
 			"  \"lastChronicleIndex\" : \"{1}\",\n" + //
 			"  \"chronicleErrorCount\" : \"{2}\",\n" + //
 			"  \"lastException\": \"{3}\"\n" + //
+			"  \"usableSpace\": \"{4}\"\n" + //
+
 			"'}'";
 
 	@Override
 	public Response act(Request req) throws Exception {
+		long usableSpace = 0;
+		try {
+			usableSpace = new File(System.getProperty(Remora.REMORA_PATH)).getUsableSpace();
+		} catch (Throwable t) {
+
+		}
 		return new RsText(format(QUEUE_STATISTICS_RESPONSE_BODY, ScheduledQueueErrorReporter.intermediateQueueFailCount,
 				ScheduledQueueErrorReporter.lastIndexAppender, ScheduledQueueErrorReporter.chronicleQueueFailCount,
-				ScheduledQueueErrorReporter.lastException));
+				ScheduledQueueErrorReporter.lastException, usableSpace));
 	}
 
 }
