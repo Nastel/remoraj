@@ -34,7 +34,7 @@ https://www.jkoolcloud.com/.
     * Step 2:    Edit node `/process:Server/processDefinitions/jvmEntries` parameter `@genericJvmArguments`
     * Step 3:    Edit the path to where your remora.jar situated
     ```xml
-    <jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:c:\remora\remora-0.1.6-SNAPSHOT\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\" executableJarFileName="" disableJIT="false">
+    <jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\" executableJarFileName="" disableJIT="false">
     ```
 
 ### IBM WAS Liberty
@@ -42,8 +42,8 @@ https://www.jkoolcloud.com/.
 * Step 1:    Edit or create `jvm.options` file in the folder [wlp\usr\servers\<serverName>\].
 * Step 2:    Add lines:
 ```
--javaagent:c:\workspace\build\remora\remora-0.1.4\remora.jar
--Dremora.path=c:\workspace\build\remora\remora-0.1.4
+-javaagent:c:\workspace\build\remora\remora-<version>\remora.jar
+-Dremora.path=c:\workspace\build\remora\remora-<version>
 ```
 * Step 3:    Edit the path to where your remora.jar situated
 * Step 4:    Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
@@ -59,7 +59,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 * Step 1:    Edit `bin\standalone.bat`
 * Step 2:    Add line: 
 ```
-    set "JAVA_OPTS=%JAVA_OPTS% -javaagent:c:\remora\remora-0.1.4\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\"
+    set "JAVA_OPTS=%JAVA_OPTS% -javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\"
 ```
 * Step 3:    Edit the path to where your remora.jar situated
 
@@ -67,13 +67,13 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 
 * Step 1:    Edit `domain\configuration\host.xml`
 * Step 2:    Edit tag `<servers><jvm>`
-* Step 3:    Add `<option value="-javaagent:c:\remora\remora-0.1.4\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\"/>`
+* Step 3:    Add `<option value="-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\"/>`
 ```xml
        <jvm name="default">
            <jvm-options>
            </jvm-options>
                <option value="-agentlib:jdwp=transport=dt_socket,address=5007,server=y,suspend=n"/>
-               <option value="-javaagent:c:\remora\remora-0.1.6-SNAPSHOT\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\"/>
+               <option value="-javaagent:c:\remora\remora-0.1.6-SNAPSHOT\remora.jar=c:\remora\remora-<version>\"/>
        </jvm>
 ```
 * Step 4:    Edit the path to where your remora.jar situated
@@ -81,7 +81,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 
 ### Standalone application
 
-To run you standalone application with RemoraJ add option "-javaagent:c:\remora\remora-0.1.4\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\" to your run script or command line i.e.:
+To run you standalone application with RemoraJ add option "-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\" to your run script or command line i.e.:
 
 ```
 java -javaagent:c:\remora\remora-0.1.4\remora.jar=c:\remora\remora-0.1.6-SNAPSHOT\ -jar <jar-file-name>.jar
