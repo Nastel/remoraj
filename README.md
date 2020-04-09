@@ -42,8 +42,8 @@ https://www.jkoolcloud.com/.
 * Step 1:    Edit or create `jvm.options` file in the folder [wlp\usr\servers\<serverName>\].
 * Step 2:    Add lines:
 ```
--javaagent:c:\workspace\build\remora\remora-<version>\remora.jar
--Dremora.path=c:\workspace\build\remora\remora-<version>
+-javaagent:c:\remora\remora-<version>\remora.jar
+-Dremora.path=c:\remora\remora-<version>
 ```
 * Step 3:    Edit the path to where your remora.jar situated
 * Step 4:    Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
@@ -89,8 +89,8 @@ java -javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>
 if in some cases your run script cannot use `=` char use option to specify the "remora.path" property, i.e.:
 
 ```
-java -javaagent:c:\workspace\build\remora\remora-<version>\remora.jar
--Dremora.path=c:\workspace\build\remora\remora-<version> -jar <jar-file-name>.jar
+java -javaagent:c:\remora\remora-<version>\remora.jar
+-Dremora.path=c:\remora\remora-<version> -jar <jar-file-name>.jar
 ```
 
 ## Configure Streams Agent
@@ -125,7 +125,7 @@ In order to turn on the logging you need to change configuration file, or you ca
 To turn on logging you need to change option `com.jkoolcloud.remora.advices.BaseTransformers.logging` to `true`in the file `remora.properties`. You can also turn on logging for individual advices.
 
 Each advice creates it own logging file. You can find all files in your remora's folder under `log`.
-I.e.: `c:\workspace\build\remora\log`
+I.e.: `c:\remora\remora-<version>\log`
 
 
 
