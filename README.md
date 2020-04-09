@@ -10,6 +10,34 @@ RemoraJ consists of two main runtime components:
 
 Both agents communicate via a memory mapped queue stored on a filesystem see `tnt-data-source.xml` for details. Traces are sent using JSON over HTTPS. 
 
+RemoraJ supports the following intercepts (advices):
+   * ApacheHttpClientAdvice
+   * ApacheLegacyHttpClientAdvice
+   * EjbRemoteAdvice 
+   * HttpUrlConnectionAdvice
+   * JavaxServletAdvice
+   * JBossAdvice
+   * JBossServletAdvice
+   * JDBCConnectionAdvice
+   * JDBCStatementAdvice
+   * JDBCCallableStatementAdvice
+   * JMSCreateConnectionAdvice
+   * JMSReceiveAdvice
+   * JMSSendAdvice
+   * KafkaConsumerAdvice
+   * KafkaProducerAdvice
+   * KafkaConsumerClientAdvice
+   * SpringServiceAdvice
+   * SpringExceptionAdvice
+   * SpringTransactionAdvice
+   * WebLogicAdvice
+   * WebsocketSendAdvice
+   * WebsocketEndpointAdvice
+   * WebsocketReceiveAdvice
+   * WebsocketSessionAdvice
+   * IBMAdapterRSA
+   * WASAdvice
+
 # Installing
 
 You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and a streaming access token in 
