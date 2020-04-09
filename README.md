@@ -42,8 +42,7 @@ https://www.jkoolcloud.com/.
 * Step 1:    Edit or create `jvm.options` file in the folder [wlp\usr\servers\<serverName>\].
 * Step 2:    Add lines:
 ```
--javaagent:<install_dir>/remora-<version>/remora.jar
--Dremora.path=<install_dir>/remora-<version>
+-javaagent:<install_dir>/remora-<version>/remora.jar -Dremora.path=<install_dir>/remora-<version>
 ```
 * Step 3:    Edit the path to where your `remora.jar` situated
 * Step 4:    Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
@@ -59,7 +58,8 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 * Step 1:    Edit `bin/standalone.bat[.sh]`
 * Step 2:    Add line: 
 ```
-    set "JAVA_OPTS=%JAVA_OPTS% -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"
+    winx: set "JAVA_OPTS=%JAVA_OPTS% -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"
+    unix: JAVA_OPTS="$JAVA_OPTS -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"
 ```
 * Step 3:    Edit the path to where your `remora.jar` situated
 
