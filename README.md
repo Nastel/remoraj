@@ -12,7 +12,7 @@ Both agents communicate via a memory mapped queue stored on a filesystem see `tn
 
 # Installing
 
-You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and token in 
+You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and a streaming access token in 
 https://www.jkoolcloud.com/.
 
 ## Java agent 
@@ -22,17 +22,17 @@ https://www.jkoolcloud.com/.
 
 * Option 1: using IBM WebSphere console.
 
-    * Step 1:    Navigate to Application servers > [Your server name] > Process definition > Java Virtual Machine
+    * Step 1:    Navigate to `Application servers > [Your server name] > Process definition > Java Virtual Machine`
     * Step 2:    Edit field "Generic JVM arguments"
-    * Step 3:    Add -javaagent:[<install_dir>/remora-<version>]/remora.jar=[<install_dir>/remora-<version>]
+    * Step 3:    Add `-javaagent:[<install_dir>/remora-<version>]/remora.jar=[<install_dir>/remora-<version>]`
     * Step 4:    Restart IBM WebSphere 
     * Step 5:    Run and configure TNT4J streams forwarding agent
 
-* Option 2: editing server.xml properties manually
+* Option 2: editing `server.xml` properties manually
 
-    * Step 1:    Navigate to `c:\Users\<USER_DIR>\IBM\WebSphere\<Server>\profiles\<App Server>\config\cells\<Cell>\nodes\<Node>\servers\<Server>\server.xml`
+    * Step 1:    Navigate to `<USER_DIR>/IBM/WebSphere/<Server>/profiles/<App Server>/config/cells/<Cell>/nodes/<Node>/servers/<Server>/server.xml`
     * Step 2:    Edit node `/process:Server/processDefinitions/jvmEntries` parameter `@genericJvmArguments`
-    * Step 3:    Edit the path to where your remora.jar situated
+    * Step 3:    Edit the path to where your `remora.jar` situated
     ```xml
     <jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/" executableJarFileName="" disableJIT="false">
     ```
@@ -45,7 +45,7 @@ https://www.jkoolcloud.com/.
 -javaagent:<install_dir>/remora-<version>/remora.jar
 -Dremora.path=<install_dir>/remora-<version>
 ```
-* Step 3:    Edit the path to where your remora.jar situated
+* Step 3:    Edit the path to where your `remora.jar` situated
 * Step 4:    Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
 * Step 5:    Add line:
 ```
@@ -61,7 +61,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 ```
     set "JAVA_OPTS=%JAVA_OPTS% -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"
 ```
-* Step 3:    Edit the path to where your remora.jar situated
+* Step 3:    Edit the path to where your `remora.jar` situated
 
 #### Domain mode
 
@@ -76,27 +76,26 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
                <option value="-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"/>
        </jvm>
 ```
-* Step 4:    Edit the path to where your remora.jar situated
+* Step 4:    Edit the path to where your `remora.jar` situated
 
 ### Standalone Java Application
 
-To run you standalone application with RemoraJ add option "-javaagent:c:\remora\remora-<version>\remora.jar=c:\remora\remora-<version>\" to your run script or command line i.e.:
+To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/` to your run script or command line i.e.:
 
 ```
 java -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/ -jar <jar-file-name>.jar
 ```
 
-if in some cases your run script cannot use `=` char use option to specify the "remora.path" property, i.e.:
+if in some cases your run script cannot use `=` char use option to specify the `remora.path` property, i.e.:
 
 ```
-java -javaagent:<install_dir>/remora-<version>/remora.jar
--Dremora.path=<install_dir>/remora-<version> -jar <jar-file-name>.jar
+java -javaagent:<install_dir>/remora-<version>/remora.jar -Dremora.path=<install_dir>/remora-<version> -jar <jar-file-name>.jar
 ```
 
 ## Configure Streams Agent
 
 * Step 1:    Go to tnt4j streams config
-* Step 2:    Edit `tnt4j-streams.properties` and setup your access Token (`event.sink.factory.EventSinkFactory.prod.Token`)
+* Step 2:    Edit `tnt4j-streams.properties` and setup your access token (`event.sink.factory.EventSinkFactory.prod.Token`)
 * Step 3:    (Optional) Edit tnt `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/tnt-data-source.xml` 
 * Step 4:    (Optional) Setup line ```<property name="FileName" value="../../queue"/>``` to point to your RemoraJ queue directory.
 
@@ -124,10 +123,7 @@ In order to turn on the logging you need to change configuration file, or you ca
 
 To turn on logging you need to change option `com.jkoolcloud.remora.advices.BaseTransformers.logging` to `true`in the file `remora.properties`. You can also turn on logging for individual advices.
 
-Each advice creates it own logging file. You can find all files in your remora's folder under `log`.
-I.e.: `<install_dir>/remora-<version>/log`
-
-
+Each advice creates it own logging file. You can find all files in your remora's folder under `log` -- `<install_dir>/remora-<version>/log`.
 
 
 
