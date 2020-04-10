@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarFile;
@@ -61,7 +62,7 @@ public class Remora {
 
 	public static void premain(String options, Instrumentation inst) throws Exception {
 		if (System.getProperty(REMORA_PATH) == null) {
-			System.setProperty(REMORA_PATH, options);
+			System.setProperty(REMORA_PATH, options == null ? getJarContainingFolder(Remora.class) : options);
 		}
 
 		String baseRemoraDir = System.getProperty(Remora.REMORA_PATH);
@@ -82,6 +83,16 @@ public class Remora {
 		EntryDefinition.setVmIdentification(System.getProperty(REMORA_VM_IDENTIFICATION, getDefaultVM()));
 		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
 		OutputManager outputManager = OutputManager.INSTANCE; //
+	}
+
+	public static String getJarContainingFolder(Class aclass) throws Exception {
+
+		String path = aclass.getResource(aclass.getSimpleName() + ".class").getPath();
+		String jarFilePath = path.substring(path.indexOf(":") + 1, path.indexOf("!"));
+		jarFilePath = URLDecoder.decode(jarFilePath, "UTF-8");
+		File jarFile = new File(jarFilePath);
+
+		return jarFile.getParentFile().getAbsolutePath();
 	}
 
 	private static String getDefaultVM() {

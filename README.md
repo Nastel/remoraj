@@ -52,7 +52,7 @@ https://www.jkoolcloud.com/.
 
     * Step 1:    Navigate to `Application servers > [Your server name] > Process definition > Java Virtual Machine`
     * Step 2:    Edit field "Generic JVM arguments"
-    * Step 3:    Add `-javaagent:[<install_dir>/remora-<version>]/remora.jar=[<install_dir>/remora-<version>]`
+    * Step 3:    Add `-javaagent:[<install_dir>/remora-<version>]/remora.jar`
     * Step 4:    Restart IBM WebSphere 
     * Step 5:    Run and configure TNT4J streams forwarding agent
 
@@ -62,7 +62,7 @@ https://www.jkoolcloud.com/.
     * Step 2:    Edit node `/process:Server/processDefinitions/jvmEntries` parameter `@genericJvmArguments`
     * Step 3:    Edit the path to where your `remora.jar` situated
     ```xml
-    <jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/" executableJarFileName="" disableJIT="false">
+    <jvmEntries xmi:id="JavaVirtualMachine_1183122130078" verboseModeClass="false" verboseModeGarbageCollection="false" verboseModeJNI="false" initialHeapSize="512" maximumHeapSize="2056" runHProf="false" hprofArguments="" genericJvmArguments="-javaagent:<install_dir>/remora-<version>/remora.jar" executableJarFileName="" disableJIT="false">
     ```
 
 ### IBM WAS Liberty
@@ -70,7 +70,7 @@ https://www.jkoolcloud.com/.
 * Step 1:    Edit or create `jvm.options` file in the folder [wlp\usr\servers\<serverName>\].
 * Step 2:    Add lines:
 ```
--javaagent:<install_dir>/remora-<version>/remora.jar -Dremora.path=<install_dir>/remora-<version>
+-javaagent:<install_dir>/remora-<version>/remora.jar -Dremora.path
 ```
 * Step 3:    Edit the path to where your `remora.jar` situated
 * Step 4:    Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
@@ -86,8 +86,8 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 * Step 1:    Edit `bin/standalone.bat[.sh]`
 * Step 2:    Add line: 
 ```
-    winx: set "JAVA_OPTS=%JAVA_OPTS% -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"
-    unix: JAVA_OPTS="$JAVA_OPTS -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"
+    winx: set "JAVA_OPTS=%JAVA_OPTS% -javaagent:<install_dir>/remora-<version>/remora.jar"
+    unix: JAVA_OPTS="$JAVA_OPTS -javaagent:<install_dir>/remora-<version>/remora.jar"
 ```
 * Step 3:    Edit the path to where your `remora.jar` situated
 
@@ -95,30 +95,25 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 
 * Step 1:    Edit `domain/configuration/host.xml`
 * Step 2:    Edit tag `<servers><jvm>`
-* Step 3:    Add `<option value="-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"/>`
+* Step 3:    Add `<option value="-javaagent:<install_dir>/remora-<version>/remora.jar"/>`
 ```xml
        <jvm name="default">
            <jvm-options>
            </jvm-options>
                <option value="-agentlib:jdwp=transport=dt_socket,address=5007,server=y,suspend=n"/>
-               <option value="-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/"/>
+               <option value="-javaagent:<install_dir>/remora-<version>/remora.jar"/>
        </jvm>
 ```
 * Step 4:    Edit the path to where your `remora.jar` situated
 
 ### Standalone Java Application
 
-To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/` to your run script or command line i.e.:
+To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar` to your run script or command line i.e.:
 
 ```
-java -javaagent:<install_dir>/remora-<version>/remora.jar=<install_dir>/remora-<version>/ -jar <jar-file-name>.jar
+java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.jar
 ```
 
-if in some cases your run script cannot use `=` char use option to specify the `remora.path` property, i.e.:
-
-```
-java -javaagent:<install_dir>/remora-<version>/remora.jar -Dremora.path=<install_dir>/remora-<version> -jar <jar-file-name>.jar
-```
 
 ## Configure Streams Agent
 
