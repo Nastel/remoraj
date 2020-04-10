@@ -118,4 +118,13 @@
         <!--<lineEnding>${assembly.line.endings}</lineEnding>-->
         <!--</fileSet>-->
     </fileSets>
+    <files>
+        <file>
+            <source>../remora-control/README.md</source>
+            <outputDirectory>.</outputDirectory>
+            <destName>README-remora-control.md</destName>
+        </file>
+
+    </files>
+
 </component>

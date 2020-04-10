@@ -124,15 +124,14 @@
             <outputDirectory>tnt4j-streams/config</outputDirectory>
             <lineEnding>unix</lineEnding>
         </fileSet>
-
-        <!-- JavaDocs -->
-        <!--<fileSet>-->
-        <!--<directory>../${project.build.directory}</directory>-->
-        <!--<includes>-->
-        <!--<include>*-javadoc.*</include>-->
-        <!--</includes>-->
-        <!--<outputDirectory>docs</outputDirectory>-->
-        <!--<lineEnding>${assembly.line.endings}</lineEnding>-->
-        <!--</fileSet>-->
     </fileSets>
+    <files>
+        <file>
+            <source>../remora-control/README.md</source>
+            <outputDirectory>.</outputDirectory>
+            <destName>README-remora-control.md</destName>
+            <lineEnding>unix</lineEnding>
+        </file>
+
+    </files>
 </component>
