@@ -109,7 +109,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 
 ### Standalone Java Application
 
-To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar` to your run script or command line i.e.:
+To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar` to your run script or command line:
 
 ```
 java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.jar
@@ -130,10 +130,9 @@ See relevant comments in file for advanced config.
 
 ## VM identification
 
-To identify VM you can set system property (java -D) `remoraVMIdentification` to any readable token identifying the process remoraJ are 
-attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result.
+To identify VM you can set system property (`java -D`) `remoraVMIdentification=<vm-name>` to any readable token identifying the process remoraJ is attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()`.
 
-**NOTE:** this default value might be not available in every VM's implementation and might be platform dependent.
+**NOTE:** The default `remoraVMIdentification` value might be not available in every VM's implementation and is platform dependent.
 
 # Running
 
