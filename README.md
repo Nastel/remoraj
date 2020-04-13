@@ -1,5 +1,5 @@
 
-# RemoraJ
+# RemoraJ -- Light Weight Bytecode Instrumentation Agent for Java
 
 RemoraJ is a light weight java app profiling agent which uses bytecode instrumentation to profile activities, performance, exceptions with minimal overhead. RemoraJ monitors your application performance by tracking common application building blocks and services services like HTTP, WebServices, JMS, JDBC, WebSockets, Kafka and more. 
 
