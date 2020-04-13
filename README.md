@@ -40,8 +40,7 @@ RemoraJ supports the following intercepts (advices):
 
 # Installing
 
-You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and a streaming access token in 
-https://www.jkoolcloud.com/.
+You must set up Remora Java agent and Streams Agent to run RemoraJ. Your should have a working data repository and a streaming access token in https://www.jkoolcloud.com/.
 
 ## Java agent 
 ## Using -javaagent option
