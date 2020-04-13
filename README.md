@@ -135,8 +135,8 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 # Running
 
-Once the agent attached and TNT4J-Streams configured you can 
-Run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)`.
+Once the java agent is attached to your JVM and Streams Agent configured: 
+Run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)` to start Streams Agent and begin forwaring java traces to your `jkoolcloud.com` repository.
 
 # Troubleshooting and logging
 
