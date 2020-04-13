@@ -10,6 +10,8 @@ RemoraJ consists of two main runtime components:
 
 Both agents communicate via a memory mapped queue stored on a filesystem see `tnt-data-source.xml` for details. Traces are sent using JSON over HTTPS. 
 
+**NOTE**: Full Streams Agent is available here: https://github.com/Nastel/tnt4j-streams
+
 RemoraJ supports the following intercepts (advices):
    * ApacheHttpClientAdvice
    * ApacheLegacyHttpClientAdvice
