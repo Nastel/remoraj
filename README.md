@@ -10,7 +10,7 @@ RemoraJ consists of two main runtime components:
 
 Both agents communicate via a memory mapped queue stored on a filesystem see `tnt-data-source.xml` for details. Traces are sent using JSON over HTTPS. 
 
-**NOTE**: Full Streams Agent is available here: https://github.com/Nastel/tnt4j-streams
+**NOTE**: Streams Agent project is available here: https://github.com/Nastel/tnt4j-streams
 
 RemoraJ supports the following intercepts (advices):
    * ApacheHttpClientAdvice
@@ -55,7 +55,7 @@ You must set up Remora Java agent and Streams Agent to run RemoraJ. Your should 
     * Step 2:    Edit field "Generic JVM arguments"
     * Step 3:    Add `-javaagent:[<install_dir>/remora-<version>]/remora.jar`
     * Step 4:    Restart IBM WebSphere 
-    * Step 5:    Run and configure TNT4J streams forwarding agent
+    * Step 5:    Run and configure streams forwarding agent
 
 * Option 2: editing `server.xml` properties manually
 
@@ -115,7 +115,6 @@ To run you standalone application with RemoraJ add option `-javaagent:<install_d
 java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.jar
 ```
 
-
 ## Configure Streams Agent
 
 * Step 1:    Go to tnt4j streams config
@@ -147,6 +146,5 @@ In order to turn on the logging you need to change configuration file, or you ca
 To turn on logging you need to change option `com.jkoolcloud.remora.advices.BaseTransformers.logging` to `true`in the file `remora.properties`. You can also turn on logging for individual advices.
 
 Each advice creates it own logging file. You can find all files in your remora's folder under `log` -- `<install_dir>/remora-<version>/log`.
-
 
 
