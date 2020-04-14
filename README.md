@@ -107,19 +107,20 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
 
 ### Standalone Java Application
 
-To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar` to your run script or command line i.e.:
+To run you standalone application with RemoraJ add option `-javaagent:<install_dir>/remora-<version>/remora.jar` to your run script or command line:
 
 ```
 java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.jar
 ```
 
-
 ## Configure Streams Agent
 
-* Step 1:    Go to tnt4j streams config
+* Step 1:    Go to `<install_dir>/remora-<version>/tnt4j-streams/config`
 * Step 2:    Edit `tnt4j-streams.properties` and setup your access token (`event.sink.factory.EventSinkFactory.prod.Token`)
-* Step 3:    (Optional) Edit tnt `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/tnt-data-source.xml` 
-* Step 4:    (Optional) Setup line ```<property name="FileName" value="../../queue"/>``` to point to your RemoraJ queue directory.
+* Step 3:    (Optional) More settings in `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/tnt-data-source.xml` 
+* Step 4:    (Optional) Edit ```<property name="FileName" value="../../queue"/>``` to point to your RemoraJ queue directory.
+
+**NOTE:** RemoraJ queue directory hosts files containing java traces produced by remora java agent. These traces are read by the Streams agent and forwarded to your data repository. 
 
 # Configuration
 
@@ -146,6 +147,3 @@ In order to turn on the logging you need to change configuration file, or you ca
 To turn on logging you need to change option `com.jkoolcloud.remora.advices.BaseTransformers.logging` to `true`in the file `remora.properties`. You can also turn on logging for individual advices.
 
 Each advice creates it own logging file. You can find all files in your remora's folder under `log` -- `<install_dir>/remora-<version>/log`.
-
-
-
