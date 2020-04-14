@@ -130,12 +130,12 @@ java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.j
 * Step 3:    (Optional) More settings in `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/tnt-data-source.xml` 
 * Step 4:    (Optional) Edit ```<property name="FileName" value="../../queue"/>``` to point to your RemoraJ queue directory.
 
-**NOTE:** RemoraJ queue directory hosts files containing java traces produced by remora java agent. These traces are read by the Streams agent and forwarded to your data repository. 
+**NOTE:** RemoraJ queue directory hosts files containing java traces produced by remora java agent. These traces are read by the Streams Agent and forwarded to your data repository. 
 
 # Remora Agent Configuration
 
 RemoraJ configuration file is located `config` folder, file named `remora.properties`.
-See relevant comments in file for advanced config.
+See relevant comments in the file for advanced config.
 
 ## VM identification
 
