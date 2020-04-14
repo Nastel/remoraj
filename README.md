@@ -40,8 +40,7 @@ RemoraJ supports the following intercepts (advices):
 
 # Installing
 
-You must set up Remora Java agent and TNT4J-Streams to run RemoraJ. Your should have working repository and a streaming access token in 
-https://www.jkoolcloud.com/.
+You configure Remora Java agent and Streams agent to run RemoraJ. Your should have a working data repository and a streaming access token in https://www.jkoolcloud.com/.
 
 ## Java agent 
 ## Using -javaagent option
@@ -54,7 +53,7 @@ https://www.jkoolcloud.com/.
     * Step 2:    Edit field "Generic JVM arguments"
     * Step 3:    Add `-javaagent:[<install_dir>/remora-<version>]/remora.jar`
     * Step 4:    Restart IBM WebSphere 
-    * Step 5:    Run and configure TNT4J streams forwarding agent
+    * Step 5:    Run and configure Streams forwarding agent
 
 * Option 2: editing `server.xml` properties manually
 
@@ -136,8 +135,8 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 # Running
 
-Once the agent attached and TNT4J-Streams configured you can 
-Run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)`.
+Once the agent attached and Streams agent configured you can 
+Run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)` to start Streams agent and begin forwarding java traces to your data repository.
 
 # Troubleshooting and logging
 
