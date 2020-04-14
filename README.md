@@ -139,7 +139,7 @@ See relevant comments in the file for advanced config.
 
 ## VM identification
 
-To identify VM you can set system property (java -D) `remora.vmid` to any readable token identifying the process remoraJ are 
+To identify your VM: can set system property (`java -D`) `remora.vmid` to any readable token identifying the process remoraJ are 
 attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result.
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
