@@ -29,7 +29,7 @@ public class EntryTest {
 		entry.name = "TESTname";
 		entry.clazz = "EntryClass";
 		entry.stackTrace = null;
-		entry.vmIdentification = "Junit";
+		entry.vmId = "Junit";
 		entry.thread = "JunitThread";
 		return entry;
 	}

@@ -58,7 +58,7 @@
         <field name="Thread" locator="thread" locator-type="Label"/>
         <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
         <field name="Message" locator="stackTrace" locator-type="Label"/>
-        <field name="VmIdentification" locator="vmIdentification" locator-type="Label"/>
+        <field name="vmId" locator="vmIdentification" locator-type="Label"/>
         <field name="MODE" locator="mode" locator-type="Label"/>
 
     </parser>

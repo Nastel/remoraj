@@ -42,7 +42,7 @@ import com.jkoolcloud.remora.core.utils.RemoraClassLoader;
 
 public class Remora {
 
-	public static final String REMORA_VM_IDENTIFICATION = "remoraVMIdentification";
+	public static final String REMORA_VM_IDENTIFICATION = "remora.vmid";
 	public static TaggedLogger logger;
 
 	public static final boolean DEBUG_BOOT_LOADER = true;

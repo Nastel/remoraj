@@ -58,7 +58,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		exit.id = id;
 		entry.adviceClass = adviceClass.getSimpleName();
 		this.adviceClass = adviceClass;
-		entry.vmIdentification = vmIdentificationStatic;
+		entry.vmId = vmIdentificationStatic;
 		this.checkLastPropertyValue = checkLastPropertyValue;
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			setTransparent();

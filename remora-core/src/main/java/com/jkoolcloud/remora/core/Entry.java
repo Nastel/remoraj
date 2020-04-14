@@ -37,7 +37,7 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 	protected String name;
 	protected String clazz;
 	protected String stackTrace;
-	protected String vmIdentification;
+	protected String vmId;
 	protected String thread;
 
 	@Override
@@ -66,7 +66,7 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 				.write("name").text(name)//
 				.write("clazz").text(clazz)//
 				.write("stackTrace").text(stackTrace)//
-				.write("vmIdentification").text(vmIdentification)//
+				.write("vmId").text(vmId)//
 				.write("thread").text(thread)//
 		));
 	}
@@ -84,14 +84,13 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 		return Objects.equals(modelVersion, entry.modelVersion) && Objects.equals(id, entry.id) && mode == entry.mode
 				&& Objects.equals(adviceClass, entry.adviceClass) && Objects.equals(startTime, entry.startTime)
 				&& Objects.equals(name, entry.name) && Objects.equals(clazz, entry.clazz)
-				&& Objects.equals(stackTrace, entry.stackTrace)
-				&& Objects.equals(vmIdentification, entry.vmIdentification) && Objects.equals(thread, entry.thread);
+				&& Objects.equals(stackTrace, entry.stackTrace) && Objects.equals(vmId, entry.vmId)
+				&& Objects.equals(thread, entry.thread);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), id, mode, adviceClass, startTime, name, clazz, stackTrace,
-				vmIdentification, thread);
+		return Objects.hash(super.hashCode(), id, mode, adviceClass, startTime, name, clazz, stackTrace, vmId, thread);
 	}
 
 	@Override
