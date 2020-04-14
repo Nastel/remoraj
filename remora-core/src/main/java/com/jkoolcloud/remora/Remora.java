@@ -80,7 +80,12 @@ public class Remora {
 		// logger.info("Initializing advices: " + appClass);
 		initializeAdvices.invoke(instance, inst, bootLoader);
 		logger = Logger.tag("INIT");
-		EntryDefinition.setVmIdentification(System.getProperty(REMORA_VM_IDENTIFICATION, getDefaultVM()));
+		String vmid = System.getProperty(REMORA_VM_IDENTIFICATION);
+		if (vmid == null) {
+			vmid = getDefaultVM();
+			System.setProperty(REMORA_VM_IDENTIFICATION, vmid);
+		}
+		EntryDefinition.setVmIdentification(vmid);
 		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
 		OutputManager outputManager = OutputManager.INSTANCE; //
 	}

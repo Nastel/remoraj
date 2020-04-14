@@ -39,8 +39,10 @@ public class TkAdviceList implements Take {
 	public Response act(Request req) throws Exception {
 		StringBuilder response = new StringBuilder();
 		response.append("{\n");
-		response.append("\"remoraJVersion\" : \"" + Remora.getVersion() + "\",\n");
-		response.append("\"vmIdentification\" : \"" + System.getProperty(Remora.REMORA_VM_IDENTIFICATION) + "\",\n");
+		response.append("\"version\" : \"" + Remora.getVersion() + "\",\n");
+		response.append("\"vmid\" : \"" + System.getProperty(Remora.REMORA_VM_IDENTIFICATION) + "\",\n"); // default
+																											// update
+																											// docs
 		response.append("\"advices\" : [");
 		List<RemoraAdvice> registeredAdvices = AdviceRegistry.INSTANCE.getRegisteredAdvices();
 		for (int i = 0; i < registeredAdvices.size(); i++) {
