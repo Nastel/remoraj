@@ -157,3 +157,13 @@ In order to turn on the logging you need to change configuration file, or you ca
 To turn on logging you need to change option `com.jkoolcloud.remora.advices.BaseTransformers.logging` to `true`in the file `remora.properties`. You can also turn on logging for individual advices.
 
 Each advice creates it own logging file. You can find all files in your remora's folder under `log` -- `<install_dir>/remora-<version>/log`.
+
+# Selecting output
+
+By default `com.jkoolcloud.remora.core.output.ChronicleOutput` is enabled, there are several output to choose:
+
+* com.jkoolcloud.remora.core.output.NullOutput - will have no output
+* com.jkoolcloud.remora.core.output.SysOutOutput - output to System.outline
+
+If you select one of these outputs, no file system queue will be created.
+To select output set system property (`java -D`) `probe.output` with full class reference.
