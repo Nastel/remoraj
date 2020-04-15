@@ -442,3 +442,18 @@ Expected response:
      }
    ]
 ```
+
+
+# Turning on StackTrace of method call
+
+You can enable stack trace of instrumented method call by enabling `sendStackTrace` property on any advice.
+That's a global property, so it will affect all generated events. 
+
+```
+curl -XPOST -d '{
+   	"advice": "JavaxServletAdvice",
+   	"property": "sendStackTrace",
+   	"value": "true"
+   }' 'http://localhost:7366/change'
+
+```
