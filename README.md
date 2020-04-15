@@ -163,7 +163,7 @@ Each advice creates it own logging file. You can find all files in your remora's
 By default `com.jkoolcloud.remora.core.output.ChronicleOutput` is enabled, there are several output to choose:
 
 * com.jkoolcloud.remora.core.output.NullOutput - will have no output
-* com.jkoolcloud.remora.core.output.SysOutOutput - output to System.outline
+* com.jkoolcloud.remora.core.output.SysOutOutput - output to System.out
 
 If you select one of these outputs, no file system queue will be created.
 To select output set system property (`java -D`) `probe.output` with full class reference.
