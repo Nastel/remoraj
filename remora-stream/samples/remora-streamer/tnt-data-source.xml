@@ -58,7 +58,7 @@
         <field name="Thread" locator="thread" locator-type="Label"/>
         <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
         <field name="Message" locator="stackTrace" locator-type="Label"/>
-        <field name="vmId" locator="vmIdentification" locator-type="Label"/>
+        <field name="vmId" locator="vmId" locator-type="Label"/>
         <field name="MODE" locator="mode" locator-type="Label"/>
 
     </parser>
@@ -99,7 +99,7 @@
 
     <stream name="ChronicleStreamExit" class="com.jkoolcloud.tnt4j.streams.inputs.ChronicleQueueStream">
         <property name="BuildSourceFQNFromStreamedData" value="true"/>
-        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${VmIdentification}"/>
+        <property name="SourceFQN" value="#APPL=${ApplName}#SERVER=${ServerName}#PROCESS=${vmId}"/>
         <property name="HaltIfNoParser" value="false"/>
         <property name="FileName" value="../../queue"/>
         <property name="MarshallClass" value="com.jkoolcloud.remora.core.Exit"/>
