@@ -304,7 +304,7 @@ Most of advices have properties:
 
 ```
 
-# Statistics
+# Advice Statistics
 
 To get statistics query `localhost:7366/stats/[advice name]`
 
@@ -324,9 +324,9 @@ Expected response:
 ```
 
 
-# QueueStatistics
+# Trace Output Statistics
 
-To get statistics query `localhost:7366/queryStatss`
+To get statistics query `localhost:7366/queryStats`
 
 ```
 curl -XGET 'localhost:7366/queryStats'
