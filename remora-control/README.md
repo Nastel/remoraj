@@ -76,8 +76,7 @@ Most of advices have properties:
 
 # Other properties & Sample response
 
-```
-json
+```json
 {
 "version" : "0.1.6-SNAPSHOT-2020-04-14T14:54:12Z",
 "vmid" : "17340@slabs-marius-PC",
@@ -305,9 +304,6 @@ json
 }
 
 ```
-]
-
-
 
 # Statistics
 
@@ -319,7 +315,7 @@ curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 
 Expected response:
 
-```
+```json
 {
   "adviceName" : "JavaxServletAdvice",
   "invokeCount" : "2",
@@ -339,7 +335,7 @@ curl -XGET 'localhost:7366/queryStats'
 
 Expected response:
 
-```
+```json
 {
   "intermediateQueueFailCount" : "0",
   "lastChronicleIndex" : "0",
