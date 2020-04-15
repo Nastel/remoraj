@@ -78,8 +78,8 @@ Most of advices have properties:
 
 ```
 {
-"remoraJVersion" : "0.1.6-SNAPSHOT-2020-04-03T10:47:28Z",
-"vmIdentification" : "null",
+"version" : "0.1.6-SNAPSHOT-2020-04-14T14:54:12Z",
+"vmid" : "17340@slabs-marius-PC",
 "advices" : [	{
 	"adviceName": "ApacheHttpClientAdvice",
 	"properties": {
@@ -302,6 +302,7 @@ Most of advices have properties:
 	}}
 ]
 }
+
 ```
 ]
 
