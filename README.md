@@ -76,13 +76,13 @@ Login to your dashboard: https://jkool.jkoolcloud.com/jKool/login.jsp and view r
 
 ### IBM WAS Liberty
 
-* Step 1:    Edit or create `jvm.options` file in the folder [wlp\usr\servers\<serverName>\].
+* Step 1:    Edit or create `jvm.options` file in the folder `wlp/usr/servers/<serverName>/`.
 * Step 2:    Add lines:
 ```
 -javaagent:<install_dir>/remora-<version>/remora.jar -Dremora.path
 ```
 * Step 3:    Edit the path to where your `remora.jar` situated
-* Step 4:    Edit or create `bootstrap.properties` in the folder [wlp\usr\servers\<serverName>\].
+* Step 4:    Edit or create `bootstrap.properties` in the folder `wlp/usr/servers/<serverName>/`.
 * Step 5:    Add line:
 ```
 org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
