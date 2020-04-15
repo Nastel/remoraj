@@ -124,7 +124,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			}
 		}
 		if (!entryDefinition.isTransparent()) {
-			OutputManager.INSTANCE.send(entryDefinition);
+			OutputManager.send(entryDefinition);
 		}
 	}
 
@@ -173,7 +173,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				entryDefinition.setStackTrace(getStackTrace());
 			}
 			if (!entryDefinition.isTransparent()) {
-				OutputManager.INSTANCE.send(entryDefinition);
+				OutputManager.send(entryDefinition);
 			}
 		} catch (Throwable t) {
 			if (logger != null) {

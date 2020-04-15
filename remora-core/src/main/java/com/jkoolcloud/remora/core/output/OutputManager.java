@@ -61,7 +61,7 @@ public enum OutputManager {
 			output = new ChronicleOutput();
 		}
 		try {
-			RemoraConfig.INSTANCE.configure(output);
+			RemoraConfig.configure(output);
 			synchronized (output) {
 				try {
 					outputListeners.forEach(listener -> listener.onInitialize());

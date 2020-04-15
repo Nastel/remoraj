@@ -54,7 +54,7 @@ public class RemoraInit {
 			Configuration.set(key + ".tag", adviceName);
 			Configuration.set(key + ".level", "debug");
 			try {
-				RemoraConfig.INSTANCE.configure(remoraAdvice);
+				RemoraConfig.configure(remoraAdvice);
 				adviceList.add(remoraAdvice);
 			} catch (Exception e) {
 				failedList.put(remoraAdvice, e);

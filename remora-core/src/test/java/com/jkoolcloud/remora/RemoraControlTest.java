@@ -100,7 +100,7 @@ public class RemoraControlTest {
 
 	@Test
 	public void testgetConfigurableFields() throws IOException, InterruptedException {
-		List<String> configurableFields = RemoraControlQueueType.INSTANCE.getConfigurableFields(new TestClass());
+		List<String> configurableFields = RemoraControlQueueType.getConfigurableFields(new TestClass());
 		System.out.println(StringUtil.join(configurableFields, " "));
 		assertEquals(2, configurableFields.size());
 	}

@@ -77,7 +77,7 @@ public class RemoraConfigTest {
 		prepareConfigFile(properties);
 		TestForSingleStringConfigrable test = new TestForSingleStringConfigrable();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
-		RemoraConfig.INSTANCE.configure(test);
+		RemoraConfig.configure(test);
 		cleanup();
 		assertNotNull("Configuring field failed", test.testField);
 	}
@@ -92,7 +92,7 @@ public class RemoraConfigTest {
 		prepareConfigFile(properties);
 		TestForBooleanConfigrable test = new TestForBooleanConfigrable();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
-		RemoraConfig.INSTANCE.configure(test);
+		RemoraConfig.configure(test);
 		cleanup();
 		assertTrue("Configuring field failed", test.testField);
 	}
@@ -107,7 +107,7 @@ public class RemoraConfigTest {
 		prepareConfigFile(properties);
 		TestForListConfigrable test = new TestForListConfigrable();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
-		RemoraConfig.INSTANCE.configure(test);
+		RemoraConfig.configure(test);
 		cleanup();
 		assertNotNull("Configurring field failed", test.testField);
 		assertEquals("Not all of expected list values parsed", 3, test.testField.size());
@@ -123,7 +123,7 @@ public class RemoraConfigTest {
 		prepareConfigFile(properties);
 		TestForEnumConfigurable test = new TestForEnumConfigurable();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
-		RemoraConfig.INSTANCE.configure(test);
+		RemoraConfig.configure(test);
 		cleanup();
 		assertEquals("Configurring field failed", test.testField, TestEnum.ONE);
 	}
@@ -139,7 +139,7 @@ public class RemoraConfigTest {
 		prepareConfigFile(properties);
 		TestForListConfigrableSuperClass test = new TestForListConfigrableSuperClass();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
-		RemoraConfig.INSTANCE.configure(test);
+		RemoraConfig.configure(test);
 		cleanup();
 		assertNotNull("Configurring field failed", test.testField);
 		assertNotNull("Logging field failed", TestForListConfigrable.logging);

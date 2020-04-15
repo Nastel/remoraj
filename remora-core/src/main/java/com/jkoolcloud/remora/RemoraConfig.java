@@ -77,6 +77,7 @@ public enum RemoraConfig {
 	}
 
 	@Nullable
+	@SuppressWarnings("unchecked")
 	public static Object getAppliedValue(Field field, String configValue) {
 		Object appliedValue = null;
 		if (configValue != null) {

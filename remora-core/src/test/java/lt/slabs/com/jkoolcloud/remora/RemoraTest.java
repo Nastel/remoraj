@@ -117,18 +117,18 @@ public class RemoraTest {
 
 	}
 
-	public static interface HelloMBean {
+	public interface HelloMBean {
 
 		// operations
 
-		public void sayHello();
+		void sayHello();
 
 		// attributes
 
 		// a read-write attribute called Message of type String
-		public String getMessage();
+		String getMessage();
 
-		public void setMessage(String message);
+		void setMessage(String message);
 
 	}
 }

@@ -81,7 +81,7 @@ public class Entry extends SelfDescribingMarshallable implements Runnable {
 		}
 
 		Entry entry = (Entry) o;
-		return Objects.equals(modelVersion, entry.modelVersion) && Objects.equals(id, entry.id) && mode == entry.mode
+		return Objects.equals(modelVersion, modelVersion) && Objects.equals(id, entry.id) && mode == entry.mode
 				&& Objects.equals(adviceClass, entry.adviceClass) && Objects.equals(startTime, entry.startTime)
 				&& Objects.equals(name, entry.name) && Objects.equals(clazz, entry.clazz)
 				&& Objects.equals(stackTrace, entry.stackTrace) && Objects.equals(vmId, entry.vmId)

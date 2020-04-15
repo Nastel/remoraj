@@ -78,11 +78,11 @@ public class ScheduledQueueErrorReporterTest {
 		ScheduledQueueErrorReporter scheduledQueueErrorReporterTest = new ScheduledQueueErrorReporter(logger, DELAY);
 
 		for (int i = 0; i <= 50; i++) {
-			scheduledQueueErrorReporterTest.chronicleQueueFailCount.incrementAndGet();
+			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
 			Thread.sleep(100);
 		}
 		for (int i = 0; i <= 50; i++) {
-			scheduledQueueErrorReporterTest.intermediateQueueFailCount.incrementAndGet();
+			ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet();
 			Thread.sleep(100);
 		}
 		if (fail) {

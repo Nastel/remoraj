@@ -91,7 +91,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 		}
 
 		Exit exit = (Exit) o;
-		return Objects.equals(modelVersion, exit.modelVersion) && Objects.equals(id, exit.id)
+		return Objects.equals(modelVersion, modelVersion) && Objects.equals(id, exit.id)
 				&& Objects.equals(name, exit.name) && mode == exit.mode && Objects.equals(resource, exit.resource)
 				&& resourceType == exit.resourceType && Objects.equals(application, exit.application)
 				&& Objects.equals(properties, exit.properties) && eventType == exit.eventType
