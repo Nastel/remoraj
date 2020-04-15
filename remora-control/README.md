@@ -77,6 +77,7 @@ Most of advices have properties:
 # Other properties & Sample response
 
 ```
+json
 {
 "version" : "0.1.6-SNAPSHOT-2020-04-14T14:54:12Z",
 "vmid" : "17340@slabs-marius-PC",
@@ -444,10 +445,10 @@ Expected response:
 ```
 
 
-# Turning on StackTrace of method call
+# Capturing Stack Straces
 
-You can enable stack trace of instrumented method call by enabling `sendStackTrace` property on any advice.
-That's a global property, so it will affect all generated events. 
+You can enable stack traces of instrumented method calls by enabling `sendStackTrace` property on any advice.
+It is global property and will affect all generated events. 
 
 ```
 curl -XPOST -d '{
