@@ -353,7 +353,8 @@ curl -XGET 'localhost:7366/threadDump'
 
 Expected response:
 
-```[
+```json
+[
      {
        "ThreadName": "Monitor Ctrl-Break",
        "ThreadState": "RUNNABLE",
