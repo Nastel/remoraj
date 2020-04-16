@@ -140,7 +140,7 @@ See relevant comments in the file for advanced config.
 ## VM identification
 
 To identify your VM: can set system property (`java -D`) `remora.vmid` to any readable token identifying the process remoraJ are 
-attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result.
+attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result (e.g. `-Dremora.vmid=myVM1001`).
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
@@ -154,7 +154,7 @@ There are several other outputs available:
 * `com.jkoolcloud.remora.core.output.SysOutOutput` - output to `System.out` (console)
 
 No file system queue will be created, when one of the above outputs are configured. 
-To select output set system property (`java -D`) `remora.output` with full class reference.
+To select output set system property (`java -D`) `remora.output` with full class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`)
 
 # Running Streams Agent
 
