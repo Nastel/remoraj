@@ -48,7 +48,7 @@ public enum OutputManager {
 	public void install() {
 		logger.info("Starting OutputManager");
 		outputListeners = new ArrayList<>();
-		String outputClass = System.getProperty("probe.output");
+		String outputClass = System.getProperty("remora.output");
 		if (outputClass != null) {
 			try {
 				Class<?> outClass = Class.forName(outputClass);
