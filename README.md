@@ -144,6 +144,18 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
+# Selecting Trace Output
+
+By default file based persistent `com.jkoolcloud.remora.core.output.ChronicleOutput` is enabled. It is used as a communication channel between RemoraJ java agent and the Streams Agent.
+
+There are several other outputs available:
+
+* `com.jkoolcloud.remora.core.output.NullOutput` - will have no output (null output)
+* `com.jkoolcloud.remora.core.output.SysOutOutput` - output to `System.out` (console)
+
+No file system queue will be created, when one of the above outputs are configured. 
+To select output set system property (`java -D`) `remora.output` with full class reference.
+
 # Running Streams Agent
 
 Once the Remora Java Agent is running and Streams Agent configured you can 
@@ -157,15 +169,3 @@ In order to turn on the logging you need to change configuration file, or you ca
 To turn on logging you need to change option `com.jkoolcloud.remora.advices.BaseTransformers.logging` to `true`in the file `remora.properties`. You can also turn on logging for individual advices.
 
 Each advice creates it own logging file. You can find all files in your remora's folder under `log` -- `<install_dir>/remora-<version>/log`.
-
-# Selecting Trace Output
-
-By default file based persistent `com.jkoolcloud.remora.core.output.ChronicleOutput` is enabled. It is used as a communication channel between RemoraJ java agent and the Streams Agent.
-
-There are several other outputs available:
-
-* com.jkoolcloud.remora.core.output.NullOutput - will have no output (null output)
-* com.jkoolcloud.remora.core.output.SysOutOutput - output to System.out (console)
-
-No file system queue will be created, when one of the above outputs are configured. 
-To select output set system property (`java -D`) `remora.output` with full class reference.
