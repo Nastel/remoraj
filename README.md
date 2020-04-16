@@ -40,7 +40,7 @@ RemoraJ supports the following intercepts (advices):
    * IBMAdapterRSA
    * WASAdvice
 
-# Installing
+# Installing RemoraJ
 
 You must configure Remora Java agent and Streams agent to run RemoraJ. Your should have a working data repository and a streaming access token in https://www.jkoolcloud.com/. Below is the outline of RemoraJ configuration:
 
@@ -52,7 +52,7 @@ You must configure Remora Java agent and Streams agent to run RemoraJ. Your shou
 
 Login to your dashboard: https://jkool.jkoolcloud.com/jKool/login.jsp and view results.
 
-# Java agent 
+# Remora Java Agent 
 ## Using -javaagent option
 
 ### IBM WebSphere
