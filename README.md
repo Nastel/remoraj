@@ -40,7 +40,7 @@ RemoraJ supports the following intercepts (advices):
    * IBMAdapterRSA
    * WASAdvice
 
-# Installing
+# Installing RemoraJ
 
 You must configure Remora Java agent and Streams agent to run RemoraJ. Your should have a working data repository and a streaming access token in https://www.jkoolcloud.com/. Below is the outline of RemoraJ configuration:
 
@@ -52,7 +52,7 @@ You must configure Remora Java agent and Streams agent to run RemoraJ. Your shou
 
 Login to your dashboard: https://jkool.jkoolcloud.com/jKool/login.jsp and view results.
 
-## Java agent 
+# Remora Java Agent 
 ## Using -javaagent option
 
 ### IBM WebSphere
@@ -137,14 +137,14 @@ java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.j
 RemoraJ configuration file is located `config` folder, file named `remora.properties`.
 See relevant comments in the file for advanced config.
 
-## VM identification
+## Agent VM identification
 
 To identify your VM: can set system property (`java -D`) `remora.vmid` to any readable token identifying the process remoraJ are 
-attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result.
+attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result (e.g. `-Dremora.vmid=myVM1001`).
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
-# Selecting Trace Output
+## Agent Trace Output
 
 By default file based persistent `com.jkoolcloud.remora.core.output.ChronicleOutput` is enabled. It is used as a communication channel between RemoraJ java agent and the Streams Agent.
 
@@ -154,7 +154,7 @@ There are several other outputs available:
 * `com.jkoolcloud.remora.core.output.SysOutOutput` - output to `System.out` (console)
 
 No file system queue will be created, when one of the above outputs are configured. 
-To select output set system property (`java -D`) `remora.output` with full class reference.
+To select output set system property (`java -D`) `remora.output` with full class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`)
 
 # Running Streams Agent
 
