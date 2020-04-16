@@ -340,10 +340,11 @@ Expected response:
 
 ```
 {
-  "intermediateQueueFailCount" : "0",
-  "lastChronicleIndex" : "0",
-  "chronicleErrorCount" : "0",
+  "memQErrorCount" : "0",
+  "lastPersistQIndex" : "0",
+  "persistQErrorCount" : "0",
   "lastException": "null"
+  "usableSpace": "12 754 915 328"
 }
 ```
 #ThreadDump
