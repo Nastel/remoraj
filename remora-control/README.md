@@ -1,10 +1,9 @@
-# Remora control 
+# Remora Control 
 
-Remora control plugin enables you to control remoraJ  java agent on demand locally or remotely.
-Remora control uses REST for communication.
-By default it will work on port 7366. If the port is already used it will switch to next available.
+Remora control plugin enables you to control remoraJ  java agent on demand over HTTP/REST.
+By default remoraJ HTTP service uses port 7366 and will switch to next available (+1) if default is not available.
 
-# Requests 
+# Remora Control Commands 
 
 ## Get capabilities request
 
@@ -76,7 +75,7 @@ Most of advices have properties:
 
 # Other properties & Sample response
 
-```
+```json
 {
 "version" : "0.1.6-SNAPSHOT-2020-04-14T14:54:12Z",
 "vmid" : "17340@slabs-marius-PC",
@@ -304,11 +303,8 @@ Most of advices have properties:
 }
 
 ```
-]
 
-
-
-# Statistics
+# Advice Statistics
 
 To get statistics query `localhost:7366/stats/[advice name]`
 
@@ -318,7 +314,7 @@ curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 
 Expected response:
 
-```
+```json
 {
   "adviceName" : "JavaxServletAdvice",
   "invokeCount" : "2",
@@ -328,9 +324,9 @@ Expected response:
 ```
 
 
-# QueueStatistics
+# Trace Output Statistics
 
-To get statistics query `localhost:7366/queryStatss`
+To get statistics query `localhost:7366/queryStats`
 
 ```
 curl -XGET 'localhost:7366/queryStats'
@@ -338,7 +334,7 @@ curl -XGET 'localhost:7366/queryStats'
 
 Expected response:
 
-```
+```json
 {
   "memQErrorCount" : "0",
   "lastPersistQIndex" : "0",
@@ -357,7 +353,8 @@ curl -XGET 'localhost:7366/threadDump'
 
 Expected response:
 
-```[
+```json
+[
      {
        "ThreadName": "Monitor Ctrl-Break",
        "ThreadState": "RUNNABLE",
@@ -445,10 +442,10 @@ Expected response:
 ```
 
 
-# Turning on StackTrace of method call
+# Capturing Stack Straces
 
-You can enable stack trace of instrumented method call by enabling `sendStackTrace` property on any advice.
-That's a global property, so it will affect all generated events. 
+You can enable stack traces of instrumented method calls by enabling `sendStackTrace` property on any advice.
+It is global property and will affect all generated events. 
 
 ```
 curl -XPOST -d '{
