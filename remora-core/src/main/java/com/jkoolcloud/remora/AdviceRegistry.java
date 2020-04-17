@@ -34,8 +34,8 @@ import com.jkoolcloud.remora.advices.RemoraAdvice;
 public enum AdviceRegistry {
 	INSTANCE;
 
-	private List<RemoraAdvice> adviceList = new ArrayList<>();
-	private Map<String, RemoraAdvice> adviceMap = new HashMap<>();
+	private List<RemoraAdvice> adviceList = new ArrayList<>(50);
+	private Map<String, RemoraAdvice> adviceMap = new HashMap<>(50);
 
 	public void report(List<RemoraAdvice> adviceList) {
 

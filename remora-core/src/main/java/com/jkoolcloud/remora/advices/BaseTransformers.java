@@ -61,7 +61,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public static boolean checkLastPropertyValue = true;
 
-	public static List<AdviceListener> listeners = new ArrayList<>();
+	public static List<AdviceListener> listeners = new ArrayList<>(5);
 
 	@RemoraConfig.Configurable
 	private static int maxStackTraceElements = 30;

@@ -247,7 +247,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof EntryDefinition) {
-			return ((EntryDefinition) o).getId().equals(getId());
+			return ((EntryDefinition) o).getId().equals(id);
 		} else {
 			return false;
 		}
