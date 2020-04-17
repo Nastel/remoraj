@@ -234,7 +234,7 @@ public class BaseTransformersTest {
 				returned3.getCorrelator(), returned4.getCorrelator(), returned5.getCorrelator());
 	}
 
-	private void assertAllEquals(Object... fields) {
+	private static void assertAllEquals(Object... fields) {
 		if (fields.length < 2) {
 			return;
 		}

@@ -29,8 +29,8 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 
 	private final TaggedLogger logger;
 
-	private String application;
-	private String server;
+	private String application = null;
+	private String server = null;
 	private final String stackCorrelator;
 
 	public CallStack(TaggedLogger logger) {

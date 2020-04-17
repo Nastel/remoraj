@@ -69,9 +69,7 @@ public enum AdviceRegistry {
 				Field declaredField = advice.getClass().getDeclaredField(fName);
 				declaredField.setAccessible(true);
 				return String.valueOf(declaredField.get(advice));
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (NoSuchFieldException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return "N/A";
