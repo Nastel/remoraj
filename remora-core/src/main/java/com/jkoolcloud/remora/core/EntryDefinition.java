@@ -20,6 +20,8 @@
 
 package com.jkoolcloud.remora.core;
 
+import static java.text.MessageFormat.format;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
@@ -253,7 +255,13 @@ public class EntryDefinition implements EntryDefinitionDescription {
 
 	@Override
 	public String toString() {
-		return "EntryDefinition{" + "id='" + id + '\'' + ", advice=" + entry.adviceClass + '}';
+		String startTemplate = "RemoraJ entry id={0}, advice={1}, method={2}.{3}()";
+		String stopTemplate = "RemoraJ exit id={0}, advice={1}, method={2}.{3}(), time={4,number,#}, exception={5}";
+		if (finished) {
+			return format(stopTemplate, id, entry.adviceClass, entry.clazz, entry.name, exit.duration, exit.exception);
+		} else {
+			return format(startTemplate, id, entry.adviceClass, entry.clazz, entry.name);
+		}
 	}
 
 	@Override
