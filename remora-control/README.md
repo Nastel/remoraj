@@ -339,7 +339,7 @@ Expected response:
   "memQErrorCount" : "0",
   "lastPersistQIndex" : "0",
   "persistQErrorCount" : "0",
-  "lastException": "null"
+  "lastException": "null",
   "usableSpace": "12 754 915 328"
 }
 ```
