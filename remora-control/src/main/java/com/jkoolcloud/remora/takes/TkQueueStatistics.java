@@ -37,7 +37,7 @@ public class TkQueueStatistics implements Take {
 			"  \"memQErrorCount\" : \"{0}\",\n" + //
 			"  \"lastPersistQIndex\" : \"{1}\",\n" + //
 			"  \"persistQErrorCount\" : \"{2}\",\n" + //
-			"  \"lastException\": \"{3}\"\n" + //
+			"  \"lastException\": \"{3}\",\n" + //
 			"  \"usableSpace\": \"{4}\"\n" + //
 
 			"'}'";
