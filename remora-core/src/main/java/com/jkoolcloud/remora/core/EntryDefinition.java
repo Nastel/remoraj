@@ -63,7 +63,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		entry.vmId = vmIdentificationStatic;
 		this.checkLastPropertyValue = checkLastPropertyValue;
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
-			setTransparent();
+			transparent = true;
 		}
 	}
 
