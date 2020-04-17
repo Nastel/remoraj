@@ -82,16 +82,16 @@ public class ReflectionUtils {
 			try {
 				method = object.getClass().getDeclaredMethod(name);
 			} catch (NoSuchMethodException e) {
-				if (method == null) {
-				}
+
 				try {
 					method = object.getClass().getMethod(name);
 				} catch (NoSuchMethodException e2) {
 				}
 			}
-
-			method.setAccessible(true);
-			ret = method.invoke(object);
+			if (method != null) {
+				method.setAccessible(true);
+				ret = method.invoke(object);
+			}
 		} catch (Exception e) {
 		}
 		return ret;
