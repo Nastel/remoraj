@@ -47,7 +47,7 @@ public enum OutputManager {
 	@SuppressWarnings("unchecked")
 	public void install() {
 		logger.info("Starting OutputManager");
-		outputListeners = new ArrayList<>();
+		outputListeners = new ArrayList<>(10);
 		String outputClass = System.getProperty("remora.output");
 		if (outputClass != null) {
 			try {

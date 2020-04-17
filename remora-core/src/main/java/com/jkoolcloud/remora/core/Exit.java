@@ -38,7 +38,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 	protected String resource;
 	protected EntryDefinition.ResourceType resourceType = EntryDefinition.ResourceType.GENERIC;
 	protected String application;
-	protected Map<String, String> properties = new HashMap<>();
+	protected Map<String, String> properties = new HashMap<>(50);
 	protected EntryDefinition.EventType eventType = EntryDefinition.EventType.CALL;
 	protected String server;
 	protected String exception;

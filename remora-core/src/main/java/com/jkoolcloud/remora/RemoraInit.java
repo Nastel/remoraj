@@ -41,8 +41,8 @@ public class RemoraInit {
 
 		ServiceLoader<RemoraAdvice> advices = ServiceLoader.load(RemoraAdvice.class, classLoader);
 		Iterator<RemoraAdvice> iterator = advices.iterator();
-		ArrayList<RemoraAdvice> adviceList = new ArrayList<>();
-		HashMap<RemoraAdvice, Exception> failedList = new HashMap<>();
+		ArrayList<RemoraAdvice> adviceList = new ArrayList<>(50);
+		HashMap<RemoraAdvice, Exception> failedList = new HashMap<>(50);
 
 		while (iterator.hasNext()) {
 			RemoraAdvice remoraAdvice = iterator.next();
