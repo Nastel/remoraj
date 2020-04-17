@@ -63,6 +63,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static List<AdviceListener> listeners = new ArrayList<>();
 
+	@RemoraConfig.Configurable
+	private static int maxStackTraceElements = 30;
+
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
 
@@ -208,14 +211,13 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public static String getStackTrace() {
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
 		int i = 0;
-		int MAX_ELEMENTS = 30;
 		StringBuilder sb = new StringBuilder();
 		sb.append("Stack length: ");
 		sb.append(stackTrace.length);
 		sb.append("\n ");
 		for (StackTraceElement element : stackTrace) {
 			i++;
-			if (i >= MAX_ELEMENTS) {
+			if (i >= maxStackTraceElements) {
 				break;
 			}
 
