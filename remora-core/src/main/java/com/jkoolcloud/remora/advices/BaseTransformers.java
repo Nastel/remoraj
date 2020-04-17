@@ -242,12 +242,11 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (stackThreadLocal != null) {
 				Stack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
 				if (entryDefinitions != null) {
-					EntryDefinition pop;
 					EntryDefinition peek = entryDefinitions.peek();
 					if (peek != null && caller != null) {
 
 						if (Objects.equals(peek.getClazz(), caller.getName())) {
-							pop = entryDefinitions.pop();
+							entryDefinitions.pop();
 						}
 
 					}
@@ -335,7 +334,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 		EntryDefinition lastED = null;
 		CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
-		if (entryDefinitions != null && entryDefinitions.size() != 0) {
+		if (entryDefinitions != null && !entryDefinitions.isEmpty()) {
 			lastED = entryDefinitions.peek();
 		}
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
