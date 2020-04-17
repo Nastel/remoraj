@@ -164,12 +164,14 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				}
 			}
 
-			if (stackThreadLocal != null && stackThreadLocal.get() == null) {
-				CallStack<EntryDefinition> definitions = new CallStack<>(logger);
-				stackThreadLocal.set(definitions);
+			if (stackThreadLocal != null) {
+				if (stackThreadLocal.get() == null) {
+					CallStack<EntryDefinition> definitions = new CallStack<>(logger);
+					stackThreadLocal.set(definitions);
+				}
+				stackThreadLocal.get().push(entryDefinition);
 			}
 
-			stackThreadLocal.get().push(entryDefinition);
 			entryDefinition.setThread(Thread.currentThread().toString());
 			entryDefinition.setStartTime(System.currentTimeMillis());
 			if (sendStackTrace) {
