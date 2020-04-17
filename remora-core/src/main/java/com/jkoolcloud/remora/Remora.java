@@ -138,8 +138,8 @@ public class Remora {
 
 			return uris;
 		} else {
-			logger.error(
-					"Module dir is not existing; Check java agent parameters; --javaagent:remora.jar=parameters. Parameters should point to the directory remora exists");
+			logger.error("Module dir is not existing; Check java agent parameters; --javaagent:remora.jar=parameters. "
+					+ "Parameters should point to the directory remora exists");
 			return null;
 		}
 	}
