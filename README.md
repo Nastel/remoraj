@@ -1,7 +1,7 @@
 
-# RemoraJ -- Light Weight Java ByteCode Agent
+# RemoraJ -- Light Weight Java ByteCode Agent for App Performance
 
-RemoraJ is a light weight java app profiling agent which uses bytecode instrumentation to profile activities, performance, exceptions with minimal overhead. RemoraJ monitors your application performance by tracking common application building blocks and services services like HTTP, WebServices, JMS, JDBC, WebSockets, Kafka and more. 
+RemoraJ is a light weight java app profiling agent which uses bytecode instrumentation to profile java application performance, exceptions with minimal overhead. RemoraJ monitors java apps by tracking method calls and activities such as: HTTP, WebServices, JMS, JDBC, WebSockets, Kafka and more. 
 
 RemoraJ consists of two main runtime components:
 
