@@ -150,9 +150,9 @@ By default, RemoraJ java agent writes its traces to a high-performance memmory m
 
 There are several trace outputs available below:
 
-* `com.jkoolcloud.remora.core.output.ChronicleOutput` -- traces go to a persistent memory mapped file-based output (default)
-* `com.jkoolcloud.remora.core.output.NullOutput` -- traces have no output (null output)
-* `com.jkoolcloud.remora.core.output.SysOutOutput` -- traces go to `System.out` (console)
+* `com.jkoolcloud.remora.core.output.NullOutput` -- no output (null output)
+* `com.jkoolcloud.remora.core.output.SysOutOutput` -- `System.out` (console)
+* `com.jkoolcloud.remora.core.output.ChronicleOutput` -- persistent memory mapped file-based output **(default)**
 
 No file system queue will be created, when one of the above outputs are configured. 
 To select output set system property (`java -D`) `remora.output` with full class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`)
