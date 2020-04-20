@@ -146,12 +146,13 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 ## Agent Trace Output
 
-By default file based persistent `com.jkoolcloud.remora.core.output.ChronicleOutput` is enabled. It is used as a communication channel between RemoraJ java agent and the Streams Agent.
+By default, RemoraJ java agent writes its traces to a high-performance memmory mapped persistent store (file) backed by `com.jkoolcloud.remora.core.output.ChronicleOutput`. This store is used as a communication channel between RemoraJ java agent and the Streams Agent.
 
-There are several other outputs available:
+There are several trace outputs available below:
 
-* `com.jkoolcloud.remora.core.output.NullOutput` - will have no output (null output)
-* `com.jkoolcloud.remora.core.output.SysOutOutput` - output to `System.out` (console)
+* `com.jkoolcloud.remora.core.output.ChronicleOutput` -- traces go to a persistent memory mapped file-based output (default)
+* `com.jkoolcloud.remora.core.output.NullOutput` -- traces have no output (null output)
+* `com.jkoolcloud.remora.core.output.SysOutOutput` -- traces go to `System.out` (console)
 
 No file system queue will be created, when one of the above outputs are configured. 
 To select output set system property (`java -D`) `remora.output` with full class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`)
