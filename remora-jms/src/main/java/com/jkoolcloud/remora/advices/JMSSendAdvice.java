@@ -52,6 +52,8 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
+	@RemoraConfig.Configurable
+	private static boolean fetchMsg = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JMSSendAdvice.class.getClassLoader()) //
@@ -125,7 +127,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 					ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
 					ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
 					ed.addPropertyIfExist("TYPE", message.getJMSType());
-					if (message instanceof TextMessage) {
+					if (fetchMsg && message instanceof TextMessage) {
 						ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
 					}
 					try {
