@@ -20,16 +20,14 @@
 
 package com.jkoolcloud.remora.advices;
 
+import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.QueueReceiver;
-import javax.jms.TextMessage;
+import javax.jms.*;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -54,6 +52,9 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static boolean load = true;
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
+	@RemoraConfig.Configurable
+	private static boolean fetchMsg = false;
+
 	public static TaggedLogger logger;
 
 	/**
@@ -184,8 +185,24 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
 				ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
 				ed.addPropertyIfExist("TYPE", message.getJMSType());
-				if (message instanceof TextMessage) {
+				Destination jmsDestination = message.getJMSDestination();
+				if (jmsDestination == null) {
+					jmsDestination = getFieldValue(message, Destination.class, "destination");
+					if (logging) {
+						logger.debug("Destination2: " + jmsDestination);
+					}
+				} else {
+					if (logging) {
+						logger.debug("Destination1: " + jmsDestination);
+					}
+				}
+				ed.setResource(String.valueOf(jmsDestination), EntryDefinition.ResourceType.QUEUE);
+				if (fetchMsg && message instanceof TextMessage) {
 					ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
+				}
+			} else {
+				if (logging) {
+					logger.debug("Message is null");
 				}
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
