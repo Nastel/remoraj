@@ -1,5 +1,5 @@
 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
 
--javaagent:c:\workspace\build\remora\remora-0.1.6\remora.jar
+-javaagent:c:\workspace\build\remora\remora-0.1.7-SNAPSHOT\remora.jar
 
--Dremora.path=c:\workspace\build\remora\remora-0.1.6
+-Dremora.path=c:\workspace\build\remora\remora-0.1.7-SNAPSHOT
