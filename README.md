@@ -45,7 +45,7 @@ RemoraJ supports the following intercepts (advices):
 You must configure Remora Java agent and Streams agent to run RemoraJ. Your should have a working data repository and a streaming access token in https://www.jkoolcloud.com/. Below is the outline of RemoraJ configuration:
 
 * Obtain your jKool account at https://www.jkoolcloud.com/. Make sure to get your streaming access token
-* Configure Remora java Agent for your JVM (produces java traces, metrics)
+* Configure Remora Java Agent for your JVM (captures java call traces, metrics)
 * Configure Streams Agent (you will need your streaming access token here)
 * Start your application or app server (with remora agent)
 * Start Streams Agent (forward traces to your data repository associated with your streaming access token)
