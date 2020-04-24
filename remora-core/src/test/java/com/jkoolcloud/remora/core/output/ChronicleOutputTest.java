@@ -31,6 +31,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.google.common.io.Files;
+import com.jkoolcloud.remora.advices.Advice1;
 import com.jkoolcloud.remora.core.Entry;
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.EntryDefinitionDescription;
@@ -55,7 +56,7 @@ public class ChronicleOutputTest {
 		output.init();
 
 		for (int i = 0; i <= 50; i++) {
-			output.send(new EntryDefinition(ChronicleOutputTest.class, true));
+			output.send(new EntryDefinition(Advice1.class, true));
 			Thread.sleep(100);
 		}
 		assertEquals(tempDir.list().length, output.keepQueueRolls.intValue() + 1 + 1); // +1 = metadata; +1 = current
@@ -78,7 +79,7 @@ public class ChronicleOutputTest {
 
 			Entry entry = getTestEntry();
 			Exit exit = getTestExit();
-			EntryDefinition entryDefinition = new EntryDefinition(getClass(), true);
+			EntryDefinition entryDefinition = new EntryDefinition(Advice1.class, true);
 
 			excerptAppender.methodWriter(EntryDefinitionDescription.class).entry(entry);
 			entry.write(excerptAppender);

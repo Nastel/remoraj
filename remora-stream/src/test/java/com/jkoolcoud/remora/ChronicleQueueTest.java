@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.jkoolcloud.remora.advices.Advice1;
 import com.jkoolcloud.remora.core.Entry;
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.EntryDefinitionDescription;
@@ -101,22 +102,22 @@ public class ChronicleQueueTest {
 
 			streamThread.start();
 
-			expect = new EntryDefinition(ChronicleQueueTest.class, true);
+			expect = new EntryDefinition(Advice1.class, true);
 			expect.setName("AAA");
 			appender.writeDocument(expect.entry);
 			Thread.sleep(300);
-			expect = new EntryDefinition(ChronicleQueueTest.class, true);
+			expect = new EntryDefinition(Advice1.class, true);
 			expect.setDuration(400L);
 
 			appender.writeDocument(expect.exit);
 
 			Thread.sleep(300);
 
-			expect = new EntryDefinition(ChronicleQueueTest.class, true);
+			expect = new EntryDefinition(Advice1.class, true);
 			expect.setException("Exeption");
 			appender.writeDocument(expect.entry);
 			Thread.sleep(300);
-			expect = new EntryDefinition(ChronicleQueueTest.class, true);
+			expect = new EntryDefinition(Advice1.class, true);
 			appender.writeDocument(expect.exit);
 			Thread.sleep(300);
 		}

@@ -137,6 +137,7 @@ public enum RemoraConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	public @interface Configurable {
+		boolean configurableOnce() default false;
 	}
 
 }

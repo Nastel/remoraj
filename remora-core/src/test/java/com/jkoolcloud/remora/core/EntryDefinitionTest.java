@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import com.jkoolcloud.remora.advices.Advice1;
 import com.jkoolcloud.remora.testClasses.TestUtils;
 
 import net.openhft.chronicle.queue.ExcerptAppender;
@@ -45,7 +46,7 @@ public class EntryDefinitionTest {
 			ExcerptAppender appender = queue.acquireAppender();
 			ExcerptTailer tailer = queue.createTailer();
 
-			EntryDefinition ed = new EntryDefinition(EntryDefinitionTest.class, true);
+			EntryDefinition ed = new EntryDefinition(Advice1.class, true);
 			ed.setName("AAA");
 			ed.setException("Exception");
 			ed.addProperty("Key", "TEST_value");
@@ -53,7 +54,7 @@ public class EntryDefinitionTest {
 			appender.methodWriter(EntryDefinitionDescription.class).entry(ed.entry);
 			// appender.writeDocument(ed);
 
-			EntryDefinition edRead = new EntryDefinition(EntryDefinitionTest.class, true);
+			EntryDefinition edRead = new EntryDefinition(Advice1.class, true);
 			boolean s = tailer.methodReader(edRead).readOne();
 
 			System.out.println(edRead);
@@ -66,7 +67,7 @@ public class EntryDefinitionTest {
 
 	@Test
 	public void testPropertyShift() {
-		EntryDefinition entryDefinition = new EntryDefinition(EntryDefinitionTest.class, true);
+		EntryDefinition entryDefinition = new EntryDefinition(Advice1.class, true);
 		entryDefinition.addProperty("TEST", "1");
 		entryDefinition.addProperty("TEST", "2");
 		entryDefinition.addProperty("TEST", "2");
@@ -80,7 +81,7 @@ public class EntryDefinitionTest {
 
 	@Test
 	public void testPropertyShiftChrckLastPropertyValueFalse() {
-		EntryDefinition entryDefinition = new EntryDefinition(EntryDefinitionTest.class, false);
+		EntryDefinition entryDefinition = new EntryDefinition(Advice1.class, false);
 		entryDefinition.addProperty("TEST", "1");
 		entryDefinition.addProperty("TEST", "2");
 		entryDefinition.addProperty("TEST", "2");

@@ -22,12 +22,8 @@
 package com.jkoolcloud.remora;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 
@@ -56,8 +52,16 @@ public enum AdviceRegistry {
 	}
 
 	public static List<String> getConfigurableFields(RemoraAdvice advice) {
-		return Stream.of(advice.getClass().getDeclaredFields())
-				.filter(field -> field.isAnnotationPresent(RemoraConfig.Configurable.class))
+
+		Class<?> aClass = advice.getClass();
+		ArrayList<Field> declaredFields = new ArrayList<>();
+		for (Class<?> c = aClass; c != null; c = c.getSuperclass()) {
+			declaredFields.addAll(Arrays.asList(c.getDeclaredFields()));
+		}
+
+		return declaredFields.stream()
+				.filter(field -> field.isAnnotationPresent(RemoraConfig.Configurable.class)
+						&& !field.getAnnotation(RemoraConfig.Configurable.class).configurableOnce())
 				.map(field -> field.getName()).collect(Collectors.toList());
 	}
 

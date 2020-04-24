@@ -27,7 +27,11 @@ import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 
-public class Advice2 implements RemoraAdvice {
+import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.matcher.ElementMatcher;
+
+public class Advice2 extends BaseTransformers {
 	private static final TaggedLogger LOGGER = Logger.tag("INFO");
 	private static final String ADVICE_NAME = "2";
 
@@ -48,5 +52,20 @@ public class Advice2 implements RemoraAdvice {
 	@Override
 	public String getName() {
 		return ADVICE_NAME;
+	}
+
+	@Override
+	public ElementMatcher<TypeDescription> getTypeMatcher() {
+		return null;
+	}
+
+	@Override
+	public AgentBuilder.Transformer getAdvice() {
+		return null;
+	}
+
+	@Override
+	protected AgentBuilder.Listener getListener() {
+		return null;
 	}
 }

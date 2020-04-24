@@ -50,10 +50,10 @@ import net.bytebuddy.utility.JavaModule;
 public abstract class BaseTransformers implements RemoraAdvice {
 
 	private static final String ADVICE_NAME = "GENERAL";
-	@RemoraConfig.Configurable
+	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;
 	@RemoraConfig.Configurable
-	public static boolean sendStackTrace;
+	public boolean sendStackTrace;
 
 	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
@@ -174,7 +174,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 			entryDefinition.setThread(Thread.currentThread().toString());
 			entryDefinition.setStartTime(System.currentTimeMillis());
-			if (sendStackTrace) {
+			if (getAdviceInstance(entryDefinition.getAdviceClassClass()).sendStackTrace) {
 				entryDefinition.setStackTrace(getStackTrace());
 			}
 			if (!entryDefinition.isTransparent()) {
@@ -321,13 +321,22 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return ad;
 	}
 
+	public static <T extends BaseTransformers> T getAdviceInstance(Class<T> tClass) {
+		try {
+			return (T) AdviceRegistry.INSTANCE.getAdviceByName(tClass.getName());
+		} catch (ClassNotFoundException e) {
+			return (T) AdviceRegistry.INSTANCE.getRegisteredAdvices().get(0);
+		}
+	}
+
 	protected abstract AgentBuilder.Listener getListener();
 
 	public static String format(String pattern, Object... args) {
 		return MessageFormat.format(pattern, args);
 	}
 
-	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class<?> adviceClass, TaggedLogger logger) {
+	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class<? extends BaseTransformers> adviceClass,
+			TaggedLogger logger) {
 		if (ed != null) {
 			return ed;
 		}

@@ -74,7 +74,7 @@ public class BaseTransformersTest {
 	@Test
 	public void getEntryDefinitionTrasperentAdviceStartingStack() {
 		EntryDefinition ed = null;
-		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, TransparentAdvice.class, logger);
+		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, TransparentAdviceInstance.class, logger);
 		assertNotNull(returned);
 	}
 

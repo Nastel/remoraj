@@ -26,11 +26,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.TransparentAdvice;
 
 public class EntryDefinition implements EntryDefinitionDescription {
 	protected final String id = JUGFactoryImpl.newUUID();
-	private final Class<?> adviceClass;
+	private final Class<? extends BaseTransformers> adviceClass;
 	private boolean transparent;
 	private boolean chained;
 	public static String vmIdentificationStatic;
@@ -55,7 +56,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		this.exit = exit;
 	}
 
-	public EntryDefinition(Class<?> adviceClass, boolean checkLastPropertyValue) {
+	public EntryDefinition(Class<? extends BaseTransformers> adviceClass, boolean checkLastPropertyValue) {
 		entry.id = id;
 		exit.id = id;
 		entry.adviceClass = adviceClass.getSimpleName();
@@ -289,7 +290,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		chained = true;
 	}
 
-	public Class<?> getAdviceClassClass() {
+	public Class<? extends BaseTransformers> getAdviceClassClass() {
 		return adviceClass;
 	}
 
