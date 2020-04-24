@@ -323,7 +323,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static <T extends BaseTransformers> T getAdviceInstance(Class<T> tClass) {
 		try {
-			return (T) AdviceRegistry.INSTANCE.getAdviceByName(tClass.getName());
+			return (T) AdviceRegistry.INSTANCE.getAdviceByName(tClass.getSimpleName());
 		} catch (ClassNotFoundException e) {
 			return (T) AdviceRegistry.INSTANCE.getRegisteredAdvices().get(0);
 		}

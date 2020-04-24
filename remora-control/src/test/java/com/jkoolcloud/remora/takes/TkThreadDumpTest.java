@@ -21,15 +21,11 @@
 package com.jkoolcloud.remora.takes;
 
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
 
 public class TkThreadDumpTest {
 
 	@Test
 	public void testThreadDumpResponse() throws Exception {
-		String s = new RsPrint(new TkThreadDump().act(new RqFake())).printBody();
-		System.out.println(s);
 
 	}
 

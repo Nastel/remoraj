@@ -22,6 +22,10 @@ package com.jkoolcloud.remora.core.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.jetbrains.annotations.NotNull;
 
 public class ReflectionUtils {
 	@SuppressWarnings("unchecked")
@@ -97,4 +101,24 @@ public class ReflectionUtils {
 		return ret;
 	}
 
+	@NotNull
+	public static ArrayList<Field> geAllDeclaredtFields(Class<?> aClass) {
+		ArrayList<Field> declaredFields = new ArrayList<>();
+		for (Class<?> c = aClass; c != null; c = c.getSuperclass()) {
+			declaredFields.addAll(Arrays.asList(c.getDeclaredFields()));
+		}
+		return declaredFields;
+	}
+
+	public static Field getFieldFromAllDeclaredFields(Class<?> aClass, String fieldName) {
+		for (Class<?> c = aClass; c != null; c = c.getSuperclass()) {
+			try {
+				return c.getDeclaredField(fieldName);
+			} catch (NoSuchFieldException e) {
+				continue;
+			}
+
+		}
+		return null;
+	}
 }

@@ -18,25 +18,23 @@
  * CopyrightVersion 1.0
  */
 
-package com.jkoolcloud.remora;
-
-import static junit.framework.TestCase.assertEquals;
+package com.jkoolcloud.remora.takes;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
+import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.Advice1;
 
-public class AdviceRegistryTest {
+public class TkAdviceListTest {
 
 	@Test
-	public void getConfigurableFields() {
-		Advice1 testAdvice = new Advice1();
-		AdviceRegistry.INSTANCE.report(Collections.singletonList(testAdvice));
-		List<String> configurableFields = AdviceRegistry.getConfigurableFields(testAdvice);
-		System.out.println(configurableFields);
-		assertEquals(4, configurableFields.size());
+	public void act() throws Exception {
+		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
+		String s = new RsPrint(new TkAdviceList().act(new RqFake())).printBody();
+		System.out.println(s);
 	}
 }

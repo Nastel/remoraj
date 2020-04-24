@@ -40,6 +40,7 @@ import org.tinylog.TaggedLogger;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
+import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
 public class TkChange implements Take {
 
@@ -88,12 +89,12 @@ public class TkChange implements Take {
 			logger.info("Ivoked remote request for \"{}\" property \"{}\" change. New value: {} ", adviceName, property,
 					value);
 			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(adviceName);
-			Field field = adviceByName.getClass().getField(property);
+			Field field = ReflectionUtils.getFieldFromAllDeclaredFields(adviceByName.getClass(), property);
 			if (!field.isAnnotationPresent(RemoraConfig.Configurable.class)) {
 				throw new NoSuchFieldException();
 			}
 			Object appliedValue = RemoraConfig.getAppliedValue(field, value);
-			field.set(null, appliedValue);
+			field.set(adviceByName, appliedValue);
 			return "OK";
 		} catch (ClassNotFoundException e) {
 			String m = "No such advice";
