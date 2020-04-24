@@ -77,13 +77,16 @@ Most of advices have properties:
 
 ```json
 {
-"version" : "0.1.6-SNAPSHOT-2020-04-14T14:54:12Z",
-"vmid" : "17340@slabs-marius-PC",
+"version" : "0.1.7-SNAPSHOT-2020-04-24T13:24:44Z",
+"vmid" : "13008@slabs-marius-PC",
 "advices" : [	{
 	"adviceName": "ApacheHttpClientAdvice",
 	"properties": {
 		"paramPrefix" : "PAR_",
 		"headerCorrIDName" : "REMORA_CORR",
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"extractParams" : "true",
 		"logging" : "true",
@@ -93,6 +96,9 @@ Most of advices have properties:
 	"adviceName": "ApacheLegacyHttpClientAdvice",
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -100,6 +106,9 @@ Most of advices have properties:
 	{
 	"adviceName": "BankBenchmarkAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -114,6 +123,9 @@ Most of advices have properties:
 	{
 	"adviceName": "EjbRemoteAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -122,6 +134,9 @@ Most of advices have properties:
 	"adviceName": "HttpUrlConnectionAdvice",
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "false",
 		"logging" : "true",
 		"enabled" : "true"
@@ -130,6 +145,9 @@ Most of advices have properties:
 	"adviceName": "JavaxServletAdvice",
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"headerPrefix" : "HDR_",
 		"load" : "true",
 		"attachCorrelator" : "true",
@@ -140,6 +158,9 @@ Most of advices have properties:
 	{
 	"adviceName": "JBossAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -147,6 +168,9 @@ Most of advices have properties:
 	{
 	"adviceName": "JBossServletAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -154,6 +178,9 @@ Most of advices have properties:
 	{
 	"adviceName": "JDBCConnectionAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -161,6 +188,9 @@ Most of advices have properties:
 	{
 	"adviceName": "JDBCStatementAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -168,6 +198,9 @@ Most of advices have properties:
 	{
 	"adviceName": "JDBCCallableStatementAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"parameterPrefix" : "PARAM_",
 		"logging" : "true",
@@ -176,6 +209,9 @@ Most of advices have properties:
 	{
 	"adviceName": "JMSCreateConnectionAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -183,20 +219,31 @@ Most of advices have properties:
 	{
 	"adviceName": "JMSReceiveAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
+		"fetchMsg" : "false",
 		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "JMSSendAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
+		"fetchMsg" : "false",
 		"logging" : "true",
 		"enabled" : "true"
 	}},
 	{
 	"adviceName": "KafkaConsumerAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -204,6 +251,9 @@ Most of advices have properties:
 	{
 	"adviceName": "KafkaProducerAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -211,6 +261,9 @@ Most of advices have properties:
 	{
 	"adviceName": "KafkaConsumerClientAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -218,6 +271,9 @@ Most of advices have properties:
 	{
 	"adviceName": "SimpleTest",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -225,6 +281,9 @@ Most of advices have properties:
 	{
 	"adviceName": "SimpleTestConstructor",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -232,6 +291,9 @@ Most of advices have properties:
 	{
 	"adviceName": "SpringServiceAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -239,6 +301,9 @@ Most of advices have properties:
 	{
 	"adviceName": "SpringExceptionAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -246,6 +311,9 @@ Most of advices have properties:
 	{
 	"adviceName": "SpringTransactionAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -253,6 +321,9 @@ Most of advices have properties:
 	{
 	"adviceName": "WebLogicAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -260,6 +331,9 @@ Most of advices have properties:
 	{
 	"adviceName": "WebsocketSendAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -267,6 +341,9 @@ Most of advices have properties:
 	{
 	"adviceName": "WebsocketEndpointAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -274,6 +351,9 @@ Most of advices have properties:
 	{
 	"adviceName": "WebsocketReceiveAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -281,6 +361,9 @@ Most of advices have properties:
 	{
 	"adviceName": "WebsocketSessionAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -288,6 +371,9 @@ Most of advices have properties:
 	{
 	"adviceName": "IBMAdapterRSA",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
@@ -295,12 +381,16 @@ Most of advices have properties:
 	{
 	"adviceName": "WASAdvice",
 	"properties": {
+		"maxStackTraceElements" : "30",
+		"sendStackTrace" : "false",
+		"checkLastPropertyValue" : "true",
 		"load" : "true",
 		"logging" : "true",
 		"enabled" : "true"
 	}}
 ]
 }
+
 
 ```
 
@@ -445,7 +535,6 @@ Expected response:
 # Capturing Stack Straces
 
 You can enable stack traces of instrumented method calls by enabling `sendStackTrace` property on any advice.
-It is global property and will affect all generated events. 
 
 ```
 curl -XPOST -d '{
