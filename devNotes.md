@@ -69,3 +69,11 @@ exit: {
   correlator: !!null "",
   exceptionTrace: !!null ""
 }
+
+## Properties and configuration
+
+Each advice field annotated with `@RemoraConfig.Configurable` can be changed either by configuration file `remora.properties` or "remora-control" plugin.
+These properties should be static as advices intercept methods are static.
+Common properties i.e. "sendStackTrace" is in base advice class, these properties are *not static*. State of advice is managed in `AdviceManager` instance.
+
+
