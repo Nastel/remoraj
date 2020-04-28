@@ -96,6 +96,13 @@
             <scope>system</scope>
             <systemPath>${ibm.adminService}</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.jkoolcloud.remora</groupId>
+            <artifactId>remora-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

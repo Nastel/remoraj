@@ -54,10 +54,6 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	public static String INTERCEPTING_METHOD = "service";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
@@ -118,7 +114,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JavaxServletAdvice.class).enabled) {
 				return;
 			}
 			if (logging) {
@@ -240,7 +236,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	{
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JavaxServletAdvice.class).enabled) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

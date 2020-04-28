@@ -48,10 +48,6 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	public static String INTERCEPTING_METHOD = "poll";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
@@ -88,7 +84,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(KafkaConsumerClientAdvice.class).enabled) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
@@ -138,7 +134,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(KafkaConsumerClientAdvice.class).enabled) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

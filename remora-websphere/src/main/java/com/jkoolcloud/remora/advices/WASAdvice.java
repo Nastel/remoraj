@@ -50,10 +50,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "handleRequest";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -113,7 +109,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(WASAdvice.class).enabled) {
 				return;
 			}
 			if (logging) {
@@ -184,7 +180,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-		if (!enabled) {
+		if (!getAdviceInstance(WASAdvice.class).enabled) {
 			return;
 		}
 		boolean doFinally = true;

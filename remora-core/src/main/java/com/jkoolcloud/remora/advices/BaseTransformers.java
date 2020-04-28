@@ -52,8 +52,16 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	private static final String ADVICE_NAME = "GENERAL";
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;
+	@RemoraConfig.Configurable(configurableOnce = true)
+	public boolean load = true;
+
 	@RemoraConfig.Configurable
 	public boolean sendStackTrace;
+	@RemoraConfig.Configurable
+	public boolean enabled = true;
+
+	@RemoraConfig.Configurable
+	public boolean logging = false;
 
 	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(

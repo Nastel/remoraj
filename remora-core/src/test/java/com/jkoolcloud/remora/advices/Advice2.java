@@ -38,7 +38,7 @@ public class Advice2 extends BaseTransformers {
 	@RemoraConfig.Configurable
 	public static String test = "TEST2";
 	@RemoraConfig.Configurable
-	public static boolean enabled = false;
+	public static boolean enabled2 = false;
 
 	public Advice2() {
 		LOGGER.info("Initialsed1");

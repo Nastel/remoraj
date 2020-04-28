@@ -43,7 +43,8 @@ public class TkChangeTest {
 	public void testFormatResponse() throws Exception {
 		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
 		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
-		String jsonInString = TkChange.getBody(new TkAdviceList().act(new RqFake()).body());
+		TkAdviceList tkAdviceList = new TkAdviceList();
+		String jsonInString = TkChange.getBody(tkAdviceList.act(new RqFake()).body());
 		JsonNode jsonNode = new ObjectMapper().readTree(jsonInString);
 		System.out.println(jsonInString);
 	}

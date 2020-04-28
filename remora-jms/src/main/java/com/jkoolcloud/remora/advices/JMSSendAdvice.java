@@ -47,10 +47,6 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "send";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	@RemoraConfig.Configurable
 	private static boolean fetchMsg = false;
@@ -95,7 +91,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JMSSendAdvice.class).enabled) {
 				return;
 			}
 			if (logging) {
@@ -155,7 +151,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JMSSendAdvice.class).enabled) {
 				return;
 			}
 			if (ed == null) // noinspection Duplicates

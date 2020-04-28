@@ -46,10 +46,6 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 	public static String INTERCEPTING_METHOD = "execute";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -108,7 +104,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			// if (isChainedClassInterception(JDBCStatementAdvice.class, logging ? logger : null)) {
 			// return;
 			// }
-			if (!enabled) {
+			if (!getAdviceInstance(JDBCStatementAdvice.class).enabled) {
 				return;
 			}
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, logging ? logger : null);
@@ -182,7 +178,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JDBCStatementAdvice.class).enabled) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

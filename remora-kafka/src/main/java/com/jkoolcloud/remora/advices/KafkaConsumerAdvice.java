@@ -49,10 +49,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	public static String INTERCEPTING_METHOD = "ConsumerRecord";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 	public static ThreadLocal<Stack<Long>> startTimeThreadLocal = new ThreadLocal<>();
@@ -104,7 +100,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	//
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(KafkaConsumerAdvice.class).enabled) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
@@ -151,7 +147,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 
 		try {
 
-			if (!enabled) {
+			if (!getAdviceInstance(KafkaConsumerAdvice.class).enabled) {
 				return;
 			}
 			if (logging) {

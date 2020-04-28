@@ -23,6 +23,7 @@ package com.jkoolcloud.remora;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -54,6 +55,7 @@ public class WASAdviceTest {
 
 	static {
 		System.setProperty(Remora.REMORA_PATH, ".");
+		AdviceRegistry.INSTANCE.report(Collections.singletonList(new WASAdvice()));
 	}
 
 	private static final TaggedLogger LOGGER = Logger.tag("WASAdviceTest");

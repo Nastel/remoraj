@@ -47,10 +47,6 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "execut";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -108,7 +104,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 
 	) {
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(IBMAdapterRSA.class).enabled) {
 				return;
 			}
 			if (logging) {
@@ -160,7 +156,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(IBMAdapterRSA.class).enabled) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

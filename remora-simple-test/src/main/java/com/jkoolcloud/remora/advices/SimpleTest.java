@@ -44,10 +44,6 @@ public class SimpleTest extends BaseTransformers {
 	public static String INTERCEPTING_METHOD = "instrumentedMethod";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -80,7 +76,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("starttime") long starttime) //
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(SimpleTest.class).enabled) {
 				return;
 			}
 
@@ -104,7 +100,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("starttime") long starttime) {
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(SimpleTest.class).enabled) {
 				return;
 			}
 			System.out.println("###AFTER METHOD CALL");

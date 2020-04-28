@@ -49,10 +49,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	public static String INTERCEPTING_METHOD = "createConnection";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -110,7 +106,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JMSCreateConnectionAdvice.class).enabled) {
 				return;
 			}
 			if (logging) {
@@ -165,7 +161,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	{
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(JMSCreateConnectionAdvice.class).enabled) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

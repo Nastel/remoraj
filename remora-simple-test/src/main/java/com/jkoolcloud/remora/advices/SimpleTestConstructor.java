@@ -46,10 +46,6 @@ public class SimpleTestConstructor extends BaseTransformers {
 	public static String INTERCEPTING_METHOD = "constructor";
 
 	@RemoraConfig.Configurable
-	public static boolean enabled = true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -83,7 +79,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("startTime") long starttime) //
 	{
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(SimpleTestConstructor.class).enabled) {
 				return;
 			}
 			System.out.println("BEFORE METHOD CALL");
@@ -125,7 +121,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!enabled) {
+			if (!getAdviceInstance(SimpleTestConstructor.class).enabled) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
