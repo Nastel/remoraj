@@ -180,7 +180,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 						if (remoraHeader == null) {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, ed.getId());
 							if (logging) {
-								logger.info("Added header: " + headerCorrIDName + ed.getId());
+								logger.info("Added RermoroaJ header: " + headerCorrIDName + ed.getId());
 							}
 						} else {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, remoraHeader);
@@ -197,7 +197,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 			} else {
 				if (logging) {
-					logger.info("## Request null");
+					logger.info("Request nuis ll");
 				}
 			}
 
