@@ -138,7 +138,6 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 								String[] chunks = param.split(Pattern.quote("="));
 								String name = chunks[0], value = null;
 								if (chunks.length > 1) {
-									logger.info("8");
 									value = chunks[1];
 								}
 								ed.addPropertyIfExist(paramPrefix + name, value);

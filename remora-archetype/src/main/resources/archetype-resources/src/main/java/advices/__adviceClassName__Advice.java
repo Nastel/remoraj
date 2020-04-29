@@ -28,11 +28,6 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
 	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
-	@RemoraConfig.Configurable
-	public static boolean enabled= true;
-	@RemoraConfig.Configurable
-	public static boolean load = true;
-	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -89,7 +84,9 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-
+            if (!getAdviceInstance(${adviceClassName}Advice.class).enabled) {
+                return;
+            }
 			ed = getEntryDefinition(ed, ${adviceClassName}Advice.class, logging ? logger : null);;
 			if (logging) {
 				logger.info("Entering: {} {}",${adviceClassName}Advice.class.getName(), "before"));
@@ -124,6 +121,9 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
+		    if (!getAdviceInstance(${adviceClassName}Advice.class).enabled) {
+             return;
+            }
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				if (logging) {
 					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
