@@ -103,7 +103,8 @@ public class RemoraControlAdvice implements RemoraAdvice {
 												new FkMethods("POST", new TkOnce(new TkChange(logger))))),
 								new FkRegex("/stats/(?<advice>[^/]+)", new TKStatistics()), //
 								new FkRegex("/queueStats", new TkQueueStatistics()), //
-								new FkRegex("/threadDump", new TkThreadDump())//
+								new FkRegex("/threadDump", new TkThreadDump()), //
+								new FkRegex("/heapDump", new TkHeapDump())//
 
 				), //
 
