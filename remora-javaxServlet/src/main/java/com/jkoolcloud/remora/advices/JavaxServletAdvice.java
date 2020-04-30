@@ -197,7 +197,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 			} else {
 				if (logging) {
-					logger.info("Request nuis ll");
+					logger.info("Request is null");
 				}
 			}
 
