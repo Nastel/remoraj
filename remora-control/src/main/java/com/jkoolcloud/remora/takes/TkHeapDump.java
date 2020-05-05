@@ -36,8 +36,6 @@ public class TkHeapDump implements Take {
 	public static final String THREAD_DUMP_TEMPLATE = "'{'\n" + "  \"ThreadName\": \"{0}\",\n"
 			+ "  \"ThreadState\": \"{1}\",\n" + "  \"StackTrace\": {2}\n" + "'}'";
 
-	public static final String STACK_TRACE_TEMPLATE = "";
-
 	@Override
 	public Response act(Request req) throws Exception {
 
