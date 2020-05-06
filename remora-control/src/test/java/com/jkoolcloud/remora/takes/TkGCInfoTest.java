@@ -20,11 +20,14 @@ import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class TkGCInfoTest {
 
 	@Test
 	public void testGCinf() throws Exception {
 		String s = new RsPrint(new TkGCInfo().act(new RqFake())).printBody();
+		new ObjectMapper().readTree(s);
 		System.out.println(s);
 	}
 }
