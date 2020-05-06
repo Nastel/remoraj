@@ -104,6 +104,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 								new FkRegex("/stats/(?<advice>[^/]+)", new TKStatistics()), //
 								new FkRegex("/queueStats", new TkQueueStatistics()), //
 								new FkRegex("/threadDump", new TkThreadDump()), //
+								new FkRegex("/gcInfo", new TkGCInfo()), //
 								new FkRegex("/heapDump", new TkHeapDump())//
 
 				), //

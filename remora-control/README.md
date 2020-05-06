@@ -544,3 +544,125 @@ curl -XPOST -d '{
    }' 'http://localhost:7366/change'
 
 ```
+
+# GC and memory Memory info 
+
+To get memory and grabage collector(s) info get `localhost:7366/gcInfo`
+
+```
+curl -XGET 'localhost:7366/gcInfo'
+```
+
+Expected response:
+
+```
+{
+  "Heap": {
+		  "Init": "2 147 483 648",
+		  "Used": "352 039 392",
+		  "Max": "2 099 773 440",
+		  "Commited": "2 099 773 440"}
+		,
+  "NonHeap": {
+		  "Init": "2 555 904",
+		  "Used": "186 918 480",
+		  "Max": "1 593 835 520",
+		  "Commited": "204 472 320"}
+		,
+  "GC": [{
+		  "Name": "PS Scavenge",
+		  "Collections": "68",
+		  "LastCollectionTime": 1 747,
+		  "PoolNames": ["PS Eden Space","PS Survivor Space"]
+		}
+		,{
+		  "Name": "PS MarkSweep",
+		  "Collections": "1",
+		  "LastCollectionTime": 339,
+		  "PoolNames": ["PS Eden Space","PS Survivor Space","PS Old Gen"]
+		}
+		],
+  "Details": [{
+		  "Name": "Code Cache",
+		  "Type": "Non-heap memory",
+		  "Used": "N/A",
+		  "Collections": {
+				  "Init": "2 555 904",
+				  "Used": "33 144 064",
+				  "Max": "251 658 240",
+				  "Commited": "33 554 432"}
+				
+		}
+		,{
+		  "Name": "Metaspace",
+		  "Type": "Non-heap memory",
+		  "Used": "N/A",
+		  "Collections": {
+				  "Init": "0",
+				  "Used": "135 530 400",
+				  "Max": "268 435 456",
+				  "Commited": "148 897 792"}
+				
+		}
+		,{
+		  "Name": "Compressed Class Space",
+		  "Type": "Non-heap memory",
+		  "Used": "N/A",
+		  "Collections": {
+				  "Init": "0",
+				  "Used": "18 324 256",
+				  "Max": "1 073 741 824",
+				  "Commited": "22 020 096"}
+				
+		}
+		,{
+		  "Name": "PS Eden Space",
+		  "Type": "Heap memory",
+		  "Used": {
+				  "Init": "537 395 200",
+				  "Used": "0",
+				  "Max": "620 232 704",
+				  "Commited": "620 232 704"}
+				,
+		  "Collections": {
+				  "Init": "537 395 200",
+				  "Used": "629 669 888",
+				  "Max": "643 301 376",
+				  "Commited": "629 669 888"}
+				
+		}
+		,{
+		  "Name": "PS Survivor Space",
+		  "Type": "Heap memory",
+		  "Used": {
+				  "Init": "89 128 960",
+				  "Used": "35 048 792",
+				  "Max": "47 710 208",
+				  "Commited": "47 710 208"}
+				,
+		  "Collections": {
+				  "Init": "89 128 960",
+				  "Used": "58 173 592",
+				  "Max": "89 128 960",
+				  "Commited": "89 128 960"}
+				
+		}
+		,{
+		  "Name": "PS Old Gen",
+		  "Type": "Heap memory",
+		  "Used": {
+				  "Init": "1 431 830 528",
+				  "Used": "120 501 184",
+				  "Max": "1 431 830 528",
+				  "Commited": "1 431 830 528"}
+				,
+		  "Collections": {
+				  "Init": "1 431 830 528",
+				  "Used": "161 871 376",
+				  "Max": "1 431 830 528",
+				  "Commited": "1 431 830 528"}
+				
+		}
+		]
+}
+```
