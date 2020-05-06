@@ -52,6 +52,11 @@ You must configure Remora Java agent and Streams agent to run RemoraJ. Your shou
 
 Login to your dashboard: https://jkool.jkoolcloud.com/jKool/login.jsp and view results.
 
+## Prerequisites
+
+Java >8 runtime (IBM Webssphere  >8.5.5, Tomcat >8, Jboss >7.2 should be already running Java 8, other versions you need to check that VM is 
+is Java 1.8 or above).
+
 # Remora Java Agent 
 ## Using -javaagent option
 
