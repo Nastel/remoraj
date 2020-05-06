@@ -21,13 +21,14 @@ import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 import com.jkoolcloud.remora.Remora;
+import com.jkoolcloud.remora.advices.RemoraControlAdvice;
 
 public class TkHeapDumpTest {
 
 	@Test
 	public void act() throws Exception {
 		System.setProperty(Remora.REMORA_PATH, "c:\\workspace\\build\\remora\\remora-0.1.7-SNAPSHOT");
-		String s = new RsPrint(new TkHeapDump().act(new RqFake())).printBody();
+		String s = new RsPrint(new TkHeapDump(RemoraControlAdvice.heapDumpPath).act(new RqFake())).printBody();
 		System.out.println(s);
 	}
 }

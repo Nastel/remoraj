@@ -55,6 +55,9 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	public static String adminURL = null;
 	@RemoraConfig.Configurable
 	public static int reporterSchedule = 300;
+	@RemoraConfig.Configurable
+	public static String heapDumpPath = System.getProperty(Remora.REMORA_PATH, ".") + "/dumps/";
+
 	protected static CountingAdviceListener adviceListener;
 
 	@Override
@@ -106,7 +109,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 								new FkRegex("/threadDump", new TkThreadDump()), //
 								new FkRegex("/gcInfo", new TkGCInfo()), //
 								new FkRegex("/sysInfo", new TkSystemInfo()), //
-								new FkRegex("/heapDump", new TkHeapDump())//
+								new FkRegex("/heapDump", new TkHeapDump(heapDumpPath))//
 
 				), //
 

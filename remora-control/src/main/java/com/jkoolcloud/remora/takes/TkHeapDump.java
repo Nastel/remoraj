@@ -28,13 +28,17 @@ import org.takes.Response;
 import org.takes.Take;
 import org.takes.rs.RsText;
 
-import com.jkoolcloud.remora.Remora;
 import com.sun.management.HotSpotDiagnosticMXBean;
 
 public class TkHeapDump implements Take {
 
 	public static final String THREAD_DUMP_TEMPLATE = "'{'\n" + "  \"ThreadName\": \"{0}\",\n"
 			+ "  \"ThreadState\": \"{1}\",\n" + "  \"StackTrace\": {2}\n" + "'}'";
+	private final String dumpsPath;
+
+	public TkHeapDump(String dumpsPath) {
+		this.dumpsPath = dumpsPath;
+	}
 
 	@Override
 	public Response act(Request req) throws Exception {
@@ -42,7 +46,7 @@ public class TkHeapDump implements Take {
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 		HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(server,
 				"com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
-		String dumpFName = System.getProperty(Remora.REMORA_PATH, ".") + "/dumps/dump_"
+		String dumpFName = dumpsPath + "dump_"
 				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM _d_HH_mm")) + ".hprof";
 		File file = new File(dumpFName);
 		File directory = file.getParentFile();
