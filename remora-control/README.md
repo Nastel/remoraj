@@ -666,3 +666,28 @@ Expected response:
 		]
 }
 ```
+
+# System and CPU info
+
+to get Systems and processor info get `localhost:7366/sysInfo`.
+
+```
+curl -XGET 'localhost:7366/sysInfo'
+```
+
+Expected response:
+
+{
+	"OsName" : "Windows 10",
+	"OsArch" : "amd64",
+	"AvailableProcessors" : "8",
+	"OsVersion" : "10.0",
+	"CommittedVirtualMemorySize" : "2610741248",
+	"FreePhysicalMemorySize" : "920707072",
+	"FreeSwapSpaceSize" : "9812226048",
+	"ProcessCpuLoad" : "0.010607846941769607",
+	"ProcessCpuTime" : "208187500000",
+	"SystemCpuLoad" : "0.338782252217086",
+	"TotalPhysicalMemorySize" : "17063899136",
+	"TotalSwapSpaceSize" : "35314622464"
+}
