@@ -676,7 +676,7 @@ curl -XGET 'localhost:7366/sysInfo'
 ```
 
 Expected response:
-
+```
 {
 	"OsName" : "Windows 10",
 	"OsArch" : "amd64",
@@ -691,3 +691,4 @@ Expected response:
 	"TotalPhysicalMemorySize" : "17063899136",
 	"TotalSwapSpaceSize" : "35314622464"
 }
+```
