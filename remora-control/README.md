@@ -112,7 +112,7 @@ Below is a list of available advices:
 	"adviceName": "RemoraControlAdvice",
 	"properties": {
 		"port" :  7366,
-		"heapDumpPath" : "C:\workspace\build\remora\remora-0.1.7-SNAPSHOT/dumps/",
+		"heapDumpPath" : "/opt/remora/dumps/",
 		"reporterSchedule" :  300,
 		"adminURL" : "null"
 	}},
