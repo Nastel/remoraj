@@ -1,7 +1,7 @@
 # Remora Control 
 
-Remora control plugin enables you to control remoraJ  java agent on demand over HTTP/REST.
-By default remoraJ HTTP service uses port 7366 and will switch to next available (+1) if default is not available.
+Remora control plugin enables control of remoraJ Java Agent on demand over HTTP/REST.
+By default remoraJ HTTP service uses port 7366 and will switch to next available (+1) if default port is not available.
 
 # Remora Control Commands 
 
@@ -19,7 +19,7 @@ to get a list of installed advices and available properties to change, each advi
 
 To change a property you run POST on remroaJ instance `localhost:7366/change`
 
-i.e. to enable logging on JavaxServletAdvice you should run:
+i.e. to enable logging on `JavaxServletAdvice` you should run:
 
 ```
 curl -XPOST -d '{
@@ -70,8 +70,8 @@ As for version 0.1.6 there are such advices:
 
 Most of advices have properties:
 
-* enabled - turn off/on advice
-* logging - turn on/off logging
+* `enabled` - turn off/on advice
+* `logging` - turn on/off logging
 
 # Other properties & Sample response
 
@@ -384,7 +384,7 @@ Expected response:
 ```
 
 
-# Trace Output Statistics
+# Traces Output Statistics
 
 To get statistics query `localhost:7366/queryStats`
 
@@ -515,7 +515,7 @@ curl -XPOST -d '{
 
 ```
 
-# GC and memory Memory info 
+# GC and Memory Memory Info 
 
 To get memory and grabage collector(s) info get `localhost:7366/gcInfo`
 
@@ -637,7 +637,7 @@ Expected response:
 }
 ```
 
-# System and CPU info
+# System and CPU Info
 
 to get Systems and processor info get `localhost:7366/sysInfo`.
 
