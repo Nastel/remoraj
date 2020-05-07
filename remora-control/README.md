@@ -5,7 +5,7 @@ By default remoraJ HTTP service uses port 7366 and will switch to next available
 
 # Remora Control Commands 
 
-## Get capabilities request
+## Get Capabilities Request
 
 If the remora is working on localhost and default port you should query `localhost:7366/`
 
@@ -15,7 +15,7 @@ curl -XGET 'http://localhost:7366/'
  
 to get a list of installed advices and available properties to change, each advice has a different set of properties.
 
-## Change property request 
+## Change Property Request 
 
 To change a property you run POST on remroaJ instance `localhost:7366/change`
 
@@ -28,13 +28,12 @@ curl -XPOST -d '{
    	"value": "false"
    }' 'http://localhost:7366/change'
 
+``` 
+  
+# Available Advices
+
+Below is a list of available advices:
 ```
-  
-  
-# Available advices
-
-As for version 0.1.6 there are such advices:
-
   "ApacheHttpClientAdvice",
   "ApacheLegacyHttpClientAdvice",
   "BankBenchmarkAdvice",
@@ -65,10 +64,9 @@ As for version 0.1.6 there are such advices:
   "WebsocketSessionAdvice",
   "IBMAdapterRSA",
   "WASAdvice"
+```
 
-# Common properties
-
-Most of advices have properties:
+# Common Advice Properties
 
 * `enabled` - turn off/on advice
 * `logging` - turn on/off logging
