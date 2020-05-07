@@ -41,10 +41,10 @@ public class TkSystemInfo implements Take {
 		int availableProcessors = operatingSystemMXBean.getAvailableProcessors();
 		String version = operatingSystemMXBean.getVersion();
 
-		sb.append("\t" + "\"OsName\" : " + quote(name) + ",\n");
-		sb.append("\t" + "\"OsArch\" : " + quote(arch) + ",\n");
-		sb.append("\t" + "\"AvailableProcessors\" : " + quote(availableProcessors) + ",\n");
-		sb.append("\t" + "\"OsVersion\" : " + quote(version) + ",\n");
+		sb.append("\t" + "\"OsName\" : " + JSONUtils.quote(name) + ",\n");
+		sb.append("\t" + "\"OsArch\" : " + JSONUtils.quote(arch) + ",\n");
+		sb.append("\t" + "\"AvailableProcessors\" : " + availableProcessors + ",\n");
+		sb.append("\t" + "\"OsVersion\" : " + JSONUtils.quote(version) + ",\n");
 
 		String namesAndValues = Arrays.asList(operatingSystemMXBean.getClass().getDeclaredMethods()).stream()
 				.filter(method -> method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers()))
@@ -57,7 +57,7 @@ public class TkSystemInfo implements Take {
 					} catch (Exception e) {
 						value = e;
 					}
-					return ("\t" + quote(method.getName().substring(3)) + " : " + quote(String.valueOf(value)));
+					return ("\t" + JSONUtils.quote(method.getName().substring(3)) + " : " + JSONUtils.quote(value));
 
 				}).collect(Collectors.joining(",\n"));
 
@@ -67,7 +67,4 @@ public class TkSystemInfo implements Take {
 		return new RsText(sb.toString());
 	}
 
-	private static String quote(Object value) {
-		return "\"" + String.valueOf(value) + "\"";
-	}
 }

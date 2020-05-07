@@ -77,321 +77,291 @@ Most of advices have properties:
 
 ```json
 {
-"version" : "0.1.7-SNAPSHOT-2020-04-24T13:24:44Z",
-"vmid" : "13008@slabs-marius-PC",
+"version" : "0.1.7-SNAPSHOT-2020-05-07T11:37:51Z",
+"vmid" : "17800@slabs-marius-PC",
 "advices" : [	{
 	"adviceName": "ApacheHttpClientAdvice",
 	"properties": {
 		"paramPrefix" : "PAR_",
 		"headerCorrIDName" : "REMORA_CORR",
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"extractParams" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"extractParams" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "ApacheLegacyHttpClientAdvice",
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "BankBenchmarkAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "RemoraControlAdvice",
 	"properties": {
-		"port" : "7366",
-		"reporterSchedule" : "300",
+		"port" :  7366,
+		"heapDumpPath" : "C:\workspace\build\remora\remora-0.1.7-SNAPSHOT/dumps/",
+		"reporterSchedule" :  300,
 		"adminURL" : "null"
 	}},
 	{
 	"adviceName": "EjbRemoteAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "HttpUrlConnectionAdvice",
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "false",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JavaxServletAdvice",
 	"properties": {
 		"headerCorrIDName" : "REMORA_CORR",
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
 		"headerPrefix" : "HDR_",
-		"load" : "true",
-		"attachCorrelator" : "true",
-		"logging" : "true",
-		"enabled" : "true",
+		"attachCorrelator" : true,
+		"logging" : true,
+		"enabled" : true,
 		"cookiePrefix" : "CKIE_"
 	}},
 	{
 	"adviceName": "JBossAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JBossServletAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JDBCConnectionAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JDBCStatementAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JDBCCallableStatementAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
 		"parameterPrefix" : "PARAM_",
-		"logging" : "true",
-		"enabled" : "true"
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JMSCreateConnectionAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JMSReceiveAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"fetchMsg" : "false",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"fetchMsg" : false,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "JMSSendAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"fetchMsg" : "false",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"fetchMsg" : false,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "KafkaConsumerAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "KafkaProducerAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "KafkaConsumerClientAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "SimpleTest",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "SimpleTestConstructor",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "SpringServiceAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "SpringExceptionAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "SpringTransactionAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "WebLogicAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "WebsocketSendAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "WebsocketEndpointAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "WebsocketReceiveAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "WebsocketSessionAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "IBMAdapterRSA",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}},
 	{
 	"adviceName": "WASAdvice",
 	"properties": {
-		"maxStackTraceElements" : "30",
-		"sendStackTrace" : "false",
-		"checkLastPropertyValue" : "true",
-		"load" : "true",
-		"logging" : "true",
-		"enabled" : "true"
+		"maxStackTraceElements" :  30,
+		"sendStackTrace" : false,
+		"checkCallRepeats" : true,
+		"logging" : true,
+		"enabled" : true
 	}}
 ]
 }
-
-
 ```
 
 # Advice Statistics
@@ -407,9 +377,9 @@ Expected response:
 ```json
 {
   "adviceName" : "JavaxServletAdvice",
-  "invokeCount" : "2",
-  "eventCreateCount" : "2",
-  "errorCount": "0"
+  "invokeCount" : 3,
+  "eventCreateCount" : 3,
+  "errorCount": 0
 }
 ```
 
@@ -426,11 +396,11 @@ Expected response:
 
 ```json
 {
-  "memQErrorCount" : "0",
-  "lastPersistQIndex" : "0",
-  "persistQErrorCount" : "0",
+  "memQErrorCount" : 0,
+  "lastPersistQIndex" : 0,
+  "persistQErrorCount" : 0,
   "lastException": "null",
-  "usableSpace": "12 754 915 328"
+  "usableSpace":  10719305728
 }
 ```
 # ThreadDump
@@ -555,30 +525,30 @@ curl -XGET 'localhost:7366/gcInfo'
 
 Expected response:
 
-```
+```json
 {
   "Heap": {
-		  "Init": "2 147 483 648",
-		  "Used": "352 039 392",
-		  "Max": "2 099 773 440",
-		  "Commited": "2 099 773 440"}
+		  "Init": 2147483648,
+		  "Used": 612181928,
+		  "Max": 2099249152,
+		  "Commited": 2099249152}
 		,
   "NonHeap": {
-		  "Init": "2 555 904",
-		  "Used": "186 918 480",
-		  "Max": "1 593 835 520",
-		  "Commited": "204 472 320"}
+		  "Init": 2555904,
+		  "Used": 188445752,
+		  "Max": 1593835520,
+		  "Commited": 205914112}
 		,
   "GC": [{
 		  "Name": "PS Scavenge",
-		  "Collections": "68",
-		  "LastCollectionTime": 1 747,
+		  "Collections": 68,
+		  "LastCollectionTime": 1730,
 		  "PoolNames": ["PS Eden Space","PS Survivor Space"]
 		}
 		,{
 		  "Name": "PS MarkSweep",
-		  "Collections": "1",
-		  "LastCollectionTime": 339,
+		  "Collections": 1,
+		  "LastCollectionTime": 678,
 		  "PoolNames": ["PS Eden Space","PS Survivor Space","PS Old Gen"]
 		}
 		],
@@ -587,10 +557,10 @@ Expected response:
 		  "Type": "Non-heap memory",
 		  "Used": "N/A",
 		  "Collections": {
-				  "Init": "2 555 904",
-				  "Used": "33 144 064",
-				  "Max": "251 658 240",
-				  "Commited": "33 554 432"}
+				  "Init": 2555904,
+				  "Used": 34006720,
+				  "Max": 251658240,
+				  "Commited": 34471936}
 				
 		}
 		,{
@@ -598,10 +568,10 @@ Expected response:
 		  "Type": "Non-heap memory",
 		  "Used": "N/A",
 		  "Collections": {
-				  "Init": "0",
-				  "Used": "135 530 400",
-				  "Max": "268 435 456",
-				  "Commited": "148 897 792"}
+				  "Init": 0,
+				  "Used": 136204616,
+				  "Max": 268435456,
+				  "Commited": 149422080}
 				
 		}
 		,{
@@ -609,58 +579,58 @@ Expected response:
 		  "Type": "Non-heap memory",
 		  "Used": "N/A",
 		  "Collections": {
-				  "Init": "0",
-				  "Used": "18 324 256",
-				  "Max": "1 073 741 824",
-				  "Commited": "22 020 096"}
+				  "Init": 0,
+				  "Used": 18302008,
+				  "Max": 1073741824,
+				  "Commited": 22020096}
 				
 		}
 		,{
 		  "Name": "PS Eden Space",
 		  "Type": "Heap memory",
 		  "Used": {
-				  "Init": "537 395 200",
-				  "Used": "0",
-				  "Max": "620 232 704",
-				  "Commited": "620 232 704"}
+				  "Init": 537395200,
+				  "Used": 0,
+				  "Max": 619184128,
+				  "Commited": 619184128}
 				,
 		  "Collections": {
-				  "Init": "537 395 200",
-				  "Used": "629 669 888",
-				  "Max": "643 301 376",
-				  "Commited": "629 669 888"}
+				  "Init": 537395200,
+				  "Used": 627572736,
+				  "Max": 640679936,
+				  "Commited": 627572736}
 				
 		}
 		,{
 		  "Name": "PS Survivor Space",
 		  "Type": "Heap memory",
 		  "Used": {
-				  "Init": "89 128 960",
-				  "Used": "35 048 792",
-				  "Max": "47 710 208",
-				  "Commited": "47 710 208"}
+				  "Init": 89128960,
+				  "Used": 35108544,
+				  "Max": 48234496,
+				  "Commited": 48234496}
 				,
 		  "Collections": {
-				  "Init": "89 128 960",
-				  "Used": "58 173 592",
-				  "Max": "89 128 960",
-				  "Commited": "89 128 960"}
+				  "Init": 89128960,
+				  "Used": 68936656,
+				  "Max": 89128960,
+				  "Commited": 89128960}
 				
 		}
 		,{
 		  "Name": "PS Old Gen",
 		  "Type": "Heap memory",
 		  "Used": {
-				  "Init": "1 431 830 528",
-				  "Used": "120 501 184",
-				  "Max": "1 431 830 528",
-				  "Commited": "1 431 830 528"}
+				  "Init": 1431830528,
+				  "Used": 129796952,
+				  "Max": 1431830528,
+				  "Commited": 1431830528}
 				,
 		  "Collections": {
-				  "Init": "1 431 830 528",
-				  "Used": "161 871 376",
-				  "Max": "1 431 830 528",
-				  "Commited": "1 431 830 528"}
+				  "Init": 1431830528,
+				  "Used": 178849320,
+				  "Max": 1431830528,
+				  "Commited": 1431830528}
 				
 		}
 		]
@@ -676,19 +646,19 @@ curl -XGET 'localhost:7366/sysInfo'
 ```
 
 Expected response:
-```
+```json
 {
 	"OsName" : "Windows 10",
 	"OsArch" : "amd64",
-	"AvailableProcessors" : "8",
+	"AvailableProcessors" : 8,
 	"OsVersion" : "10.0",
-	"CommittedVirtualMemorySize" : "2610741248",
-	"FreePhysicalMemorySize" : "920707072",
-	"FreeSwapSpaceSize" : "9812226048",
-	"ProcessCpuLoad" : "0.010607846941769607",
-	"ProcessCpuTime" : "208187500000",
-	"SystemCpuLoad" : "0.338782252217086",
-	"TotalPhysicalMemorySize" : "17063899136",
-	"TotalSwapSpaceSize" : "35314622464"
+	"CommittedVirtualMemorySize" :  2659962880,
+	"FreePhysicalMemorySize" :  1209249792,
+	"FreeSwapSpaceSize" :  9557762048,
+	"ProcessCpuLoad" :  0,
+	"ProcessCpuTime" :  228062500000,
+	"SystemCpuLoad" :  0.34,
+	"TotalPhysicalMemorySize" :  17063899136,
+	"TotalSwapSpaceSize" :  35314622464
 }
 ```

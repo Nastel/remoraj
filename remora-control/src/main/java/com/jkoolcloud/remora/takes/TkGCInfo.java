@@ -24,7 +24,6 @@ import java.lang.management.MemoryUsage;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -40,8 +39,8 @@ public class TkGCInfo implements Take {
 
 			+ "'}'";
 	public static final String GC_INFO_TEMPALTE = "'{'\n" + "  \"Name\": \"{0}\",\n"//
-			+ "  \"Collections\": \"{1}\",\n"//
-			+ "  \"LastCollectionTime\": {2},\n"//
+			+ "  \"Collections\": {1,number,#},\n"//
+			+ "  \"LastCollectionTime\": {2,number,#},\n"//
 			+ "  \"PoolNames\": [{3}]\n"//
 			+ "'}'";
 
@@ -50,6 +49,13 @@ public class TkGCInfo implements Take {
 			+ "  \"Type\": \"{1}\",\n"//
 			+ "  \"Used\": {2},\n" //
 			+ "  \"Collections\": {3}\n" //
+			+ "'}'";
+
+	public static final String USAGE_TEMPLATE = "'{'\n"//
+			+ "  \"Init\": {0,number,#},\n" //
+			+ "  \"Used\": {1,number,#},\n"//
+			+ "  \"Max\": {2,number,#},\n" //
+			+ "  \"Commited\": {3,number,#}" //
 			+ "'}'";
 
 	@Override
@@ -61,7 +67,7 @@ public class TkGCInfo implements Take {
 			long collectionCount = gc.getCollectionCount();
 			long collectionTime = gc.getCollectionTime();
 			String[] memoryPoolNames = gc.getMemoryPoolNames();
-			return format(addPadding(2, GC_INFO_TEMPALTE), name, collectionCount, collectionTime,
+			return format(JSONUtils.addPadding(2, GC_INFO_TEMPALTE), name, collectionCount, collectionTime,
 					returnArray(memoryPoolNames));
 		}).collect(Collectors.joining(","));
 
@@ -73,7 +79,7 @@ public class TkGCInfo implements Take {
 			MemoryUsage collectionUsage = memoryPoolMXBean.getCollectionUsage();
 			MemoryUsage peakUsage = memoryPoolMXBean.getPeakUsage();
 			MemoryType type = memoryPoolMXBean.getType();
-			return format(addPadding(2, MEM_TEMPLATE), name, type.toString(), usageToJSON(collectionUsage, 4),
+			return format(JSONUtils.addPadding(2, MEM_TEMPLATE), name, type.toString(), usageToJSON(collectionUsage, 4),
 					usageToJSON(peakUsage, 4));
 		}).collect(Collectors.joining(","));
 
@@ -91,30 +97,14 @@ public class TkGCInfo implements Take {
 		if (collectionUsage == null) {
 			return "\"N/A\"";
 		}
-		String USAGE_TEMPLATE = "'{'\n"//
-				+ "  \"Init\": \"{0}\",\n" //
-				+ "  \"Used\": \"{1}\",\n"//
-				+ "  \"Max\": \"{2}\",\n" //
-				+ "  \"Commited\": \"{3}\"" //
-				+ "'}'";
 
 		long init = collectionUsage.getInit();
 		long used = collectionUsage.getUsed();
 		long max = collectionUsage.getMax();
 		long committed = collectionUsage.getCommitted();
-		String paddedPattern = addPadding(padding, USAGE_TEMPLATE);
+		String paddedPattern = JSONUtils.addPadding(padding, USAGE_TEMPLATE);
 
 		return format(paddedPattern, init, used, max, committed);
-	}
-
-	@NotNull
-	private String addPadding(int padding, String template) {
-		return Arrays.asList(template.split("\n")).stream().map(a -> a += "\n").map(a -> {
-			for (int i = 0; i < padding; i++) {
-				a += "\t";
-			}
-			return a;
-		}).collect(Collectors.joining());
 	}
 
 }

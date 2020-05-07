@@ -16,6 +16,7 @@
 
 package com.jkoolcloud.remora.takes;
 
+import static com.jkoolcloud.remora.takes.JSONUtils.quote;
 import static java.text.MessageFormat.format;
 
 import java.io.File;
@@ -30,11 +31,11 @@ import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 public class TkQueueStatistics implements Take {
 	public static final String QUEUE_STATISTICS_RESPONSE_BODY = "'{'\n" + //
-			"  \"memQErrorCount\" : \"{0}\",\n" + //
-			"  \"lastPersistQIndex\" : \"{1}\",\n" + //
-			"  \"persistQErrorCount\" : \"{2}\",\n" + //
+			"  \"memQErrorCount\" : {0},\n" + //
+			"  \"lastPersistQIndex\" : {1},\n" + //
+			"  \"persistQErrorCount\" : {2},\n" + //
 			"  \"lastException\": \"{3}\",\n" + //
-			"  \"usableSpace\": \"{4}\"\n" + //
+			"  \"usableSpace\": {4}\n" + //
 
 			"'}'";
 
@@ -48,7 +49,7 @@ public class TkQueueStatistics implements Take {
 		}
 		return new RsText(format(QUEUE_STATISTICS_RESPONSE_BODY, ScheduledQueueErrorReporter.intermediateQueueFailCount,
 				ScheduledQueueErrorReporter.lastIndexAppender, ScheduledQueueErrorReporter.chronicleQueueFailCount,
-				ScheduledQueueErrorReporter.lastException, usableSpace));
+				ScheduledQueueErrorReporter.lastException, quote(usableSpace)));
 	}
 
 }

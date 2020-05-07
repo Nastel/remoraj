@@ -22,6 +22,8 @@ import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.Advice1;
 
@@ -31,6 +33,7 @@ public class TkAdviceListTest {
 	public void act() throws Exception {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
 		String s = new RsPrint(new TkAdviceList().act(new RqFake())).printBody();
+		JsonNode jsonNode = new ObjectMapper().readTree(s);
 		System.out.println(s);
 	}
 }

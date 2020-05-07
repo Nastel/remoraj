@@ -16,6 +16,8 @@
 
 package com.jkoolcloud.remora.takes;
 
+import static com.jkoolcloud.remora.takes.JSONUtils.quote;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,10 +52,10 @@ public class TkAdviceList implements Take {
 			response.append("\"");
 			response.append(",\n");
 			List<String> configurableFields = AdviceRegistry.getConfigurableFields(advice);
-			Map<String, String> fieldsAndValues = AdviceRegistry.mapToCurrentValues(advice, configurableFields);
+			Map<String, Object> fieldsAndValues = AdviceRegistry.mapToCurrentValues(advice, configurableFields);
 			response.append("\t\"properties\": {\n");
 			response.append(fieldsAndValues.entrySet().stream()
-					.map(entry -> "\t\t\"" + entry.getKey() + "\" : \"" + entry.getValue() + "\"")
+					.map(entry -> "\t\t\"" + entry.getKey() + "\" : " + quote(entry.getValue()) + "")
 					.collect(Collectors.joining(",\n")));
 
 			response.append("\n\t}}");

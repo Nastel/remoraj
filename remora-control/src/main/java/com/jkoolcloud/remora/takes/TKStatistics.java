@@ -28,8 +28,11 @@ import com.jkoolcloud.remora.advices.RemoraStatistic;
 
 public class TKStatistics implements TkRegex {
 
-	public static final String STATISTICS_RESPONSE_BODY = "'{'\n" + "  \"adviceName\" : \"{0}\",\n"
-			+ "  \"invokeCount\" : \"{1}\",\n" + "  \"eventCreateCount\" : \"{2}\",\n" + "  \"errorCount\": \"{3}\"\n"
+	public static final String STATISTICS_RESPONSE_BODY = "'{'\n" //
+			+ "  \"adviceName\" : \"{0}\",\n"//
+			+ "  \"invokeCount\" : {1},\n" //
+			+ "  \"eventCreateCount\" : {2},\n"//
+			+ "  \"errorCount\": {3}\n"//
 			+ "'}'";
 
 	@Override

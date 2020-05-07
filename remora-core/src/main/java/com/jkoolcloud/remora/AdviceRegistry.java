@@ -62,14 +62,16 @@ public enum AdviceRegistry {
 				.map(field -> field.getName()).collect(Collectors.toList());
 	}
 
-	public static Map<String, String> mapToCurrentValues(RemoraAdvice advice,
+	public static Map<String, Object> mapToCurrentValues(RemoraAdvice advice,
 			List<String> availableConfigurationFields) {
 		return availableConfigurationFields.stream().collect(Collectors.toMap(fName -> fName, fName -> {
 
 			try {
 				Field declaredField = ReflectionUtils.getFieldFromAllDeclaredFields(advice.getClass(), fName);
 				declaredField.setAccessible(true);
-				return String.valueOf(declaredField.get(advice));
+				Object value = declaredField.get(advice);
+
+				return value == null ? "null" : value;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
