@@ -64,7 +64,7 @@ Login to your dashboard to view & analyze results:
 
 ## Prerequisites
 
-Java >8 runtime (IBM Webssphere  >8.5.5, Tomcat >8, Jboss >7.2 should be already running Java 8. Make sure JVM is Java 1.8 or above).
+Java >8 runtime (IBM WebSphere >8.5.5, Tomcat >8, Jboss >7.2 should be already running Java 8. Make sure JVM is Java 1.8 or above).
 
 # Remora Java Agent 
 ## Using -javaagent option
