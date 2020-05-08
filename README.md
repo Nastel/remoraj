@@ -16,33 +16,38 @@ Both agents communicate via a memory mapped queue stored on a filesystem see `tn
 **NOTE:** Streams Agent project is located here: https://github.com/Nastel/tnt4j-streams
 
 RemoraJ supports the following intercepts (advices):
-   * ApacheHttpClientAdvice
-   * ApacheLegacyHttpClientAdvice
-   * EjbRemoteAdvice 
-   * HttpUrlConnectionAdvice
-   * JavaxServletAdvice
-   * JBossAdvice
-   * JBossServletAdvice
-   * JDBCConnectionAdvice
-   * JDBCStatementAdvice
-   * JDBCCallableStatementAdvice
-   * JMSCreateConnectionAdvice
-   * JMSReceiveAdvice
-   * JMSSendAdvice
-   * KafkaConsumerAdvice
-   * KafkaProducerAdvice
-   * KafkaConsumerClientAdvice
-   * SpringServiceAdvice
-   * SpringExceptionAdvice
-   * SpringTransactionAdvice
-   * WebLogicAdvice
-   * WebsocketSendAdvice
-   * WebsocketEndpointAdvice
-   * WebsocketReceiveAdvice
-   * WebsocketSessionAdvice
-   * IBMAdapterRSA
-   * WASAdvice
-
+```
+  "ApacheHttpClientAdvice",
+  "ApacheLegacyHttpClientAdvice",
+  "BankBenchmarkAdvice",
+  "RemoraControlAdvice",
+  "EjbRemoteAdvice",
+  "HttpUrlConnectionAdvice",
+  "JavaxServletAdvice",
+  "JBossAdvice",
+  "JBossServletAdvice",
+  "JDBCConnectionAdvice",
+  "JDBCStatementAdvice",
+  "JDBCCallableStatementAdvice",
+  "JMSCreateConnectionAdvice",
+  "JMSReceiveAdvice",
+  "JMSSendAdvice",
+  "KafkaConsumerAdvice",
+  "KafkaProducerAdvice",
+  "KafkaConsumerClientAdvice",
+  "SimpleTest",
+  "SimpleTestConstructor",
+  "SpringServiceAdvice",
+  "SpringExceptionAdvice",
+  "SpringTransactionAdvice",
+  "WebLogicAdvice",
+  "WebsocketSendAdvice",
+  "WebsocketEndpointAdvice",
+  "WebsocketReceiveAdvice",
+  "WebsocketSessionAdvice",
+  "IBMAdapterRSA",
+  "WASAdvice"
+```
 # Installing RemoraJ
 
 You must configure Remora Java agent and Streams agent to run RemoraJ. Your should have a working data repository and a streaming access token. Below is the outline of RemoraJ setup:
