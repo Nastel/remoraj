@@ -59,8 +59,8 @@ You must configure the Remora Java agent and Streams agent to run RemoraJ. Your 
 * Start the Streams Agent (forwards traces to your data repository associated with your streaming access token)
 
 Login to your dashboard to view & analyze results: 
-* `jKool` -- https://jkool.jkoolcloud.com/jKool/login.jsp
-* `Nastel XRay` -- https://xray.nastel.com/xray/Nastel/login.jsp
+* [jKool Dashboard](https://jkool.jkoolcloud.com/jKool/login.jsp)
+* [Nastel XRay Dashboard](https://xray.nastel.com/xray/Nastel/login.jsp)
 
 ## Prerequisites
 
@@ -186,5 +186,5 @@ To turn on logging you need to change option `com.jkoolcloud.remora.advices.Base
 Each advice creates it own logging file. You can find all files in your remora's folder under `log` -- `<install_dir>/remora-<version>/log`.
 
 # Supported Analytics Platforms
-* `jKool` -- https://www.jkoolcloud.com/
-* `Nastel XRay` -- https://www.nastel.com/nastel-xray/
+* [jKool](https://www.jkoolcloud.com/)
+* [Nastel XRay](https://www.nastel.com/nastel-xray/)
