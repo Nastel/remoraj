@@ -5,7 +5,7 @@
 
     <groupId>com.jkoolcloud.remora</groupId>
     <artifactId>remora</artifactId>
-    <version>0.1.7-SNAPSHOT</version>
+    <version>0.1.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>remora</name>
