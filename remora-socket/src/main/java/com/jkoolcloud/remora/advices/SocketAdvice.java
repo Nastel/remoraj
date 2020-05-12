@@ -4,6 +4,7 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -90,10 +91,18 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 
-			ed.addPropertyIfExist("resource", thiz.getInetAddress().getHostName());
-			ed.addPropertyIfExist("localAddress", thiz.getLocalAddress().getHostName());
+			ed.addPropertyIfExist("resource",
+					thiz.getInetAddress() == null ? null : thiz.getInetAddress().getHostName());
+			ed.addPropertyIfExist("localAddress",
+					thiz.getLocalAddress() == null ? null : thiz.getLocalAddress().getHostName());
 			ed.addPropertyIfExist("localPort", thiz.getLocalPort());
 			ed.addPropertyIfExist("port", thiz.getPort());
+			if (socketAddress instanceof InetSocketAddress) {
+				ed.addPropertyIfExist("port", ((InetSocketAddress) socketAddress).getPort());
+				ed.addPropertyIfExist("hostName", ((InetSocketAddress) socketAddress).getHostName());
+				ed.addPropertyIfExist("hostString", ((InetSocketAddress) socketAddress).getHostString());
+
+			}
 
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
