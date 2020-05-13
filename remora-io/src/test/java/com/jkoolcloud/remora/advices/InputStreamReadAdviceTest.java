@@ -16,6 +16,11 @@
 
 package com.jkoolcloud.remora.advices;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.Test;
 
 //Enable power mockito if any of classes failing to mock
@@ -27,5 +32,20 @@ public class InputStreamReadAdviceTest {
 	@Test
 	public void testInputStreamInterceptor() throws NoSuchMethodException {
 
+	}
+
+	public static void main(String[] args) throws IOException {
+		File tempFile = File.createTempFile("test", "test");
+		FileWriter fileWriter = new FileWriter(tempFile);
+		for (int i = 0; i < 1000; i++) {
+			fileWriter.append("Line\n");
+		}
+		fileWriter.flush();
+		fileWriter.close();
+		Path target = Paths.get(tempFile.getAbsolutePath() + "copy");
+		Files.copy(tempFile.toPath(), target);
+		InputStream targetStream = new FileInputStream(target.toFile());
+		targetStream.read(new byte[100], 0, 100);
+		targetStream.close();
 	}
 }
