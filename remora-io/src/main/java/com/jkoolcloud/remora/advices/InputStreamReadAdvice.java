@@ -96,7 +96,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 
 	@Override
 	protected AgentBuilder.Listener getListener() {
-		return new DiscoveryLoggingListener(logger);
+		return new BaseTransformers.TransformationLoggingListener(logger);
 	}
 
 	@Override
