@@ -33,7 +33,6 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-@TransparentAdvice
 public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "InputStreamCloseAdvice";
@@ -58,7 +57,7 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
+		return hasGenericSuperType(named(INTERCEPTING_CLASS[0]));
 	}
 
 	@Override
@@ -81,11 +80,14 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 	 */
 
 	@Advice.OnMethodExit
-	public static void before(@Advice.This InputStream thiz, //
+	public static void after(@Advice.This InputStream thiz, //
 			@Advice.Origin Method method //
 	) {
+		if (logging) {
+			logger.info("Exiting: {} {}", InputStreamCloseAdvice.class.getName(), "after");
+		}
 		try {
-			InputStreamManager.INSTANCE.close(thiz, logging ? logger : null, method).onRead();
+			InputStreamManager.INSTANCE.close(thiz, logging ? logger : null, method);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

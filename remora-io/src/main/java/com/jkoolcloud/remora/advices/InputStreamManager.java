@@ -40,6 +40,7 @@ public enum InputStreamManager {
 
 			ed = BaseTransformers.getEntryDefinition(ed, InputStreamReadAdvice.class, logger);
 			StreamStats streamStats = new StreamStats();
+			availableStreams.put(thiz, ed);
 			availableStreamsEntries.put(ed, streamStats);
 			if (logger != null) {
 				logger.info("Crteatiung the new stream entry: " + ed.getId());
@@ -62,15 +63,16 @@ public enum InputStreamManager {
 			if (ed == null && logger != null) {
 				logger.error("Stream closed but not tracked");
 				doFinally = false;
-			}
-			if (logger != null) {
-				logger.info("Close invoked on stream " + ed.getId());
-			}
-			StreamStats streamStats = availableStreamsEntries.get(ed);
-			ed.addPropertyIfExist("count", streamStats.count);
-			ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+			} else {
+				if (logger != null) {
+					logger.info("Close invoked on stream " + ed.getId());
+				}
+				StreamStats streamStats = availableStreamsEntries.get(ed);
+				ed.addPropertyIfExist("count", streamStats.count);
+				ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
 
-			BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
+				BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
+			}
 		} catch (Throwable t) {
 			BaseTransformers.handleAdviceException(t, InputStreamCloseAdvice.ADVICE_NAME, logger);
 		} finally {

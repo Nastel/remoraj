@@ -16,12 +16,17 @@
 
 package com.jkoolcloud.remora.advices;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Test;
+
+import lt.slabs.remora.MyFileInputStream;
 
 //Enable power mockito if any of classes failing to mock
 //@RunWith(PowerMockRunner.class)
@@ -44,8 +49,9 @@ public class InputStreamReadAdviceTest {
 		fileWriter.close();
 		Path target = Paths.get(tempFile.getAbsolutePath() + "copy");
 		Files.copy(tempFile.toPath(), target);
-		InputStream targetStream = new FileInputStream(target.toFile());
-		targetStream.read(new byte[100], 0, 100);
+		InputStream targetStream = new MyFileInputStream(target);
+		targetStream.read();
 		targetStream.close();
 	}
+
 }

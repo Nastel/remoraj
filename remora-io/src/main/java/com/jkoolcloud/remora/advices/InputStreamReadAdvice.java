@@ -33,7 +33,6 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-@TransparentAdvice
 public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "InputStreamReadAdvice";
@@ -58,7 +57,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
+		return hasGenericSuperType(named(INTERCEPTING_CLASS[0]));
 	}
 
 	@Override
@@ -97,7 +96,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 
 	@Override
 	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
+		return new DiscoveryLoggingListener(logger);
 	}
 
 	@Override
