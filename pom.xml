@@ -132,7 +132,6 @@
         <module>remora-kafka</module>
         <module>remora-ejb3</module>
         <module>remora-spring</module>
-        <module>remora-bank_benchmark</module>
         <module>remora-control</module>
         <module>remora-socket</module>
         <module>remora-io</module>

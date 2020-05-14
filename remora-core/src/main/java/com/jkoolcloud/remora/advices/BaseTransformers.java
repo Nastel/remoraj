@@ -439,4 +439,34 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	}
 
+	public static class DiscoveryLoggingListener extends TransformationLoggingListener {
+
+		public DiscoveryLoggingListener(TaggedLogger logger) {
+			super(logger);
+		}
+
+		@Override
+		public void onDiscovery(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded) {
+			if (logger == null) {
+				System.out.println(
+						format(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module, loaded));
+			} else {
+				logger.info(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module);
+
+			}
+		}
+
+		@Override
+		public void onIgnored(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
+				boolean loaded) {
+			if (logger == null) {
+				System.out.println(format(PREFIX + " IGNORED {} [{}, {}, loaded={}]", typeDescription, classLoader,
+						module, loaded));
+			} else {
+				logger.info(PREFIX + " IGNORED {} [{}, {}, loaded={}]", typeDescription, classLoader, module);
+
+			}
+		}
+	}
+
 }
