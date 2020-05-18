@@ -18,7 +18,7 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
@@ -35,9 +35,9 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "InputStreamReadAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.io.InputStream" };
-	public static String INTERCEPTING_METHOD = "read";
+	public static final String ADVICE_NAME = "OutputStreamWriteAdvice";
+	public static String[] INTERCEPTING_CLASS = { "java.io.OutputStream" };
+	public static String INTERCEPTING_METHOD = "write";
 
 	public static boolean logging = false;
 	public static TaggedLogger logger;
@@ -48,7 +48,7 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD).and(takesArguments(0));
+		return named(INTERCEPTING_METHOD).and(takesArguments(1).and(takesArgument(0, byte.class)));
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(@Advice.This InputStream thiz, //
+	public static void before(@Advice.This OutputStream thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method//
 	) {

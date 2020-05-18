@@ -18,7 +18,7 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
@@ -35,7 +35,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "InputStreamCloseAdvice";
+	public static final String ADVICE_NAME = "OutputStreamCloseAdvice";
 	public static String[] INTERCEPTING_CLASS = { "java.io.InputStream" };
 	public static String INTERCEPTING_METHOD = "close";
 
@@ -80,7 +80,7 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	@Advice.OnMethodExit
-	public static void after(@Advice.This InputStream thiz, //
+	public static void after(@Advice.This OutputStream thiz, //
 			@Advice.Origin Method method //
 	) {
 		if (logging) {

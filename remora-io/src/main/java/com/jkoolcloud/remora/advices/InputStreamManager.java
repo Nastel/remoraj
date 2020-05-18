@@ -62,14 +62,14 @@ public enum InputStreamManager {
 
 	public StreamStats close(InputStream thiz, TaggedLogger logger, Method method) {
 		WeakHashMap<InputStream, EntryDefinition> availableStreams = availableInputStreams;
-		WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
+		WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
 
 		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
 	}
 
 	public StreamStats close(OutputStream thiz, TaggedLogger logger, Method method) {
 		WeakHashMap<OutputStream, EntryDefinition> availableStreams = availableOutputStreams;
-		WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
+		WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
 
 		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
 	}
@@ -83,18 +83,24 @@ public enum InputStreamManager {
 			// if (logging) {
 			// logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 			// }
-			EntryDefinition ed = availableStreams.get(thiz);
-			if (ed == null && logger != null) {
-				logger.error("Stream closed but not tracked");
+			EntryDefinition ed = availableStreams.remove(thiz);
+			if (ed == null) {
+				if (logger != null) {
+					logger.error("Stream closed but not tracked");
+				}
 				doFinally = false;
 			} else {
 				if (logger != null) {
 					logger.info("Close invoked on stream " + ed.getId());
 				}
 
-				StreamStats streamStats = availableStreamsEntries.get(ed);
-				ed.addPropertyIfExist("count", streamStats.count);
-				ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+				StreamStats streamStats = availableStreamsEntries.remove(ed);
+				if (ed != null) {
+					ed.addPropertyIfExist("count", streamStats.count);
+					ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+				} else if (logger != null) {
+					logger.error("Stream closed but found no generated entry");
+				}
 
 				BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
 			}

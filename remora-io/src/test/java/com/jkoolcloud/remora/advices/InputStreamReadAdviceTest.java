@@ -40,6 +40,7 @@ public class InputStreamReadAdviceTest {
 	}
 
 	public static void main(String[] args) throws IOException {
+		System.setProperty("remora.output", "com.jkoolcloud.remora.core.output.SysOutOutput");
 		File tempFile = File.createTempFile("test", "test");
 		FileWriter fileWriter = new FileWriter(tempFile);
 		for (int i = 0; i < 1000; i++) {

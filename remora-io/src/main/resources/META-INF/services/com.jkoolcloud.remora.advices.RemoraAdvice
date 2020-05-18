@@ -1,2 +1,4 @@
 com.jkoolcloud.remora.advices.InputStreamReadAdvice
 com.jkoolcloud.remora.advices.InputStreamCloseAdvice
+com.jkoolcloud.remora.advices.OutputStreamCloseAdvice
+com.jkoolcloud.remora.advices.OutputStreamWriteAdvice
