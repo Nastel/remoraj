@@ -16,15 +16,22 @@
 
 package com.jkoolcloud.remora.advices;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class StreamStats {
-	public long count;
+	public AtomicLong count = new AtomicLong();
 	public long accessTimestamp;
 	public long starttime;
 
-	public void onRead() {
-		count++;
+	public void advanceCount() {
+		count.incrementAndGet();
 
 		accessTimestamp = System.currentTimeMillis();
 	}
 
+	public void advanceCount(int bytes) {
+		count.addAndGet(bytes);
+
+		accessTimestamp = System.currentTimeMillis();
+	}
 }

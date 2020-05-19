@@ -16,7 +16,8 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasGenericSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
@@ -48,7 +49,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD).and(takesArguments(0));
+		return named(INTERCEPTING_METHOD);
 	}
 
 	/**
@@ -87,7 +88,14 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Origin Method method//
 	) {
 		try {
-			InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method).onRead();
+			if (arguments == null || arguments.length == 0) {
+				InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount();
+			} else if (arguments instanceof Object[] && arguments.length == 3) {
+				InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount((int) arguments[2]);
+			} else if (arguments instanceof Object[] && arguments.length == 1) {
+				InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method)
+						.advanceCount(((Object[]) arguments[0]).length);
+			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}
