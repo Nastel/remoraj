@@ -28,6 +28,14 @@
         <tinylog.version>2.0.1</tinylog.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-amavashev2-jkoolcloud</id>
+            <name>amavashev2-jkoolcloud</name>
+            <url>https://api.bintray.com/maven/amavashev2/jkoolcloud/remoraj/;publish=1;override=1</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>net.bytebuddy</groupId>
