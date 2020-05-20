@@ -117,11 +117,60 @@
                     <version>3.7.1</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.1.0</version>
+
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <doctitle>${product.name.hr}</doctitle>
+                    <windowtitle>${product.name.hr}</windowtitle>
+                    <header>Version ${project.version}</header>
+                    <bottom>${product.copyright.html}</bottom>
+                    <show>protected</show>
+                    <use>true</use>
+                    <notree>false</notree>
+                    <nonavbar>false</nonavbar>
+                    <noindex>false</noindex>
+                    <splitindex>true</splitindex>
+                    <author>true</author>
+                    <version>true</version>
+                    <nodeprecatedlist>false</nodeprecatedlist>
+                    <nodeprecated>false</nodeprecated>
+                    <failOnError>false</failOnError>
+                    <doclint>all</doclint>
+                    <skip>${skip.javadoc.pack}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>build-javadocs-module</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <modules>
