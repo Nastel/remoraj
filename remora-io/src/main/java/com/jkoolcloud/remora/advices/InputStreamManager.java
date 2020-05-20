@@ -124,12 +124,15 @@ public enum InputStreamManager {
 			availableStreams.put(thiz, ed);
 			availableStreamsEntries.put(ed, streamStats);
 			if (logger != null) {
-				logger.info("Crteatiung the new stream entry: " + ed.getId());
+				logger.info("Creating the new stream entry: " + ed.getId());
 			}
 			streamStats.starttime = BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal,
 					thiz, method, logger);
 
+		} else {
+			ed = availableStreams.get(thiz);
 		}
+
 		return ed;
 	}
 }
