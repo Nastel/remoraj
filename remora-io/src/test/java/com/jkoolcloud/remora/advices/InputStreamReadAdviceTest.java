@@ -19,14 +19,15 @@ package com.jkoolcloud.remora.advices;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import org.junit.Test;
 
 import lt.slabs.remora.MyFileInputStream;
+import lt.slabs.remora.MyWrappedInputStream;
 
 //Enable power mockito if any of classes failing to mock
 //@RunWith(PowerMockRunner.class)
@@ -43,16 +44,21 @@ public class InputStreamReadAdviceTest {
 		System.setProperty("remora.output", "com.jkoolcloud.remora.core.output.SysOutOutput");
 		File tempFile = File.createTempFile("test", "test");
 		FileWriter fileWriter = new FileWriter(tempFile);
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10; i++) {
 			fileWriter.append("Line\n");
 		}
 		fileWriter.flush();
 		fileWriter.close();
 		Path target = Paths.get(tempFile.getAbsolutePath() + "copy");
 		Files.copy(tempFile.toPath(), target);
-		InputStream targetStream = new MyFileInputStream(target);
-		targetStream.read();
-		targetStream.close();
+
+		Scanner scanner = new Scanner(new MyWrappedInputStream(new MyFileInputStream(target)));
+		while (scanner.hasNextLine()) {
+			String data = scanner.nextLine();
+			System.out.println(data);
+		}
+
+		scanner.close();
 	}
 
 }

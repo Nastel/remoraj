@@ -88,13 +88,16 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Origin Method method//
 	) {
 		try {
+			StreamStats streamStats = InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method);
+			if (streamStats == null) {
+                throw new IllegalStateException("Stream stats is null");
+            }
 			if (arguments == null || arguments.length == 0) {
-				InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount();
+				streamStats.advanceCount();
 			} else if (arguments instanceof Object[] && arguments.length == 3) {
-				InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount((int) arguments[2]);
+				streamStats.advanceCount((int) arguments[2]);
 			} else if (arguments instanceof Object[] && arguments.length == 1) {
-				InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method)
-						.advanceCount(((Object[]) arguments[0]).length);
+				streamStats.advanceCount(((Object[]) arguments[0]).length);
 			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);

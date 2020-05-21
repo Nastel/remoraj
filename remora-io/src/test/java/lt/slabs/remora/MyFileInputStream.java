@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MyFileInputStream extends FileInputStream {
 	public MyFileInputStream(Path target) throws FileNotFoundException {
 		super(target.toFile());
@@ -30,6 +32,18 @@ public class MyFileInputStream extends FileInputStream {
 	public int read() throws IOException {
 		System.out.println("Reading");
 		return super.read();
+	}
+
+	@Override
+	public int read(@NotNull byte[] b) throws IOException {
+		System.out.println("Reading buffer");
+		return super.read(b);
+	}
+
+	@Override
+	public int read(@NotNull byte[] b, int off, int len) throws IOException {
+		System.out.println("Reading buffer " + len);
+		return super.read(b, off, len);
 	}
 
 	@Override

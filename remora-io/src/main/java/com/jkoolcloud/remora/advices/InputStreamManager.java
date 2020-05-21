@@ -94,15 +94,20 @@ public enum InputStreamManager {
 					logger.info("Close invoked on stream " + ed.getId());
 				}
 
-				StreamStats streamStats = availableStreamsEntries.remove(ed);
+				StreamStats streamStats;
+				if (!ed.isChained()) {
+					streamStats = availableStreamsEntries.remove(ed);
+				} else {
+					streamStats = availableStreamsEntries.get(ed);
+				}
 				if (ed != null) {
 					ed.addPropertyIfExist("count", streamStats.count);
 					ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
 				} else if (logger != null) {
 					logger.error("Stream closed but found no generated entry");
 				}
 
-				BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
 			}
 		} catch (Throwable t) {
 			BaseTransformers.handleAdviceException(t, InputStreamManager.class.getSimpleName(), logger);
