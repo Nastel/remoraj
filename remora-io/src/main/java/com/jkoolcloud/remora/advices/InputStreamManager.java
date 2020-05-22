@@ -66,9 +66,9 @@ public enum InputStreamManager {
 		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
 
 		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
+	}
 
-	public StreamStats close(OutputStream	}
- thiz, TaggedLogger logger, Method method) {
+	public StreamStats close(OutputStream thiz, TaggedLogger logger, Method method) {
 		WeakHashMap<OutputStream, EntryDefinition> availableStreams = availableOutputStreams;
 		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
 
