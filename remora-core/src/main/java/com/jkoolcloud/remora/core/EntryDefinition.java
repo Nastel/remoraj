@@ -151,6 +151,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	}
 
 	public void setException(String exception) {
+		finished = true;
 		exit.mode = Mode.EXCEPTION;
 		exit.exception = exception;
 	}

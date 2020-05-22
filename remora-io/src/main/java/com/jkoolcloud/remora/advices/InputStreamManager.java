@@ -126,7 +126,7 @@ public enum InputStreamManager {
 			ed = BaseTransformers.getEntryDefinition(ed, InputStreamReadAdvice.class, logger);
 			availableStreams.put(thiz, ed);
 
-			if (!ed.isChained()) {
+			if (!availableStreamsEntries.containsKey(ed)) {
 				StreamStats streamStats = new StreamStats();
 				if (logger != null) {
 					logger.info("Creating the new stream stats: " + ed.getId());
