@@ -21,6 +21,7 @@ import static com.jkoolcloud.remora.advices.BaseTransformers.doFinally;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
@@ -32,16 +33,16 @@ public enum InputStreamManager {
 
 	INSTANCE;
 
-	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new WeakHashMap<>();
-	WeakHashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new WeakHashMap<>();
+	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new WeakHashMap<>(500);
+	HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new HashMap<>(500);
 
-	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new WeakHashMap<>();
-	WeakHashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new WeakHashMap<>();
+	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new WeakHashMap<>(500);
+	HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
 	public StreamStats get(InputStream thiz, TaggedLogger logger, Method method) {
 
 		WeakHashMap<InputStream, EntryDefinition> availableInputStreams = this.availableInputStreams;
-		WeakHashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = this.availableInputStreamsEntries;
+		HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = this.availableInputStreamsEntries;
 
 		EntryDefinition ed = null;
 		ed = checkForEntryOrCreate(thiz, logger, method, availableInputStreams, availableInputStreamsEntries, ed);
@@ -52,7 +53,7 @@ public enum InputStreamManager {
 	public StreamStats get(OutputStream thiz, TaggedLogger logger, Method method) {
 
 		WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = this.availableOutputStreams;
-		WeakHashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = this.availableOutputStreamsEntries;
+		HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = this.availableOutputStreamsEntries;
 
 		EntryDefinition ed = null;
 		ed = checkForEntryOrCreate(thiz, logger, method, availableOutputStreams, availableOutputStreamsEntries, ed);
@@ -62,21 +63,21 @@ public enum InputStreamManager {
 
 	public StreamStats close(InputStream thiz, TaggedLogger logger, Method method) {
 		WeakHashMap<InputStream, EntryDefinition> availableStreams = availableInputStreams;
-		WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
+		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
 
 		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
-	}
 
-	public StreamStats close(OutputStream thiz, TaggedLogger logger, Method method) {
+	public StreamStats close(OutputStream	}
+ thiz, TaggedLogger logger, Method method) {
 		WeakHashMap<OutputStream, EntryDefinition> availableStreams = availableOutputStreams;
-		WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
+		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
 
 		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
 	}
 
 	@Nullable
 	private static StreamStats closeAndGenerateStats(Object thiz, TaggedLogger logger,
-			WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries,
+			HashMap<EntryDefinition, StreamStats> availableStreamsEntries,
 			WeakHashMap<?, EntryDefinition> availableStreams) {
 		boolean doFinally = true;
 		try {
@@ -93,17 +94,15 @@ public enum InputStreamManager {
 				if (logger != null) {
 					logger.info("Close invoked on stream " + ed.getId());
 				}
-
-				StreamStats streamStats;
-				if (!ed.isChained()) {
-					streamStats = availableStreamsEntries.remove(ed);
-				} else {
-					streamStats = availableStreamsEntries.get(ed);
-				}
 				if (ed != null) {
-					ed.addPropertyIfExist("count", streamStats.count);
-					ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+					StreamStats streamStats = streamStats = availableStreamsEntries.get(ed);
+
 					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
+					if (ed.isFinished()) {
+						availableStreamsEntries.remove(ed);
+						ed.addPropertyIfExist("count", streamStats.count);
+						ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+					}
 				} else if (logger != null) {
 					logger.error("Stream closed but found no generated entry");
 				}
@@ -121,18 +120,25 @@ public enum InputStreamManager {
 
 	private static <T> EntryDefinition checkForEntryOrCreate(T thiz, TaggedLogger logger, Method method,
 			WeakHashMap<T, EntryDefinition> availableStreams,
-			WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed) {
+			HashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed) {
 		if (!availableStreams.containsKey(thiz)) {
 
 			ed = BaseTransformers.getEntryDefinition(ed, InputStreamReadAdvice.class, logger);
-			StreamStats streamStats = new StreamStats();
 			availableStreams.put(thiz, ed);
-			availableStreamsEntries.put(ed, streamStats);
-			if (logger != null) {
-				logger.info("Creating the new stream entry: " + ed.getId());
+
+			if (!ed.isChained()) {
+				StreamStats streamStats = new StreamStats();
+				if (logger != null) {
+					logger.info("Creating the new stream stats: " + ed.getId());
+				}
+				streamStats.starttime = BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal,
+						thiz, method, logger);
+
+				availableStreamsEntries.put(ed, streamStats);
 			}
-			streamStats.starttime = BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal,
-					thiz, method, logger);
+			if (logger != null) {
+				logger.info("Created the new stream entry: " + ed.getId());
+			}
 
 		} else {
 			ed = availableStreams.get(thiz);

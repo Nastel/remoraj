@@ -39,6 +39,7 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	public static String[] INTERCEPTING_CLASS = { "java.io.OutputStream" };
 	public static String INTERCEPTING_METHOD = "close";
 
+	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 

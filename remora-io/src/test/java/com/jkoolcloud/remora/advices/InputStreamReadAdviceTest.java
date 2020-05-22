@@ -59,6 +59,14 @@ public class InputStreamReadAdviceTest {
 		}
 
 		scanner.close();
+
+		Scanner scanner2 = new Scanner(new MyWrappedInputStream(new MyFileInputStream(target)));
+		while (scanner2.hasNextLine()) {
+			String data = scanner2.nextLine();
+			System.out.println(data);
+		}
+
+		scanner2.close();
 	}
 
 }

@@ -40,6 +40,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 	public static String[] INTERCEPTING_CLASS = { "java.io.InputStream" };
 	public static String INTERCEPTING_METHOD = "read";
 
+	@RemoraConfig.Configurable
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
@@ -90,8 +91,8 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 		try {
 			StreamStats streamStats = InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method);
 			if (streamStats == null) {
-                throw new IllegalStateException("Stream stats is null");
-            }
+				throw new IllegalStateException("Stream stats is null");
+			}
 			if (arguments == null || arguments.length == 0) {
 				streamStats.advanceCount();
 			} else if (arguments instanceof Object[] && arguments.length == 3) {
