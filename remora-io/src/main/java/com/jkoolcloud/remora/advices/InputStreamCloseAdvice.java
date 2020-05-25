@@ -21,6 +21,7 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -41,6 +42,9 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
+	@RemoraConfig.Configurable
+	public static List<String> ignoredStreams;
+
 	public static TaggedLogger logger;
 
 	/**
@@ -84,6 +88,9 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 	public static void after(@Advice.This InputStream thiz, //
 			@Advice.Origin Method method //
 	) {
+		if (ignoredStreams != null && ignoredStreams.contains(thiz.getClass().getName())) {
+            return;
+        }
 		if (logging) {
 			logger.info("Exiting: {} {}", InputStreamCloseAdvice.class.getName(), "after");
 		}

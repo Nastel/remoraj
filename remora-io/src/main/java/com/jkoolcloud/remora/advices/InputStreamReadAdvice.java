@@ -22,6 +22,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -42,6 +43,9 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 
 	@RemoraConfig.Configurable
 	public static boolean logging = false;
+	@RemoraConfig.Configurable
+	public static List<String> ignoredStreams;
+
 	public static TaggedLogger logger;
 
 	/**
@@ -89,6 +93,9 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Origin Method method//
 	) {
 		try {
+			if (ignoredStreams != null && ignoredStreams.contains(thiz.getClass().getName())) {
+                return;
+            }
 			StreamStats streamStats = InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method);
 			if (streamStats == null) {
 				throw new IllegalStateException("Stream stats is null");

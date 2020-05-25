@@ -14,27 +14,10 @@
  *  limitations under the License.
  */
 
-package com.jkoolcloud.remora.advices;
+package com.jkoolcloud.remora.takes;
 
-import java.util.concurrent.atomic.AtomicLong;
+import org.takes.Take;
 
-public class StreamStats {
-	public AtomicLong count = new AtomicLong();
-	public long accessTimestamp;
-	public long starttime;
-	public AtomicLong accessCount = new AtomicLong();
-
-	public void advanceCount() {
-		accessCount.incrementAndGet();
-		count.incrementAndGet();
-
-		accessTimestamp = System.currentTimeMillis();
-	}
-
-	public void advanceCount(int bytes) {
-		accessCount.incrementAndGet();
-		count.addAndGet(bytes);
-
-		accessTimestamp = System.currentTimeMillis();
-	}
+public interface PluginTake extends Take {
+	String getEnpointPath();
 }

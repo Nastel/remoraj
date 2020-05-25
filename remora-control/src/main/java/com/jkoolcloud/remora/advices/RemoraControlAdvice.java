@@ -20,12 +20,16 @@ import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.takes.facets.fork.FkMethods;
 import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
@@ -98,20 +102,23 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	protected static void startHttpServer(InetSocketAddress address) throws IOException {
 		Executors.newSingleThreadExecutor().submit(() -> {
 			try {
-				new FtBasic(//
-						new TkFork(//
-								new FkRegex("/", new TkAdviceList()), //
-								new FkRegex("/change", //
-										new TkFork(//
-												new FkMethods("POST", new TkOnce(new TkChange(logger))))),
-								new FkRegex("/stats/(?<advice>[^/]+)", new TKStatistics()), //
-								new FkRegex("/queueStats", new TkQueueStatistics()), //
-								new FkRegex("/threadDump", new TkThreadDump()), //
-								new FkRegex("/gcInfo", new TkGCInfo()), //
-								new FkRegex("/sysInfo", new TkSystemInfo()), //
-								new FkRegex("/heapDump", new TkHeapDump(heapDumpPath))//
+				Fork[] forks = { new FkRegex("/", new TkAdviceList()), //
+						new FkRegex("/change", //
+								new TkFork(//
+										new FkMethods("POST", new TkOnce(new TkChange(logger))))),
+						new FkRegex("/stats/(?<advice>[^/]+)", new TKStatistics()), //
+						new FkRegex("/queueStats", new TkQueueStatistics()), //
+						new FkRegex("/threadDump", new TkThreadDump()), //
+						new FkRegex("/gcInfo", new TkGCInfo()), //
+						new FkRegex("/sysInfo", new TkSystemInfo()), //
+						new FkRegex("/heapDump", new TkHeapDump(heapDumpPath)) };
 
-				), //
+				List<Fork> endpoints = Arrays.asList(forks);
+				ServiceLoader<PluginTake> pluginEndpoints = ServiceLoader.load(PluginTake.class);
+				pluginEndpoints.forEach(
+						pluginEndpoint -> endpoints.add(new FkRegex(pluginEndpoint.getEnpointPath(), pluginEndpoint)));
+
+				new FtBasic(new TkFork(forks),
 
 						address.getPort()).start(Exit.NEVER);
 			} catch (IOException e) {

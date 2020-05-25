@@ -100,8 +100,9 @@ public enum InputStreamManager {
 					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
 					if (ed.isFinished()) {
 						availableStreamsEntries.remove(ed);
-						ed.addPropertyIfExist("count", streamStats.count);
+						ed.addPropertyIfExist("bytesCount", streamStats.count);
 						ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+						ed.addPropertyIfExist("accessCount", streamStats.accessCount);
 					}
 				} else if (logger != null) {
 					logger.error("Stream closed but found no generated entry");
@@ -146,4 +147,22 @@ public enum InputStreamManager {
 
 		return ed;
 	}
+
+	public HashMap<EntryDefinition, StreamStats> getAvailableInputStreamsEntries() {
+		return availableInputStreamsEntries;
+	}
+
+	public HashMap<EntryDefinition, StreamStats> getAvailableOutputStreamsEntries() {
+		return availableOutputStreamsEntries;
+	}
+
+	// For test only
+	public void setAvailableInputStreamsEntries(HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries) {
+		this.availableInputStreamsEntries = availableInputStreamsEntries;
+	}
+
+	public void setAvailableOutputStreamsEntries(HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries) {
+		this.availableOutputStreamsEntries = availableOutputStreamsEntries;
+	}
+
 }
