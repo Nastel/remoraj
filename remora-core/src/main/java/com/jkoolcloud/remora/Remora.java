@@ -153,4 +153,8 @@ public class Remora {
 		return sPkg.getImplementationVersion();
 	}
 
+	public static URLClassLoader getClassLoader() {
+		return Remora.bootLoader;
+	}
+
 }

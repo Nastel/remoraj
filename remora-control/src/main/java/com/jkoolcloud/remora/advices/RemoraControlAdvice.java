@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -60,6 +61,8 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public static int reporterSchedule = 300;
 	@RemoraConfig.Configurable
+	public static int serviceDelay = 240;
+	@RemoraConfig.Configurable
 	public static String heapDumpPath = System.getProperty(Remora.REMORA_PATH, ".") + "/dumps/";
 
 	protected static CountingAdviceListener adviceListener;
@@ -80,7 +83,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			} catch (IOException e) {
 				logger.error("Cannot initialize remora control instance. \n {}", e);
 			}
-		}, 3, TimeUnit.MINUTES);
+		}, serviceDelay, TimeUnit.SECONDS);
 
 		if (adminURL != null) {
 			AdminReporter adminReporter = new AdminReporter(adminURL,
@@ -102,7 +105,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	protected static void startHttpServer(InetSocketAddress address) throws IOException {
 		Executors.newSingleThreadExecutor().submit(() -> {
 			try {
-				Fork[] forks = { new FkRegex("/", new TkAdviceList()), //
+				Fork[] remoraControlEndpoints = { new FkRegex("/", new TkAdviceList()), //
 						new FkRegex("/change", //
 								new TkFork(//
 										new FkMethods("POST", new TkOnce(new TkChange(logger))))),
@@ -113,15 +116,17 @@ public class RemoraControlAdvice implements RemoraAdvice {
 						new FkRegex("/sysInfo", new TkSystemInfo()), //
 						new FkRegex("/heapDump", new TkHeapDump(heapDumpPath)) };
 
-				List<Fork> endpoints = Arrays.asList(forks);
-				ServiceLoader<PluginTake> pluginEndpoints = ServiceLoader.load(PluginTake.class);
+				List<Fork> endpoints = new ArrayList<>(Arrays.asList(remoraControlEndpoints));
+
+				ServiceLoader<PluginTake> pluginEndpoints = ServiceLoader.load(PluginTake.class,
+						Remora.getClassLoader());
 				pluginEndpoints.forEach(
 						pluginEndpoint -> endpoints.add(new FkRegex(pluginEndpoint.getEnpointPath(), pluginEndpoint)));
 
-				new FtBasic(new TkFork(forks),
+				new FtBasic(new TkFork(endpoints),
 
 						address.getPort()).start(Exit.NEVER);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error(e);
 			}
 		});
