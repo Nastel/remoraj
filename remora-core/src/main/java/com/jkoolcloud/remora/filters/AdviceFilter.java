@@ -20,16 +20,16 @@ import java.lang.reflect.Method;
 
 public interface AdviceFilter {
 
-	boolean maches(Object thiz, Method method, Object ... arguments);
+	boolean maches(Object thiz, Method method, Object... arguments);
 
 	Mode getMode();
 
-	default boolean shouldIntercept(Object thiz, Method method, Object ... arguments) {
+	default boolean shouldIntercept(Object thiz, Method method, Object... arguments) {
 		if (getMode().equals(Mode.INCLUDE)) {
 			return maches(thiz, method, arguments);
 		}
 		if (getMode().equals(Mode.EXCLUDE)) {
-			return !maches(thiz, method, arguments));
+			return !maches(thiz, method, arguments);
 		}
 	}
 
