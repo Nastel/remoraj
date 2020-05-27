@@ -31,6 +31,7 @@ public interface AdviceFilter {
 		if (getMode().equals(Mode.EXCLUDE)) {
 			return !maches(thiz, method, arguments);
 		}
+		return true;
 	}
 
 	public enum Mode {
