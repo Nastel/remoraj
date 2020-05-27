@@ -33,7 +33,7 @@ public class TKStreams implements PluginTake {
 			+ "  \"bytes\" : {2,number,#},\n"//
 			+ "  \"lastAccessed\" : {3,number,#},\n" //
 			+ "  \"created\" : {4,number,#},\n"//
-			+ "  \"itterations\": {5,number,#}\n"//
+			+ "  \"iterations\": {5,number,#}\n"//
 			+ "'}'";
 
 	@Override
@@ -41,16 +41,16 @@ public class TKStreams implements PluginTake {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\n");
 
-		sb.append("\t\"totalTreckedInputStreams\": ");
+		sb.append("\t\"totalActiveInputSteams\": ");
 		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreams().size());
 		sb.append(",\n");
-		sb.append("\t\"totalStreamsInputEntries\": ");
+		sb.append("\t\"totalUniqueInputStreams\": ");
 		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreamsEntries().size());
 		sb.append(",\n");
-		sb.append("\t\"totalTrackedOutputStreams\": ");
+		sb.append("\t\"totalActiveOutputSteams\": ");
 		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreams().size());
 		sb.append(",\n");
-		sb.append("\t\"totalStreamsOutputEntries\": ");
+		sb.append("\t\"totalUniqueOutputStreams\": ");
 		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreamsEntries().size());
 		sb.append(",\n");
 		sb.append("\t\"activeStreamsBytesRead\": ");
