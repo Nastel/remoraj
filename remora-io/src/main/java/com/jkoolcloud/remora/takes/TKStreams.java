@@ -30,16 +30,39 @@ public class TKStreams implements PluginTake {
 	public static final String STATS_RENTRY = "'{'\n" //
 			+ "  \"stream\" : \"{0}\",\n"//
 			+ "  \"id\" : \"{1}\",\n"//
-			+ "  \"bytes\" : \"{2}\",\n"//
-			+ "  \"lastAccessed\" : {3},\n" //
-			+ "  \"created\" : {4},\n"//
-			+ "  \"itterations\": {5}\n"//
+			+ "  \"bytes\" : {2,number,#},\n"//
+			+ "  \"lastAccessed\" : {3,number,#},\n" //
+			+ "  \"created\" : {4,number,#},\n"//
+			+ "  \"itterations\": {5,number,#}\n"//
 			+ "'}'";
 
 	@Override
 	public Response act(Request req) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\n");
+
+		sb.append("\t\"totalTreckedInputStreams\": ");
+		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreams().size());
+		sb.append(",\n");
+		sb.append("\t\"totalStreamsInputEntries\": ");
+		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreamsEntries().size());
+		sb.append(",\n");
+		sb.append("\t\"totalTrackedOutputStreams\": ");
+		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreams().size());
+		sb.append(",\n");
+		sb.append("\t\"totalStreamsOutputEntries\": ");
+		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreamsEntries().size());
+		sb.append(",\n");
+		sb.append("\t\"activeStreamsBytesRead\": ");
+		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreamsEntries().values().stream()
+
+				.mapToLong(value -> value.count.get()).sum());
+		sb.append(",\n");
+		sb.append("\t\"activeStreamsBytesWrite\": ");
+		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreamsEntries().values().stream()
+				.mapToLong(value -> value.count.get()).sum());
+		sb.append(",\n");
+
 		sb.append("\t\"activeInputStreams\":");
 
 		sb.append("\t[\n");

@@ -165,4 +165,11 @@ public enum InputStreamManager {
 		this.availableOutputStreamsEntries = availableOutputStreamsEntries;
 	}
 
+	public WeakHashMap<InputStream, EntryDefinition> getAvailableInputStreams() {
+		return availableInputStreams;
+	}
+
+	public WeakHashMap<OutputStream, EntryDefinition> getAvailableOutputStreams() {
+		return availableOutputStreams;
+	}
 }
