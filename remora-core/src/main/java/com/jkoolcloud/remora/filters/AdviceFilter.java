@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.jkoolcloud.remora;
+package com.jkoolcloud.remora.filters;
 
 import java.lang.reflect.Method;
 
