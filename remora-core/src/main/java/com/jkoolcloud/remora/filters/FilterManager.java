@@ -16,26 +16,19 @@
 
 package com.jkoolcloud.remora.filters;
 
-import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface AdviceFilter {
+public enum FilterManager {
+	INSTANCE;
 
-	boolean maches(Object thiz, Method method, Object... arguments);
+	Map<String, AdviceFilter> filters = new HashMap<>(10);
 
-	Mode getMode();
-
-	default boolean intercept(Object thiz, Method method, Object... arguments) {
-		if (getMode().equals(Mode.INCLUDE)) {
-			return maches(thiz, method, arguments);
-		}
-		if (getMode().equals(Mode.EXCLUDE)) {
-			return !maches(thiz, method, arguments);
-		}
-		return true;
+	public void add(String filterName, AdviceFilter filter) {
+		filters.put(filterName, filter);
 	}
 
-	enum Mode {
-		INCLUDE, EXCLUDE
+	public AdviceFilter get(String filterName) {
+		return filters.get(filterName);
 	}
-
 }

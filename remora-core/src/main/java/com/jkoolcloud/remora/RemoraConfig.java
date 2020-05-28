@@ -33,10 +33,15 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.jkoolcloud.remora.filters.AdviceFilter;
+import com.jkoolcloud.remora.filters.FilterManager;
+
 public enum RemoraConfig {
 	INSTANCE;
 
 	public static final String REMORA_PROPERTIES_FILE = "/config/remora.properties";
+	public static final String PREFIX = "filter.";
+	public static final String SUFFIX = ".type";
 
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
@@ -128,6 +133,43 @@ public enum RemoraConfig {
 			// logger.error("Failed loading properties file");
 			// logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e));
 		}
+	}
+
+	protected void configureFilters() {
+
+		List<String> filterNames = config.entrySet().stream()
+				.filter(property -> property.getKey().toString().startsWith(PREFIX)
+						&& property.getKey().toString().endsWith(SUFFIX))
+				.map(property -> {
+					String s = property.getKey().toString();
+					return s.substring(PREFIX.length(), s.length() - SUFFIX.length());
+				}).collect(Collectors.toList());
+		filterNames.forEach(filterName -> {
+			try {
+				String filterClass = config.getProperty(PREFIX + filterName + SUFFIX);
+				Class<?> aClass = Class.forName(filterClass);
+				AdviceFilter adviceFilter = (AdviceFilter) aClass.newInstance();
+
+				for (Field field : aClass.getFields()) {
+					if (field.isAnnotationPresent(Configurable.class)) {
+						String propValue = config.getProperty(PREFIX + filterName + "." + field.getName());
+						if (propValue != null) {
+							Object appliedValue = getAppliedValue(field, propValue);
+							field.set(adviceFilter, appliedValue);
+						}
+
+					}
+				}
+				FilterManager.INSTANCE.add(filterName, adviceFilter);
+
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

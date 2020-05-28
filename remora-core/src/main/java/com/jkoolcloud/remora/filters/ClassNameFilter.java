@@ -17,25 +17,24 @@
 package com.jkoolcloud.remora.filters;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
-public interface AdviceFilter {
+import com.jkoolcloud.remora.RemoraConfig;
 
-	boolean maches(Object thiz, Method method, Object... arguments);
+public class ClassNameFilter implements AdviceFilter {
 
-	Mode getMode();
+	@RemoraConfig.Configurable
+	public List<String> classNames;
+	@RemoraConfig.Configurable
+	public Mode mode = Mode.EXCLUDE;
 
-	default boolean intercept(Object thiz, Method method, Object... arguments) {
-		if (getMode().equals(Mode.INCLUDE)) {
-			return maches(thiz, method, arguments);
-		}
-		if (getMode().equals(Mode.EXCLUDE)) {
-			return !maches(thiz, method, arguments);
-		}
-		return true;
+	@Override
+	public boolean maches(Object thiz, Method method, Object... arguments) {
+		return classNames.contains(thiz.getClass().getName());
 	}
 
-	enum Mode {
-		INCLUDE, EXCLUDE
+	@Override
+	public Mode getMode() {
+		return mode;
 	}
-
 }

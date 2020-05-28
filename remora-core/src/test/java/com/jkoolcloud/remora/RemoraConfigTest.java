@@ -29,6 +29,9 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import com.jkoolcloud.remora.filters.AdviceFilter;
+import com.jkoolcloud.remora.filters.FilterManager;
+
 public class RemoraConfigTest {
 
 	private Path remoraTempDir;
@@ -162,6 +165,28 @@ public class RemoraConfigTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void configFilters() throws Exception {
+		Properties properties = new Properties() {
+			{
+				put("filter.myDefinedFilter.type", "com.jkoolcloud.remora.filters.ClassNameFilter");
+				put("filter.myDefinedFilter.mode", "EXCLUDE");
+				put("filter.myDefinedFilter.classes", "java.net.SocketInputStream");
+			}
+		};
+		prepareConfigFile(properties);
+		TestForListConfigrableSuperClass test = new TestForListConfigrableSuperClass();
+		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
+		RemoraConfig.INSTANCE.configureFilters();
+		AdviceFilter myDefinedFilter = FilterManager.INSTANCE.get("myDefinedFilter");
+
+		assertNotNull(myDefinedFilter);
+		assertEquals(myDefinedFilter.getMode(), AdviceFilter.Mode.EXCLUDE);
+		// assertNotNull("Configurring field failed", test.testField);
+		// assertNotNull("Logging field failed", TestForListConfigrable.logging);
+		// assertEquals("Not all of expected list values parsed", 3, test.testField.size());
 	}
 
 }

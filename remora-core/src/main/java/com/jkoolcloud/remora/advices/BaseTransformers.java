@@ -31,6 +31,7 @@ import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.output.OutputManager;
+import com.jkoolcloud.remora.filters.AdviceFilter;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -55,6 +56,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public boolean sendStackTrace;
 	@RemoraConfig.Configurable
 	public boolean enabled = true;
+	@RemoraConfig.Configurable
+	public List<AdviceFilter> filters = new ArrayList<>(10);
 
 	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
