@@ -76,4 +76,22 @@ Each advice field annotated with `@RemoraConfig.Configurable` can be changed eit
 These properties should be static as advices intercept methods are static.
 Common properties i.e. "sendStackTrace" is in base advice class, these properties are *not static*. State of advice is managed in `AdviceManager` instance.
 
+## Filters
+
+One can extend the com.jkoolcloud.remora.AdviceFilter interface to create a filter.
+
+All fields marked  with @RemoraConfigurable will be filled from properties file.
+
+For a filter you need to override `matches` method, matches should return true if a filter maches. Method `matches` has a property `thiz` with a reference for intercepted object.
+
+Filter has to modes `INCLUDE` and `EXCLUDE`, each advice calls default filters method `shouldInclude` witch determine, by the mode set, if the intercept should be processed further. 
+
+The `maches()` gets a reference for object intercepted, method and arguments provided.
+
+The provided filters are: 
+
+ClassFilter - regex class name filter.
+ParameterFilter - gets a field or method result for intercepted classes using reflection, and checks against the provided value.
+...
+
 

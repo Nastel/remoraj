@@ -187,3 +187,26 @@ Each advice creates it own logging file. You can find all files in your remora's
 # Supported Analytics Platforms
 * [jKool](https://www.jkoolcloud.com/) -- SaaS platform for analyzing high velocity machine data.
 * [Nastel XRay](https://www.nastel.com/nastel-xray/) -- AIOps & transaction tracking. Supports SaaS/On-prem/Cloud.
+
+
+#Filters
+Advices can have filters. You configure the filter by defining one in remora.properties.
+
+```
+<prefix for filter definition - filter>.<unique filter name>.<filter property>
+```
+for example:
+```
+filter.myDefinedFilter.type=com.jkoolcloud.remora.filters.ClassFilter
+filter.myDefinedFilter.mode=INCLUDE/EXCLUDE
+filter.myDefinedFilter.classes=java.net.SocketInputStream
+```
+to apply the filter(s) to the advice, add as advice property:
+
+```
+com.jkoolcloud.remora.advices.<advice name>.filters=<unique filter name>;<unique filter name2>;<unique filter name3>
+```
+
+
+
+
