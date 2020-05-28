@@ -9,8 +9,7 @@
     <packaging>pom</packaging>
 
     <name>remora</name>
-    <!-- FIXME change it to the project's website -->
-    <url>https://github.com/Nastel/</url>
+    <url>https://github.com/Nastel/remoraj/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,11 +20,12 @@
 
         <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
-        <byte.buddy.version>1.10.6</byte.buddy.version>
+        <byte.buddy.version>1.10.10</byte.buddy.version>
         <!--Versions 5.17.17 up to 5.17.43 is not compatible with RemoraJ!!!-->
         <chronicle.version>5.19.16</chronicle.version>
         <powermock.version>2.0.5</powermock.version>
         <tinylog.version>2.0.1</tinylog.version>
+        <skip.javadoc.pack>true</skip.javadoc.pack>
     </properties>
 
     <distributionManagement>
@@ -135,6 +135,23 @@
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <!--                    <configuration>-->
+                    <!--                        <skipSource>${skip.source.pack}</skipSource>-->
+                    <!--                    </configuration>-->
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugins>
         </pluginManagement>
         <plugins>
