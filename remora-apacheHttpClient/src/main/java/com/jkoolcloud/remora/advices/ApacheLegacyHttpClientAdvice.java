@@ -101,7 +101,7 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!getAdviceInstance(ApacheLegacyHttpClientAdvice.class).enabled) {
+			if (!intercept(ApacheLegacyHttpClientAdvice.class, thiz, method, route, request)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
@@ -149,7 +149,7 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(ApacheLegacyHttpClientAdvice.class).enabled) {
+			if (!intercept(ApacheLegacyHttpClientAdvice.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

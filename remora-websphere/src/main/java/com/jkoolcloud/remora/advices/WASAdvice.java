@@ -105,7 +105,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
-			if (!getAdviceInstance(WASAdvice.class).enabled) {
+			if (!intercept(WASAdvice.class, thiz, method, new Object[] { req, resp })) {
 				return;
 			}
 			if (logging) {
@@ -176,7 +176,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-		if (!getAdviceInstance(WASAdvice.class).enabled) {
+		if (!intercept(WASAdvice.class, obj, method, new Object[] { req, resp })) {
 			return;
 		}
 		boolean doFinally = true;

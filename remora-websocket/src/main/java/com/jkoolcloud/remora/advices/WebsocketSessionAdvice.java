@@ -102,7 +102,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!getAdviceInstance(WebsocketSessionAdvice.class).enabled) {
+			if (!intercept(WebsocketSessionAdvice.class, thiz, method, args)) {
 				return;
 			}
 			MessageHandler handler = null;
@@ -131,7 +131,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method) {
-		if (!getAdviceInstance(WebsocketSessionAdvice.class).enabled) {
+		if (!intercept(WebsocketSessionAdvice.class, obj, method)) {
 			return;
 		}
 	}

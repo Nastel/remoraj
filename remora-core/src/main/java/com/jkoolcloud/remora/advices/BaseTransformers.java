@@ -325,12 +325,25 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return ad;
 	}
 
-	public static <T extends BaseTransformers> T getAdviceInstance(Class<T> tClass) {
+	private static <T extends BaseTransformers> T getAdviceInstance(Class<T> tClass) {
 		try {
 			return (T) AdviceRegistry.INSTANCE.getAdviceByName(tClass.getSimpleName());
 		} catch (ClassNotFoundException e) {
 			return (T) AdviceRegistry.INSTANCE.getRegisteredAdvices().get(0);
 		}
+	}
+
+	public static boolean intercept(Class<? extends BaseTransformers> tClass, Object thiz, Method method,
+			Object... arguments) {
+		if (!getAdviceInstance(tClass).enabled) {
+			return false;
+		}
+		for (AdviceFilter filter : getAdviceInstance(tClass).filters) {
+			if (!filter.intercept(thiz, method, arguments)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	protected abstract AgentBuilder.Listener getListener();

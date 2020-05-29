@@ -82,7 +82,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!getAdviceInstance(SocketAdvice.class).enabled) {
+			if (!intercept(SocketAdvice.class, thiz, method, socketAddress, timeout)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, SocketAdvice.class, logging ? logger : null);
@@ -136,7 +136,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(SocketAdvice.class).enabled) {
+			if (!intercept(SocketAdvice.class, obj, method, socketAddress, timeout)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

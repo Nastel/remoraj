@@ -19,6 +19,7 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -79,7 +80,9 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodEnter
-	public static void before(// @Advice.This Object thiz, //
+	public static void before(@Advice.This Object thiz, //
+			@Advice.Origin Method method, //
+			@Advice.AllArguments Object[] arguments, //
 			@Advice.Argument(0) String topic, //
 			@Advice.Argument(1) int partition, //
 			@Advice.Argument(2) long offset, //
@@ -96,7 +99,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	//
 	{
 		try {
-			if (!getAdviceInstance(KafkaConsumerAdvice.class).enabled) {
+			if (!intercept(KafkaConsumerAdvice.class, thiz, method, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
@@ -137,13 +140,16 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	 */
 
 	@Advice.OnMethodExit
-	public static void after(@Advice.This Object thiz, @Advice.Local("ed") EntryDefinition ed, //
+	public static void after(@Advice.This Object thiz, //
+			@Advice.Origin Method method, //
+			@Advice.AllArguments Object[] arguments, //
+			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 
 		try {
 
-			if (!getAdviceInstance(KafkaConsumerAdvice.class).enabled) {
+			if (!intercept(KafkaConsumerAdvice.class, thiz, method, arguments)) {
 				return;
 			}
 			if (logging) {

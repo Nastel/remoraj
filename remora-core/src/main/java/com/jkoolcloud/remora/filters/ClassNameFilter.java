@@ -17,6 +17,7 @@
 package com.jkoolcloud.remora.filters;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -24,13 +25,20 @@ import com.jkoolcloud.remora.RemoraConfig;
 public class ClassNameFilter implements AdviceFilter {
 
 	@RemoraConfig.Configurable
-	public List<String> classNames;
+	public List<String> classNames = new ArrayList<>();
 	@RemoraConfig.Configurable
 	public Mode mode = Mode.EXCLUDE;
+	@RemoraConfig.Configurable
+	public boolean regex = false;
 
 	@Override
 	public boolean maches(Object thiz, Method method, Object... arguments) {
-		return classNames.contains(thiz.getClass().getName());
+		if (regex) {
+			return classNames.stream().filter(query -> thiz.getClass().getName().matches(query)).findFirst()
+					.isPresent();
+		} else {
+			return classNames.contains(thiz.getClass().getName());
+		}
 	}
 
 	@Override

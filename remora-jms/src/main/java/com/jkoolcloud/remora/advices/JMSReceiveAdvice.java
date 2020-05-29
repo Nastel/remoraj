@@ -103,7 +103,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger) // ) //
 	{
 		try {
-			if (!getAdviceInstance(JMSReceiveAdvice.class).enabled) {
+			if (!intercept(JMSReceiveAdvice.class, thiz, method, arguments)) {
 				return;
 			}
 			if (logging) {
@@ -159,7 +159,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		boolean doFinnaly = true;
 		try {
-			if (!getAdviceInstance(JMSReceiveAdvice.class).enabled) {
+			if (!intercept(JMSReceiveAdvice.class, obj, method, arguments)) {
 				return;
 			}
 			if (logging) {

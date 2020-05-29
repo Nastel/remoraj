@@ -101,7 +101,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-            if (!getAdviceInstance(${adviceClassName}Advice.class).enabled) {
+            if (!intercept(${adviceClassName}Advice.class, thiz, method, arguments)) {
                 return;
             }
 			ed = getEntryDefinition(ed, ${adviceClassName}Advice.class, logging ? logger : null);;
@@ -138,7 +138,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-		    if (!getAdviceInstance(${adviceClassName}Advice.class).enabled) {
+		    if (!intercept(${adviceClassName}Advice.class, thiz, method, arguments)) {
              return;
             }
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

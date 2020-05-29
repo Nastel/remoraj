@@ -100,7 +100,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 
 	) {
 		try {
-			if (!getAdviceInstance(IBMAdapterRSA.class).enabled) {
+			if (!intercept(IBMAdapterRSA.class, thiz, method, arguments)) {
 				return;
 			}
 			if (logging) {
@@ -152,7 +152,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(IBMAdapterRSA.class).enabled) {
+			if (!intercept(IBMAdapterRSA.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

@@ -75,7 +75,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("startTime") long starttime) //
 	{
 		try {
-			if (!getAdviceInstance(SimpleTestConstructor.class).enabled) {
+			if (!intercept(SimpleTestConstructor.class, thiz, method, args)) {
 				return;
 			}
 			System.out.println("BEFORE METHOD CALL");
@@ -117,7 +117,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(SimpleTestConstructor.class).enabled) {
+			if (!intercept(SimpleTestConstructor.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

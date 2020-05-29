@@ -175,7 +175,7 @@ public class RemoraConfigTest {
 	}
 
 	@Test
-	public void configFilters() throws Exception {
+	public void testConfigFilters() throws Exception {
 		Properties properties = new Properties() {
 			{
 				put("filter.myDefinedFilter.type", "com.jkoolcloud.remora.filters.ClassNameFilter");
@@ -185,7 +185,6 @@ public class RemoraConfigTest {
 			}
 		};
 		prepareConfigFile(properties);
-		TestForListConfigrableSuperClass test = new TestForListConfigrableSuperClass();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
 		List<AdviceFilter> filterList = FilterManager.INSTANCE.get(Collections.singletonList("myDefinedFilter"));
 		assertEquals(1, filterList.size());
@@ -198,9 +197,7 @@ public class RemoraConfigTest {
 
 		assertEquals(1, testObject.filters.size());
 		assertEquals(AdviceFilter.Mode.EXCLUDE, testObject.filters.get(0).getMode());
-		// assertNotNull("Configurring field failed", test.testField);
-		// assertNotNull("Logging field failed", TestForListConfigrable.logging);
-		// assertEquals("Not all of expected list values parsed", 3, test.testField.size());
+
 	}
 
 }

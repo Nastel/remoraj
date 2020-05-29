@@ -87,7 +87,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!getAdviceInstance(JMSSendAdvice.class).enabled) {
+			if (!intercept(JMSSendAdvice.class, thiz, method, arguments)) {
 				return;
 			}
 			if (logging) {
@@ -147,7 +147,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(JMSSendAdvice.class).enabled) {
+			if (!intercept(JMSSendAdvice.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) // noinspection Duplicates

@@ -95,7 +95,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!getAdviceInstance(SpringExceptionAdvice.class).enabled) {
+			if (!intercept(SpringExceptionAdvice.class, thiz, method, exception)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, SpringExceptionAdvice.class, logging ? logger : null);
@@ -135,7 +135,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(SpringExceptionAdvice.class).enabled) {
+			if (!intercept(SpringExceptionAdvice.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

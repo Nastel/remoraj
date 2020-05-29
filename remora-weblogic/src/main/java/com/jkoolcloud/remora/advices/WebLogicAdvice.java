@@ -98,7 +98,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!getAdviceInstance(WebLogicAdvice.class).enabled) {
+			if (!intercept(WebLogicAdvice.class, thiz, method, arguments)) {
 				return;
 			}
 			if (logging) {
@@ -155,7 +155,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(WebLogicAdvice.class).enabled) {
+			if (!intercept(WebLogicAdvice.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

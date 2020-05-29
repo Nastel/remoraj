@@ -84,6 +84,9 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	public static void after(@Advice.This OutputStream thiz, //
 			@Advice.Origin Method method //
 	) {
+		if (!intercept(OutputStreamCloseAdvice.class, thiz, method)) {
+			return;
+		}
 		if (logging) {
 			logger.info("Exiting: {} {}", OutputStreamCloseAdvice.class.getName(), "after");
 		}

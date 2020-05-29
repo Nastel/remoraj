@@ -72,7 +72,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("starttime") long starttime) //
 	{
 		try {
-			if (!getAdviceInstance(SimpleTest.class).enabled) {
+			if (!intercept(SimpleTest.class, thiz, method, arguments)) {
 				return;
 			}
 
@@ -96,7 +96,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("starttime") long starttime) {
 		try {
-			if (!getAdviceInstance(SimpleTest.class).enabled) {
+			if (!intercept(SimpleTest.class, obj, method)) {
 				return;
 			}
 			System.out.println("###AFTER METHOD CALL");

@@ -82,7 +82,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!getAdviceInstance(WebsocketEndpointAdvice.class).enabled) {
+			if (!intercept(WebsocketEndpointAdvice.class, thiz, method, args)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, logging ? logger : null);
@@ -172,7 +172,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!getAdviceInstance(WebsocketEndpointAdvice.class).enabled) {
+			if (!intercept(WebsocketEndpointAdvice.class, obj, method, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
