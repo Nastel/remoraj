@@ -26,6 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -89,7 +90,13 @@ public enum RemoraConfig {
 					appliedValue = configValue;
 					break;
 				case "java.util.List":
-					appliedValue = getList(configValue);
+					if (field.getGenericType() instanceof ParameterizedType
+							&& ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
+									.equals(AdviceFilter.class)) {
+						appliedValue = FilterManager.INSTANCE.get(getList(configValue));
+					} else {
+						appliedValue = getList(configValue);
+					}
 					break;
 				case "boolean":
 					appliedValue = Boolean.parseBoolean(configValue);
@@ -133,6 +140,7 @@ public enum RemoraConfig {
 			// logger.error("Failed loading properties file");
 			// logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e));
 		}
+		configureFilters();
 	}
 
 	protected void configureFilters() {

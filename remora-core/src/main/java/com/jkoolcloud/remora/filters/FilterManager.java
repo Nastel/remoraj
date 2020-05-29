@@ -17,12 +17,19 @@
 package com.jkoolcloud.remora.filters;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum FilterManager {
 	INSTANCE;
 
 	Map<String, AdviceFilter> filters = new HashMap<>(10);
+
+	public List<AdviceFilter> get(List<?> list) {
+		return filters.entrySet().stream().filter(entry -> list.contains(entry.getKey())).map(entry -> entry.getValue())
+				.collect(Collectors.toList());
+	}
 
 	public void add(String filterName, AdviceFilter filter) {
 		filters.put(filterName, filter);

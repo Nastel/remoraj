@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -60,6 +62,11 @@ public class RemoraConfigTest {
 	public static class TestForEnumConfigurable {
 		@RemoraConfig.Configurable
 		TestEnum testField = TestEnum.THREE;
+	}
+
+	public static class TestForFilters {
+		@RemoraConfig.Configurable
+		List<AdviceFilter> filters = new ArrayList<>();
 	}
 
 	public static class TestForListConfigrableSuperClass extends TestForListConfigrable {
@@ -174,16 +181,23 @@ public class RemoraConfigTest {
 				put("filter.myDefinedFilter.type", "com.jkoolcloud.remora.filters.ClassNameFilter");
 				put("filter.myDefinedFilter.mode", "EXCLUDE");
 				put("filter.myDefinedFilter.classes", "java.net.SocketInputStream");
+				put(TestForFilters.class.getName() + ".filters", "myDefinedFilter");
 			}
 		};
 		prepareConfigFile(properties);
 		TestForListConfigrableSuperClass test = new TestForListConfigrableSuperClass();
 		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
-		RemoraConfig.INSTANCE.configureFilters();
-		AdviceFilter myDefinedFilter = FilterManager.INSTANCE.get("myDefinedFilter");
-
+		List<AdviceFilter> filterList = FilterManager.INSTANCE.get(Collections.singletonList("myDefinedFilter"));
+		assertEquals(1, filterList.size());
+		AdviceFilter myDefinedFilter = filterList.get(0);
 		assertNotNull(myDefinedFilter);
 		assertEquals(myDefinedFilter.getMode(), AdviceFilter.Mode.EXCLUDE);
+
+		TestForFilters testObject = new TestForFilters();
+		RemoraConfig.configure(testObject);
+
+		assertEquals(1, testObject.filters.size());
+		assertEquals(AdviceFilter.Mode.EXCLUDE, testObject.filters.get(0).getMode());
 		// assertNotNull("Configurring field failed", test.testField);
 		// assertNotNull("Logging field failed", TestForListConfigrable.logging);
 		// assertEquals("Not all of expected list values parsed", 3, test.testField.size());
