@@ -171,6 +171,23 @@ There are several trace outputs available below:
 
 File system queue is created only with `com.jkoolcloud.remora.core.output.ChronicleOutput`. Set system property (`java -D`) `remora.output` with the full class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`) of the trace output class.
 
+## Advice Trace Filters
+Advices can have trace filters. Filters determine which trace are include vs. excluded. You configure the filter by defining one in `remora.properties`.
+```properties
+<prefix for filter definition - filter>.<unique filter name>.<filter property>
+```
+for example:
+```properties
+filter.myDefinedFilter.type=com.jkoolcloud.remora.filters.ClassFilter
+filter.myDefinedFilter.mode=INCLUDE/EXCLUDE
+filter.myDefinedFilter.classes=java.net.SocketInputStream
+```
+to apply the filter(s) to advice, add as `advice` property:
+
+```
+com.jkoolcloud.remora.advices.<advice name>.filters=<unique filter name>;<unique filter name2>;<unique filter name3>
+```
+
 # Running Streams Agent
 
 Once the Remora Java Agent is running and the Streams Agent configured you can run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)` to start the Streams Agent and begin forwarding java traces to your trace output.
@@ -187,26 +204,3 @@ Each advice creates it own logging file. You can find all files in your remora's
 # Supported Analytics Platforms
 * [jKool](https://www.jkoolcloud.com/) -- SaaS platform for analyzing high velocity machine data.
 * [Nastel XRay](https://www.nastel.com/nastel-xray/) -- AIOps & transaction tracking. Supports SaaS/On-prem/Cloud.
-
-
-#Filters
-Advices can have filters. You configure the filter by defining one in remora.properties.
-
-```
-<prefix for filter definition - filter>.<unique filter name>.<filter property>
-```
-for example:
-```
-filter.myDefinedFilter.type=com.jkoolcloud.remora.filters.ClassFilter
-filter.myDefinedFilter.mode=INCLUDE/EXCLUDE
-filter.myDefinedFilter.classes=java.net.SocketInputStream
-```
-to apply the filter(s) to the advice, add as advice property:
-
-```
-com.jkoolcloud.remora.advices.<advice name>.filters=<unique filter name>;<unique filter name2>;<unique filter name3>
-```
-
-
-
-
