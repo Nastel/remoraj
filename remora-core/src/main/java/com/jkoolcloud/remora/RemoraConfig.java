@@ -101,6 +101,10 @@ public enum RemoraConfig {
 				case "boolean":
 					appliedValue = Boolean.parseBoolean(configValue);
 					break;
+
+				case "int":
+					appliedValue = Integer.parseInt(configValue);
+					break;
 				case "default":
 					// logger.info("Unsupported property");
 

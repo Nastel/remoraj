@@ -109,7 +109,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			if (stackThreadLocal != null) {
 				CallStack<EntryDefinition> stack = stackThreadLocal.get();
 				if (stack == null) {
-					stack = new CallStack<>(logger);
+					stack = new CallStack<>(logger, BaseTransformers.callStackLimit);
 					stackThreadLocal.set(stack);
 				}
 				try {

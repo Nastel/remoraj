@@ -28,9 +28,11 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 	private String application = null;
 	private String server = null;
 	private final String stackCorrelator;
+	private final int limit;
 
-	public CallStack(TaggedLogger logger) {
+	public CallStack(TaggedLogger logger, int limit) {
 		this.logger = logger;
+		this.limit = limit;
 		stackCorrelator = JUGFactoryImpl.newUUID();
 	}
 
@@ -41,6 +43,13 @@ public class CallStack<T> extends Stack<EntryDefinition> {
 		// return item;
 		//
 		// }
+		if (size() >= limit) {
+			if (logger != null) {
+				logger.error("Stack limit reached: {}, {} : {}", (size() + 1), item.getAdviceClass(), item.getId());
+			}
+			return null;
+
+		}
 
 		if (logger != null) {
 			logger.info("Stack push: {}, {} : {}", (size() + 1), item.getAdviceClass(), item.getId());

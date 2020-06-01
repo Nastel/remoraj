@@ -49,11 +49,16 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	private static final String ADVICE_NAME = "GENERAL";
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;
+	@RemoraConfig.Configurable
+	public static int callStackLimit = 100;
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public boolean load = true;
 
 	@RemoraConfig.Configurable
 	public boolean sendStackTrace;
+	@RemoraConfig.Configurable
+	private static int maxStackTraceElements = 30;
+
 	@RemoraConfig.Configurable
 	public boolean enabled = true;
 	@RemoraConfig.Configurable
@@ -66,9 +71,6 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public static boolean checkCallRepeats = true;
 
 	public static List<AdviceListener> listeners = new ArrayList<>(5);
-
-	@RemoraConfig.Configurable
-	private static int maxStackTraceElements = 30;
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
@@ -170,7 +172,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 			if (stackThreadLocal != null) {
 				if (stackThreadLocal.get() == null) {
-					CallStack<EntryDefinition> definitions = new CallStack<>(logger);
+					CallStack<EntryDefinition> definitions = new CallStack<>(logger, callStackLimit);
 					stackThreadLocal.set(definitions);
 				}
 				stackThreadLocal.get().push(entryDefinition);
