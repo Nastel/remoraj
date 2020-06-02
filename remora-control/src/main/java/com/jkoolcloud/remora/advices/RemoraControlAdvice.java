@@ -114,6 +114,7 @@ public class RemoraControlAdvice implements RemoraAdvice {
 						new FkRegex("/threadDump", new TkThreadDump()), //
 						new FkRegex("/gcInfo", new TkGCInfo()), //
 						new FkRegex("/sysInfo", new TkSystemInfo()), //
+						new FkRegex("/filters", new TKFilters()), //
 						new FkRegex("/heapDump", new TkHeapDump(heapDumpPath)) };
 
 				List<Fork> endpoints = new ArrayList<>(Arrays.asList(remoraControlEndpoints));

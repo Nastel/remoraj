@@ -40,16 +40,16 @@ public class TkChangeTest {
 		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
 		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
 		TkAdviceList tkAdviceList = new TkAdviceList();
-		String jsonInString = TkChange.getBody(tkAdviceList.act(new RqFake()).body());
+		String jsonInString = TakesUtils.getBody(tkAdviceList.act(new RqFake()).body());
 		JsonNode jsonNode = new ObjectMapper().readTree(jsonInString);
 		System.out.println(jsonInString);
 	}
 
 	@Test
 	public void testgetValueForKey() throws ParseException {
-		assertEquals("Advice1", TkChange.getValueForKey("advice", TEST_BODY));
-		assertEquals("test", TkChange.getValueForKey("property", TEST_BODY));
-		assertEquals("test", TkChange.getValueForKey("value", TEST_BODY));
+		assertEquals("Advice1", TakesUtils.getValueForKey("advice", TEST_BODY));
+		assertEquals("test", TakesUtils.getValueForKey("property", TEST_BODY));
+		assertEquals("test", TakesUtils.getValueForKey("value", TEST_BODY));
 	}
 
 }

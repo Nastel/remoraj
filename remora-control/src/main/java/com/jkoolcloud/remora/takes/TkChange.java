@@ -16,17 +16,10 @@
 
 package com.jkoolcloud.remora.takes;
 
-import static java.text.MessageFormat.format;
+import static com.jkoolcloud.remora.takes.TakesUtils.getValueForKey;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -48,36 +41,12 @@ public class TkChange implements Take {
 
 	@Override
 	public Response act(Request req) throws Exception {
-		String body = getBody(req.body());
+		String body = TakesUtils.getBody(req.body());
 		String adviceName = getValueForKey("advice", body);
 		String property = getValueForKey("property", body);
 		String value = getValueForKey("value", body);
 
 		return new RsText(applyChanges(adviceName, property, value));
-	}
-
-	@NotNull
-	protected static String getBody(InputStream t) throws IOException {
-		StringBuilder bodySB = new StringBuilder();
-		try (InputStreamReader reader = new InputStreamReader(t)) {
-			char[] buffer = new char[256];
-			int read;
-			while ((read = reader.read(buffer)) != -1) {
-				bodySB.append(buffer, 0, read);
-			}
-		}
-		return bodySB.toString();
-	}
-
-	protected static String getValueForKey(String key, String body) throws ParseException {
-		Pattern pattern = Pattern.compile(String.format("\"%s\"\\s*:\\s*\"((?=[ -~])[^\"]+)\"", key));
-		Matcher matcher = pattern.matcher(body);
-		if (matcher.find()) {
-			return matcher.group(1);
-		} else {
-			throw new ParseException(format("Cannot extract {} from \n {}", key, body), 0);
-		}
-
 	}
 
 	private String applyChanges(String adviceName, String property, String value) {
