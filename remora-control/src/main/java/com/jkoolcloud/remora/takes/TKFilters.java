@@ -36,7 +36,7 @@ public class TKFilters implements Take {
 	public static final String FILTER_RESPONSE_TEMPLATE = "'{'\n" //
 			+ "  \"filterName\" : \"{0}\",\n"//
 			+ "  \"filterClass\" : \"{1}\",\n" //
-			+ "  \"properties\" : [{2}]\n"//
+			+ "  \"properties\" : '{'{2}'}\n"//
 			+ "'}'";
 
 	@Override
@@ -44,7 +44,7 @@ public class TKFilters implements Take {
 		StringBuilder response = new StringBuilder();
 		response.append("[");
 		Map<String, AdviceFilter> filters = FilterManager.INSTANCE.getAll();
-		for (Map.Entry<String, AdviceFilter> stringAdviceFilterEntry : filters.entrySet()) {
+		response.append(filters.entrySet().stream().map(stringAdviceFilterEntry -> {
 
 			List<String> properties = ReflectionUtils.getConfigurableFields(stringAdviceFilterEntry.getValue());
 			Map<String, Object> stringObjectMap = ReflectionUtils.mapToCurrentValues(stringAdviceFilterEntry.getValue(),
@@ -53,9 +53,9 @@ public class TKFilters implements Take {
 					.map(entry -> JSONUtils.quote(entry.getKey()) + " : " + JSONUtils.quote(entry.getValue()))
 					.collect(Collectors.joining(",\n"));
 
-			response.append(format(FILTER_RESPONSE_TEMPLATE, stringAdviceFilterEntry.getKey(),
-					stringAdviceFilterEntry.getValue().getClass(), JSONUtils.addPadding(4, collect)));
-		}
+			return format(FILTER_RESPONSE_TEMPLATE, stringAdviceFilterEntry.getKey(),
+					stringAdviceFilterEntry.getValue().getClass(), JSONUtils.addPadding(4, collect));
+		}).collect(Collectors.joining(",\n")));
 		response.append("\n]");
 		return new RsText(response.toString());
 

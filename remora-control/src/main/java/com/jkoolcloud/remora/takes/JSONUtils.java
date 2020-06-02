@@ -46,7 +46,7 @@ public class JSONUtils {
 			return String.valueOf(value);
 		}
 		if (value instanceof List) {
-			return "[" + ((List) value).stream().collect(Collectors.joining(",")) + "]";
+			return "[" + ((List) value).stream().map(e -> quote(e)).collect(Collectors.joining(",")) + "]";
 		}
 		return "\"" + String.valueOf(value) + "\"";
 	}

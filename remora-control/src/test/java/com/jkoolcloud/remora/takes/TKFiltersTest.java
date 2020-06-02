@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.ClassNameFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
@@ -36,7 +37,7 @@ public class TKFiltersTest {
 		FilterManager.INSTANCE.add("TESTFILTER1", filter);
 		FilterManager.INSTANCE.add("TESTFILTER2", new ClassNameFilter());
 		String s = new RsPrint(new TKFilters().act(new RqFake())).printBody();
-		// new ObjectMapper().readTree(s);
+		new ObjectMapper().readTree(s);
 		System.out.println(s);
 	}
 }
