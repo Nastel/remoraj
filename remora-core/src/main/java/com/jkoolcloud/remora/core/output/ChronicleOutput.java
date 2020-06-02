@@ -37,7 +37,7 @@ import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.queue.impl.RollingChronicleQueue;
 import net.openhft.chronicle.queue.impl.StoreFileListener;
 
-public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinition> {
+public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 
 	public static final String DISABLE_PROXY_CODEGEN = "disableProxyCodegen";
 	TaggedLogger logger = Logger.tag("INIT");
@@ -165,7 +165,7 @@ public class ChronicleOutput implements OutputManager.AgentOutput<EntryDefinitio
 		public ChronicleAppenderThread(Runnable r, ExcerptAppender appender) {
 			super(r);
 
-			this.threadAppender = appender;
+            threadAppender = appender;
 		}
 	}
 }

@@ -18,7 +18,7 @@ package com.jkoolcloud.remora.core.output;
 
 import com.jkoolcloud.remora.core.EntryDefinition;
 
-public class SysOutOutput implements OutputManager.AgentOutput<EntryDefinition> {
+public class SysOutOutput implements AgentOutput<EntryDefinition> {
 
 	@Override
 	public void init() {

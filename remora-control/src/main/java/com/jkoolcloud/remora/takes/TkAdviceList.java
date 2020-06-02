@@ -30,6 +30,7 @@ import org.takes.rs.RsText;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
+import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
 public class TkAdviceList implements Take {
 
@@ -51,8 +52,8 @@ public class TkAdviceList implements Take {
 			response.append(advice.getClass().getSimpleName());
 			response.append("\"");
 			response.append(",\n");
-			List<String> configurableFields = AdviceRegistry.getConfigurableFields(advice);
-			Map<String, Object> fieldsAndValues = AdviceRegistry.mapToCurrentValues(advice, configurableFields);
+			List<String> configurableFields = ReflectionUtils.getConfigurableFields(advice);
+			Map<String, Object> fieldsAndValues = ReflectionUtils.mapToCurrentValues(advice, configurableFields);
 			response.append("\t\"properties\": {\n");
 			response.append(fieldsAndValues.entrySet().stream()
 					.map(entry -> "\t\t\"" + entry.getKey() + "\" : " + quote(entry.getValue()) + "")

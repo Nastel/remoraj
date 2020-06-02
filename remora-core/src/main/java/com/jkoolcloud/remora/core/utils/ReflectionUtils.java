@@ -20,8 +20,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
+
+import com.jkoolcloud.remora.RemoraConfig;
 
 public class ReflectionUtils {
 	@SuppressWarnings("unchecked")
@@ -116,5 +121,32 @@ public class ReflectionUtils {
 
 		}
 		return null;
+	}
+
+	public static List<String> getConfigurableFields(Object advice) {
+
+		Class<?> aClass = advice.getClass();
+		ArrayList<Field> declaredFields = geAllDeclaredtFields(aClass);
+
+		return declaredFields.stream()
+				.filter(field -> field.isAnnotationPresent(RemoraConfig.Configurable.class)
+						&& !field.getAnnotation(RemoraConfig.Configurable.class).configurableOnce())
+				.map(field -> field.getName()).collect(Collectors.toList());
+	}
+
+	public static Map<String, Object> mapToCurrentValues(Object advice, List<String> availableConfigurationFields) {
+		return availableConfigurationFields.stream().collect(Collectors.toMap(fName -> fName, fName -> {
+
+			try {
+				Field declaredField = getFieldFromAllDeclaredFields(advice.getClass(), fName);
+				declaredField.setAccessible(true);
+				Object value = declaredField.get(advice);
+
+				return value == null ? "null" : value;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "N/A";
+		}));
 	}
 }

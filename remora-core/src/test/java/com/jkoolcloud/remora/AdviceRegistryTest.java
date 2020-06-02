@@ -24,6 +24,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.jkoolcloud.remora.advices.Advice1;
+import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
 public class AdviceRegistryTest {
 
@@ -31,7 +32,7 @@ public class AdviceRegistryTest {
 	public void getConfigurableFields() {
 		Advice1 testAdvice = new Advice1();
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(testAdvice));
-		List<String> configurableFields = AdviceRegistry.getConfigurableFields(testAdvice);
+		List<String> configurableFields = ReflectionUtils.getConfigurableFields(testAdvice);
 		System.out.println(configurableFields);
 		assertEquals(5, configurableFields.size());
 	}

@@ -34,7 +34,7 @@ public enum OutputManager {
 
 	private static boolean shutdown = false;
 	private static AgentOutput<EntryDefinition> output;
-	private static List<AgentOutput.OutputListener> outputListeners;
+	private static List<OutputListener> outputListeners;
 
 	OutputManager() {
 		install();
@@ -91,98 +91,4 @@ public enum OutputManager {
 		}
 	}
 
-	public interface AgentOutput<T> {
-		void init() throws OutputException;
-
-		void send(T entry);
-
-		void shutdown();
-
-		class OutputException extends Exception {
-			private static final long serialVersionUID = -6937653706786664128L;
-
-			public OutputException(String message) {
-				super(message);
-			}
-		}
-
-		interface OutputListener {
-			/**
-			 * Will be triggered on OutputManager before handling it to real AgentOutputs
-			 */
-			void beforeSend();
-
-			/**
-			 * Will be triggered on initialising the output
-			 */
-			void onInitialize();
-
-			/**
-			 * Wil be triggered after AgentOutputs initializes
-			 *
-			 * @param e
-			 *            Exception would be filled if one occurs
-			 */
-			void onInitialized(Exception e);
-
-			/**
-			 * Will be triggered at AgentOutputs send
-			 */
-
-			void onSend();
-
-			/**
-			 * Will be triggered on AgentsOutput shutdown
-			 */
-
-			void onShutdown();
-
-			/**
-			 * Will be triggered when sending finished
-			 *
-			 * @param e
-			 *            Exception would be filled if one occurs on sending
-			 */
-			void onSent(Exception e);
-
-			class OutputLogger implements OutputListener {
-
-				private static final TaggedLogger logger = Logger.tag("INFO");
-
-				@Override
-				public void beforeSend() {
-
-				}
-
-				@Override
-				public void onInitialize() {
-
-				}
-
-				@Override
-				public void onInitialized(Exception e) {
-
-				}
-
-				@Override
-				public void onSend() {
-
-				}
-
-				@Override
-				public void onShutdown() {
-					logger.info("Shutting down: ");
-				}
-
-				@Override
-				public void onSent(Exception e) {
-					if (e == null) {
-						logger.info("Message sent");
-					} else {
-						logger.error("Cannot send the message");
-					}
-				}
-			}
-		}
-	}
 }

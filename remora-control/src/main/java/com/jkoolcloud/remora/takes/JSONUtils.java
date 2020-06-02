@@ -18,6 +18,7 @@ package com.jkoolcloud.remora.takes;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,9 @@ public class JSONUtils {
 		}
 		if (value instanceof Boolean) {
 			return String.valueOf(value);
+		}
+		if (value instanceof List) {
+			return "[" + ((List) value).stream().collect(Collectors.joining(",")) + "]";
 		}
 		return "\"" + String.valueOf(value) + "\"";
 	}

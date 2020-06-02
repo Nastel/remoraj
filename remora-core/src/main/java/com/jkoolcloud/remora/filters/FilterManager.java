@@ -38,4 +38,9 @@ public enum FilterManager {
 	public AdviceFilter get(String filterName) {
 		return filters.get(filterName);
 	}
+
+	public Map<String, AdviceFilter> getAll() {
+		return filters;
+	}
+
 }

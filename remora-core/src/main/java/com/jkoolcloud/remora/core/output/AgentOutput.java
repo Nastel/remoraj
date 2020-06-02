@@ -16,26 +16,19 @@
 
 package com.jkoolcloud.remora.core.output;
 
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
+public interface AgentOutput<T> {
+	void init() throws OutputException;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
+	void send(T entry);
 
-public class NullOutput implements AgentOutput<EntryDefinition> {
+	void shutdown();
 
-	TaggedLogger logger = Logger.tag("INIT");
+	class OutputException extends Exception {
+		private static final long serialVersionUID = -6937653706786664128L;
 
-	@Override
-	public void init() {
-		logger.info("NULL output initialised");
+		public OutputException(String message) {
+			super(message);
+		}
 	}
 
-	@Override
-	public void send(EntryDefinition entry) {
-	}
-
-	@Override
-	public void shutdown() {
-
-	}
 }

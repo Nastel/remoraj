@@ -17,7 +17,6 @@
 
 package com.jkoolcloud.remora;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.jkoolcloud.remora.advices.RemoraAdvice;
-import com.jkoolcloud.remora.core.utils.ReflectionUtils;
 
 public enum AdviceRegistry {
 	INSTANCE;
@@ -51,31 +49,4 @@ public enum AdviceRegistry {
 		return adviceMap.get(name);
 	}
 
-	public static List<String> getConfigurableFields(RemoraAdvice advice) {
-
-		Class<?> aClass = advice.getClass();
-		ArrayList<Field> declaredFields = ReflectionUtils.geAllDeclaredtFields(aClass);
-
-		return declaredFields.stream()
-				.filter(field -> field.isAnnotationPresent(RemoraConfig.Configurable.class)
-						&& !field.getAnnotation(RemoraConfig.Configurable.class).configurableOnce())
-				.map(field -> field.getName()).collect(Collectors.toList());
-	}
-
-	public static Map<String, Object> mapToCurrentValues(RemoraAdvice advice,
-			List<String> availableConfigurationFields) {
-		return availableConfigurationFields.stream().collect(Collectors.toMap(fName -> fName, fName -> {
-
-			try {
-				Field declaredField = ReflectionUtils.getFieldFromAllDeclaredFields(advice.getClass(), fName);
-				declaredField.setAccessible(true);
-				Object value = declaredField.get(advice);
-
-				return value == null ? "null" : value;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return "N/A";
-		}));
-	}
 }
