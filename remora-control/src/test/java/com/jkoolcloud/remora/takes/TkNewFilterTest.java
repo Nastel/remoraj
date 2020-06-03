@@ -19,7 +19,9 @@ package com.jkoolcloud.remora.takes;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqPrint;
 import org.takes.rq.RqWithBody;
+import org.takes.rs.RsPrint;
 import org.tinylog.Logger;
 
 import com.jkoolcloud.remora.filters.ClassNameFilter;
@@ -34,8 +36,12 @@ public class TkNewFilterTest {
 	@Test
 	public void testFormatResponse() throws Exception {
 		TkNewFilter tkNewFilter = new TkNewFilter(Logger.tag("TEST"));
+		RqWithBody req = new RqWithBody(new RqFake(), TEST_BODY);
+		String body = new RqPrint(req).printBody();
+		System.out.println(body);
+		System.out.println("\n");
 		@NotNull
-		String jsonInString = TakesUtils.getBody(tkNewFilter.act(new RqWithBody(new RqFake(), TEST_BODY)).body());
+		String jsonInString = new RsPrint(tkNewFilter.act(req)).printBody();
 
 		System.out.println(jsonInString);
 	}

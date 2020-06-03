@@ -45,4 +45,9 @@ public class ClassNameFilter implements AdviceFilter {
 	public Mode getMode() {
 		return mode;
 	}
+
+	@Override
+	public String toString() {
+		return FilterManager.INSTANCE.get(this);
+	}
 }

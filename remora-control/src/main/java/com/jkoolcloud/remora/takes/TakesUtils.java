@@ -18,14 +18,9 @@ package com.jkoolcloud.remora.takes;
 
 import static java.text.MessageFormat.format;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.NotNull;
 
 public class TakesUtils {
 	protected static String getValueForKey(String key, String body) throws ParseException {
@@ -39,16 +34,4 @@ public class TakesUtils {
 
 	}
 
-	@NotNull
-	protected static String getBody(InputStream t) throws IOException {
-		StringBuilder bodySB = new StringBuilder();
-		try (InputStreamReader reader = new InputStreamReader(t)) {
-			char[] buffer = new char[256];
-			int read;
-			while ((read = reader.read(buffer)) != -1) {
-				bodySB.append(buffer, 0, read);
-			}
-		}
-		return bodySB.toString();
-	}
 }

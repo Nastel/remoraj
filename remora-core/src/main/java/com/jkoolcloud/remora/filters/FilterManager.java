@@ -43,4 +43,8 @@ public enum FilterManager {
 		return filters;
 	}
 
+	public String get(AdviceFilter classNameFilter) {
+		return filters.entrySet().stream().filter(entry -> entry.getValue().equals(classNameFilter))
+				.map(e -> e.getKey()).findFirst().orElse("N/A");
+	}
 }

@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +41,7 @@ public class TkChangeTest {
 		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
 		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
 		TkAdviceList tkAdviceList = new TkAdviceList();
-		String jsonInString = TakesUtils.getBody(tkAdviceList.act(new RqFake()).body());
+		String jsonInString = new RsPrint(tkAdviceList.act(new RqFake())).printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(jsonInString);
 		System.out.println(jsonInString);
 	}

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqPrint;
 import org.takes.rs.RsText;
 import org.tinylog.TaggedLogger;
 
@@ -40,7 +41,7 @@ public class TkNewFilter implements Take {
 
 	@Override
 	public Response act(Request req) throws Exception {
-		String body = TakesUtils.getBody(req.body());
+		String body = new RqPrint(req).printBody();
 		String filterClass = TakesUtils.getValueForKey("class", body);
 		String filterName = TakesUtils.getValueForKey("name", body);
 

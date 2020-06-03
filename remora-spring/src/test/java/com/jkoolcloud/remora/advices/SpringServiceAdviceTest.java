@@ -18,8 +18,6 @@ package com.jkoolcloud.remora.advices;
 
 import org.junit.Test;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
-
 //Enable power mockito if any of classes failing to mock
 //@RunWith(PowerMockRunner.class)
 //@PrepareForTest({WebApp.class})
@@ -31,7 +29,7 @@ public class SpringServiceAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		EntryDefinition handleRequestEntry = new EntryDefinition(SpringServiceAdvice.class, true);
+		// EntryDefinition handleRequestEntry = new EntryDefinition(SpringServiceAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 

@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqPrint;
 import org.takes.rs.RsText;
 import org.tinylog.TaggedLogger;
 
@@ -41,7 +42,7 @@ public class TkChange implements Take {
 
 	@Override
 	public Response act(Request req) throws Exception {
-		String body = TakesUtils.getBody(req.body());
+		String body = new RqPrint(req).printBody();
 		String adviceName = getValueForKey("advice", body);
 		String property = getValueForKey("property", body);
 		String value = getValueForKey("value", body);
