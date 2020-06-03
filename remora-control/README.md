@@ -660,3 +660,90 @@ Expected response:
 	"TotalSwapSpaceSize" :  35314622464
 }
 ```
+
+#Filters 
+
+## Filter info 
+
+to get filters info get `localhost:7366/filters`
+
+```
+curl -XGET 'localhost:7366/filters'
+```
+
+Expected response:
+```json
+[
+{
+  "filterName" : "ingnoredStreams",
+  "filterClass" : "class com.jkoolcloud.remora.filters.ClassNameFilter",
+  "properties" : {"mode" : "EXCLUDE",
+				"regex" : false,
+				"classNames" : ["java.net.SocketInputStream","java.util.jar.JarVerifier$VerifierStream"]
+				}
+},
+{
+  "filterName" : "ingnoredMysqlStreams",
+  "filterClass" : "class com.jkoolcloud.remora.filters.ClassNameFilter",
+  "properties" : {"mode" : "EXCLUDE",
+				"regex" : true,
+				"classNames" : ["com\.mysql.*"]
+				}
+}
+]
+```
+
+## New filter
+
+to create new filter POST `localhost:7366/filters` with body:
+
+```
+{
+	"class": "com.jkoolcloud.remora.filters.ClassNameFilter",
+	"name": "test",
+	"regex": "false",
+	"classNames": "com.test;com.test2",
+	"mode": "EXCLUDE"
+}
+```
+
+i.e.:
+
+
+```
+curl -XPOST -d '{
+                	"class": "com.jkoolcloud.remora.filters.ClassNameFilter",
+                	"name": "test",
+                	"regex": "false",
+                	"classNames": "com.test;com.test2",
+                	"mode": "EXCLUDE"
+                }' 'http://localhost:7366/filters'
+
+```
+
+class - fully qualified filter path
+name - filter name
+mode - filter mode INCLUDE/EXCLUDE, exclude will filter out defined interception, include will only pass defined interception
+other options - filter dependent
+
+
+`com.jkoolcloud.remora.filters.ClassNameFilter` filter options:
+
+classNames = list of class names ';' (semicolon separated) 
+regex -  true/false, is true regex is applied, class name must match whole pattern, backslash should be escaped with another backslash i.e. "com\\.mysql.*"
+
+## Apply filter for a advice
+
+see [Change property request section](##-Change-Property-Request) 
+    
+i.e. to add filter "test" on `JavaxServletAdvice` you should run:
+    
+```
+curl -XPOST -d '{
+   	"advice": "JavaxServletAdvice",
+   	"property": "filters",
+   	"value": "test"
+   }' 'http://localhost:7366/change'
+
+```  
+Filters will be overridden, you must include all filter you want to apply.
