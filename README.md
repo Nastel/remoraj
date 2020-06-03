@@ -11,7 +11,7 @@ RemoraJ consists of two main runtime components:
 **Platforms for Analyzing RemoraJ Traces**
 * [jKool](https://www.jkoolcloud.com/) -- SaaS platform for analyzing high velocity machine data.
 * [Nastel XRay](https://www.nastel.com/nastel-xray/) -- SaaS Platform for AIOps & transaction tracking.
-* Integrate into your own via Agent output [class implementation](https://github.com/Nastel/remoraj#agent-trace-output)
+* Integrate into your own via Agent output [class implementation](#agent-trace-output)
 
 Both agents communicate via a memory mapped queue stored on a filesystem see `tnt-data-source.xml` for details. The Streams Agent sends traces using JSON over HTTPS.
 
