@@ -54,10 +54,12 @@ RemoraJ supports the following intercepts (advices):
 
 You must configure the Remora Java agent and Streams agent to run RemoraJ. Your should have a working data repository and a streaming access token. Below is the outline of RemoraJ setup:
 
-* Obtain your account with [jKool](https://www.jkoolcloud.com/) or [Nastel XRay](https://www.nastel.com/nastel-xray/). Make sure to get your streaming access token
 * Configure the Remora Java Agent for your JVM (captures java call traces, metrics)
-* Configure the Streams Agent (you will need your streaming access token here)
 * Start your application or app server (with remora agent)
+
+If you decide to send traces to Nastel XRay or jKool please complete the following steps:
+* Obtain your account with [jKool](https://www.jkoolcloud.com/) or [Nastel XRay](https://www.nastel.com/nastel-xray/). Make sure to get your streaming access token
+* Configure the Streams Agent (you will need your streaming access token here)
 * Start the Streams Agent (forwards traces to your data repository associated with your streaming access token)
 
 Login to your dashboard to view & analyze results: 
@@ -67,6 +69,15 @@ Login to your dashboard to view & analyze results:
 ## Prerequisites
 
 Java >8 runtime (IBM WebSphere >8.5.5, Tomcat >8, Jboss >7.2 should be already running Java 8. Make sure JVM is Java 1.8 or above).
+
+The following jar files are required to build `remora-websphere` advices:
+* `com.ibm.jaxws.thinclient_8.5.0.jar`
+* `com.ibm.ws.runtime.jar`
+* `com.ibm.ws.webcontainer.jar`
+* `rsahelpers.jar`
+* `com.ibm.ws.admin.core.jar`
+
+Place these jar files in `remora-websphere/lib` folder before running a build.
 
 # Remora Java Agent 
 ## Using -javaagent option
