@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.jetbrains.annotations.Nullable;
 import org.tinylog.TaggedLogger;
@@ -33,10 +34,14 @@ public enum InputStreamManager {
 
 	INSTANCE;
 
-	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new WeakHashMap<>(500);
+	public final AtomicLong totalTrackedInputStreams = new AtomicLong();
+	public final AtomicLong totalTrackedOutputStreams = new AtomicLong();
+
+	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap(totalTrackedInputStreams);
 	HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new HashMap<>(500);
 
-	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new WeakHashMap<>(500);
+	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap(
+			totalTrackedOutputStreams);
 	HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
 	public StreamStats get(InputStream thiz, TaggedLogger logger, Method method) {
@@ -134,7 +139,7 @@ public enum InputStreamManager {
 				}
 				streamStats.starttime = BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal,
 						thiz, method, logger);
-
+				ed.addProperty("toString", String.valueOf(thiz));
 				availableStreamsEntries.put(ed, streamStats);
 			}
 			if (logger != null) {
@@ -171,5 +176,21 @@ public enum InputStreamManager {
 
 	public WeakHashMap<OutputStream, EntryDefinition> getAvailableOutputStreams() {
 		return availableOutputStreams;
+	}
+
+	private static class CountingWeakHashMap<K, V> extends WeakHashMap {
+		final AtomicLong count;
+
+		public CountingWeakHashMap(AtomicLong countVar) {
+			super(500);
+			count = countVar;
+		}
+
+		@Override
+        public V put(Object key, Object value) {
+			count.incrementAndGet();
+			return (V) super.put(key, value);
+		}
+
 	}
 }

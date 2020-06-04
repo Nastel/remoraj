@@ -40,7 +40,12 @@ public class TKStreams implements PluginTake {
 	public Response act(Request req) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\n");
-
+		sb.append("\t\"totalTrackedInputStreams\": ");
+		sb.append(InputStreamManager.INSTANCE.totalTrackedInputStreams.get());
+		sb.append(",\n");
+		sb.append("\t\"totalOutputInputStreams\": ");
+		sb.append(InputStreamManager.INSTANCE.totalTrackedOutputStreams.get());
+		sb.append(",\n");
 		sb.append("\t\"totalActiveInputSteams\": ");
 		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreams().size());
 		sb.append(",\n");
