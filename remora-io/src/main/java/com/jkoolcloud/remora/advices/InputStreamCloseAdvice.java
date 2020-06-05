@@ -92,7 +92,7 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 			logger.info("Exiting: {} {}", InputStreamCloseAdvice.class.getName(), "after");
 		}
 		try {
-			InputStreamManager.INSTANCE.close(thiz, logging ? logger : null, method);
+			StreamsManager.INSTANCE.close(thiz, logging ? logger : null, method);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

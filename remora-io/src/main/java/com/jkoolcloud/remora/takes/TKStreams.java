@@ -18,13 +18,17 @@ package com.jkoolcloud.remora.takes;
 
 import static java.text.MessageFormat.format;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.rs.RsText;
 
-import com.jkoolcloud.remora.advices.InputStreamManager;
+import com.jkoolcloud.remora.advices.StreamStats;
+import com.jkoolcloud.remora.advices.StreamsManager;
+import com.jkoolcloud.remora.core.EntryDefinition;
 
 public class TKStreams implements PluginTake {
 	public static final String STATS_RENTRY = "'{'\n" //
@@ -32,8 +36,11 @@ public class TKStreams implements PluginTake {
 			+ "  \"id\" : \"{1}\",\n"//
 			+ "  \"bytes\" : {2,number,#},\n"//
 			+ "  \"lastAccessed\" : {3,number,#},\n" //
+			+ "  \"lastAccessedReadable\" : \"{3, date} {3,time}\",\n" //
 			+ "  \"created\" : {4,number,#},\n"//
-			+ "  \"iterations\": {5,number,#}\n"//
+			+ "  \"createdReadable\" : \"{4,date} {4,time}\",\n"//
+			+ "  \"invocations\": {5,number,#},\n"//
+			+ "  \"instances\": [{6}]\n"//
 			+ "'}'";
 
 	@Override
@@ -41,37 +48,37 @@ public class TKStreams implements PluginTake {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\n");
 		sb.append("\t\"totalTrackedInputStreams\": ");
-		sb.append(InputStreamManager.INSTANCE.totalTrackedInputStreams.get());
+		sb.append(StreamsManager.INSTANCE.totalTrackedInputStreams.get());
 		sb.append(",\n");
 		sb.append("\t\"totalOutputInputStreams\": ");
-		sb.append(InputStreamManager.INSTANCE.totalTrackedOutputStreams.get());
+		sb.append(StreamsManager.INSTANCE.totalTrackedOutputStreams.get());
 		sb.append(",\n");
 		sb.append("\t\"totalActiveInputSteams\": ");
-		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreams().size());
+		sb.append(StreamsManager.INSTANCE.getAvailableInputStreams().size());
 		sb.append(",\n");
 		sb.append("\t\"totalUniqueInputStreams\": ");
-		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreamsEntries().size());
+		sb.append(StreamsManager.INSTANCE.getAvailableInputStreamsEntries().size());
 		sb.append(",\n");
 		sb.append("\t\"totalActiveOutputSteams\": ");
-		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreams().size());
+		sb.append(StreamsManager.INSTANCE.getAvailableOutputStreams().size());
 		sb.append(",\n");
 		sb.append("\t\"totalUniqueOutputStreams\": ");
-		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreamsEntries().size());
+		sb.append(StreamsManager.INSTANCE.getAvailableOutputStreamsEntries().size());
 		sb.append(",\n");
 		sb.append("\t\"activeStreamsBytesRead\": ");
-		sb.append(InputStreamManager.INSTANCE.getAvailableInputStreamsEntries().values().stream()
+		sb.append(StreamsManager.INSTANCE.getAvailableInputStreamsEntries().values().stream()
 
 				.mapToLong(value -> value.count.get()).sum());
 		sb.append(",\n");
 		sb.append("\t\"activeStreamsBytesWrite\": ");
-		sb.append(InputStreamManager.INSTANCE.getAvailableOutputStreamsEntries().values().stream()
+		sb.append(StreamsManager.INSTANCE.getAvailableOutputStreamsEntries().values().stream()
 				.mapToLong(value -> value.count.get()).sum());
 		sb.append(",\n");
 
 		sb.append("\t\"activeInputStreams\":");
 
 		sb.append("\t[\n");
-		String inputStreamList = InputStreamManager.INSTANCE.getAvailableInputStreamsEntries().entrySet().stream()
+		String inputStreamList = StreamsManager.INSTANCE.getAvailableInputStreamsEntries().entrySet().stream()
 				.map(entry -> //
 				format(STATS_RENTRY, //
 						entry.getKey().getClazz(), //
@@ -79,14 +86,15 @@ public class TKStreams implements PluginTake {
 						entry.getValue().count, //
 						entry.getValue().accessTimestamp, //
 						entry.getValue().starttime, //
-						entry.getValue().accessCount))
+						entry.getValue().accessCount, //
+						getToStringValues(entry)))
 				.collect(Collectors.joining(","));
 		sb.append(JSONUtils.addPadding(3, inputStreamList));
 		sb.append("\t],\n");
 		sb.append("\t\"activeOutputStreams\":");
 
 		sb.append("\t[\n");
-		String outputStreamList = InputStreamManager.INSTANCE.getAvailableOutputStreamsEntries().entrySet().stream()
+		String outputStreamList = StreamsManager.INSTANCE.getAvailableOutputStreamsEntries().entrySet().stream()
 				.map(entry -> //
 				format(STATS_RENTRY, //
 						entry.getKey().getClazz(), //
@@ -94,13 +102,21 @@ public class TKStreams implements PluginTake {
 						entry.getValue().count, //
 						entry.getValue().accessTimestamp, //
 						entry.getValue().starttime, //
-						entry.getValue().accessCount))
+						entry.getValue().accessCount, //
+						getToStringValues(entry)))
 				.collect(Collectors.joining(","));
 		sb.append(JSONUtils.addPadding(3, outputStreamList));
 		sb.append("\t]\n");
 
 		sb.append("}\n");
 		return new RsText(sb.toString());
+	}
+
+	@NotNull
+	private String getToStringValues(Map.Entry<EntryDefinition, StreamStats> entry) {
+		return JSONUtils.addPadding(4,
+				entry.getKey().getProperties().entrySet().stream().filter(e -> e.getKey().startsWith("toString"))
+						.map(e -> JSONUtils.quote(e.getValue())).collect(Collectors.joining(",\n")));
 	}
 
 	@Override

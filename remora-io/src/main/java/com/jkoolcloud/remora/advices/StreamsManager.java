@@ -30,7 +30,7 @@ import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.core.EntryDefinition;
 
-public enum InputStreamManager {
+public enum StreamsManager {
 
 	INSTANCE;
 
@@ -115,7 +115,7 @@ public enum InputStreamManager {
 
 			}
 		} catch (Throwable t) {
-			BaseTransformers.handleAdviceException(t, InputStreamManager.class.getSimpleName(), logger);
+			BaseTransformers.handleAdviceException(t, StreamsManager.class.getSimpleName(), logger);
 		} finally {
 			if (doFinally) {
 				doFinally(logger, thiz.getClass());
@@ -137,8 +137,8 @@ public enum InputStreamManager {
 				if (logger != null) {
 					logger.info("Creating the new stream stats: " + ed.getId());
 				}
-				streamStats.starttime = BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal,
-						thiz, method, logger);
+				BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal, thiz, method, logger);
+				streamStats.starttime = ed.getStartTime();
 				ed.addProperty("toString", String.valueOf(thiz));
 				availableStreamsEntries.put(ed, streamStats);
 			}
@@ -187,7 +187,7 @@ public enum InputStreamManager {
 		}
 
 		@Override
-        public V put(Object key, Object value) {
+		public V put(Object key, Object value) {
 			count.incrementAndGet();
 			return (V) super.put(key, value);
 		}

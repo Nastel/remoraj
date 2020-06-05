@@ -23,26 +23,35 @@ import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jkoolcloud.remora.advices.InputStreamManager;
 import com.jkoolcloud.remora.advices.InputStreamReadAdvice;
 import com.jkoolcloud.remora.advices.OutputStreamWriteAdvice;
 import com.jkoolcloud.remora.advices.StreamStats;
+import com.jkoolcloud.remora.advices.StreamsManager;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public class TKStreamsTest {
 
 	@Test
 	public void act() throws Exception {
-		InputStreamManager.INSTANCE.setAvailableInputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
+		StreamStats value = new StreamStats();
+		value.starttime = System.currentTimeMillis();
+		Thread.sleep(100);
+		value.accessTimestamp = System.currentTimeMillis();
+
+		StreamsManager.INSTANCE.setAvailableInputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
 			{
-				put(new EntryDefinition(InputStreamReadAdvice.class, false), new StreamStats());
-				put(new EntryDefinition(InputStreamReadAdvice.class, false), new StreamStats());
+				EntryDefinition ed = new EntryDefinition(InputStreamReadAdvice.class, false);
+				ed.addProperty("toString", "test".chars().toString());
+				ed.addProperty("toString_1", "tets2".chars().toString());
+				put(ed, value);
+
+				put(ed, value);
 			}
 		});
-		InputStreamManager.INSTANCE.setAvailableOutputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
+		StreamsManager.INSTANCE.setAvailableOutputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
 			{
-				put(new EntryDefinition(OutputStreamWriteAdvice.class, false), new StreamStats());
-				put(new EntryDefinition(OutputStreamWriteAdvice.class, false), new StreamStats());
+				put(new EntryDefinition(OutputStreamWriteAdvice.class, false), value);
+				put(new EntryDefinition(OutputStreamWriteAdvice.class, false), value);
 			}
 		});
 		String x = new RsPrint(new TKStreams().act(new RqFake())).printBody();

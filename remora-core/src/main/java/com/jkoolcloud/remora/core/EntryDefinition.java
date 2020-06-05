@@ -134,6 +134,10 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		entry.startTime = startTime;
 	}
 
+	public long getStartTime() {
+		return entry.startTime;
+	}
+
 	public void setName(String name) {
 		entry.name = name;
 		exit.name = name;

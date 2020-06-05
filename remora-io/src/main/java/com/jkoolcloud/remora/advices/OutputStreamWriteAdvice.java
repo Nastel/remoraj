@@ -91,7 +91,7 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 			if (!intercept(OutputStreamWriteAdvice.class, thiz, method, arguments)) {
 				return;
 			}
-			InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount();
+			StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount();
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

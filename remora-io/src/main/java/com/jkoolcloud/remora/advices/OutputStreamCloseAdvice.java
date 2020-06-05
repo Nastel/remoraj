@@ -91,7 +91,7 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 			logger.info("Exiting: {} {}", OutputStreamCloseAdvice.class.getName(), "after");
 		}
 		try {
-			InputStreamManager.INSTANCE.close(thiz, logging ? logger : null, method);
+			StreamsManager.INSTANCE.close(thiz, logging ? logger : null, method);
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
 		}

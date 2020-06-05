@@ -93,7 +93,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			if (!intercept(InputStreamReadAdvice.class, thiz, method, arguments)) {
 				return;
 			}
-			StreamStats streamStats = InputStreamManager.INSTANCE.get(thiz, logging ? logger : null, method);
+			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method);
 			if (streamStats == null) {
 				throw new IllegalStateException("Stream stats is null");
 			}
