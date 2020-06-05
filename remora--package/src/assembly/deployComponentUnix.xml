@@ -50,6 +50,8 @@
                             <exclude>remora-stream*</exclude>
                             <exclude>remora--package*</exclude>
                             <exclude>original-*</exclude>
+                            <exclude>*-sources.jar</exclude>
+                            <exclude>*-test.jar</exclude>
                         </excludes>
                     </fileSet>
                 </fileSets>
