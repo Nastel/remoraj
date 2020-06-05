@@ -1,7 +1,7 @@
 
 # RemoraJ: Light-Weight Java ByteCode Agent for Java IPC
 
-RemoraJ is a light weight java profiling agent which uses bytecode instrumentation to intercept java IPC calls with minimal overhead. RemoraJ monitors java apps by tracking IPC calls such as: HTTP, WebServices, JMS, JDBC, WebSockets, Kafka, I/O Streams and more. The goal is to track calls and messages coming in and out of your java apps. 
+RemoraJ is a light weight java profiling agent which uses bytecode instrumentation to intercept java IPC calls with minimal overhead. RemoraJ monitors java apps by tracking IPC calls such as: HTTP, WebServices, JMS, JDBC, WebSockets, Kafka, I/O Streams and more. The goal is to track calls and messages coming in and out of java apps. 
 
 RemoraJ consists of two main runtime components:
 
