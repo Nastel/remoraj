@@ -1,7 +1,7 @@
 
-# RemoraJ: Light-Weight Java ByteCode Agent for Java IPC
+# RemoraJ: Extensible Java Bytecode Agent for Tracking Java IPC
 
-RemoraJ is a light weight java profiling agent which uses bytecode instrumentation to intercept java IPC calls with minimal overhead. RemoraJ monitors java apps by tracking IPC calls such as: HTTP, WebServices, JMS, JDBC, WebSockets, Kafka, I/O Streams and more. The goal is to track calls and messages coming in and out of java apps. 
+RemoraJ is an extensible java profiling agent which uses bytecode instrumentation to intercept java IPC calls with minimal overhead. RemoraJ monitors java apps by tracking IPC calls such as: HTTP, WebServices, JMS, JDBC, WebSockets, Kafka, I/O Streams and more. The goal is to track calls and messages coming in and out of java apps. 
 
 RemoraJ consists of two main runtime components:
 
@@ -15,7 +15,7 @@ RemoraJ consists of two main runtime components:
 
 Both agents communicate via a memory mapped queue stored on a filesystem see `tnt-data-source.xml` for details. The Streams Agent sends traces using JSON over HTTPS.
 
-**NOTE:** The Streams Agent project is located here: https://github.com/Nastel/tnt4j-streams
+**NOTE:** Streams Agent is based on [tnt4j-streams](https://github.com/Nastel/tnt4j-streams) project designed to process, parse and stream time series data over a number of transports such as: HTTPS, Kafka, JMS, MQTT, MQ, files, etc.
 
 RemoraJ supports the following intercepts (advices):
 ```
