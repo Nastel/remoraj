@@ -17,6 +17,9 @@ Both agents communicate via a memory mapped queue stored on a filesystem see `tn
 
 **NOTE:** Streams Agent is based on [tnt4j-streams](https://github.com/Nastel/tnt4j-streams) project designed to process, parse and stream time series data over a number of transports such as: HTTPS, Kafka, JMS, MQTT, MQ, files, etc.
 
+![RemoraJ Architecture](https://github.com/Nastel/remoraj/blob/master/remoraj-arch.png)
+
+## RemoraJ Intercepts (Advices)
 RemoraJ supports the following intercepts (advices):
 ```
   "ApacheHttpClientAdvice",
