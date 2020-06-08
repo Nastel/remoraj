@@ -327,6 +327,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return ad;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T extends BaseTransformers> T getAdviceInstance(Class<T> tClass) {
 		try {
 			return (T) AdviceRegistry.INSTANCE.getAdviceByName(tClass.getSimpleName());
