@@ -37,11 +37,10 @@ public enum StreamsManager {
 	public final AtomicLong totalTrackedInputStreams = new AtomicLong();
 	public final AtomicLong totalTrackedOutputStreams = new AtomicLong();
 
-	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap(totalTrackedInputStreams);
+	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap<InputStream, EntryDefinition>(totalTrackedInputStreams);
 	HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new HashMap<>(500);
 
-	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap(
-			totalTrackedOutputStreams);
+	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap<OutputStream, EntryDefinition>(totalTrackedOutputStreams);
 	HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
 	public StreamStats get(InputStream thiz, TaggedLogger logger, Method method) {
@@ -100,7 +99,7 @@ public enum StreamsManager {
 					logger.info("Close invoked on stream " + ed.getId());
 				}
 				if (ed != null) {
-					StreamStats streamStats = streamStats = availableStreamsEntries.get(ed);
+					StreamStats streamStats = availableStreamsEntries.get(ed);
 
 					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
 					if (ed.isFinished()) {
@@ -109,10 +108,7 @@ public enum StreamsManager {
 						ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
 						ed.addPropertyIfExist("accessCount", streamStats.accessCount);
 					}
-				} else if (logger != null) {
-					logger.error("Stream closed but found no generated entry");
-				}
-
+				} 
 			}
 		} catch (Throwable t) {
 			BaseTransformers.handleAdviceException(t, StreamsManager.class.getSimpleName(), logger);
@@ -178,7 +174,7 @@ public enum StreamsManager {
 		return availableOutputStreams;
 	}
 
-	private static class CountingWeakHashMap<K, V> extends WeakHashMap {
+	private static class CountingWeakHashMap<K, V> extends WeakHashMap<K, V> {
 		final AtomicLong count;
 
 		public CountingWeakHashMap(AtomicLong countVar) {
@@ -187,7 +183,7 @@ public enum StreamsManager {
 		}
 
 		@Override
-		public V put(Object key, Object value) {
+		public V put(K key, V value) {
 			count.incrementAndGet();
 			return (V) super.put(key, value);
 		}

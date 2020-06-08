@@ -37,7 +37,6 @@ public class JSONUtils {
 
 	static String quote(Object value) {
 		if (value instanceof Number) {
-			// if (value instanceof )
 			MessageFormat messageFormat = new MessageFormat("{0,number, #.##}", Locale.US);
 			String format = messageFormat.format(new Object[] { value });
 			return format;
@@ -46,7 +45,7 @@ public class JSONUtils {
 			return String.valueOf(value);
 		}
 		if (value instanceof List) {
-			return "[" + ((List) value).stream().map(e -> quote(e)).collect(Collectors.joining(",")) + "]";
+			return "[" + ((List<?>) value).stream().map(e -> quote(e)).collect(Collectors.joining(",")) + "]";
 		}
 		return "\"" + String.valueOf(value) + "\"";
 	}
