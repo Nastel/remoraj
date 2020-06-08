@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.jkoolcloud.remora</groupId>
         <artifactId>remora</artifactId>
-        <version>0.1.8</version>
+        <version>0.1.9-SNAPSHOT</version>
     </parent>
     <packaging>jar</packaging>
 
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.jkoolcloud.remora</groupId>
             <artifactId>remora-control</artifactId>
-            <version>0.1.8-SNAPSHOT</version>
+            <version>0.1.9-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
