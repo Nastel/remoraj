@@ -17,57 +17,58 @@
 package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
-import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.AdviceListener;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
-import com.jkoolcloud.remora.advices.RemoraStatistic;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
-public class CountingAdviceListener implements AdviceListener {
-	ConcurrentHashMap<Class<?>, RemoraStatistic> adviceStatisticsMap = new ConcurrentHashMap<>();
-
-	{
-		for (RemoraAdvice advice : AdviceRegistry.INSTANCE.getRegisteredAdvices()) {
-			adviceStatisticsMap.put(advice.getClass(), new RemoraStatistic());
-		}
-	}
+public class TimingAdviceListener implements AdviceListener {
+	AtomicInteger maxTime = new AtomicInteger();
+	AtomicInteger minTime = new AtomicInteger();
+	AverageTime avgTime = new AverageTime();
 
 	@Override
 	public void onIntercept(Class<?> adviceClass, Object thiz, Method method) {
-		try {
-			adviceStatisticsMap.get(adviceClass).incInvokeCount();
-		} catch (Throwable t) {
-			System.out.println();
-		}
+
 	}
 
 	@Override
 	public void onMethodFinished(double elapseTime) {
-
+		maxTime.set((int) Math.max(maxTime.get(), elapseTime));
+		minTime.set((int) Math.min(minTime.get(), elapseTime));
+		avgTime.append((int) elapseTime);
 	}
 
 	@Override
 	public void onAdviceError(Class<?> adviceClass, Throwable e) {
-		try {
-			adviceStatisticsMap.get(adviceClass).incErrorCount();
-		} catch (Throwable t) {
-			System.out.println();
-		}
+
 	}
 
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
-		try {
-			adviceStatisticsMap.get(adviceClass).incEventCreateCount();
-		} catch (Throwable t) {
-			System.out.println();
+
+	}
+
+	protected static class AverageTime {
+
+		public static final long PRECISSION = 100L;
+		AtomicLong count = new AtomicLong();
+		AtomicLong currentAverage = new AtomicLong();
+
+		@Override
+		public String toString() {
+			return String.valueOf(get());
+		}
+
+		public float get() {
+			return currentAverage.get() / PRECISSION;
+		}
+
+		public void append(int elapseTime) {
+
+			long count = this.count.getAndIncrement();
+			currentAverage.set((long) (((get() * count + elapseTime) / this.count.get()) * PRECISSION));
 		}
 	}
-
-	public ConcurrentHashMap<Class<?>, RemoraStatistic> getAdviceStatisticsMap() {
-		return adviceStatisticsMap;
-	}
-
 }

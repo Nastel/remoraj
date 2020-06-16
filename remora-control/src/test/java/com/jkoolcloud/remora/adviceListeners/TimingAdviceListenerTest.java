@@ -14,18 +14,18 @@
  *  limitations under the License.
  */
 
-package com.jkoolcloud.remora.advices;
+package com.jkoolcloud.remora.adviceListeners;
 
-import java.lang.reflect.Method;
+import org.junit.Test;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
+public class TimingAdviceListenerTest {
 
-public interface AdviceListener {
-	void onIntercept(Class<?> adviceClass, Object thiz, Method method);
+	@Test
+	public void testAverageTime() {
+		TimingAdviceListener.AverageTime at = new TimingAdviceListener.AverageTime();
+		at.append(2);
+		at.append(4);
+		System.out.println(at);
+	}
 
-	void onMethodFinished(double elapseTime);
-
-	void onAdviceError(Class<?> adviceClass, Throwable e);
-
-	void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition);
 }

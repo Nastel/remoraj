@@ -117,6 +117,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			return;
 		}
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
+		invokeOnMethodFinished(duration);
+
 		entryDefinition.setDuration((long) duration);
 
 		entryDefinition.stop();
@@ -209,6 +211,12 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	private static void invokeOnError(Class<?> adviceClass, Throwable e) {
 		for (AdviceListener listener : listeners) {
 			listener.onAdviceError(adviceClass, e);
+		}
+	}
+
+	private static void invokeOnMethodFinished(double elapseTime) {
+		for (AdviceListener listener : listeners) {
+			listener.onMethodFinished(elapseTime);
 		}
 	}
 
