@@ -73,7 +73,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public static boolean checkCallRepeats = true;
 
-	public static List<AdviceListener> listeners = new ArrayList<>(5);
+	public List<AdviceListener> listeners = new ArrayList<>(5);
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
@@ -120,7 +120,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			return;
 		}
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
-		invokeOnMethodFinished(duration);
+		invokeOnMethodFinished(entryDefinition.getAdviceClassClass(), duration);
 
 		entryDefinition.setDuration((long) duration);
 
@@ -200,31 +200,64 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	private static void invokeOnIntercept(Class<?> adviceClass, Object thiz, Method method) {
-		for (AdviceListener listener : listeners) {
-			listener.onIntercept(adviceClass, thiz, method);
+		try {
+			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
+					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
+			for (AdviceListener listener : listeners) {
+				listener.onIntercept(adviceClass, thiz, method);
+			}
+		} catch (ClassNotFoundException e) {
+
 		}
+
 	}
 
 	private static void invokeEventCreate(Class<?> adviceClass, EntryDefinition ed) {
-		for (AdviceListener listener : listeners) {
-			listener.onCreateEntity(adviceClass, ed);
+		try {
+			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
+					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
+			for (AdviceListener listener : listeners) {
+				listener.onCreateEntity(adviceClass, ed);
+			}
+		} catch (ClassNotFoundException e) {
+
 		}
 	}
 
-	private static void invokeOnError(Class<?> adviceClass, Throwable e) {
-		for (AdviceListener listener : listeners) {
-			listener.onAdviceError(adviceClass, e);
+	private static void invokeOnError(Class<?> adviceClass, Throwable t) {
+		try {
+			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
+					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
+			for (AdviceListener listener : listeners) {
+				listener.onAdviceError(adviceClass, t);
+			}
+		} catch (ClassNotFoundException e) {
+
 		}
 	}
 
-	private static void invokeOnMethodFinished(double elapseTime) {
-		for (AdviceListener listener : listeners) {
-			listener.onMethodFinished(elapseTime);
+	private static void invokeOnMethodFinished(Class<?> adviceClass, double elapseTime) {
+		try {
+			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
+					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
+			for (AdviceListener listener : listeners) {
+				listener.onMethodFinished(adviceClass, elapseTime);
+			}
+		} catch (ClassNotFoundException e) {
+
 		}
 	}
 
-	public static void registerListener(AdviceListener adviceListener) {
-		listeners.add(adviceListener);
+	public static void registerListener(Class<? extends AdviceListener> adviceListener) {
+		for (RemoraAdvice registeredAdvice : AdviceRegistry.INSTANCE.getRegisteredAdvices()) {
+			if (registeredAdvice instanceof BaseTransformers) {
+				try {
+					((BaseTransformers) registeredAdvice).listeners.add(adviceListener.newInstance());
+				} catch (InstantiationException e) {
+				} catch (IllegalAccessException e) {
+				}
+			}
+		}
 	}
 
 	public static String getStackTrace() {

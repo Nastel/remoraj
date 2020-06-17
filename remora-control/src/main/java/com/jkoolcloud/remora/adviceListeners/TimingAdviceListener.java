@@ -17,13 +17,15 @@
 package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.jkoolcloud.remora.advices.AdviceListener;
+import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
-public class TimingAdviceListener implements AdviceListener {
+public class TimingAdviceListener implements ReportingAdviceListener {
 	AtomicInteger maxTime = new AtomicInteger();
 	AtomicInteger minTime = new AtomicInteger();
 	AverageTime avgTime = new AverageTime();
@@ -34,9 +36,13 @@ public class TimingAdviceListener implements AdviceListener {
 	}
 
 	@Override
-	public void onMethodFinished(double elapseTime) {
+	public void onMethodFinished(Class<?> adviceClass, double elapseTime) {
 		maxTime.set((int) Math.max(maxTime.get(), elapseTime));
-		minTime.set((int) Math.min(minTime.get(), elapseTime));
+		if (minTime.get() == 0) {
+			minTime.set((int) elapseTime);
+		} else {
+			minTime.set((int) Math.min(minTime.get(), elapseTime));
+		}
 		avgTime.append((int) elapseTime);
 	}
 
@@ -48,6 +54,18 @@ public class TimingAdviceListener implements AdviceListener {
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
 
+	}
+
+	@Override
+	public Map<String, Object> report() {
+		return new HashMap<String, Object>() {
+			{
+				put("minTimes", minTime);
+				put("maxTime", maxTime);
+				put("avgTime", avgTime);
+				put("timeUnit", "nanoSeconds");
+			}
+		};
 	}
 
 	protected static class AverageTime {

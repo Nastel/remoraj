@@ -16,7 +16,8 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class RemoraControlAdviceTest {
 	@Test
 	public void testStatisticsResponse() throws Exception {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
-		RemoraControlAdvice.adviceListener = new CountingAdviceListener();
+		BaseTransformers.registerListener(CountingAdviceListener.class);
 		String s = new RsPrint(
 				new TKStatistics().act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice1")))
 						.printBody();
@@ -101,16 +102,4 @@ public class RemoraControlAdviceTest {
 		System.out.println(s);
 	}
 
-	@Test
-	public void testStatisticsErrorResponse() throws Exception {
-		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
-		RemoraControlAdvice.adviceListener = new CountingAdviceListener();
-		String s = new RsPrint(
-				new TKStatistics().act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice2")))
-						.printBody();
-		JsonNode jsonNode = new ObjectMapper().readTree(s);
-		JsonNode error = jsonNode.get("error");
-		assertNotNull(error);
-		System.out.println(s);
-	}
 }

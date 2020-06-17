@@ -374,10 +374,14 @@ Expected response:
 
 ```json
 {
-  "adviceName" : "JavaxServletAdvice",
-  "invokeCount" : 3,
-  "eventCreateCount" : 3,
-  "errorCount": 0
+	"adviceName" : "JavaxServletAdvice",
+	"eventCreateCount" : 0,
+	"invokeCount" : 0,
+	"errorCount" : 0,
+	"minTimes" : 0,
+	"maxTime" : 0,
+	"avgTime" : 0.0,
+	"timeUnit" : nanoSeconds
 }
 ```
 

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 
 public enum AdviceRegistry {
@@ -47,6 +48,16 @@ public enum AdviceRegistry {
 			throw new ClassNotFoundException();
 		}
 		return adviceMap.get(name);
+	}
+
+	public BaseTransformers getBaseTransformerByName(String name) throws ClassNotFoundException {
+
+		RemoraAdvice adviceByName = getAdviceByName(name);
+		if (adviceByName instanceof BaseTransformers) {
+			return (BaseTransformers) adviceByName;
+		} else {
+			throw new ClassNotFoundException();
+		}
 	}
 
 }

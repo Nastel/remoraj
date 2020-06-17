@@ -16,16 +16,8 @@
 
 package com.jkoolcloud.remora.advices;
 
-import java.lang.reflect.Method;
+import java.util.Map;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
-
-public interface AdviceListener {
-	void onIntercept(Class<?> adviceClass, Object thiz, Method method);
-
-	void onMethodFinished(Class<?> adviceClass, double elapseTime);
-
-	void onAdviceError(Class<?> adviceClass, Throwable e);
-
-	void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition);
+public interface ReportingAdviceListener extends AdviceListener {
+	Map<String, Object> report();
 }

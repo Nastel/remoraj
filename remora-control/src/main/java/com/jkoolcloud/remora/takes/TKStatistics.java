@@ -18,21 +18,23 @@ package com.jkoolcloud.remora.takes;
 
 import static java.text.MessageFormat.format;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.RsText;
 
-import com.jkoolcloud.remora.advices.RemoraControlAdvice;
-import com.jkoolcloud.remora.advices.RemoraStatistic;
+import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 
 public class TKStatistics implements TkRegex {
 
 	public static final String STATISTICS_RESPONSE_BODY = "'{'\n" //
-			+ "  \"adviceName\" : \"{0}\",\n"//
-			+ "  \"invokeCount\" : {1},\n" //
-			+ "  \"eventCreateCount\" : {2},\n"//
-			+ "  \"errorCount\": {3}\n"//
+			+ "\t\"adviceName\" : \"{0}\",\n"//
+			+ "\t{1}\n" // ReportingAdviceListener response
 			+ "'}'";
 
 	@Override
@@ -44,10 +46,15 @@ public class TKStatistics implements TkRegex {
 			}
 			try {
 				Class<?> aClass = Class.forName("com.jkoolcloud.remora.advices." + advice);
-				RemoraStatistic remoraStatistic = RemoraControlAdvice.getAdviceListener().getAdviceStatisticsMap()
-						.get(aClass);
-				return new RsText(format(STATISTICS_RESPONSE_BODY, advice, remoraStatistic.getInvokeCount(),
-						remoraStatistic.getEventCreateCount(), remoraStatistic.getErrorCount()));
+				String otherProperties = AdviceRegistry.INSTANCE
+						.getBaseTransformerByName(aClass.getSimpleName()).listeners.stream()
+								.filter(a -> a instanceof ReportingAdviceListener).map(a -> (ReportingAdviceListener) a)
+								.map(ReportingAdviceListener::report).map(Map::entrySet).flatMap(Collection::stream)
+								.map(e -> JSONUtils.quote(e.getKey()) + " : " + e.getValue())
+								.collect(Collectors.joining(",\n"));
+
+				otherProperties = JSONUtils.addPadding(1, otherProperties);
+				return new RsText(format(STATISTICS_RESPONSE_BODY, advice, otherProperties));
 
 			} catch (ClassNotFoundException e) {
 				return new RsText("{\"error\": \"No such advice\"}");

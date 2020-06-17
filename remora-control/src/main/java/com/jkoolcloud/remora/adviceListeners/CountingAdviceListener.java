@@ -17,57 +17,48 @@
 package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.jkoolcloud.remora.AdviceRegistry;
-import com.jkoolcloud.remora.advices.AdviceListener;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.RemoraStatistic;
+import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
-public class CountingAdviceListener implements AdviceListener {
-	ConcurrentHashMap<Class<?>, RemoraStatistic> adviceStatisticsMap = new ConcurrentHashMap<>();
-
-	{
-		for (RemoraAdvice advice : AdviceRegistry.INSTANCE.getRegisteredAdvices()) {
-			adviceStatisticsMap.put(advice.getClass(), new RemoraStatistic());
-		}
-	}
+public class CountingAdviceListener implements ReportingAdviceListener {
+	private RemoraStatistic statistic = new RemoraStatistic();
 
 	@Override
 	public void onIntercept(Class<?> adviceClass, Object thiz, Method method) {
-		try {
-			adviceStatisticsMap.get(adviceClass).incInvokeCount();
-		} catch (Throwable t) {
-			System.out.println();
-		}
+		statistic.incInvokeCount();
 	}
 
 	@Override
-	public void onMethodFinished(double elapseTime) {
+	public void onMethodFinished(Class<?> adviceClass, double elapseTime) {
 
 	}
 
 	@Override
 	public void onAdviceError(Class<?> adviceClass, Throwable e) {
-		try {
-			adviceStatisticsMap.get(adviceClass).incErrorCount();
-		} catch (Throwable t) {
-			System.out.println();
-		}
+		statistic.incErrorCount();
 	}
 
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
-		try {
-			adviceStatisticsMap.get(adviceClass).incEventCreateCount();
-		} catch (Throwable t) {
-			System.out.println();
-		}
+		statistic.incEventCreateCount();
 	}
 
-	public ConcurrentHashMap<Class<?>, RemoraStatistic> getAdviceStatisticsMap() {
-		return adviceStatisticsMap;
+	public RemoraStatistic getAdviceStatistic() {
+		return statistic;
 	}
 
+	@Override
+	public Map<String, Object> report() {
+		return new HashMap<String, Object>() {
+			{
+				put("invokeCount", statistic.getInvokeCount());
+				put("eventCreateCount", statistic.getEventCreateCount());
+				put("errorCount", statistic.getErrorCount());
+			}
+		};
+	}
 }

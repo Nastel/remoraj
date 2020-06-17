@@ -76,10 +76,10 @@ public class EntryDefinition implements EntryDefinitionDescription {
 
 	public void addProperty(String key, String value) {
 		try {
-			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(adviceClass.getSimpleName());
+			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getBaseTransformerByName(adviceClass.getSimpleName());
 			if (((BaseTransformers) adviceByName).excludeProperties.contains(key)) {
-                return;
-            }
+				return;
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		String lastValue = value;

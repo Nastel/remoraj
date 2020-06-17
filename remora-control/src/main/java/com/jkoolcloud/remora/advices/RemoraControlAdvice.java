@@ -42,6 +42,7 @@ import com.jkoolcloud.remora.AdminReporter;
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.adviceListeners.CountingAdviceListener;
+import com.jkoolcloud.remora.adviceListeners.TimingAdviceListener;
 import com.jkoolcloud.remora.takes.*;
 
 //import org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder;
@@ -64,8 +65,6 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	public static int serviceDelay = 240;
 	@RemoraConfig.Configurable
 	public static String heapDumpPath = System.getProperty(Remora.REMORA_PATH, ".") + "/dumps/";
-
-	protected static CountingAdviceListener adviceListener;
 
 	@Override
 	public void install(Instrumentation instrumentation) {
@@ -97,8 +96,8 @@ public class RemoraControlAdvice implements RemoraAdvice {
 			logger.info("Admin reporter will be not initialised, admin reporter endpoint not set");
 		}
 
-		adviceListener = new CountingAdviceListener();
-		BaseTransformers.registerListener(adviceListener);
+		BaseTransformers.registerListener(CountingAdviceListener.class);
+		BaseTransformers.registerListener(TimingAdviceListener.class);
 
 	}
 
@@ -166,10 +165,6 @@ public class RemoraControlAdvice implements RemoraAdvice {
 		public InetSocketAddress getInetSocketAddress() {
 			return delegate;
 		}
-	}
-
-	public static CountingAdviceListener getAdviceListener() {
-		return adviceListener;
 	}
 
 }
