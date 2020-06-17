@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.jkoolcloud.remora</groupId>
             <artifactId>remora-control</artifactId>
-            <version>0.1.8-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
