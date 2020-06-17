@@ -64,6 +64,9 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public List<AdviceFilter> filters = new ArrayList<>(10);
 
+	@RemoraConfig.Configurable
+	public List<String> excludeProperties = new ArrayList<>(10);
+
 	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
 			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));

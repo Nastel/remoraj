@@ -22,7 +22,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
+import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.BaseTransformers;
+import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.TransparentAdvice;
 
 public class EntryDefinition implements EntryDefinitionDescription {
@@ -73,6 +75,13 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	}
 
 	public void addProperty(String key, String value) {
+		try {
+			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(adviceClass.getSimpleName());
+			if (((BaseTransformers) adviceByName).excludeProperties.contains(key)) {
+                return;
+            }
+		} catch (ClassNotFoundException e) {
+		}
 		String lastValue = value;
 		int iteration = 0;
 		if (checkLastPropertyValue) {

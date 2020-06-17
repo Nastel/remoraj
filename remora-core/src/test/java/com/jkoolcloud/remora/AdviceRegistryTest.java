@@ -34,6 +34,6 @@ public class AdviceRegistryTest {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(testAdvice));
 		List<String> configurableFields = ReflectionUtils.getConfigurableFields(testAdvice);
 		System.out.println(configurableFields);
-		assertEquals(7, configurableFields.size());
+		assertEquals(8, configurableFields.size());
 	}
 }
