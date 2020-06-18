@@ -46,7 +46,6 @@ import net.bytebuddy.utility.JavaModule;
 
 public abstract class BaseTransformers implements RemoraAdvice {
 
-	private static final String ADVICE_NAME = "GENERAL";
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;
 	@RemoraConfig.Configurable
@@ -147,8 +146,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		entryDefinition.setException(exception);
 
 		if (logger != null) {
-			logger.info(
-					format("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz()));
+			logger.info(format("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz()));
 		}
 	}
 
@@ -283,7 +281,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		return sb.toString();
 	}
 
-	public static void doFinally(TaggedLogger logger, Class caller) {
+	public static void doFinally(TaggedLogger logger, Class<?> caller) {
 		if (logger != null) {
 			logger.debug("DoFinnaly");
 		}
