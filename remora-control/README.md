@@ -391,7 +391,7 @@ To reset statistics send DELETE to the same endpoint:  `localhost:7366/stats/[ad
 curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 ```
 
-To reset *all* statistics send DELETE to:  `localhost:7366/stats`
+To reset *all* statistics send DELETE to:  `localhost:7366/stats/all`
 
 
 # Traces Output Statistics
