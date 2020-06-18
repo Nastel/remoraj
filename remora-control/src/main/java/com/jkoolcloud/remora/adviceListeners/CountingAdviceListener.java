@@ -25,7 +25,13 @@ import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public class CountingAdviceListener implements ReportingAdviceListener {
+	private final long resetTime;
 	private RemoraStatistic statistic = new RemoraStatistic();
+
+	public CountingAdviceListener() {
+		resetTime = System.currentTimeMillis();
+
+	}
 
 	@Override
 	public void onIntercept(Class<?> adviceClass, Object thiz, Method method) {
@@ -55,6 +61,8 @@ public class CountingAdviceListener implements ReportingAdviceListener {
 	public Map<String, Object> report() {
 		return new HashMap<String, Object>() {
 			{
+				put("resetTimestamp", resetTime);
+				put("timeSinceLastResetSeconds", (System.currentTimeMillis() - resetTime) / 1000);
 				put("invokeCount", statistic.getInvokeCount());
 				put("eventCreateCount", statistic.getEventCreateCount());
 				put("errorCount", statistic.getErrorCount());

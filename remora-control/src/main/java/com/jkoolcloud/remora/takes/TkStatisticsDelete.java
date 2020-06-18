@@ -76,7 +76,14 @@ public class TkStatisticsDelete implements Take {
 			}
 			return null;
 		}).filter(l -> l != null).collect(Collectors.toList());
-		AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners = new ArrayList<>(10);
-		AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners.addAll(newAdviceListeners);
+
+		try {
+			AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners = new ArrayList<>(10);
+			AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners
+					.addAll(newAdviceListeners);
+
+		} catch (ClassNotFoundException e) {
+			// imposible
+		}
 	}
 }

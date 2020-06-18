@@ -375,13 +375,16 @@ Expected response:
 ```json
 {
 	"adviceName" : "JavaxServletAdvice",
-	"eventCreateCount" : 0,
-	"invokeCount" : 0,
-	"errorCount" : 0,
-	"minTimes" : 0,
-	"maxTime" : 0,
-	"avgTime" : 0.0,
-	"timeUnit" : nanoSeconds
+	"timeSinceLastResetSeconds" :  91,
+	"eventCreateCount" :  0,
+	"invokeCount" :  0,
+	"resetTimestamp" :  1592489879817,
+	"errorCount" :  0,
+	"minTimes" :  0,
+	"maxTime" :  0,
+	"avgTime" : "0.0",
+	"timeUnit" : "ns"
+	
 }
 ```
 
@@ -391,7 +394,7 @@ To reset statistics send DELETE to the same endpoint:  `localhost:7366/stats/[ad
 curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 ```
 
-To reset *all* statistics send DELETE to:  `localhost:7366/stats/all`
+To reset *all* statistics send DELETE to:  `localhost:7366/stats`
 
 
 # Traces Output Statistics

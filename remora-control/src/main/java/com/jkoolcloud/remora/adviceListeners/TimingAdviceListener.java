@@ -63,7 +63,7 @@ public class TimingAdviceListener implements ReportingAdviceListener {
 				put("minTimes", minTime);
 				put("maxTime", maxTime);
 				put("avgTime", avgTime);
-				put("timeUnit", "nanoSeconds");
+				put("timeUnit", "ns");
 			}
 		};
 	}

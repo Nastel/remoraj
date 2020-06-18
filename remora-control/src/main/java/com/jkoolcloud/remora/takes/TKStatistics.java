@@ -51,7 +51,7 @@ public class TKStatistics implements Take {
 						.getBaseTransformerByName(aClass.getSimpleName()).listeners.stream()
 								.filter(a -> a instanceof ReportingAdviceListener).map(a -> (ReportingAdviceListener) a)
 								.map(ReportingAdviceListener::report).map(Map::entrySet).flatMap(Collection::stream)
-								.map(e -> JSONUtils.quote(e.getKey()) + " : " + e.getValue())
+								.map(e -> JSONUtils.quote(e.getKey()) + " : " + JSONUtils.quote(e.getValue()))
 								.collect(Collectors.joining(",\n"));
 
 				otherProperties = JSONUtils.addPadding(1, otherProperties);
