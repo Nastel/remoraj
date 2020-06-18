@@ -60,7 +60,7 @@ public class TimingAdviceListener implements ReportingAdviceListener {
 	public Map<String, Object> report() {
 		return new HashMap<String, Object>() {
 			{
-				put("minTimes", minTime);
+				put("minTime", minTime);
 				put("maxTime", maxTime);
 				put("avgTime", avgTime);
 				put("timeUnit", "ns");
