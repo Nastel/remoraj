@@ -112,39 +112,45 @@
                     <version>2.8.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                                <classpathPrefix>dependency-jars/</classpathPrefix>
-                                <!-- Jar file entry point -->
-                                <mainClass>com.jkoolcloud.remora.Remora</mainClass>
-                            </manifest>
-                            <manifestEntries>
-                                <Premain-Class>com.jkoolcloud.remora.Remora</Premain-Class>
-                                <Boot-Class-Path>remora.jar</Boot-Class-Path>
-                                <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                                <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-
-                <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <executions>
                         <execution>
+							<id>default-jar</id>
+							<goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <phase>package</phase>
+							<configuration>
+								<excludes>
+									<exclude>**/test</exclude>
+								</excludes>
+								<archive>
+									<manifest>
+										<addClasspath>true</addClasspath>
+										<classpathPrefix>dependency-jars/</classpathPrefix>
+										<!-- Jar file entry point -->
+										<mainClass>com.jkoolcloud.remora.Remora</mainClass>
+									</manifest>
+									<manifestEntries>
+										<Premain-Class>com.jkoolcloud.remora.Remora</Premain-Class>
+										<Boot-Class-Path>remora.jar</Boot-Class-Path>
+										<Can-Redefine-Classes>true</Can-Redefine-Classes>
+										<Can-Retransform-Classes>true</Can-Retransform-Classes>
+									</manifestEntries>
+								</archive>
+							</configuration>
+                        </execution>
+                        <execution>
+							<id>remora-test</id>
                             <goals>
                                 <goal>test-jar</goal>
                             </goals>
                             <phase>test-compile</phase>
+							<configuration>
+								<outputDirectory>${basedir}\target</outputDirectory>
+							</configuration>
                         </execution>
                     </executions>
-                    <configuration>
-                        <outputDirectory>${basedir}\target</outputDirectory>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -207,6 +213,4 @@
         </plugins>
 
     </build>
-
-
 </project>
