@@ -30,6 +30,9 @@ import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.AdviceListener;
 
 public class TkStatisticsDelete implements Take {
+
+	public static final String ALL = "all";
+
 	@Override
 	public Response act(Request req) throws Exception {
 
@@ -37,24 +40,15 @@ public class TkStatisticsDelete implements Take {
 		if (advice == null) {
 			throw new IllegalArgumentException();
 		}
+
+		if (advice == ALL) {
+			AdviceRegistry.INSTANCE.getRegisteredAdvices().stream().map(a -> a.getClass())
+					.forEach(TkStatisticsDelete::resetAdviceStatistics);
+		}
+
 		try {
 			Class<?> aClass = Class.forName("com.jkoolcloud.remora.advices." + advice);
-			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
-					.getBaseTransformerByName(aClass.getSimpleName()).listeners;
-			List<? extends AdviceListener> newAdviceListeners = listeners.stream().map(l -> l.getClass())
-					.map(aClass1 -> {
-						try {
-							return aClass1.newInstance();
-						} catch (InstantiationException e) {
-							new RsText("ERROR: " + e.getClass().getSimpleName() + " " + e);
-						} catch (IllegalAccessException e) {
-							new RsText("ERROR " + e.getClass().getSimpleName() + " " + e);
-						}
-						return null;
-					}).filter(l -> l != null).collect(Collectors.toList());
-			AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners = new ArrayList<>(10);
-			AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners
-					.addAll(newAdviceListeners);
+			resetAdviceStatistics(aClass);
 
 		} catch (Exception e) {
 
@@ -62,5 +56,27 @@ public class TkStatisticsDelete implements Take {
 
 		return new RsText("OK");
 
+	}
+
+	private static void resetAdviceStatistics(Class<?> aClass) {
+
+		List<AdviceListener> listeners = null;
+		try {
+			listeners = AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners;
+		} catch (ClassNotFoundException e) {
+			new RsText("ERROR: no such advice; " + e.getClass().getSimpleName() + " " + e);
+		}
+		List<? extends AdviceListener> newAdviceListeners = listeners.stream().map(l -> l.getClass()).map(aClass1 -> {
+			try {
+				return aClass1.newInstance();
+			} catch (InstantiationException e) {
+				new RsText("ERROR: " + e.getClass().getSimpleName() + " " + e);
+			} catch (IllegalAccessException e) {
+				new RsText("ERROR " + e.getClass().getSimpleName() + " " + e);
+			}
+			return null;
+		}).filter(l -> l != null).collect(Collectors.toList());
+		AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners = new ArrayList<>(10);
+		AdviceRegistry.INSTANCE.getBaseTransformerByName(aClass.getSimpleName()).listeners.addAll(newAdviceListeners);
 	}
 }
