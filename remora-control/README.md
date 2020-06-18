@@ -385,6 +385,14 @@ Expected response:
 }
 ```
 
+To reset statistics send DELETE to the same endpoint:  `localhost:7366/stats/[advice name]`
+
+```
+curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
+```
+
+To reset *all* statistics send DELETE to:  `localhost:7366/stats`
+
 
 # Traces Output Statistics
 

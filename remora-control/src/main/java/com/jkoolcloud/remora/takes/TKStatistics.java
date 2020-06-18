@@ -22,15 +22,16 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.takes.Request;
 import org.takes.Response;
+import org.takes.Take;
 import org.takes.facets.fork.RqRegex;
-import org.takes.facets.fork.TkRegex;
 import org.takes.rs.RsText;
 
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 
-public class TKStatistics implements TkRegex {
+public class TKStatistics implements Take {
 
 	public static final String STATISTICS_RESPONSE_BODY = "'{'\n" //
 			+ "\t\"adviceName\" : \"{0}\",\n"//
@@ -38,9 +39,9 @@ public class TKStatistics implements TkRegex {
 			+ "'}'";
 
 	@Override
-	public Response act(RqRegex req) throws Exception {
+	public Response act(Request req) throws Exception {
 		try {
-			String advice = req.matcher().group("advice");
+			String advice = ((RqRegex) req).matcher().group("advice");
 			if (advice == null) {
 				throw new IllegalArgumentException();
 			}
@@ -66,4 +67,5 @@ public class TKStatistics implements TkRegex {
 		}
 
 	}
+
 }
