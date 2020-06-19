@@ -36,6 +36,7 @@ import com.jkoolcloud.remora.filters.AdviceFilter;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
+import net.bytebuddy.asm.TypeConstantAdjustment;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -52,6 +53,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public static int callStackLimit = 100;
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public boolean load = true;
+	@RemoraConfig.Configurable(configurableOnce = true)
+	public boolean java15safe = false;
 
 	@RemoraConfig.Configurable
 	public boolean sendStackTrace;
@@ -99,13 +102,23 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public AgentBuilder.Identified.Extendable getTransform() {
-		return agentBuilder//
+		AgentBuilder.Identified.Narrowable type = agentBuilder//
 				// .with(listener) //
 				.disableClassFormatChanges()//
 				// .enableUnsafeBootstrapInjection() //
 				.ignore(getClassIgnores()) //
-				.type(getTypeMatcher()) //
-				.transform(getAdvice());
+				.type(getTypeMatcher());
+		if (java15safe) {
+			type.transform(new AgentBuilder.Transformer() {
+				@Override
+				public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription,
+						ClassLoader classLoader, JavaModule module) {
+					return builder.visit(TypeConstantAdjustment.INSTANCE);
+				}
+			});//
+		}
+
+		return type.transform(getAdvice());
 	}
 
 	public abstract ElementMatcher<TypeDescription> getTypeMatcher();
@@ -146,7 +159,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		entryDefinition.setException(exception);
 
 		if (logger != null) {
-			logger.info(format("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz()));
+			logger.info(
+					format("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz()));
 		}
 	}
 
