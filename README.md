@@ -167,14 +167,14 @@ java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.j
 RemoraJ configuration file is located `config` folder, file named `remora.properties`.
 See relevant comments in the file for advanced config.
 
-## Agent VM Identification
+## Agent VM Id
 
 To identify your VM: set system property (`java -Dremora.vmid=MyVmName`) to any readable token identifying the process remora agent is 
-attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()`.
+attached to. By default `remora.vmid=MyVmName` is set to `ManagementFactory.getRuntimeMXBean().getName()`.
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
-## Application Identification
+## Application Id
  
 To identify your application: set system property (`java -Dremora.appl.name=MyApp1`). All emmited traces are tagged with the specified app name. Application name is automatically set based on deployed app name when remora agent is running in the application server context such as jBoss. 
 
