@@ -20,16 +20,29 @@ import java.lang.reflect.Method;
 
 public interface AdviceFilter {
 
+	void countExcluded();
+
+	void countInvoked();
+
 	boolean maches(Object thiz, Method method, Object... arguments);
 
 	Mode getMode();
 
 	default boolean intercept(Object thiz, Method method, Object... arguments) {
+		countInvoked();
+		boolean maches = maches(thiz, method, arguments);
+
 		if (getMode().equals(Mode.INCLUDE)) {
-			return maches(thiz, method, arguments);
+			if (!maches) {
+				countExcluded();
+			}
+			return maches;
 		}
 		if (getMode().equals(Mode.EXCLUDE)) {
-			return !maches(thiz, method, arguments);
+			if (maches) {
+				countExcluded();
+			}
+			return !maches;
 		}
 		return true;
 	}

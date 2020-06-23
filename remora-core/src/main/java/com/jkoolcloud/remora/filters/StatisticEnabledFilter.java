@@ -16,31 +16,29 @@
 
 package com.jkoolcloud.remora.filters;
 
-import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicLong;
 
-import com.jkoolcloud.remora.RemoraConfig;
+public abstract class StatisticEnabledFilter implements AdviceFilter {
 
-public class LimitingFilter extends StatisticEnabledFilter {
-	@RemoraConfig.Configurable
-	public Integer everyNth = 2;
-
-	@RemoraConfig.Configurable
-	public Mode mode = Mode.EXCLUDE;
+	private AtomicLong invokedCount = new AtomicLong();
+	private AtomicLong excludedCount = new AtomicLong();
 
 	@Override
-	public boolean maches(Object thiz, Method method, Object... arguments) {
-		if (everyNth <= 1) {
-			return true;
-		}
-		if (getInvokedCount() % everyNth != 0) {
-			return false;
-		} else {
-			return true;
-		}
+	public void countExcluded() {
+		excludedCount.incrementAndGet();
 	}
 
 	@Override
-	public Mode getMode() {
-		return mode;
+	public void countInvoked() {
+		invokedCount.incrementAndGet();
 	}
+
+	public long getInvokedCount() {
+		return invokedCount.get();
+	}
+
+	public long getExcludedCount() {
+		return excludedCount.get();
+	}
+
 }

@@ -28,8 +28,8 @@ import org.takes.rs.RsText;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
+import com.jkoolcloud.remora.filters.StatisticEnabledFilter;
 
 public class TkNewFilter implements Take {
 
@@ -45,9 +45,9 @@ public class TkNewFilter implements Take {
 		String filterClass = TakesUtils.getValueForKey("class", body);
 		String filterName = TakesUtils.getValueForKey("name", body);
 
-		AdviceFilter filterInstance = null;
+		StatisticEnabledFilter filterInstance = null;
 		try {
-			filterInstance = (AdviceFilter) Class.forName(filterClass).newInstance();
+			filterInstance = (StatisticEnabledFilter) Class.forName(filterClass).newInstance();
 			for (Field field : Arrays.asList(filterInstance.getClass().getDeclaredFields())) {
 				if (field.isAnnotationPresent(RemoraConfig.Configurable.class)) {
 					try {

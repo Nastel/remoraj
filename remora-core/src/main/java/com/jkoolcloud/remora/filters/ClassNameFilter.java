@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.jkoolcloud.remora.RemoraConfig;
 
-public class ClassNameFilter implements AdviceFilter {
+public class ClassNameFilter extends StatisticEnabledFilter {
 
 	@RemoraConfig.Configurable
 	public List<String> classNames = new ArrayList<>();

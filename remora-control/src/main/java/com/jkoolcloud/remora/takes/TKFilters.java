@@ -28,22 +28,25 @@ import org.takes.Take;
 import org.takes.rs.RsText;
 
 import com.jkoolcloud.remora.core.utils.ReflectionUtils;
-import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
+import com.jkoolcloud.remora.filters.StatisticEnabledFilter;
 
 public class TKFilters implements Take {
 
 	public static final String FILTER_RESPONSE_TEMPLATE = "'{'\n" //
 			+ "  \"filterName\" : \"{0}\",\n"//
 			+ "  \"filterClass\" : \"{1}\",\n" //
-			+ "  \"properties\" : '{'{2}'}\n"//
+			+ "  \"invokeCount\" : {2},\n" //
+			+ "  \"excludeCount\" : {3},\n" //
+
+			+ "  \"properties\" : '{'{4}'}\n"//
 			+ "'}'";
 
 	@Override
 	public Response act(Request req) throws Exception {
 		StringBuilder response = new StringBuilder();
 		response.append("[");
-		Map<String, AdviceFilter> filters = FilterManager.INSTANCE.getAll();
+		Map<String, StatisticEnabledFilter> filters = FilterManager.INSTANCE.getAll();
 		response.append(filters.entrySet().stream().map(stringAdviceFilterEntry -> {
 
 			List<String> properties = ReflectionUtils.getConfigurableFields(stringAdviceFilterEntry.getValue());
@@ -54,7 +57,10 @@ public class TKFilters implements Take {
 					.collect(Collectors.joining(",\n"));
 
 			return format(FILTER_RESPONSE_TEMPLATE, stringAdviceFilterEntry.getKey(),
-					stringAdviceFilterEntry.getValue().getClass(), JSONUtils.addPadding(4, collect));
+					stringAdviceFilterEntry.getValue().getClass(),
+					JSONUtils.quote(stringAdviceFilterEntry.getValue().getInvokedCount()),
+					JSONUtils.quote(stringAdviceFilterEntry.getValue().getExcludedCount()),
+					JSONUtils.addPadding(4, collect));
 		}).collect(Collectors.joining(",\n")));
 		response.append("\n]");
 		return new RsText(response.toString());

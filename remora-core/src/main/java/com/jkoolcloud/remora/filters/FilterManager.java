@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 public enum FilterManager {
 	INSTANCE;
 
-	Map<String, AdviceFilter> filters = new HashMap<>(10);
+	Map<String, StatisticEnabledFilter> filters = new HashMap<>(10);
 
 	public List<AdviceFilter> get(List<?> list) {
 		return filters.entrySet().stream().filter(entry -> list.contains(entry.getKey())).map(entry -> entry.getValue())
 				.collect(Collectors.toList());
 	}
 
-	public void add(String filterName, AdviceFilter filter) {
+	public void add(String filterName, StatisticEnabledFilter filter) {
 		filters.put(filterName, filter);
 	}
 
@@ -39,7 +39,7 @@ public enum FilterManager {
 		return filters.get(filterName);
 	}
 
-	public Map<String, AdviceFilter> getAll() {
+	public Map<String, StatisticEnabledFilter> getAll() {
 		return filters;
 	}
 

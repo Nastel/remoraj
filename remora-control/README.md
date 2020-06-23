@@ -692,6 +692,8 @@ Expected response:
 {
   "filterName" : "ingnoredStreams",
   "filterClass" : "class com.jkoolcloud.remora.filters.ClassNameFilter",
+  "invokeCount" :  1001,
+  "excludeCount" :  1,
   "properties" : {"mode" : "EXCLUDE",
 				"regex" : false,
 				"classNames" : ["java.net.SocketInputStream","java.util.jar.JarVerifier$VerifierStream"]
@@ -700,6 +702,8 @@ Expected response:
 {
   "filterName" : "ingnoredMysqlStreams",
   "filterClass" : "class com.jkoolcloud.remora.filters.ClassNameFilter",
+  "invokeCount" :  1231,
+  "excludeCount" :  0,
   "properties" : {"mode" : "EXCLUDE",
 				"regex" : true,
 				"classNames" : ["com\.mysql.*"]

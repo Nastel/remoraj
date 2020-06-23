@@ -16,8 +16,7 @@
 
 package com.jkoolcloud.remora.filters;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -27,16 +26,18 @@ public class LimitingFilterTest {
 	public void maches() throws NoSuchMethodException {
 		LimitingFilter filter = new LimitingFilter();
 		filter.everyNth = 5;
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertFalse(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertTrue(filter.maches(this, getClass().getMethod("maches")));
-		assertFalse(filter.maches(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertFalse(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertTrue(filter.intercept(this, getClass().getMethod("maches")));
+		assertFalse(filter.intercept(this, getClass().getMethod("maches")));
+		assertEquals(10, filter.getInvokedCount());
+		assertEquals(2, filter.getExcludedCount());
 
 	}
 }

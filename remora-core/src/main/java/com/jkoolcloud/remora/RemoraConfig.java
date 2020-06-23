@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
+import com.jkoolcloud.remora.filters.StatisticEnabledFilter;
 
 public enum RemoraConfig {
 	INSTANCE;
@@ -160,7 +161,7 @@ public enum RemoraConfig {
 			try {
 				String filterClass = config.getProperty(PREFIX + filterName + SUFFIX);
 				Class<?> aClass = Class.forName(filterClass);
-				AdviceFilter adviceFilter = (AdviceFilter) aClass.newInstance();
+				StatisticEnabledFilter adviceFilter = (StatisticEnabledFilter) aClass.newInstance();
 
 				for (Field field : aClass.getFields()) {
 					if (field.isAnnotationPresent(Configurable.class)) {

@@ -32,6 +32,10 @@ public class TKFiltersTest {
 	@Test
 	public void act() throws Exception {
 		ClassNameFilter filter = new ClassNameFilter();
+		for (int i = 0; i <= 1000; i++) {
+            filter.countInvoked();
+        }
+		filter.countExcluded();
 		filter.classNames = Arrays.asList(new String[] { "a.b.c", "a.c.b", "c.b.a" });
 		filter.mode = AdviceFilter.Mode.INCLUDE;
 		FilterManager.INSTANCE.add("TESTFILTER1", filter);
