@@ -28,6 +28,7 @@ import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.TransparentAdvice;
 
 public class EntryDefinition implements EntryDefinitionDescription {
+	private static final String DEFAULT_APPL_NAME = "Java";
 	protected final String id = JUGFactoryImpl.newUUID();
 	private final Class<? extends BaseTransformers> adviceClass;
 	private boolean transparent;
@@ -57,6 +58,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	public EntryDefinition(Class<? extends BaseTransformers> adviceClass, boolean checkLastPropertyValue) {
 		entry.id = id;
 		exit.id = id;
+		exit.application = System.getProperty("remora.appl.name", DEFAULT_APPL_NAME);
 		entry.adviceClass = adviceClass.getSimpleName();
 		this.adviceClass = adviceClass;
 		entry.vmId = vmIdentificationStatic;

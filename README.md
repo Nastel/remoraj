@@ -174,6 +174,11 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
+### Application identification
+ 
+To identify your application in your events you can set the java system property (`java -D`) `remora.appl.name`. This will be filed in events 
+created. I case of application container (application server), this value will be ovveriden with actual deployed application name. 
+
 ## Agent Trace Output
 
 By default, RemoraJ java agent writes its traces to a high-performance memmory mapped persistent store (file) backed by `com.jkoolcloud.remora.core.output.ChronicleOutput`. This store is used as a communication channel between RemoraJ java agent and the Streams Agent.
