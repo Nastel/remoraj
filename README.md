@@ -174,7 +174,7 @@ attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getNam
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
-### Application Identification
+## Application Identification
  
 To identify your application: set system property (`java -Dremora.appl.name=MyApp1`). All emmited traces are tagged with the specified app name. Application name is automatically set based on deployed app name when remora agent is running in the application server context such as jBoss. 
 
