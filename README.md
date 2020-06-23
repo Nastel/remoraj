@@ -169,15 +169,16 @@ See relevant comments in the file for advanced config.
 
 ## Agent VM Identification
 
-To identify your VM: can set system property (`java -D`) `remora.vmid` to any readable token identifying the process remoraJ are 
-attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()` result (e.g. `-Dremora.vmid=myVM1001`).
+To identify your VM: set system property (`java -Dremora.vmid=MyVmName`) to any readable token identifying the process remora agent is 
+attached to. By default it will use `ManagementFactory.getRuntimeMXBean().getName()`.
 
 **NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
-### Application identification
+### Application Identification
  
-To identify your application in your events you can set the java system property (`java -D`) `remora.appl.name`. This will be filed in events 
-created. I case of application container (application server), this value will be ovveriden with actual deployed application name. 
+To identify your application: set system property (`java -Dremora.appl.name=MyApp1`). All emmited traces are tagged with the specified app name. Application name is automatically set based on deployed app name when remora agent is running in the application server context such as jBoss. 
+
+**NOTE:** Default `remora.appl.name` is set to `java` if not explicitly specified.
 
 ## Agent Trace Output
 
