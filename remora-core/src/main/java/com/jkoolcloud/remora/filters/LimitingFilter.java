@@ -22,7 +22,7 @@ import com.jkoolcloud.remora.RemoraConfig;
 
 public class LimitingFilter extends StatisticEnabledFilter {
 	@RemoraConfig.Configurable
-	public Integer everyNth = 2;
+	public int everyNth = 2;
 
 	@RemoraConfig.Configurable
 	public Mode mode = Mode.EXCLUDE;
