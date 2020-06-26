@@ -98,7 +98,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(EjbRemoteAdvice.class, thiz, method, arguments)) {
+			if (!intercept(EjbRemoteAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, logging ? logger : null);
@@ -149,7 +149,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(EjbRemoteAdvice.class, obj, method, arguments)) {
+			if (!intercept(EjbRemoteAdvice.class, obj, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

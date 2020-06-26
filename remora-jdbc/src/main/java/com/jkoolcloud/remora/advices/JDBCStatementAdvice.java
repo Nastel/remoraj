@@ -100,7 +100,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			// if (isChainedClassInterception(JDBCStatementAdvice.class, logging ? logger : null)) {
 			// return;
 			// }
-			if (!intercept(JDBCStatementAdvice.class, thiz, method, arguments)) {
+			if (!intercept(JDBCStatementAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, logging ? logger : null);
@@ -174,7 +174,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(JDBCStatementAdvice.class, thiz, method)) {
+			if (!intercept(JDBCStatementAdvice.class, thiz, method, logging ? logger : null)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

@@ -86,7 +86,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(JBossAdvice.class, thiz, method, arguments)) {
+			if (!intercept(JBossAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, JBossAdvice.class, logging ? logger : null);
@@ -141,7 +141,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(JBossAdvice.class, obj, method, req, resp)) {
+			if (!intercept(JBossAdvice.class, obj, method, logging ? logger : null, req, resp)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

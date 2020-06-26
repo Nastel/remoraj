@@ -110,7 +110,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!intercept(JavaxServletAdvice.class, thiz, method, req, resp)) {
+			if (!intercept(JavaxServletAdvice.class, thiz, method, logging ? logger : null, req, resp)) {
 				return;
 			}
 			if (logging) {
@@ -232,7 +232,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	{
 		boolean doFinally = true;
 		try {
-			if (!intercept(JavaxServletAdvice.class, obj, method, req, resp)) {
+			if (!intercept(JavaxServletAdvice.class, obj, method, logging ? logger : null, req, resp)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

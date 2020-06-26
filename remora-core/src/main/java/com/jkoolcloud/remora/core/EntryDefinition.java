@@ -317,4 +317,11 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	public enum ResourceType {
 		GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL, NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE, SERVICE, QUEUE, FILE, TOPIC, DATABASE, HTTP
 	}
+
+	public static class DummyEntryDefinition extends EntryDefinition {
+
+		public DummyEntryDefinition() {
+			super(BaseTransformers.class, false);
+		}
+	}
 }

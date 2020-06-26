@@ -88,7 +88,7 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 			@Advice.Origin Method method//
 	) {
 		try {
-			if (!intercept(OutputStreamWriteAdvice.class, thiz, method, arguments)) {
+			if (!intercept(OutputStreamWriteAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount();

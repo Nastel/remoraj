@@ -30,6 +30,7 @@ import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.FilteredOutEntryStack;
 import com.jkoolcloud.remora.core.output.OutputManager;
 import com.jkoolcloud.remora.filters.AdviceFilter;
 
@@ -149,7 +150,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				entryDefinition.addProperty("PARENT", lastEntryDefinition.getId());
 			}
 		}
-		if (!entryDefinition.isTransparent()) {
+		if (!entryDefinition.isTransparent() && !(stackThreadLocal.get() instanceof FilteredOutEntryStack)) {
 			OutputManager.send(entryDefinition);
 		}
 	}
@@ -200,7 +201,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (getAdviceInstance(entryDefinition.getAdviceClassClass()).sendStackTrace) {
 				entryDefinition.setStackTrace(getStackTrace());
 			}
-			if (!entryDefinition.isTransparent()) {
+			if (!entryDefinition.isTransparent() || !(stackThreadLocal.get() instanceof FilteredOutEntryStack)) {
 				OutputManager.send(entryDefinition);
 			}
 		} catch (Throwable t) {
@@ -393,12 +394,17 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static boolean intercept(Class<? extends BaseTransformers> tClass, Object thiz, Method method,
-			Object... arguments) {
+			TaggedLogger logger, Object... arguments) {
 		if (!getAdviceInstance(tClass).enabled) {
 			return false;
 		}
 		for (AdviceFilter filter : getAdviceInstance(tClass).filters) {
 			if (!filter.intercept(thiz, method, arguments)) {
+				if (filter.excludeWholeStack()) {
+					if (stackThreadLocal.get() == null || stackThreadLocal.get().isEmpty()) {
+						stackThreadLocal.set(new FilteredOutEntryStack(logger, callStackLimit));
+					}
+				}
 				return false;
 			}
 		}

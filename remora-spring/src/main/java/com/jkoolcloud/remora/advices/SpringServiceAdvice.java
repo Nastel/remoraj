@@ -94,7 +94,7 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(SpringServiceAdvice.class, thiz, method, arguments)) {
+			if (!intercept(SpringServiceAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, SpringServiceAdvice.class, logging ? logger : null);
@@ -133,7 +133,7 @@ public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(SpringServiceAdvice.class, obj, method, arguments)) {
+			if (!intercept(SpringServiceAdvice.class, obj, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

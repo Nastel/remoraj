@@ -80,7 +80,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(KafkaConsumerClientAdvice.class, thiz, method)) {
+			if (!intercept(KafkaConsumerClientAdvice.class, thiz, method, logging ? logger : null)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
@@ -130,7 +130,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(KafkaConsumerClientAdvice.class, producer, method)) {
+			if (!intercept(KafkaConsumerClientAdvice.class, producer, method, logging ? logger : null)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

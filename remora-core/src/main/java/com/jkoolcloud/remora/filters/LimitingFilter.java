@@ -27,6 +27,14 @@ public class LimitingFilter extends StatisticEnabledFilter {
 	@RemoraConfig.Configurable
 	public Mode mode = Mode.EXCLUDE;
 
+	@RemoraConfig.Configurable
+	public boolean shouldExcludeWholeStack = true;
+
+	@Override
+	public boolean excludeWholeStack() {
+		return shouldExcludeWholeStack;
+	}
+
 	@Override
 	public boolean maches(Object thiz, Method method, Object... arguments) {
 		if (everyNth <= 1) {

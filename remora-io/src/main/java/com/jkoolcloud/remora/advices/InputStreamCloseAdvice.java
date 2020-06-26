@@ -85,7 +85,7 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 	public static void after(@Advice.This InputStream thiz, //
 			@Advice.Origin Method method //
 	) {
-		if (!intercept(InputStreamCloseAdvice.class, thiz, method)) {
+		if (!intercept(InputStreamCloseAdvice.class, thiz, method, logging ? logger : null)) {
 			return;
 		}
 		if (logging) {

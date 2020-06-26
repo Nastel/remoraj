@@ -24,6 +24,8 @@ public interface AdviceFilter {
 
 	void countInvoked();
 
+	boolean excludeWholeStack();
+
 	boolean maches(Object thiz, Method method, Object... arguments);
 
 	Mode getMode();

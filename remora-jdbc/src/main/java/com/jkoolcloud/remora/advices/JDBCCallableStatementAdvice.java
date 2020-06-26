@@ -99,7 +99,8 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(JDBCCallableStatementAdvice.class, thiz, method, parameterName, parameterValue)) {
+			if (!intercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null, parameterName,
+					parameterValue)) {
 				return;
 			}
 			if (logging) {
@@ -141,7 +142,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(JDBCCallableStatementAdvice.class, thiz, method)) {
+			if (!intercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null)) {
 				return;
 			}
 			stackThreadLocal.get().pop();

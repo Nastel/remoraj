@@ -102,7 +102,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!intercept(JMSCreateConnectionAdvice.class, thiz, method, arguments)) {
+			if (!intercept(JMSCreateConnectionAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			if (logging) {
@@ -157,7 +157,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	{
 		boolean doFinally = true;
 		try {
-			if (!intercept(JMSCreateConnectionAdvice.class, obj, method, arguments)) {
+			if (!intercept(JMSCreateConnectionAdvice.class, obj, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

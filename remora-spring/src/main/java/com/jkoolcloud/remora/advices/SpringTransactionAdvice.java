@@ -98,7 +98,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(SpringTransactionAdvice.class, thiz, method, arguments)) {
+			if (!intercept(SpringTransactionAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, SpringTransactionAdvice.class, logging ? logger : null);
@@ -137,7 +137,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(SpringTransactionAdvice.class, obj, method, arguments)) {
+			if (!intercept(SpringTransactionAdvice.class, obj, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

@@ -99,7 +99,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	//
 	{
 		try {
-			if (!intercept(KafkaConsumerAdvice.class, thiz, method, arguments)) {
+			if (!intercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
@@ -149,7 +149,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 
 		try {
 
-			if (!intercept(KafkaConsumerAdvice.class, thiz, method, arguments)) {
+			if (!intercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			if (logging) {

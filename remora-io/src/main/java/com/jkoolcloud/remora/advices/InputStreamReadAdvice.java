@@ -90,7 +90,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Origin Method method//
 	) {
 		try {
-			if (!intercept(InputStreamReadAdvice.class, thiz, method, arguments)) {
+			if (!intercept(InputStreamReadAdvice.class, thiz, method, logging ? logger : null, arguments)) {
 				return;
 			}
 			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method);

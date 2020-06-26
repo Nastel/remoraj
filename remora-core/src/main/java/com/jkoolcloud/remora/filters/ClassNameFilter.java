@@ -32,6 +32,11 @@ public class ClassNameFilter extends StatisticEnabledFilter {
 	public boolean regex = false;
 
 	@Override
+	public boolean excludeWholeStack() {
+		return false;
+	}
+
+	@Override
 	public boolean maches(Object thiz, Method method, Object... arguments) {
 		if (regex) {
 			return classNames.stream().filter(query -> thiz.getClass().getName().matches(query)).findFirst()
