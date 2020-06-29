@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -123,8 +124,11 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 		}
 
 		queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS,
-				new ArrayBlockingQueue<>(intermediateQueueSize), threadFactory,
-				(r, executor) -> ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet());
+				new ArrayBlockingQueue<>(intermediateQueueSize), threadFactory, (r, executor) -> {
+					ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet();
+					logger.warn("Limiting advices, Overfilled queue");
+					AdviceRegistry.limit();
+				});
 
 	}
 
@@ -165,7 +169,7 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 		public ChronicleAppenderThread(Runnable r, ExcerptAppender appender) {
 			super(r);
 
-            threadAppender = appender;
+			threadAppender = appender;
 		}
 	}
 }

@@ -29,8 +29,8 @@ import org.tinylog.TaggedLogger;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.CallStack;
+import com.jkoolcloud.remora.core.EmptyStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.FilteredOutEntryStack;
 import com.jkoolcloud.remora.core.output.OutputManager;
 import com.jkoolcloud.remora.filters.AdviceFilter;
 
@@ -150,7 +150,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				entryDefinition.addProperty("PARENT", lastEntryDefinition.getId());
 			}
 		}
-		if (!entryDefinition.isTransparent() && !(stackThreadLocal.get() instanceof FilteredOutEntryStack)) {
+		if (!entryDefinition.isTransparent() && !(stackThreadLocal.get() instanceof EmptyStack)) {
 			OutputManager.send(entryDefinition);
 		}
 	}
@@ -167,7 +167,6 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
 			ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
-		invokeOnIntercept(entryDefinition.getAdviceClassClass(), thiz, method);
 		if (entryDefinition.isChained()) {
 			return 0;
 		}
@@ -201,7 +200,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (getAdviceInstance(entryDefinition.getAdviceClassClass()).sendStackTrace) {
 				entryDefinition.setStackTrace(getStackTrace());
 			}
-			if (!entryDefinition.isTransparent() || !(stackThreadLocal.get() instanceof FilteredOutEntryStack)) {
+			if (!entryDefinition.isTransparent() || !(stackThreadLocal.get() instanceof EmptyStack)) {
 				OutputManager.send(entryDefinition);
 			}
 		} catch (Throwable t) {
@@ -395,6 +394,10 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 	public static boolean intercept(Class<? extends BaseTransformers> tClass, Object thiz, Method method,
 			TaggedLogger logger, Object... arguments) {
+		invokeOnIntercept(tClass, thiz, method);
+		if (stackThreadLocal.get() instanceof EmptyStack) {
+			return false;
+		}
 		if (!getAdviceInstance(tClass).enabled) {
 			return false;
 		}
@@ -402,7 +405,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 			if (!filter.intercept(thiz, method, arguments)) {
 				if (filter.excludeWholeStack()) {
 					if (stackThreadLocal.get() == null || stackThreadLocal.get().isEmpty()) {
-						stackThreadLocal.set(new FilteredOutEntryStack(logger, callStackLimit));
+						stackThreadLocal.set(new EmptyStack(logger, callStackLimit));
 					}
 				}
 				return false;

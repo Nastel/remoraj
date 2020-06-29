@@ -21,14 +21,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
+import com.jkoolcloud.remora.filters.AdviceFilter;
+import com.jkoolcloud.remora.filters.FilterManager;
+import com.jkoolcloud.remora.filters.LimitingFilter;
 
 public enum AdviceRegistry {
 	INSTANCE;
 
+	public static final String AUTO_LIMITING_FILTER = "AUTO_LIMITING_FILTER";
+	public static final int FILTER_ADVANCE = 2;
+	public static final int INITIAL_FILTER_EVERY_N_TH = 256;
+	public static final int RELEASE_TIME_SEC = 60;
 	private List<RemoraAdvice> adviceList = new ArrayList<>(50);
 	private Map<String, RemoraAdvice> adviceMap = new HashMap<>(50);
 
@@ -57,6 +67,34 @@ public enum AdviceRegistry {
 			return (BaseTransformers) adviceByName;
 		} else {
 			throw new ClassNotFoundException();
+		}
+	}
+
+	public static void limit() {
+		LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
+		if (limitingFilter == null) {
+
+			limitingFilter = new LimitingFilter();
+			limitingFilter.everyNth = INITIAL_FILTER_EVERY_N_TH * FILTER_ADVANCE;
+			FilterManager.INSTANCE.add(AUTO_LIMITING_FILTER, limitingFilter);
+		}
+		AdviceFilter filter = FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
+		AdviceRegistry.INSTANCE.adviceList.stream()
+				.filter(advice -> !((BaseTransformers) advice).filters.contains(filter))
+				.forEach(advice -> ((BaseTransformers) advice).filters.add(filter));
+
+		((LimitingFilter) limitingFilter).everyNth /= FILTER_ADVANCE;
+		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+		executorService.scheduleAtFixedRate(AdviceRegistry::release, 0, RELEASE_TIME_SEC, TimeUnit.SECONDS);
+	}
+
+	public static void release() {
+		LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
+		limitingFilter.everyNth *= FILTER_ADVANCE;
+		if (limitingFilter.everyNth > INITIAL_FILTER_EVERY_N_TH) {
+			AdviceRegistry.INSTANCE.adviceList.stream().map(advice -> (BaseTransformers) advice)
+					.forEach(advice -> advice.filters.remove(limitingFilter));
 		}
 	}
 

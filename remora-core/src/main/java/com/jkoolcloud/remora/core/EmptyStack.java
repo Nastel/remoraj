@@ -18,8 +18,8 @@ package com.jkoolcloud.remora.core;
 
 import org.tinylog.TaggedLogger;
 
-public class FilteredOutEntryStack extends CallStack {
-	public FilteredOutEntryStack(TaggedLogger logger, int limit) {
+public class EmptyStack extends CallStack {
+	public EmptyStack(TaggedLogger logger, int limit) {
 		super(logger, limit);
 		push(new EntryDefinition.DummyEntryDefinition());
 	}

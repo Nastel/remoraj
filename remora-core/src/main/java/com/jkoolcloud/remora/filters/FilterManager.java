@@ -35,6 +35,12 @@ public enum FilterManager {
 		filters.put(filterName, filter);
 	}
 
+	public void add(String filterName, AdviceFilter filter) {
+		if (filter instanceof StatisticEnabledFilter) {
+            add(filterName, filter);
+        }
+	}
+
 	public AdviceFilter get(String filterName) {
 		return filters.get(filterName);
 	}
