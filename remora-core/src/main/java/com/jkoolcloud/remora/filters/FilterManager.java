@@ -16,15 +16,18 @@
 
 package com.jkoolcloud.remora.filters;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.advices.BaseTransformers;
 
 public enum FilterManager {
 	INSTANCE;
 
-	Map<String, StatisticEnabledFilter> filters = new HashMap<>(10);
+	Map<String, StatisticEnabledFilter> filters = new ConcurrentHashMap<>(10);
 
 	public List<AdviceFilter> get(List<?> list) {
 		return filters.entrySet().stream().filter(entry -> list.contains(entry.getKey())).map(entry -> entry.getValue())
@@ -32,13 +35,18 @@ public enum FilterManager {
 	}
 
 	public void add(String filterName, StatisticEnabledFilter filter) {
-		filters.put(filterName, filter);
+		StatisticEnabledFilter put = filters.put(filterName, filter);
+		if (put != null) {
+			AdviceRegistry.INSTANCE.getRegisteredAdvices().stream().filter(advice -> advice instanceof BaseTransformers)
+					.map(advice -> (BaseTransformers) advice)
+					.forEach(baseTransformers -> baseTransformers.filters.remove(put));
+		}
 	}
 
 	public void add(String filterName, AdviceFilter filter) {
 		if (filter instanceof StatisticEnabledFilter) {
-            add(filterName, filter);
-        }
+			add(filterName, filter);
+		}
 	}
 
 	public AdviceFilter get(String filterName) {

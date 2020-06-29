@@ -104,8 +104,15 @@ public enum RemoraConfig {
 					break;
 
 				case "int":
+				case "java.lang.Integer":
 					appliedValue = Integer.parseInt(configValue);
 					break;
+
+				case "long":
+				case "java.lang.Long":
+					appliedValue = Long.parseLong(configValue);
+					break;
+
 				case "default":
 					// logger.info("Unsupported property");
 

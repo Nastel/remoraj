@@ -47,6 +47,17 @@ public class RemoraConfigTest {
 		String testField;
 	}
 
+	public static class TestForNumbersConfigrable {
+		@RemoraConfig.Configurable
+		Integer testField;
+		@RemoraConfig.Configurable
+		int testField2;
+		@RemoraConfig.Configurable
+		long testField3;
+		@RemoraConfig.Configurable
+		Long testField4;
+	}
+
 	public static class TestForListConfigrable {
 		@RemoraConfig.Configurable
 		List testField;
@@ -86,6 +97,27 @@ public class RemoraConfigTest {
 		RemoraConfig.configure(test);
 		cleanup();
 		assertNotNull("Configuring field failed", test.testField);
+	}
+
+	@Test
+	public void configTestHappyPathNumbers() throws Exception {
+		Properties properties = new Properties() {
+			{
+				put(TestForNumbersConfigrable.class.getName() + "." + "testField", "1");
+				put(TestForNumbersConfigrable.class.getName() + "." + "testField2", "2");
+				put(TestForNumbersConfigrable.class.getName() + "." + "testField3", "3");
+				put(TestForNumbersConfigrable.class.getName() + "." + "testField4", "4");
+			}
+		};
+		prepareConfigFile(properties);
+		TestForNumbersConfigrable test = new TestForNumbersConfigrable();
+		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
+		RemoraConfig.configure(test);
+		cleanup();
+		assertEquals("Configuring field Integer failed", new Integer(1), test.testField);
+		assertEquals("Configuring field int failed", 2, test.testField2);
+		assertEquals("Configuring field Long failed", 3L, test.testField3);
+		assertEquals("Configuring field long failed", new Long(4L), test.testField4);
 	}
 
 	@Test
