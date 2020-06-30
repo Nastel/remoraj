@@ -101,6 +101,7 @@ public enum AdviceRegistry {
 				AdviceRegistry.INSTANCE.adviceList.stream().filter(advice -> advice instanceof BaseTransformers)
 						.map(advice -> (BaseTransformers) advice)
 						.forEach(advice -> advice.filters.remove(limitingFilter));
+				limitingFilter.everyNth = INITIAL_FILTER_EVERY_N_TH;
 			}
 
 		} catch (Exception e) {
