@@ -190,7 +190,7 @@ There are several trace outputs available below:
 * `com.jkoolcloud.remora.core.output.SysOutOutput` -- `System.out` (console)
 * `com.jkoolcloud.remora.core.output.ChronicleOutput` -- persistent memory mapped file-based output **(default)**
 
-File system queue is created only with `com.jkoolcloud.remora.core.output.ChronicleOutput`. Set system property (`java -Dremora.output`) with the class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`) of the trace output class.
+File system queue is created only with `com.jkoolcloud.remora.core.output.ChronicleOutput`. Set system property (`java -Dremora.output`) with the trace output class reference (e.g. `-Dremora.output=com.jkoolcloud.remora.core.output.SysOutOutput`).
 
 ## Advice Trace Filters
 Advices can have trace filters. Filters determine which trace are include vs. excluded. You configure the filter by defining one in `remora.properties`.
