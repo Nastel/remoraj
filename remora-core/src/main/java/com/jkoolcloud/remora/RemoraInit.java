@@ -59,6 +59,11 @@ public class RemoraInit {
 			// LOGGER.info("\t Found module: " + remoraAdvice);
 
 		}
+		try {
+			RemoraConfig.configure(AdviceRegistry.INSTANCE);
+		} catch (IllegalAccessException e) {
+			Logger.tag("INIT").info("AdviceRegistry Config failed");
+		}
 		AdviceRegistry.INSTANCE.report(adviceList);
 		// need to configure logger first
 		adviceList.forEach(advice -> {
