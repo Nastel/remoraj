@@ -17,13 +17,9 @@
 
 package com.jkoolcloud.remora;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import org.tinylog.Logger;
@@ -43,8 +39,8 @@ public enum AdviceRegistry {
 	public static int filterAdvance = 2;
 	@RemoraConfig.Configurable
 	public static int releaseTimeSec = 60;
-	private List<RemoraAdvice> adviceList = new ArrayList<>(50);
-	private Map<String, RemoraAdvice> adviceMap = new HashMap<>(50);
+	private List<RemoraAdvice> adviceList = new CopyOnWriteArrayList();
+	private Map<String, RemoraAdvice> adviceMap = new ConcurrentHashMap<>(50);
 
 	public void report(List<RemoraAdvice> adviceList) {
 

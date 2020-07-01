@@ -95,7 +95,8 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			}
 			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method);
 			if (streamStats == null) {
-				throw new IllegalStateException("Stream stats is null");
+				throw new IllegalStateException(
+						"Stream stats is null for " + method.getDeclaringClass() + "." + method.getName());
 			}
 			if (arguments == null || arguments.length == 0) {
 				streamStats.advanceCount();

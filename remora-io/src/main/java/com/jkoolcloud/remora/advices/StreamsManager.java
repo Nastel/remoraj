@@ -37,10 +37,12 @@ public enum StreamsManager {
 	public final AtomicLong totalTrackedInputStreams = new AtomicLong();
 	public final AtomicLong totalTrackedOutputStreams = new AtomicLong();
 
-	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap<InputStream, EntryDefinition>(totalTrackedInputStreams);
+	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap<>(
+            totalTrackedInputStreams);
 	HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new HashMap<>(500);
 
-	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap<OutputStream, EntryDefinition>(totalTrackedOutputStreams);
+	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap<>(
+            totalTrackedOutputStreams);
 	HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
 	public StreamStats get(InputStream thiz, TaggedLogger logger, Method method) {
@@ -101,14 +103,17 @@ public enum StreamsManager {
 				if (ed != null) {
 					StreamStats streamStats = availableStreamsEntries.get(ed);
 
-					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
-					if (ed.isFinished()) {
-						availableStreamsEntries.remove(ed);
+					if (!ed.isChained()) {
 						ed.addPropertyIfExist("bytesCount", streamStats.count);
 						ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
 						ed.addPropertyIfExist("accessCount", streamStats.accessCount);
 					}
-				} 
+
+					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
+					if (ed.isFinished()) {
+						availableStreamsEntries.remove(ed);
+					}
+				}
 			}
 		} catch (Throwable t) {
 			BaseTransformers.handleAdviceException(t, StreamsManager.class.getSimpleName(), logger);
