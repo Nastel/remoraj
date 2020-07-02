@@ -27,15 +27,21 @@ import org.takes.Take;
 import org.takes.rs.RsText;
 
 import com.jkoolcloud.remora.Remora;
+import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.output.AgentOutput;
+import com.jkoolcloud.remora.core.output.ChronicleOutput;
+import com.jkoolcloud.remora.core.output.OutputManager;
 import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 public class TkQueueStatistics implements Take {
 	public static final String QUEUE_STATISTICS_RESPONSE_BODY = "'{'\n" + //
 			"  \"memQErrorCount\" : {0},\n" + //
-			"  \"lastPersistQIndex\" : {1},\n" + //
-			"  \"persistQErrorCount\" : {2},\n" + //
-			"  \"lastException\": \"{3}\",\n" + //
-			"  \"usableSpace\": {4}\n" + //
+			"  \"memQCurrentSize\" : {1},\n" + //
+			"  \"memQMaxSize\" : {2},\n" + //
+			"  \"lastPersistQIndex\" : {3},\n" + //
+			"  \"persistQErrorCount\" : {4},\n" + //
+			"  \"lastException\": \"{5}\",\n" + //
+			"  \"usableSpace\": {6}\n" + //
 
 			"'}'";
 
@@ -48,8 +54,18 @@ public class TkQueueStatistics implements Take {
 
 		}
 		return new RsText(format(QUEUE_STATISTICS_RESPONSE_BODY, ScheduledQueueErrorReporter.intermediateQueueFailCount,
+				quote(getCurrentIMMemSize()), ScheduledQueueErrorReporter.maxMemoryQueueSize,
 				ScheduledQueueErrorReporter.lastIndexAppender, ScheduledQueueErrorReporter.chronicleQueueFailCount,
 				ScheduledQueueErrorReporter.lastException, quote(usableSpace)));
+	}
+
+	private Object getCurrentIMMemSize() {
+		AgentOutput<EntryDefinition> output = OutputManager.getOutput();
+		if (output instanceof ChronicleOutput) {
+			return ((ChronicleOutput) output).getImQueueSize();
+		}
+		return "N/A";
+
 	}
 
 }

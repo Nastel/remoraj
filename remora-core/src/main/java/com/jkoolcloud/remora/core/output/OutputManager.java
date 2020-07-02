@@ -33,6 +33,7 @@ public enum OutputManager {
 	private final TaggedLogger logger = Logger.tag("INFO");
 
 	private static boolean shutdown = false;
+
 	private static AgentOutput<EntryDefinition> output;
 	private static List<OutputListener> outputListeners;
 
@@ -80,6 +81,10 @@ public enum OutputManager {
 			logger.error("Failed Starting OutputManager");
 		}
 
+	}
+
+	public static AgentOutput<EntryDefinition> getOutput() {
+		return OutputManager.output;
 	}
 
 	public static void send(EntryDefinition entryDefinition) {

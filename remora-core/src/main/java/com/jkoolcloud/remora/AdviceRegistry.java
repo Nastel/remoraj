@@ -19,26 +19,16 @@ package com.jkoolcloud.remora;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
-import com.jkoolcloud.remora.filters.AdviceFilter;
-import com.jkoolcloud.remora.filters.FilterManager;
-import com.jkoolcloud.remora.filters.LimitingFilter;
 
 public enum AdviceRegistry {
 	INSTANCE;
 
-	public static final String AUTO_LIMITING_FILTER = "AUTO_LIMITING_FILTER";
-	@RemoraConfig.Configurable
-	public static int filterAdvance = 2;
-	@RemoraConfig.Configurable
-	public static int releaseTimeSec = 60;
 	private List<RemoraAdvice> adviceList = new CopyOnWriteArrayList();
 	private Map<String, RemoraAdvice> adviceMap = new ConcurrentHashMap<>(50);
 
@@ -68,52 +58,6 @@ public enum AdviceRegistry {
 		} else {
 			throw new ClassNotFoundException();
 		}
-	}
-
-	public static void limit() {
-		LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-		if (limitingFilter == null) {
-
-			limitingFilter = new LimitingFilter();
-			limitingFilter.mode = AdviceFilter.Mode.INCLUDE;
-			limitingFilter.everyNth = 1;
-			FilterManager.INSTANCE.add(AUTO_LIMITING_FILTER, limitingFilter);
-		}
-		limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-		LimitingFilter finalLimitingFilter = limitingFilter;
-		AdviceRegistry.INSTANCE.adviceList.stream().filter(advice -> advice instanceof BaseTransformers)
-				.filter(advice -> !((BaseTransformers) advice).filters.contains(finalLimitingFilter))
-				.forEach(advice -> ((BaseTransformers) advice).filters.add(finalLimitingFilter));
-
-		((LimitingFilter) limitingFilter).everyNth *= filterAdvance;
-
-		scheduleRelease();
-	}
-
-	private static void scheduleRelease() {
-		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.schedule(AdviceRegistry::release, releaseTimeSec, TimeUnit.SECONDS);
-		executorService.shutdown();
-	}
-
-	public static void release() {
-		try {
-			LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-			limitingFilter.everyNth /= filterAdvance;
-			if (limitingFilter.everyNth <= 1) {
-				AdviceRegistry.INSTANCE.adviceList.stream().filter(advice -> advice instanceof BaseTransformers)
-						.map(advice -> (BaseTransformers) advice)
-						.forEach(advice -> advice.filters.remove(limitingFilter));
-				limitingFilter.everyNth = 1;
-			} else {
-				scheduleRelease();
-			}
-
-		} catch (Exception e) {
-			TaggedLogger init = Logger.tag("INIT");
-			init.error("Cannot release filter");
-		}
-
 	}
 
 }

@@ -23,12 +23,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.core.EntryDefinition;
+
 public class ScheduledQueueErrorReporter {
 
 	public static AtomicInteger chronicleQueueFailCount = new AtomicInteger(0);
 	public static AtomicInteger intermediateQueueFailCount = new AtomicInteger(0);
 	public static Exception lastException;
 	public static long lastIndexAppender;
+	public static int maxMemoryQueueSize = 0;
+
 	private int lastReportedMemoryQueueErrorCount = 0;
 	private int lastReportedPersistentQueueErrorCount = 0;
 
@@ -47,6 +51,13 @@ public class ScheduledQueueErrorReporter {
 							"Failed to write to mem queue: failure count = {}", intermediateQueueFailCount.get());
 					lastReportedMemoryQueueErrorCount = newIntermediateErrorCount;
 				}
+
+				AgentOutput<EntryDefinition> output = OutputManager.getOutput();
+				if (output instanceof ChronicleOutput) {
+					int imQueueSize = ((ChronicleOutput) output).getImQueueSize();
+					maxMemoryQueueSize = Math.max(imQueueSize, maxMemoryQueueSize);
+				}
+
 				int newPersistentErrorCount = chronicleQueueFailCount.get();
 				if (newPersistentErrorCount > lastReportedPersistentQueueErrorCount) {
 					logger.error(
