@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.output.AgentOutput;
 import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
 import com.jkoolcloud.remora.filters.StatisticEnabledFilter;
@@ -112,6 +114,15 @@ public enum RemoraConfig {
 				case "java.lang.Long":
 					appliedValue = Long.parseLong(configValue);
 					break;
+
+				case "com.jkoolcloud.remora.core.output.AgentOutput":
+					try {
+						Class<?> outClass = Class.forName(configValue);
+						appliedValue = (AgentOutput<EntryDefinition>) outClass.newInstance();
+					} catch (Exception e) {
+						e.printStackTrace();
+						appliedValue = null;
+					}
 
 				case "default":
 					// logger.info("Unsupported property");

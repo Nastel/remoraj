@@ -31,6 +31,9 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import com.jkoolcloud.remora.core.EntryDefinition;
+import com.jkoolcloud.remora.core.output.AgentOutput;
+import com.jkoolcloud.remora.core.output.NullOutput;
 import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
 
@@ -78,6 +81,11 @@ public class RemoraConfigTest {
 	public static class TestForFilters {
 		@RemoraConfig.Configurable
 		List<AdviceFilter> filters = new ArrayList<>();
+	}
+
+	public static class TestForClassInstances {
+		@RemoraConfig.Configurable
+		AgentOutput<EntryDefinition> output = null;
 	}
 
 	public static class TestForListConfigrableSuperClass extends TestForListConfigrable {
@@ -229,6 +237,21 @@ public class RemoraConfigTest {
 
 		assertEquals(1, testObject.filters.size());
 		assertEquals(AdviceFilter.Mode.EXCLUDE, testObject.filters.get(0).getMode());
+
+	}
+
+	@Test
+	public void testConfigForClassInstances() throws Exception {
+		Properties properties = new Properties() {
+			{
+				put(TestForClassInstances.class.getName() + ".output", NullOutput.class.getName());
+			}
+		};
+		prepareConfigFile(properties);
+		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
+		TestForClassInstances test = new TestForClassInstances();
+		RemoraConfig.configure(test);
+		assertTrue(test.output instanceof NullOutput);
 
 	}
 
