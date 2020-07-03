@@ -19,6 +19,11 @@ package com.jkoolcloud.remora.core;
 import org.tinylog.TaggedLogger;
 
 public class EmptyStack extends CallStack {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1089732400822680741L;
+
 	public EmptyStack(TaggedLogger logger, int limit) {
 		super(logger, limit);
 		push(new EntryDefinition.DummyEntryDefinition());

@@ -37,12 +37,9 @@ public class ReflectionUtilsTest {
 
 	public class Person {
 		public String name = "John";
-		private String health = "Good";
-
 		String getName() {
 			return name;
 		}
-
 	}
 
 	@Test

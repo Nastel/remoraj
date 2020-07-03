@@ -70,7 +70,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public List<String> excludeProperties = new ArrayList<>(10);
 
-	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
+	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<CallStack>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
 			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
 	@RemoraConfig.Configurable
@@ -166,7 +166,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
-			ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
+			ThreadLocal<CallStack> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
 		if (entryDefinition.isChained()) {
 			return 0;
 		}
@@ -189,7 +189,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 
 			if (stackThreadLocal != null) {
 				if (stackThreadLocal.get() == null) {
-					CallStack<EntryDefinition> definitions = new CallStack<>(logger, callStackLimit);
+					CallStack definitions = new CallStack(logger, callStackLimit);
 					stackThreadLocal.set(definitions);
 				}
 				stackThreadLocal.get().push(entryDefinition);
@@ -427,7 +427,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 
 		EntryDefinition lastED = null;
-		CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+		CallStack entryDefinitions = stackThreadLocal.get();
 		if (entryDefinitions != null && !entryDefinitions.isEmpty()) {
 			lastED = entryDefinitions.peek();
 		}

@@ -71,8 +71,9 @@ public class ScheduledQueueErrorReporterTest {
 			}
 		});
 
+		@SuppressWarnings("unused")
 		ScheduledQueueErrorReporter scheduledQueueErrorReporterTest = new ScheduledQueueErrorReporter(logger, DELAY);
-
+		
 		for (int i = 0; i <= 50; i++) {
 			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
 			Thread.sleep(100);

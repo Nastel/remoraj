@@ -118,7 +118,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 				Pattern compile = Pattern.compile("/.[^/]*/");
 				Matcher matcher = compile.matcher(requestURI.toASCIIString());
 				String application = null;
-				CallStack<EntryDefinition> stack = stackThreadLocal.get();
+				CallStack stack = stackThreadLocal.get();
 				String server = null;
 				try {
 					server = session.getUserProperties().get("javax.websocket.endpoint.remoteAddress").toString();

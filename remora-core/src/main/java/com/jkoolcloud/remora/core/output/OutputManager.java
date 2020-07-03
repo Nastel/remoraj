@@ -32,8 +32,6 @@ public enum OutputManager {
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
 	private final TaggedLogger logger = Logger.tag("INFO");
 
-	private static boolean shutdown = false;
-
 	private static AgentOutput<EntryDefinition> output;
 	private static List<OutputListener> outputListeners;
 
@@ -72,15 +70,13 @@ public enum OutputManager {
 
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 				synchronized (output) {
-					shutdown = true;
 					outputListeners.forEach(l -> l.onShutdown());
 					output.shutdown();
 				}
 			}));
 		} catch (Exception e) {
-			logger.error("Failed Starting OutputManager");
+			logger.error("Failed Starting OutputManager", e);
 		}
-
 	}
 
 	public static AgentOutput<EntryDefinition> getOutput() {

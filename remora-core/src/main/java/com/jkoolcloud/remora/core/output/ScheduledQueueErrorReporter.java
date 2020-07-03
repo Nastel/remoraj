@@ -36,11 +36,9 @@ public class ScheduledQueueErrorReporter {
 	private int lastReportedMemoryQueueErrorCount = 0;
 	private int lastReportedPersistentQueueErrorCount = 0;
 
-	private final TaggedLogger logger;
 	private final ScheduledExecutorService scheduledExecutorService;
 
 	public ScheduledQueueErrorReporter(TaggedLogger logger, Integer delay) {
-		this.logger = logger;
 		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutorService.scheduleAtFixedRate(() -> {
 			if (logger != null) {
@@ -70,9 +68,5 @@ public class ScheduledQueueErrorReporter {
 
 			}
 		}, 0, delay, TimeUnit.SECONDS);
-	}
-
-	private void shutdown() {
-		scheduledExecutorService.shutdown();
 	}
 }

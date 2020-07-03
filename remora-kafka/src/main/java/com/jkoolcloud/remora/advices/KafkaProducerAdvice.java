@@ -95,7 +95,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			String topic = record.topic();
 
-			CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+			CallStack entryDefinitions = stackThreadLocal.get();
 			if (entryDefinitions != null) {
 				try {
 					String application = ReflectionUtils.getFieldValue(thiz, String.class, "clientId");

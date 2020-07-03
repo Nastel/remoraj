@@ -51,7 +51,7 @@ public class EntryDefinitionTest {
 			// appender.writeDocument(ed);
 
 			EntryDefinition edRead = new EntryDefinition(Advice1.class, true);
-			boolean s = tailer.methodReader(edRead).readOne();
+			tailer.methodReader(edRead).readOne();
 
 			System.out.println(edRead);
 			assertEquals("Name field deserialization fault", "AAA", ed.entry.name);

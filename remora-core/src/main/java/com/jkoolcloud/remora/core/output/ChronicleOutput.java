@@ -68,8 +68,6 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			System.setProperty(DISABLE_PROXY_CODEGEN, "true");
 		}
 
-		ThreadFactory threadFactory = new AppenderThreadFactory();
-
 		File queueDir = Paths.get(queuePath).toFile();
 		unusedQueues = new LinkedBlockingDeque<>(keepQueueRolls);
 		File[] cq4s = queueDir.listFiles(new CQ4FileFilter());
@@ -98,7 +96,7 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 				((RollingChronicleQueue) queue).storeForCycle(((RollingChronicleQueue) queue).cycle(), 0, false);
 			}
 		} else {
-			logger.error("Queue failed");
+			logger.error("Queue initializaton failed file=" + queueDir);
 		}
 
 	}

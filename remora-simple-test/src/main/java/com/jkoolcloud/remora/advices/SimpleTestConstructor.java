@@ -45,7 +45,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
-	public static ThreadLocal<CallStack<EntryDefinition>> stackThreadLocal = new ThreadLocal<>();
+	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<CallStack>();
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(SimpleTestConstructor.class.getClassLoader())//

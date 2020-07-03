@@ -24,11 +24,11 @@ public class RemoraInitTest {
 	@Test
 	public void configureLogger() {
 		System.setProperty(Remora.REMORA_PATH, ".");
+		@SuppressWarnings("unused")
 		RemoraInit init = new RemoraInit();
 		// Remora.configureRemoraRootLogger(".");
 		// init.configureAdviceLogger(new Advice1());
 		// init.configureAdviceLogger(new Advice2());
-
 	}
 
 	public static void main(String[] args) {

@@ -63,7 +63,7 @@ public class RemoraConfigTest {
 
 	public static class TestForListConfigrable {
 		@RemoraConfig.Configurable
-		List testField;
+		List<?> testField;
 		@RemoraConfig.Configurable
 		static boolean logging;
 	}
@@ -95,6 +95,11 @@ public class RemoraConfigTest {
 	@Test
 	public void configTestHappyPath() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForSingleStringConfigrable.class.getName() + "." + "testField", "TEST");
 			}
@@ -110,6 +115,11 @@ public class RemoraConfigTest {
 	@Test
 	public void configTestHappyPathNumbers() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForNumbersConfigrable.class.getName() + "." + "testField", "1");
 				put(TestForNumbersConfigrable.class.getName() + "." + "testField2", "2");
@@ -119,7 +129,7 @@ public class RemoraConfigTest {
 		};
 		prepareConfigFile(properties);
 		TestForNumbersConfigrable test = new TestForNumbersConfigrable();
-		RemoraConfig.INSTANCE.init(); // you need to initialise repeatidly 'cause multiple tests will fail
+		RemoraConfig.INSTANCE.init(); // you need to initialize repeatedly 'cause multiple tests will fail
 		RemoraConfig.configure(test);
 		cleanup();
 		assertEquals("Configuring field Integer failed", new Integer(1), test.testField);
@@ -131,6 +141,11 @@ public class RemoraConfigTest {
 	@Test
 	public void configTestBooleanHappyPath() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForBooleanConfigrable.class.getName() + "." + "testField", "true");
 			}
@@ -146,6 +161,11 @@ public class RemoraConfigTest {
 	@Test
 	public void configTestHappyPathList() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
 			}
@@ -162,6 +182,11 @@ public class RemoraConfigTest {
 	@Test
 	public void configTestHappyPathEnum() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForEnumConfigurable.class.getName() + "." + "testField", "ONE");
 			}
@@ -177,6 +202,11 @@ public class RemoraConfigTest {
 	@Test
 	public void configTestHappyPathSuperClass() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForListConfigrable.class.getName() + "." + "testField", "TEST  ;       TEST; TEST;;");
 				put(TestForListConfigrableSuperClass.class.getName() + "." + "logging", "false");
@@ -217,6 +247,11 @@ public class RemoraConfigTest {
 	@Test
 	public void testConfigFilters() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put("filter.myDefinedFilter.type", "com.jkoolcloud.remora.filters.ClassNameFilter");
 				put("filter.myDefinedFilter.mode", "EXCLUDE");
@@ -243,6 +278,11 @@ public class RemoraConfigTest {
 	@Test
 	public void testConfigForClassInstances() throws Exception {
 		Properties properties = new Properties() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(TestForClassInstances.class.getName() + ".output", NullOutput.class.getName());
 			}

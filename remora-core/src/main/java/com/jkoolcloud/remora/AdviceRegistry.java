@@ -29,7 +29,7 @@ import com.jkoolcloud.remora.advices.RemoraAdvice;
 public enum AdviceRegistry {
 	INSTANCE;
 
-	private List<RemoraAdvice> adviceList = new CopyOnWriteArrayList();
+	private List<RemoraAdvice> adviceList = new CopyOnWriteArrayList<RemoraAdvice>();
 	private Map<String, RemoraAdvice> adviceMap = new ConcurrentHashMap<>(50);
 
 	public void report(List<RemoraAdvice> adviceList) {

@@ -94,7 +94,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			try {
 				String clientId = getFieldValue(thiz, String.class, "clientId");
 				String groupId = getFieldValue(thiz, String.class, "groupId");
-				CallStack<EntryDefinition> entryDefinitions = stackThreadLocal.get();
+				CallStack entryDefinitions = stackThreadLocal.get();
 				if (entryDefinitions != null) {
 					String application = MessageFormat.format("clientId={0}, groupId={0}", clientId, groupId);
 					entryDefinitions.setApplication(application);

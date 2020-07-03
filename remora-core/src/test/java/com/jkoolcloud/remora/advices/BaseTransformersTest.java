@@ -78,7 +78,7 @@ public class BaseTransformersTest {
 	@Test
 	public void getEntryDefinitionNonTrasperentAdviceContinueStack() {
 		EntryDefinition ed = null;
-		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger, limit));
+		BaseTransformers.stackThreadLocal.set(new CallStack(logger, limit));
 		EntryDefinition stack1 = new EntryDefinition(GeneralAdvice.class, true);
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
@@ -96,7 +96,7 @@ public class BaseTransformersTest {
 	public void getEntryDefinitionTrasperentAdviceContinueStack() {
 		EntryDefinition ed = null;
 		assertNull(BaseTransformers.stackThreadLocal.get());
-		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger, limit));
+		BaseTransformers.stackThreadLocal.set(new CallStack(logger, limit));
 		EntryDefinition stack1 = new EntryDefinition(TransparentAdviceInstance.class, true);
 		BaseTransformers.stackThreadLocal.get().push(stack1);
 		EntryDefinition returned = BaseTransformers.getEntryDefinition(ed, NonTransparentAdviceInstance.class, logger);
@@ -109,7 +109,7 @@ public class BaseTransformersTest {
 	@Test
 	public void getEntryDefinitionCompleteTest() {
 		EntryDefinition ed = null;
-		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger, limit));
+		BaseTransformers.stackThreadLocal.set(new CallStack(logger, limit));
 		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class, true); // Service call
 		stack1.addProperty("PARAM1", "PARAM");
 		BaseTransformers.stackThreadLocal.get().push(stack1);
@@ -139,7 +139,7 @@ public class BaseTransformersTest {
 	@Test
 	public void getEntryDefinitionCompleteTest2() {
 		EntryDefinition ed = null;
-		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger, limit));
+		BaseTransformers.stackThreadLocal.set(new CallStack(logger, limit));
 		EntryDefinition stack1 = new EntryDefinition(NonTransparentAdviceInstance.class, true); // Service call
 		stack1.addProperty("PARAM1", "PARAM");
 		BaseTransformers.stackThreadLocal.get().push(stack1);
@@ -188,7 +188,7 @@ public class BaseTransformersTest {
 	@Test
 	public void getEntryDefinitionCompleteTest3() {
 		EntryDefinition ed = null;
-		BaseTransformers.stackThreadLocal.set(new CallStack<>(logger, limit));
+		BaseTransformers.stackThreadLocal.set(new CallStack(logger, limit));
 		EntryDefinition stack1 = new EntryDefinition(JavaXAdvice.class, true); // JavaX Service call
 		stack1.addProperty("PARAM1", "PARAM");
 		BaseTransformers.stackThreadLocal.get().push(stack1);
