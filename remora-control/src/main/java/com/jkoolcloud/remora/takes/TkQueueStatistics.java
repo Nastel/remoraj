@@ -28,7 +28,10 @@ import org.takes.rs.RsText;
 
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.output.*;
+import com.jkoolcloud.remora.core.output.AgentOutput;
+import com.jkoolcloud.remora.core.output.BufferedMultithreadOutput;
+import com.jkoolcloud.remora.core.output.OutputManager;
+import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 public class TkQueueStatistics implements Take {
 	public static final String QUEUE_STATISTICS_RESPONSE_BODY = "'{'\n" + //
@@ -58,7 +61,7 @@ public class TkQueueStatistics implements Take {
 
 	private Object getCurrentIMMemSize() {
 		AgentOutput<EntryDefinition> output = OutputManager.getOutput();
-		if (output instanceof ChronicleOutput) {
+		if (output instanceof BufferedMultithreadOutput) {
 			return ((BufferedMultithreadOutput) output).getImQueueSize();
 		}
 		return "N/A";
