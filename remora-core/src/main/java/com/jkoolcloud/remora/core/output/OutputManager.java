@@ -55,7 +55,7 @@ public enum OutputManager {
 			}
 			outputListeners.forEach(l -> l.onInitialized(null));
 		} else {
-			output = new ChronicleOutput();
+			output = new BufferedMultithreadOutput();
 		}
 		try {
 			RemoraConfig.configure(output);

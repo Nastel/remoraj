@@ -21,20 +21,16 @@ import java.io.FilenameFilter;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.concurrent.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
-import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
-import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.filters.AdviceFilter;
-import com.jkoolcloud.remora.filters.FilterManager;
-import com.jkoolcloud.remora.filters.LimitingFilter;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
@@ -45,15 +41,7 @@ import net.openhft.chronicle.queue.impl.StoreFileListener;
 public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 
 	public static final String DISABLE_PROXY_CODEGEN = "disableProxyCodegen";
-	public static final String AUTO_LIMITING_FILTER = "AUTO_LIMITING_FILTER";
 	TaggedLogger logger = Logger.tag("INIT");
-
-	@RemoraConfig.Configurable
-	public static int filterAdvance = 2;
-	@RemoraConfig.Configurable
-	public static int releaseTimeSec = 60;
-	@RemoraConfig.Configurable
-	public static boolean limitingFilter = true;
 
 	private ChronicleQueue queue;
 	@RemoraConfig.Configurable
@@ -69,64 +57,9 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 	Integer keepQueueRolls = 2;
 
 	@RemoraConfig.Configurable
-	Integer intermediateQueueSize = 1000;
-
-	@RemoraConfig.Configurable
-	Integer workerSize = 2;
-
-	@RemoraConfig.Configurable
 	Integer errorReportingSchedule = 2;
 
 	Deque<File> unusedQueues;
-
-	private ExecutorService queueWorkers;
-	private ArrayBlockingQueue<Runnable> workQueue;
-
-	public static void limit() {
-		LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-		if (limitingFilter == null) {
-
-			limitingFilter = new LimitingFilter();
-			limitingFilter.mode = AdviceFilter.Mode.INCLUDE;
-			limitingFilter.everyNth = 1;
-			FilterManager.INSTANCE.add(AUTO_LIMITING_FILTER, limitingFilter);
-		}
-		limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-		LimitingFilter finalLimitingFilter = limitingFilter;
-		AdviceRegistry.INSTANCE.getRegisteredAdvices().stream().filter(advice -> advice instanceof BaseTransformers)
-				.filter(advice -> !((BaseTransformers) advice).filters.contains(finalLimitingFilter))
-				.forEach(advice -> ((BaseTransformers) advice).filters.add(finalLimitingFilter));
-
-		((LimitingFilter) limitingFilter).everyNth *= filterAdvance;
-
-		scheduleRelease();
-	}
-
-	private static void scheduleRelease() {
-		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.schedule(ChronicleOutput::release, releaseTimeSec, TimeUnit.SECONDS);
-		executorService.shutdown();
-	}
-
-	public static void release() {
-		try {
-			LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-			limitingFilter.everyNth /= filterAdvance;
-			if (limitingFilter.everyNth <= 1) {
-				AdviceRegistry.INSTANCE.getRegisteredAdvices().stream()
-						.filter(advice -> advice instanceof BaseTransformers).map(advice -> (BaseTransformers) advice)
-						.forEach(advice -> advice.filters.remove(limitingFilter));
-				limitingFilter.everyNth = 1;
-			} else {
-				scheduleRelease();
-			}
-
-		} catch (Exception e) {
-			TaggedLogger init = Logger.tag("INIT");
-			init.error("Cannot release filter");
-		}
-
-	}
 
 	@Override
 	public void init() {
@@ -135,21 +68,7 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			System.setProperty(DISABLE_PROXY_CODEGEN, "true");
 		}
 
-		ThreadFactory threadFactory = new ThreadFactory() {
-			@Override
-			public Thread newThread(@NotNull Runnable r) {
-				logger.info("Creating new thread");
-
-				ExcerptAppender threadAppender = queue.acquireAppender();
-				if (threadAppender != null) {
-					logger.info("Appender initialized");
-				} else {
-					logger.error("Appender failed");
-				}
-
-				return new ChronicleAppenderThread(r, threadAppender);
-			}
-		};
+		ThreadFactory threadFactory = new AppenderThreadFactory();
 
 		File queueDir = Paths.get(queuePath).toFile();
 		unusedQueues = new LinkedBlockingDeque<>(keepQueueRolls);
@@ -182,43 +101,42 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			logger.error("Queue failed");
 		}
 
-		workQueue = new ArrayBlockingQueue<>(intermediateQueueSize);
-		queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS, workQueue,
-				threadFactory, (r, executor) -> {
-					ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet();
-					logger.warn("Limiting advices, Overfilled queue");
-					if (limitingFilter) {
-						limit();
-					}
-				});
-
-	}
-
-	public int getImQueueSize() {
-		if (workQueue != null) {
-			return workQueue.size();
-		} else {
-			return 0;
-		}
 	}
 
 	@Override
 	public void send(EntryDefinition entry) {
-		if (entry.isFinished()) {
-			queueWorkers.submit(entry.exit);
-		} else {
-			queueWorkers.submit(entry.entry);
+		ExcerptAppender appender = null;
+		try {
+			appender = ((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender();
+
+			if (entry.isFinished()) {
+				entry.exit.write(appender);
+			} else {
+				entry.entry.write(appender);
+			}
+
+			// }
+		} catch (Exception e) {
+			if (appender != null) {
+				ScheduledQueueErrorReporter.lastIndexAppender = appender.lastIndexAppended();
+			}
+			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
+			ScheduledQueueErrorReporter.lastException = e;
 		}
 
 	}
 
 	@Override
 	public void shutdown() {
-		queueWorkers.shutdown();
 		logger.info("Shutting down chronicle queue:" + this);
 		if (queue != null) {
 			queue.close();
 		}
+	}
+
+	@Override
+	public ThreadFactory getThreadFactory() {
+		return new AppenderThreadFactory();
 	}
 
 	private static class CQ4FileFilter implements FilenameFilter {
@@ -240,6 +158,22 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			super(r);
 
 			threadAppender = appender;
+		}
+	}
+
+	private class AppenderThreadFactory implements ThreadFactory {
+		@Override
+		public Thread newThread(@NotNull Runnable r) {
+			logger.info("Creating new thread");
+
+			ExcerptAppender threadAppender = queue.acquireAppender();
+			if (threadAppender != null) {
+				logger.info("Appender initialized");
+			} else {
+				logger.error("Appender failed");
+			}
+
+			return new ChronicleAppenderThread(r, threadAppender);
 		}
 	}
 }

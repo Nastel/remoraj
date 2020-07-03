@@ -98,24 +98,24 @@ public class ChronicleOutputTest {
 		}
 	}
 
-	@Test
-	public void testIntermediateQueue() throws InterruptedException {
-		ChronicleOutput output = new ChronicleOutput();
-		output.rollCycle = RollCycles.TEST_SECONDLY;
-		output.keepQueueRolls = 2;
-		output.workerSize = 1;
-		output.intermediateQueueSize = 1;
-		File tempDir = Files.createTempDir();
-		tempDir.deleteOnExit();
-		System.out.println(tempDir.getAbsolutePath());
-		output.queuePath = tempDir.getPath();
-		output.init();
-
-		for (int i = 0; i <= 50; i++) {
-			output.send(new EntryDefinition(Advice1.class, true));
-			Thread.sleep(100);
-		}
-
-	}
+	// @Test
+	// public void testIntermediateQueue() throws InterruptedException {
+	// ChronicleOutput output = new ChronicleOutput();
+	// output.rollCycle = RollCycles.TEST_SECONDLY;
+	// output.keepQueueRolls = 2;
+	// output.workerSize = 1;
+	// output.intermediateQueueSize = 1;
+	// File tempDir = Files.createTempDir();
+	// tempDir.deleteOnExit();
+	// System.out.println(tempDir.getAbsolutePath());
+	// output.queuePath = tempDir.getPath();
+	// output.init();
+	//
+	// for (int i = 0; i <= 50; i++) {
+	// output.send(new EntryDefinition(Advice1.class, true));
+	// Thread.sleep(100);
+	// }
+	//
+	// }
 
 }

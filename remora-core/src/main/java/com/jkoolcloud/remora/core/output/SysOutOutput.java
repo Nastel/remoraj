@@ -16,6 +16,9 @@
 
 package com.jkoolcloud.remora.core.output;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public class SysOutOutput implements AgentOutput<EntryDefinition> {
@@ -32,5 +35,10 @@ public class SysOutOutput implements AgentOutput<EntryDefinition> {
 	@Override
 	public void shutdown() {
 
+	}
+
+	@Override
+	public ThreadFactory getThreadFactory() {
+		return Executors.defaultThreadFactory();
 	}
 }

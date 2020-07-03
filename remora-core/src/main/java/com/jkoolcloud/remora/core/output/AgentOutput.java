@@ -16,12 +16,16 @@
 
 package com.jkoolcloud.remora.core.output;
 
+import java.util.concurrent.ThreadFactory;
+
 public interface AgentOutput<T> {
 	void init() throws OutputException;
 
 	void send(T entry);
 
 	void shutdown();
+
+	ThreadFactory getThreadFactory();
 
 	class OutputException extends Exception {
 		private static final long serialVersionUID = -6937653706786664128L;

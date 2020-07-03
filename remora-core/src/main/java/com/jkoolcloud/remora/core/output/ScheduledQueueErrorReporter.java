@@ -54,7 +54,7 @@ public class ScheduledQueueErrorReporter {
 
 				AgentOutput<EntryDefinition> output = OutputManager.getOutput();
 				if (output instanceof ChronicleOutput) {
-					int imQueueSize = ((ChronicleOutput) output).getImQueueSize();
+					int imQueueSize = ((BufferedMultithreadOutput) output).getImQueueSize();
 					maxMemoryQueueSize = Math.max(imQueueSize, maxMemoryQueueSize);
 				}
 
