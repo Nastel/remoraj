@@ -44,6 +44,7 @@ public class TkChangeTest {
 		String jsonInString = new RsPrint(tkAdviceList.act(new RqFake())).printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(jsonInString);
 		System.out.println(jsonInString);
+		System.out.println(jsonNode);
 	}
 
 	@Test
@@ -52,5 +53,4 @@ public class TkChangeTest {
 		assertEquals("test", TakesUtils.getValueForKey("property", TEST_BODY));
 		assertEquals("test", TakesUtils.getValueForKey("value", TEST_BODY));
 	}
-
 }

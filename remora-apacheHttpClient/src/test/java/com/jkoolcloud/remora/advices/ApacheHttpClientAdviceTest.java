@@ -38,6 +38,7 @@ public class ApacheHttpClientAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
+		@SuppressWarnings("unused")
 		EntryDefinition handleRequestEntry = new EntryDefinition(ApacheHttpClientAdvice.class, true);
 
 		// \ Method method = Whitebox.getMethod(Object.class, "<<interceptingMethod>>");

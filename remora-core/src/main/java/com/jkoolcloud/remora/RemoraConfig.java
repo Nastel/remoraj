@@ -81,7 +81,7 @@ public enum RemoraConfig {
 	}
 
 	@Nullable
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object getAppliedValue(Field field, String configValue) {
 		Object appliedValue = null;
 		if (configValue != null) {
@@ -158,7 +158,7 @@ public enum RemoraConfig {
 		File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
 		try (FileInputStream inStream = new FileInputStream(file)) {
 			config.load(inStream);
-			// logger.info("Sucessfully loaded {} properties from configuration file", config.size()));
+			// logger.info("Successfully loaded {} properties from configuration file", config.size()));
 		} catch (IOException e) {
 			// logger.error("Failed loading properties file");
 			// logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e));

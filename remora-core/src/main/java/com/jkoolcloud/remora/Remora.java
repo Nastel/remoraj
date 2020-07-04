@@ -82,17 +82,16 @@ public class Remora {
 			System.setProperty(REMORA_VM_IDENTIFICATION, vmid);
 		}
 		EntryDefinition.setVmIdentification(vmid);
-		RemoraConfig remoraConfig = RemoraConfig.INSTANCE; // Load output and config manager by Bootstarp classloader;
-		OutputManager outputManager = OutputManager.INSTANCE; //
+		 // Load output and config manager by Bootstarp classloader;
+		RemoraConfig.INSTANCE.name();
+		OutputManager.INSTANCE.name(); 
 	}
 
-	public static String getJarContainingFolder(Class aclass) throws Exception {
-
+	public static String getJarContainingFolder(Class<Remora> aclass) throws Exception {
 		String path = aclass.getResource(aclass.getSimpleName() + ".class").getPath();
 		String jarFilePath = path.substring(path.indexOf(":") + 1, path.indexOf("!"));
 		jarFilePath = URLDecoder.decode(jarFilePath, "UTF-8");
 		File jarFile = new File(jarFilePath);
-
 		return jarFile.getParentFile().getAbsolutePath();
 	}
 

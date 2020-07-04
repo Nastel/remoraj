@@ -69,6 +69,7 @@ public class KafkaEchoTestClient {
 		Properties props = new Properties();
 		props.load(new BufferedInputStream(KafkaEchoTestClient.class.getResourceAsStream(PRODUCER_PROPERTIES)));// NON-NLS
 
+		@SuppressWarnings("unused")
 		Integer eventsToProduce = Integer.valueOf(props.getProperty("events.count"), 10);
 		props.remove("events.count");
 

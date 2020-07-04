@@ -37,11 +37,10 @@ public class TKStatisticsTest {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new Advice1()));
 		BaseTransformers.registerListener(CountingAdviceListener.class);
 		BaseTransformers.registerListener(TimingAdviceListener.class);
-		String s = new RsPrint(
-				new TKStatistics().act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice1")))
+		String s = new RsPrint(new TKStatistics().act(new RqRegex.Fake("/statistics/(?<advice>[^/]+)", "/statistics/Advice1")))
 						.printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(s);
-		System.out.println(s);
+		System.out.println("Stats: " + s);
+		System.out.println("Json:  " + jsonNode);
 	}
-
 }

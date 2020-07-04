@@ -31,6 +31,7 @@ public class WebLogicAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
+		@SuppressWarnings("unused")
 		EntryDefinition handleRequestEntry = new EntryDefinition(WebLogicAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");

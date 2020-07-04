@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,16 +52,12 @@ public class RemoraControlAdviceTest {
 
 	@Test
 	public void testPropertiesChangeHandler2() throws IOException {
-		ServerSocket socket = new ServerSocket(7366);
-
 		RemoraAdvice[] advices = { new Advice1(), new Advice2() };
 		AdviceRegistry.INSTANCE.report(Arrays.asList(advices));
 		InetSocketAddress inetSocketAddress = new RemoraControlAdvice.AvailableInetSocketAddress(7366)
 				.getInetSocketAddress();
 		RemoraControlAdvice.startHttpServer(inetSocketAddress);
-
 		makeRequest(inetSocketAddress);
-
 	}
 
 	private void makeRequest(InetSocketAddress inetSocketAddress) throws IOException {

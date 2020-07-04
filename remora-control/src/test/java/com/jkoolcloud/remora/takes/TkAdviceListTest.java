@@ -35,5 +35,6 @@ public class TkAdviceListTest {
 		String s = new RsPrint(new TkAdviceList().act(new RqFake())).printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(s);
 		System.out.println(s);
+		System.out.println(jsonNode);
 	}
 }

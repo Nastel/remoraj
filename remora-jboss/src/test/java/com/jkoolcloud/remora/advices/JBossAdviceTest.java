@@ -37,6 +37,7 @@ public class JBossAdviceTest {
 		@SuppressWarnings("unused")
 		EntryDefinition handleRequestEntry = new EntryDefinition(JBossAdvice.class, true);
 
+		@SuppressWarnings("unused")
 		Method method = Whitebox.getMethod(Object.class, "toString");
 
 		// test before method
