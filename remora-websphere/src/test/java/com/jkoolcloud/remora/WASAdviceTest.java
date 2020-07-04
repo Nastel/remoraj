@@ -34,8 +34,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -54,7 +52,6 @@ public class WASAdviceTest {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new WASAdvice()));
 	}
 
-	private static final TaggedLogger LOGGER = Logger.tag("WASAdviceTest");
 
 	@Test
 	public void testWebsphereInterceptor() throws NoSuchMethodException {
@@ -75,6 +72,7 @@ public class WASAdviceTest {
 		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 0);
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testWebsphereInterceptorWithJMSCall() throws NoSuchMethodException {
 
@@ -92,12 +90,12 @@ public class WASAdviceTest {
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 
 		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
-		Object[] jmxSendArguments = {};
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, 56);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 78 );
 		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testWebsphereInterceptorWithDuplicateJMSCall() throws NoSuchMethodException {
 
@@ -119,7 +117,6 @@ public class WASAdviceTest {
 		// EntryDefinition jmsReceiveEntryInternal = new EntryDefinition(JMSReceiveAdvice.class);
 
 		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
-		Object[] jmxSendArguments = {};
 		// first JMS message
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, System.nanoTime());
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntryInternal, System.nanoTime());
@@ -140,6 +137,7 @@ public class WASAdviceTest {
 		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, System.nanoTime());
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testWebsphereInterceptorWithDuplicateJMSCallAndDifferentRequestHandlers() throws NoSuchMethodException {
 
@@ -193,7 +191,5 @@ public class WASAdviceTest {
 
 		WASAdvice.before(webApp, servletRequest, servletResponse, method, null, 0);
 		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, null, 0);
-
 	}
-
 }

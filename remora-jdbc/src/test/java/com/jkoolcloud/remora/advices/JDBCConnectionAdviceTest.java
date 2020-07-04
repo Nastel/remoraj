@@ -31,6 +31,7 @@ public class JDBCConnectionAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
+		@SuppressWarnings("unused")
 		EntryDefinition handleRequestEntry = new EntryDefinition(JDBCConnectionAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");

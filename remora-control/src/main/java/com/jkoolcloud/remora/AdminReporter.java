@@ -41,17 +41,14 @@ public class AdminReporter {
 
 		try {
 			url = new URL(address);
-
 			Socket socket = new Socket();
 			socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
 			InetAddress localAddress1 = socket.getLocalAddress();
 			localAddress = localAddress1.getHostAddress();
-
-			url = url;
+			socket.close();
 		} catch (Exception e) {
 			logger.error("Cannot initialize admin reporter: \n {}", e);
 		}
-
 	}
 
 	public boolean report() {
