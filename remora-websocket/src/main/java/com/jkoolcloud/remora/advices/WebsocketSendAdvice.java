@@ -111,9 +111,6 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			Session session = WebsocketSessionAdvice.sessionEndpoints.get(thiz);
-			if (session == null) {
-				session = WebsocketSessionAdvice.sessionHandlers.get(thiz);
-			}
 			if (session != null) {
 				String correlator = session.getId();
 				URI requestURI = session.getRequestURI();
@@ -142,7 +139,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 					logger.info("Attached correlator {}, server {}, application {}", correlator, server, application);
 				}
 			} else {
-				logger.info("No session found");
+				logger.warn("No session found: endpoint {}, method {}", thiz, method);
 			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);

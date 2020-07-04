@@ -30,6 +30,7 @@ import org.takes.rs.RsText;
 
 import com.sun.management.HotSpotDiagnosticMXBean;
 
+@SuppressWarnings("restriction")
 public class TkHeapDump implements Take {
 
 	public static final String THREAD_DUMP_TEMPLATE = "'{'\n" + "  \"ThreadName\": \"{0}\",\n"
@@ -42,7 +43,6 @@ public class TkHeapDump implements Take {
 
 	@Override
 	public Response act(Request req) throws Exception {
-
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 		HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(server,
 				"com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
@@ -59,9 +59,8 @@ public class TkHeapDump implements Take {
 		if (file.getUsableSpace() <= Runtime.getRuntime().totalMemory()) {
 			mxBean.dumpHeap(dumpFName, true);
 		} else {
-			return new RsText("Out of disc space. Disk space required to complete operation.");
+			return new RsText("Not enought storage. More storage required to complete this operation.");
 		}
-
 		return new RsText("OK. Dump created: " + file.getAbsolutePath());
 	}
 }
