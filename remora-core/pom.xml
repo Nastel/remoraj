@@ -121,6 +121,7 @@
                             </goals>
                             <phase>package</phase>
 							<configuration>
+								<classifier>main</classifier>
 								<excludes>
 									<exclude>**/test</exclude>
 								</excludes>
@@ -143,7 +144,7 @@
                         <execution>
 							<id>remora-test</id>
                             <goals>
-                                <goal>test-jar</goal>
+                                <goal>jar</goal>
                             </goals>
                             <phase>test-compile</phase>
 							<configuration>
