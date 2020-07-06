@@ -1,7 +1,7 @@
 
 # RemoraJ: Extensible Java Bytecode Agent for Tracking Java IPC
 
-RemoraJ is an extensible java profiling agent which uses bytecode instrumentation to intercept java IPC calls with minimal overhead. RemoraJ monitors java apps by tracking IPC calls such as: HTTP, WebServices, JMS, JDBC, Sockets, WebSockets, Kafka, I/O Streams and more. The goal is to track calls and messages coming in and out of java apps. 
+RemoraJ is an extensible java profiling agent which uses bytecode instrumentation to intercept java IPC calls with minimal overhead. RemoraJ monitors java apps by tracking IPC calls such as: HTTP, WebServices, JMS, JDBC, Sockets, WebSockets, Kafka, I/O Streams and more. The goal is to capture inter-JVM calls, I/O, messages, exceptions, timings which are valuable during troubleshooting and performance optimization of java apps. 
 
 RemoraJ consists of two main runtime components:
 
