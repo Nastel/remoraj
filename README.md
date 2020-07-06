@@ -170,9 +170,9 @@ See relevant comments in the file for advanced config.
 ## Agent VM Id
 
 To identify your VM: set system property (`java -Dremora.vmid=MyVmName`) to any readable token identifying the process remora agent is 
-attached to. By default `remora.vmid=MyVmName` is set to `ManagementFactory.getRuntimeMXBean().getName()`.
+attached to. `remora.vmid` is set to `ManagementFactory.getRuntimeMXBean().getName()` by default.
 
-**NOTE:** Default `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
+**NOTE:** `remora.vmid` value might be not available on every VM's implementation and may be platform dependent.
 
 ## Application Id
  
