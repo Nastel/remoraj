@@ -61,7 +61,7 @@ You must configure the Remora Java agent and Streams agent to run RemoraJ. Your 
 * Start your application or app server (with remora agent)
 
 If you decide to send traces to Nastel XRay or jKool please complete the following steps:
-* Obtain your account with [jKool](https://www.jkoolcloud.com/) or [Nastel XRay](https://www.nastel.com/nastel-xray/). Make sure to get your streaming access token
+* Obtain your account with [jKool](https://www.jkoolcloud.com/) or [Nastel XRay](https://xray.nastel.com/xray/Nastel/login.jsp). Make sure to get your streaming access token
 * Configure the Streams Agent (you will need your streaming access token here)
 * Start the Streams Agent (forwards traces to your data repository associated with your streaming access token)
 
@@ -128,7 +128,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
     winx: set "JAVA_OPTS=%JAVA_OPTS% -javaagent:<install_dir>/remora-<version>/remora.jar"
     unix: JAVA_OPTS="$JAVA_OPTS -javaagent:<install_dir>/remora-<version>/remora.jar"
 ```
-* Step 3:    Edit the path to where your `remora.jar` situated
+* Step 3:    Edit the path to where your `remora.jar` is located
 
 #### Domain mode
 
@@ -143,7 +143,7 @@ org.osgi.framework.bootdelegation=com.jkoolcloud.remora.*
                <option value="-javaagent:<install_dir>/remora-<version>/remora.jar"/>
        </jvm>
 ```
-* Step 4:    Edit the path to where your `remora.jar` situated
+* Step 4:    Edit the path to where your `remora.jar` is located
 
 ### Standalone Java Application
 
@@ -160,7 +160,7 @@ java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.j
 * Step 3:    (Optional) More settings in `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/tnt-data-source.xml` 
 * Step 4:    (Optional) Edit ```<property name="FileName" value="../../queue"/>``` to point to your RemoraJ queue directory.
 
-**NOTE:** RemoraJ queue directory hosts files containing java traces produced by remora java agent. These traces are read by the Streams Agent and forwarded to your data repository. 
+**NOTE:** RemoraJ queue directory hosts files containing java traces produced by remora java agent. The traces are read by the Streams Agent and forwarded to your data repository. 
 
 # Remora Agent Configuration
 
