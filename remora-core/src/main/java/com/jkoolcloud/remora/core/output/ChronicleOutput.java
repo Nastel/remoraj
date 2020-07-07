@@ -105,7 +105,14 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 	public void send(EntryDefinition entry) {
 		ExcerptAppender appender = null;
 		try {
-			appender = ((ChronicleOutput.ChronicleAppenderThread) Thread.currentThread()).getAppender();
+			Thread thread = Thread.currentThread();
+			if (thread instanceof ChronicleOutput.ChronicleAppenderThread) {
+				appender = ((ChronicleOutput.ChronicleAppenderThread) thread).getAppender();
+			} else {
+				appender = queue.acquireAppender();
+				logger.warn("Current thread has no appender. Getting new, hope it's running on test");
+				markSendError(appender, new Exception("Thread is not the instance of ChronocleAppenderThread"));
+			}
 
 			if (entry.isFinished()) {
 				entry.exit.write(appender);
@@ -115,13 +122,21 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 
 			// }
 		} catch (Exception e) {
+			markSendError(appender, e);
+		}
+
+	}
+
+	private void markSendError(ExcerptAppender appender, Exception e) {
+		try {
 			if (appender != null) {
 				ScheduledQueueErrorReporter.lastIndexAppender = appender.lastIndexAppended();
 			}
-			ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
-			ScheduledQueueErrorReporter.lastException = e;
+		} catch (IllegalStateException e2) {
+			// nothing appended/ run on test
 		}
-
+		ScheduledQueueErrorReporter.chronicleQueueFailCount.incrementAndGet();
+		ScheduledQueueErrorReporter.lastException = e;
 	}
 
 	@Override
