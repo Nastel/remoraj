@@ -37,6 +37,7 @@ public class ReflectionUtilsTest {
 
 	public class Person {
 		public String name = "John";
+		@SuppressWarnings("unused")
 		private String health = "Good";
 
 		String getName() {
