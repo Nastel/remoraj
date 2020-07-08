@@ -37,13 +37,13 @@ public enum StreamsManager {
 	public final AtomicLong totalTrackedInputStreams = new AtomicLong();
 	public final AtomicLong totalTrackedOutputStreams = new AtomicLong();
 
-	WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap<>(
-            totalTrackedInputStreams);
-	HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new HashMap<>(500);
+	public final WeakHashMap<InputStream, EntryDefinition> availableInputStreams = new CountingWeakHashMap<>(
+			totalTrackedInputStreams);
+	public HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = new HashMap<>(500);
 
-	WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap<>(
-            totalTrackedOutputStreams);
-	HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
+	public final WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = new CountingWeakHashMap<>(
+			totalTrackedOutputStreams);
+	public HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
 	public StreamStats get(InputStream thiz, TaggedLogger logger, Method method) {
 
