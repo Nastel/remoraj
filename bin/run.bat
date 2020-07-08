@@ -1,16 +1,16 @@
 @echo off
+setlocal enableDelayedExpansion
 :START
 IF EXIST token (
 	echo "Reading token from file"
 	set /P STREAMING_TOKEN=<token
-	echo "TOKEN: %STREAMING_TOKEN%"
 ) ELSE (
 	echo "Token not found"
 	set /P STREAMING_TOKEN=Enter Your Streaming token:
-	@echo on
-	echo %STREAMING_TOKEN% > token
-	@echo off
+	echo !STREAMING_TOKEN!> token
 	goto START
 )
-rem cd tnt4j-streams\remora-streamer
-rem start run.bat
+echo "TOKEN: %STREAMING_TOKEN%"
+set STREAMSOPTS=%STREAMSOPTS% -DSTREAMING_TOKEN=%STREAMING_TOKEN%
+cd tnt4j-streams\remora-streamer
+start run.bat
