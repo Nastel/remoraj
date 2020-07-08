@@ -23,10 +23,24 @@ public class EmptyStack extends CallStack {
 	 * 
 	 */
 	private static final long serialVersionUID = 1089732400822680741L;
+	private static final EntryDefinition.DummyEntryDefinition item = new EntryDefinition.DummyEntryDefinition();
 
 	public EmptyStack(TaggedLogger logger, int limit) {
 		super(logger, limit);
-		push(new EntryDefinition.DummyEntryDefinition());
 	}
 
+	@Override
+	public EntryDefinition push(EntryDefinition item) {
+		return item;
+	}
+
+	@Override
+	public synchronized EntryDefinition pop() {
+		return item;
+	}
+
+	@Override
+	public synchronized EntryDefinition peek() {
+		return item;
+	}
 }
