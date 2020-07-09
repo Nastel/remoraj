@@ -151,10 +151,12 @@ To run you standalone application with RemoraJ add option `-javaagent:<install_d
 java -javaagent:<install_dir>/remora-<version>/remora.jar -jar <jar-file-name>.jar
 ```
 
-## Configure Streams Agent
+## Configure Streams Agent (Optional)
 
-* Step 1:    Go to `<install_dir>/remora-<version>/tnt4j-streams/config`
-* Step 2:    Edit `tnt4j-streams.properties` and setup your access token (`event.sink.factory.EventSinkFactory.prod.Token`)
+As for version 0.1.9 Streams will be configured automatically on first run. For more sophisticated control you can follow these instructions:
+
+* Step 1:    (Optional) Go to `<install_dir>/remora-<version>/tnt4j-streams/config`
+* Step 2:    (Optional) Edit `tnt4j-streams.properties` and setup your access token (`event.sink.factory.EventSinkFactory.prod.Token`)
 * Step 3:    (Optional) More settings in `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/tnt-data-source.xml` 
 * Step 4:    (Optional) Edit ```<property name="FileName" value="../../queue"/>``` to point to your RemoraJ queue directory.
 
@@ -209,7 +211,7 @@ com.jkoolcloud.remora.advices.<advice name>.filters=<unique filter name>;<unique
 
 # Running Streams Agent
 
-Once the Remora Java Agent is running and the Streams Agent configured you can run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)` to start the Streams Agent and begin forwarding java traces to your trace output.
+Once the Remora Java Agent is running and the Streams Agent configured you can run `<install_dir>/remora-<version>/tnt4j-streams/remora-streamer/run.sh(run.bat)` to start the Streams Agent and begin forwarding java traces to your trace output. Running first time you will be asked for a repository token. This tokes is latter written in file "token", if you'd like to change.
 
 # Troubleshooting and Logging
 
