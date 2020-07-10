@@ -71,7 +71,8 @@ Login to your dashboard to view & analyze results:
 
 Java 8+ runtime (IBM WebSphere 8.5.5+, Tomcat 8+, jBoss 7.2+ should be already running Java 8. Make sure JVM is Java 1.8 or above).
 
-The following jar files are required to build `remora-websphere` advices:
+The following IBM WebSphere runtime jar files are required to build `remora-websphere` advices:
+
 * `com.ibm.jaxws.thinclient_8.5.0.jar`
 * `com.ibm.ws.runtime.jar`
 * `com.ibm.ws.webcontainer.jar`
