@@ -70,7 +70,7 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	@RemoraConfig.Configurable
 	public List<String> excludeProperties = new ArrayList<>(10);
 
-	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<CallStack>();
+	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
 			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
 	@RemoraConfig.Configurable
@@ -103,23 +103,29 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	}
 
 	public AgentBuilder.Identified.Extendable getTransform() {
-		AgentBuilder.Identified.Narrowable type = agentBuilder//
+		AgentBuilder.Transformer noop = new AgentBuilder.Transformer() {
+			@Override
+			public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription,
+					ClassLoader classLoader, JavaModule module) {
+				return builder;
+			}
+		};
+		AgentBuilder.Transformer java15safe = new AgentBuilder.Transformer() {
+			@Override
+			public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription,
+					ClassLoader classLoader, JavaModule module) {
+				return builder.visit(TypeConstantAdjustment.INSTANCE);
+			}
+		};
+		AgentBuilder.Identified.Extendable type = agentBuilder//
 				// .with(listener) //
 				.disableClassFormatChanges()//
 				// .enableUnsafeBootstrapInjection() //
 				.ignore(getClassIgnores()) //
-				.type(getTypeMatcher());
-		if (java15safe) {
-			type.transform(new AgentBuilder.Transformer() {
-				@Override
-				public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription,
-						ClassLoader classLoader, JavaModule module) {
-					return builder.visit(TypeConstantAdjustment.INSTANCE);
-				}
-			});//
-		}
+				.type(getTypeMatcher())//
+				.transform(this.java15safe ? java15safe : noop).transform(getAdvice());
 
-		return type.transform(getAdvice());
+		return type;
 	}
 
 	public abstract ElementMatcher<TypeDescription> getTypeMatcher();
@@ -165,8 +171,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 		}
 	}
 
-	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition,
-			ThreadLocal<CallStack> stackThreadLocal, Object thiz, Method method, TaggedLogger logger) {
+	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition, ThreadLocal<CallStack> stackThreadLocal,
+			Object thiz, Method method, TaggedLogger logger) {
 		if (entryDefinition.isChained()) {
 			return 0;
 		}
