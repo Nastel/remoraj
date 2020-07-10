@@ -63,9 +63,8 @@ Please complete the following steps if you decide to send traces to Nastel XRay:
 * Obtain your account with [Nastel XRay](https://xray.nastel.com/xray/Nastel/login.jsp). Make sure to get your streaming access token
 * Configure the Streams Agent (you will need your streaming access token here)
 * Start the Streams Agent (forwards traces to your data repository associated with your streaming access token)
-
-Login to your dashboard to view & analyze results: 
-* [Nastel XRay Dashboard](https://xray.nastel.com/xray/Nastel/login.jsp)
+* Run your Java apps with RemoraJ Agent enabled
+* Login to your [Nastel XRay Dashboard](https://xray.nastel.com/xray/Nastel/login.jsp) dashboard to analyze your traces 
 
 ## Prerequisites
 
