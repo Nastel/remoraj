@@ -77,6 +77,12 @@ public class SimpleTest extends BaseTransformers {
 			}
 
 			logger.info("BEFORE METHOD CALL");
+			logger.warn("WARN");
+			logger.error("ERROR");
+			logger.debug("DEBUG");
+			logger.trace("TRACE");
+			logger.trace(new Exception("Exception"));
+
 			System.out.println("BEFORE METHOD CALL");
 			ed = getEntryDefinition(ed, SimpleTest.class, logging ? logger : null);
 

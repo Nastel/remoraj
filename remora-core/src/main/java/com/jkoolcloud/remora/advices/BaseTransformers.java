@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import org.tinylog.Level;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.AdviceRegistry;
@@ -46,7 +47,7 @@ import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.utility.JavaModule;
 
-public abstract class BaseTransformers implements RemoraAdvice {
+public abstract class BaseTransformers implements RemoraAdvice, Logable {
 
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;
@@ -66,6 +67,8 @@ public abstract class BaseTransformers implements RemoraAdvice {
 	public boolean enabled = true;
 	@RemoraConfig.Configurable
 	public List<AdviceFilter> filters = new ArrayList<>(10);
+	@RemoraConfig.Configurable
+	public Level logLevel = Level.OFF;
 
 	@RemoraConfig.Configurable
 	public List<String> excludeProperties = new ArrayList<>(10);
@@ -488,6 +491,11 @@ public abstract class BaseTransformers implements RemoraAdvice {
 				}
 			}
 		}
+	}
+
+	@Override
+	public Level getLogLevel() {
+		return logLevel;
 	}
 
 	public static class TransformationLoggingListener extends AgentBuilder.Listener.Adapter {

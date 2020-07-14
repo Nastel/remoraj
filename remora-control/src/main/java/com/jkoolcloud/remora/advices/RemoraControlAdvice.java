@@ -35,6 +35,7 @@ import org.takes.facets.fork.TkFork;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
 import org.takes.tk.TkOnce;
+import org.tinylog.Level;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
@@ -47,7 +48,7 @@ import com.jkoolcloud.remora.takes.*;
 
 //import org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder;
 
-public class RemoraControlAdvice implements RemoraAdvice {
+public class RemoraControlAdvice implements RemoraAdvice, Logable {
 
 	public static final String ADVICE_NAME = "RemoraControlAdvice";
 	protected static TaggedLogger logger;
@@ -138,6 +139,11 @@ public class RemoraControlAdvice implements RemoraAdvice {
 	@Override
 	public String getName() {
 		return ADVICE_NAME;
+	}
+
+	@Override
+	public Level getLogLevel() {
+		return null;
 	}
 
 	public static class AvailableInetSocketAddress {

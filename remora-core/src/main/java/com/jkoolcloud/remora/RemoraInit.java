@@ -46,7 +46,7 @@ public class RemoraInit {
 			String key = "writer" + adviceName;
 			Configuration.set(key, "rolling file");
 			Configuration.set(key + ".file", System.getProperty(Remora.REMORA_PATH) + "/log/" + adviceName + ".log");
-			Configuration.set(key + ".format", " {level}: {message}");
+			Configuration.set(key + ".format", "{date} [{thread}] {class}.{method}()\n\t{level}: {message}");
 			Configuration.set(key + ".tag", adviceName);
 			Configuration.set(key + ".level", "debug");
 			try {
