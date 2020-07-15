@@ -105,12 +105,13 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			if (!intercept(JavaxServletAdvice.class, thiz, method, logging ? logger : null, req, resp)) {
+			ctx = prepareIntercept(JavaxServletAdvice.class, thiz, method, logging ? logger : null, req, resp);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (logging) {
@@ -198,7 +199,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -226,13 +227,14 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		boolean doFinally = true;
 		try {
-			if (!intercept(JavaxServletAdvice.class, obj, method, logging ? logger : null, req, resp)) {
+			ctx = prepareIntercept(JavaxServletAdvice.class, obj, method, logging ? logger : null, req, resp);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -249,7 +251,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

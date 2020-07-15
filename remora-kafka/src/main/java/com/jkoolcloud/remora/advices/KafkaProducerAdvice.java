@@ -80,10 +80,11 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	public static void before(@Advice.This KafkaProducer<?, ?> thiz, //
 			@Advice.Argument(0) ProducerRecord<?, ?> record, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(KafkaProducerAdvice.class, thiz, method, logging ? logger : null, record)) {
+			ctx = prepareIntercept(KafkaProducerAdvice.class, thiz, method, logging ? logger : null, record);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaProducerAdvice.class, logging ? logger : null);
@@ -116,7 +117,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			ed.addPropertyIfExist("VALUE", String.valueOf(record.value()));
 			ed.setResource(topic, EntryDefinition.ResourceType.TOPIC);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -139,11 +140,13 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 	public static void after(@Advice.This KafkaProducer<?, ?> producer, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(KafkaProducerAdvice.class, producer, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(KafkaProducerAdvice.class, producer, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -158,7 +161,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, producer.getClass());

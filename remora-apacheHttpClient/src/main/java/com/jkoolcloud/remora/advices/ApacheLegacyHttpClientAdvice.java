@@ -98,10 +98,12 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 	public static void before(@Advice.This Object thiz, //
 			@Advice.Argument(0) HttpRoute route, @Advice.Argument(1) HttpRequestWrapper request,
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(ApacheLegacyHttpClientAdvice.class, thiz, method, logging ? logger : null, route, request)) {
+			ctx = prepareIntercept(ApacheLegacyHttpClientAdvice.class, thiz, method, logging ? logger : null, route,
+					request);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
@@ -119,7 +121,7 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 				logger.info("Atached correlator:  {}", ed.getId());
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -145,11 +147,13 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(ApacheLegacyHttpClientAdvice.class, obj, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(ApacheLegacyHttpClientAdvice.class, obj, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -164,7 +168,7 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

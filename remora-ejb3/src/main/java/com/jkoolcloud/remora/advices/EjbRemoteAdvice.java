@@ -95,10 +95,11 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(EjbRemoteAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(EjbRemoteAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, logging ? logger : null);
@@ -110,16 +111,16 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 				stackThreadLocal.get().setApplication(String.valueOf(method.getDeclaringClass()));
 			}
 			try {
-				EJBContext context = ReflectionUtils.getFieldValue(thiz, EJBContext.class, "context", "ctx");
-				if (context != null) {
-					ed.addPropertiesIfExist(context.getContextData());
+				EJBContext ejbContext = ReflectionUtils.getFieldValue(thiz, EJBContext.class, "context", "ctx");
+				if (ejbContext != null) {
+					ed.addPropertiesIfExist(ejbContext.getContextData());
 				}
 			} catch (IllegalArgumentException e) {
 
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -145,11 +146,13 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(EjbRemoteAdvice.class, obj, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(EjbRemoteAdvice.class, obj, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -164,7 +167,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

@@ -92,7 +92,7 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 	public static void before(@Advice.This Object thiz, //
 			@Advice.Argument(0) String sql, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 
@@ -109,7 +109,7 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -135,7 +135,8 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			stackThreadLocal.get().pop();

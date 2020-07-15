@@ -77,10 +77,11 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Consumer<?, ?> thiz, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(KafkaConsumerClientAdvice.class, thiz, method, logging ? logger : null)) {
+			ctx = prepareIntercept(KafkaConsumerClientAdvice.class, thiz, method, logging ? logger : null);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
@@ -106,7 +107,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -126,11 +127,13 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Consumer<?, ?> producer, //
 			@Advice.Origin Method method, //
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(KafkaConsumerClientAdvice.class, producer, method, logging ? logger : null)) {
+			ctx = prepareIntercept(KafkaConsumerClientAdvice.class, producer, method, logging ? logger : null);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -145,7 +148,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, producer.getClass());

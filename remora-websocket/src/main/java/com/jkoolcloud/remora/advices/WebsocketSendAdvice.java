@@ -98,10 +98,11 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 	public static void before(@Advice.This RemoteEndpoint thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(WebsocketSendAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(WebsocketSendAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, WebsocketSendAdvice.class, logging ? logger : null);
@@ -142,7 +143,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 				logger.warn("No session found: endpoint {}, method {}", thiz, method);
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -168,11 +169,13 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(WebsocketSendAdvice.class, obj, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(WebsocketSendAdvice.class, obj, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -187,7 +190,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

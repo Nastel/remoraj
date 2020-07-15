@@ -68,11 +68,12 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Argument(0) Object uri, //
 			@Advice.Argument(1) Object arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("starttime") long starttime) //
 	{
 		try {
-			if (!intercept(SimpleTest.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(SimpleTest.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 
@@ -91,7 +92,7 @@ public class SimpleTest extends BaseTransformers {
 			ed.addProperty("Arg", arguments.toString());
 
 		} catch (Throwable t) {
-			// handleAdviceException(t, ADVICE_NAME, logging ? logger : null );
+			// handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null );
 		}
 	}
 
@@ -99,10 +100,11 @@ public class SimpleTest extends BaseTransformers {
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
 			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("starttime") long starttime) {
 		try {
-			if (!intercept(SimpleTest.class, obj, method, logging ? logger : null)) {
+			ctx = prepareIntercept(SimpleTest.class, obj, method, logging ? logger : null);
+			if (!ctx.intercept) {
 				return;
 			}
 			System.out.println("###AFTER METHOD CALL");

@@ -94,12 +94,13 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Argument(8) Object key, //
 			@Advice.Argument(9) Object value, //
 			@Advice.Argument(10) Headers headers, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime)
 	//
 	{
 		try {
-			if (!intercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
@@ -130,7 +131,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME + "start", logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -143,13 +144,14 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	public static void after(@Advice.This Object thiz, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 
 		try {
 
-			if (!intercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (logging) {
@@ -166,7 +168,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 
 			fillDefaultValuesAfter(ed, startTime, null, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME + "stop", logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, thiz.getClass());

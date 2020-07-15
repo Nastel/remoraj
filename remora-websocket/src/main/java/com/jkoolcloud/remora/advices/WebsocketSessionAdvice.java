@@ -99,10 +99,11 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	public static void before(@Advice.This Session thiz, //
 			@Advice.AllArguments Object[] args, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(WebsocketSessionAdvice.class, thiz, method, logging ? logger : null, args)) {
+			ctx = prepareIntercept(WebsocketSessionAdvice.class, thiz, method, logging ? logger : null, args);
+			if (!ctx.intercept) {
 				return;
 			}
 			MessageHandler handler = null;
@@ -115,7 +116,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			logger.info("Found new Handler {} - session {}", handler, thiz);
 			sessionHandlers.put(handler, thiz);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -129,9 +130,10 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This Object obj, //
+	public static void after(@Advice.This Object obj, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Origin Method method) {
-		if (!intercept(WebsocketSessionAdvice.class, obj, method, logging ? logger : null)) {
+		ctx = prepareIntercept(WebsocketSessionAdvice.class, obj, method, logging ? logger : null);
+		if (!ctx.intercept) {
 			return;
 		}
 	}

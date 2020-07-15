@@ -98,7 +98,8 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed,
+@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
             if (!intercept(${adviceClassName}Advice.class, thiz, method, logging ? logger : null, arguments)) {
@@ -110,7 +111,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null  );
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null  );
 		}
 	}
 
@@ -134,7 +135,8 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
@@ -153,7 +155,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null  );
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null  );
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

@@ -17,6 +17,8 @@
 package com.jkoolcloud.remora;
 
 import org.junit.Test;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 import org.tinylog.configuration.Configuration;
 
 public class RemoraInitTest {
@@ -32,19 +34,39 @@ public class RemoraInitTest {
 	}
 
 	public static void main(String[] args) {
-		String key = "writer" + "NO";
-		String adviceName = "NO";
-
-		org.tinylog.Logger.tag("INIT").info("HI");
-		Configuration.set(key, "rolling file");
-		Configuration.set(key + ".file", adviceName + ".log");
-		Configuration.set(key + ".format", " {level}: {message}");
+		String key2 = "test2", key = "test", adviceName = "test";
+		ThreadLocal<String> string = new ThreadLocal<>();
+		string.set("SSSS");
+		// Configure
+		Configuration.set(key, "remora");
+		// Configuration.set(key + ".file", System.getProperty(Remora.REMORA_PATH) + "/log/" + adviceName + ".log");
+		Configuration.set(key + ".format", "{date} [{thread}] {class}.{method}()\n\t{level}: {message}");
 		Configuration.set(key + ".tag", adviceName);
 		Configuration.set(key + ".level", "debug");
-		org.tinylog.Logger.tag("NO").info("HI");
-		org.tinylog.Logger.tag("ED").info("ED");
+		TaggedLogger logger = Logger.tag("test");
+		doTestLogging(logger);
 
-		org.tinylog.Logger.info("HI");
+		System.out.println("RECONFIGURE");
+		// Reconfigure
+		Configuration.set(key, "remora");
+		// Configuration.set(key + ".file", System.getProperty(Remora.REMORA_PATH) + "/log/" + adviceName + ".log");
+		Configuration.set(key + ".format", "{date} [{thread}] {class}.{method}()\n\t{level}: {message}");
+		Configuration.set(key + ".tag", adviceName);
+		Configuration.set(key + ".level", "error");
+		logger = Logger.tag("test");
+
+		doTestLogging(logger);
+
+	}
+
+	private static void doTestLogging(TaggedLogger logger) {
+		logger.info("INFO");
+		logger.warn("WARN");
+		logger.error("ERROR");
+		logger.debug("DEBUG");
+		logger.trace("TRACE");
+		logger.error(new Exception("Exception"));
+
 	}
 
 }

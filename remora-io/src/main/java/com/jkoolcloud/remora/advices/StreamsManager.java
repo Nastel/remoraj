@@ -45,45 +45,50 @@ public enum StreamsManager {
 			totalTrackedOutputStreams);
 	public HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
-	public StreamStats get(InputStream thiz, TaggedLogger logger, Method method) {
+	public StreamStats get(InputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
+			Method method) {
 
 		WeakHashMap<InputStream, EntryDefinition> availableInputStreams = this.availableInputStreams;
 		HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = this.availableInputStreamsEntries;
 
 		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, logger, method, availableInputStreams, availableInputStreamsEntries, ed);
+		ed = checkForEntryOrCreate(thiz, ctx, logger, method, availableInputStreams, availableInputStreamsEntries, ed);
 
 		return availableInputStreamsEntries.get(ed);
 	}
 
-	public StreamStats get(OutputStream thiz, TaggedLogger logger, Method method) {
+	public StreamStats get(OutputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
+			Method method) {
 
 		WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = this.availableOutputStreams;
 		HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = this.availableOutputStreamsEntries;
 
 		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, logger, method, availableOutputStreams, availableOutputStreamsEntries, ed);
+		ed = checkForEntryOrCreate(thiz, ctx, logger, method, availableOutputStreams, availableOutputStreamsEntries,
+				ed);
 
 		return availableInputStreamsEntries.get(ed);
 	}
 
-	public StreamStats close(InputStream thiz, TaggedLogger logger, Method method) {
+	public StreamStats close(InputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
+			Method method) {
 		WeakHashMap<InputStream, EntryDefinition> availableStreams = availableInputStreams;
 		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
 
-		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
+		return closeAndGenerateStats(thiz, ctx, logger, availableStreamsEntries, availableStreams);
 	}
 
-	public StreamStats close(OutputStream thiz, TaggedLogger logger, Method method) {
+	public StreamStats close(OutputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
+			Method method) {
 		WeakHashMap<OutputStream, EntryDefinition> availableStreams = availableOutputStreams;
 		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
 
-		return closeAndGenerateStats(thiz, logger, availableStreamsEntries, availableStreams);
+		return closeAndGenerateStats(thiz, ctx, logger, availableStreamsEntries, availableStreams);
 	}
 
 	@Nullable
-	private static StreamStats closeAndGenerateStats(Object thiz, TaggedLogger logger,
-			HashMap<EntryDefinition, StreamStats> availableStreamsEntries,
+	private static StreamStats closeAndGenerateStats(Object thiz, BaseTransformers.InterceptionContext ctx,
+			TaggedLogger logger, HashMap<EntryDefinition, StreamStats> availableStreamsEntries,
 			WeakHashMap<?, EntryDefinition> availableStreams) {
 		boolean doFinally = true;
 		try {
@@ -116,7 +121,7 @@ public enum StreamsManager {
 				}
 			}
 		} catch (Throwable t) {
-			BaseTransformers.handleAdviceException(t, StreamsManager.class.getSimpleName(), logger);
+			BaseTransformers.handleAdviceException(t, ctx.interceptorInstance, logger);
 		} finally {
 			if (doFinally) {
 				doFinally(logger, thiz.getClass());
@@ -125,8 +130,8 @@ public enum StreamsManager {
 		return null;
 	}
 
-	private static <T> EntryDefinition checkForEntryOrCreate(T thiz, TaggedLogger logger, Method method,
-			WeakHashMap<T, EntryDefinition> availableStreams,
+	private static <T> EntryDefinition checkForEntryOrCreate(T thiz, BaseTransformers.InterceptionContext ctx,
+			TaggedLogger logger, Method method, WeakHashMap<T, EntryDefinition> availableStreams,
 			HashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed) {
 		if (!availableStreams.containsKey(thiz)) {
 

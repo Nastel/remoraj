@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
@@ -31,7 +32,7 @@ public class TimingAdviceListener implements ReportingAdviceListener {
 	AverageTime avgTime = new AverageTime();
 
 	@Override
-	public void onIntercept(Class<?> adviceClass, Object thiz, Method method) {
+	public void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method) {
 
 	}
 
@@ -47,7 +48,7 @@ public class TimingAdviceListener implements ReportingAdviceListener {
 	}
 
 	@Override
-	public void onAdviceError(Class<?> adviceClass, Throwable e) {
+	public void onAdviceError(RemoraAdvice adviceInstance, Throwable e) {
 
 	}
 

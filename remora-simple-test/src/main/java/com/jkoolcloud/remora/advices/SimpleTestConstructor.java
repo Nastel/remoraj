@@ -45,7 +45,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 	public static boolean logging = false;
 	public static TaggedLogger logger;
 
-	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<CallStack>();
+	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(SimpleTestConstructor.class.getClassLoader())//
@@ -69,13 +69,14 @@ public class SimpleTestConstructor extends BaseTransformers {
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.AllArguments Object[] args, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Origin Method method, //
 			@Advice.This Object thiz, //
 			@Advice.Local("startTime") long starttime) //
 	{
 		try {
-			if (!intercept(SimpleTestConstructor.class, thiz, method, logging ? logger : null, args)) {
+			ctx = prepareIntercept(SimpleTestConstructor.class, thiz, method, logging ? logger : null, args);
+			if (!ctx.intercept) {
 				return;
 			}
 			System.out.println("BEFORE METHOD CALL");
@@ -104,7 +105,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			System.out.println("Exception");
 			logger.info("Exception");
 			t.printStackTrace();
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -113,11 +114,12 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(SimpleTestConstructor.class, obj, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(SimpleTestConstructor.class, obj, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -132,7 +134,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

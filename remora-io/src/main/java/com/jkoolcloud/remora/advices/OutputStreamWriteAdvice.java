@@ -85,15 +85,16 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This OutputStream thiz, //
 			@Advice.AllArguments Object[] arguments, //
-			@Advice.Origin Method method//
+			@Advice.Local("context") InterceptionContext ctx, @Advice.Origin Method method//
 	) {
 		try {
-			if (!intercept(OutputStreamWriteAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(OutputStreamWriteAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
-			StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method).advanceCount();
+			StreamsManager.INSTANCE.get(thiz, ctx, logging ? logger : null, method).advanceCount();
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 
 	}

@@ -83,10 +83,11 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(JBossAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(JBossAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			ed = getEntryDefinition(ed, JBossAdvice.class, logging ? logger : null);
@@ -113,7 +114,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -137,11 +138,13 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(JBossAdvice.class, obj, method, logging ? logger : null, req, resp)) {
+			ctx = prepareIntercept(JBossAdvice.class, obj, method, logging ? logger : null, req, resp);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
@@ -156,7 +159,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

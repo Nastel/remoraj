@@ -96,11 +96,12 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Argument(0) Object parameterName, //
 			@Advice.Argument(1) Object parameterValue, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null, parameterName,
-					parameterValue)) {
+			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null,
+					parameterName, parameterValue);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (logging) {
@@ -116,7 +117,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -139,10 +140,12 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	public static void after(@Advice.This Statement thiz, //
 			@Advice.Origin Method method, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null)) {
+			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null);
+			if (!ctx.intercept) {
 				return;
 			}
 			stackThreadLocal.get().pop();

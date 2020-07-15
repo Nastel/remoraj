@@ -29,7 +29,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
 
-public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
+public class GeneralAdvice extends BaseTransformers {
 
 	public static final String ADVICE_NAME = "GeneralAdvice";
 
@@ -60,12 +60,12 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -88,7 +88,8 @@ public class GeneralAdvice extends BaseTransformers implements RemoraAdvice {
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);

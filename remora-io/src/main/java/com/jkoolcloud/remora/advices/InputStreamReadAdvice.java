@@ -86,14 +86,15 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This InputStream thiz, //
-			@Advice.AllArguments Object[] arguments, //
+			@Advice.AllArguments Object[] arguments, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Origin Method method//
 	) {
 		try {
-			if (!intercept(InputStreamReadAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(InputStreamReadAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
-			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, logging ? logger : null, method);
+			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, ctx, logging ? logger : null, method);
 			if (streamStats == null) {
 				throw new IllegalStateException(
 						"Stream stats is null for " + method.getDeclaringClass() + "." + method.getName());
@@ -106,7 +107,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 				streamStats.advanceCount(((Object[]) arguments[0]).length);
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 
 	}

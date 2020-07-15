@@ -79,7 +79,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(0) SocketAddress socketAddress, //
 			@Advice.Argument(1) int timeout, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
 			if (!intercept(SocketAdvice.class, thiz, method, logging ? logger : null, socketAddress, timeout)) {
@@ -105,7 +105,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -132,7 +132,8 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Argument(0) SocketAddress socketAddress, //
 			@Advice.Argument(1) int timeout, //
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
@@ -151,7 +152,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

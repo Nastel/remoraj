@@ -61,7 +61,7 @@ public class RemoraLoggingProvider implements LoggingProvider {
 			Object... arguments) {
 		try {
 			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(tag);
-			if (adviceByName instanceof Logable) {
+			if (adviceByName != null && adviceByName instanceof Logable) {
 				if (((Logable) adviceByName).getLogLevel().ordinal() > level.ordinal()) {
 					return;
 				}

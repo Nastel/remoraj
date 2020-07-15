@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.RemoraStatistic;
 import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -34,8 +35,8 @@ public class CountingAdviceListener implements ReportingAdviceListener {
 	}
 
 	@Override
-	public void onIntercept(Class<?> adviceClass, Object thiz, Method method) {
-		statistic.incInvokeCount();
+	public void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method) {
+
 	}
 
 	@Override
@@ -44,8 +45,8 @@ public class CountingAdviceListener implements ReportingAdviceListener {
 	}
 
 	@Override
-	public void onAdviceError(Class<?> adviceClass, Throwable e) {
-		statistic.incErrorCount();
+	public void onAdviceError(RemoraAdvice adviceInstance, Throwable e) {
+
 	}
 
 	@Override

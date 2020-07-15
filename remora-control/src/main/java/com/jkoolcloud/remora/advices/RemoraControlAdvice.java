@@ -66,6 +66,7 @@ public class RemoraControlAdvice implements RemoraAdvice, Logable {
 	public static int serviceDelay = 240;
 	@RemoraConfig.Configurable
 	public static String heapDumpPath = System.getProperty(Remora.REMORA_PATH, ".") + "/dumps/";
+	private Level logLevel = Level.OFF;
 
 	@Override
 	public void install(Instrumentation instrumentation) {
@@ -143,7 +144,7 @@ public class RemoraControlAdvice implements RemoraAdvice, Logable {
 
 	@Override
 	public Level getLogLevel() {
-		return null;
+		return logLevel;
 	}
 
 	public static class AvailableInetSocketAddress {

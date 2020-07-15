@@ -220,15 +220,11 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 		return System.nanoTime();
 	}
 
-	private static void invokeOnIntercept(Class<?> adviceClass, Object thiz, Method method) {
-		try {
-			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
-					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
-			for (AdviceListener listener : listeners) {
-				listener.onIntercept(adviceClass, thiz, method);
-			}
-		} catch (ClassNotFoundException e) {
+	private static void invokeOnIntercept(BaseTransformers adviceInstance, Object thiz, Method method) {
 
+		List<AdviceListener> listeners = adviceInstance.listeners;
+		for (AdviceListener listener : listeners) {
+			listener.onIntercept(adviceInstance, thiz, method);
 		}
 
 	}
@@ -245,16 +241,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 		}
 	}
 
-	private static void invokeOnError(Class<?> adviceClass, Throwable t) {
-		try {
-			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
-					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
-			for (AdviceListener listener : listeners) {
-				listener.onAdviceError(adviceClass, t);
-			}
-		} catch (ClassNotFoundException e) {
-
+	private static void invokeOnError(BaseTransformers adviceInstance, Throwable t) {
+		List<AdviceListener> listeners = adviceInstance.listeners;
+		for (AdviceListener listener : listeners) {
+			listener.onAdviceError(adviceInstance, t);
 		}
+
 	}
 
 	private static void invokeOnMethodFinished(Class<?> adviceClass, double elapseTime) {
@@ -361,13 +353,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 		return false;
 	}
 
-	public static void handleAdviceException(Throwable t, String adviceName, TaggedLogger logger) {
-		try {
-			invokeOnError(AdviceRegistry.INSTANCE.getAdviceByName(adviceName).getClass(), t);
-		} catch (ClassNotFoundException e) {
-		}
+	public static void handleAdviceException(Throwable t, BaseTransformers adviceInstance, TaggedLogger logger) {
+		invokeOnError(adviceInstance, t);
+
 		if (logger != null) {
-			logger.info("{} threw an exception {} {}", adviceName, t.getMessage(), t.getClass().getName());
+			logger.info("{} threw an exception {} {}", adviceInstance.getClass(), t.getMessage(),
+					t.getClass().getName());
 			logger.info(Arrays.toString(t.getStackTrace()));
 		}
 	}
@@ -401,26 +392,41 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 		}
 	}
 
-	public static boolean intercept(Class<? extends BaseTransformers> tClass, Object thiz, Method method,
-			TaggedLogger logger, Object... arguments) {
-		invokeOnIntercept(tClass, thiz, method);
+	public static InterceptionContext prepareIntercept(Class<? extends BaseTransformers> tClass, Object thiz,
+			Method method, TaggedLogger logger, Object... arguments) {
+		InterceptionContext context = new InterceptionContext();
+
+		BaseTransformers adviceInstance = getAdviceInstance(tClass);
+		context.interceptorInstance = adviceInstance;
+		invokeOnIntercept(adviceInstance, thiz, method);
 		if (stackThreadLocal.get() instanceof EmptyStack) {
-			return false;
+			// context.intercept = false;
+			return context;
 		}
-		if (!getAdviceInstance(tClass).enabled) {
-			return false;
+		if (!adviceInstance.enabled) {
+			// context.intercept = false;
+			return context;
 		}
-		for (AdviceFilter filter : getAdviceInstance(tClass).filters) {
+		for (AdviceFilter filter : adviceInstance.filters) {
 			if (!filter.intercept(thiz, method, arguments)) {
 				if (filter.excludeWholeStack()) {
 					if (stackThreadLocal.get() == null || stackThreadLocal.get().isEmpty()) {
 						stackThreadLocal.set(new EmptyStack(logger, callStackLimit));
 					}
 				}
-				return false;
+				// context.intercept = false;
+				return context;
 			}
 		}
-		return true;
+		context.intercept = true;
+		return context;
+	}
+
+	public static class InterceptionContext {
+		public boolean intercept;
+		public EntryDefinition ed;
+		public BaseTransformers interceptorInstance;
+
 	}
 
 	protected abstract AgentBuilder.Listener getListener();

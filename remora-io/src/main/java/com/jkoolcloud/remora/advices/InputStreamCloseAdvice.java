@@ -83,18 +83,20 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 
 	@Advice.OnMethodExit
 	public static void after(@Advice.This InputStream thiz, //
+
 			@Advice.Origin Method method //
 	) {
-		if (!intercept(InputStreamCloseAdvice.class, thiz, method, logging ? logger : null)) {
+		InterceptionContext ctx = prepareIntercept(InputStreamCloseAdvice.class, thiz, method, logging ? logger : null);
+		if (!ctx.intercept) {
 			return;
 		}
 		if (logging) {
 			logger.info("Exiting: {} {}", InputStreamCloseAdvice.class.getName(), "after");
 		}
 		try {
-			StreamsManager.INSTANCE.close(thiz, logging ? logger : null, method);
+			StreamsManager.INSTANCE.close(thiz, ctx, logging ? logger : null, method);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 
 	}

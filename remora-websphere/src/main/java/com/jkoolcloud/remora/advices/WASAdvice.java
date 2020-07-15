@@ -100,12 +100,13 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed,
+@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
-			if (!intercept(WASAdvice.class, thiz, method, logging ? logger : null, new Object[] { req, resp })) {
+			if (!intercept( {
 				return;
 			}
 			if (logging) {
@@ -162,7 +163,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -172,11 +173,13 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed,
+@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-		if (!intercept(WASAdvice.class, obj, method, logging ? logger : null, new Object[] { req, resp })) {
+		ctx = prepareIntercept(WASAdvice.class, obj, method, logging ? logger : null, new Object[] { req, resp });
+if (!ctx.intercept) {
 			return;
 		}
 		boolean doFinally = true;
@@ -194,7 +197,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinally) {
 				doFinally(logging ? logger : null, obj.getClass());

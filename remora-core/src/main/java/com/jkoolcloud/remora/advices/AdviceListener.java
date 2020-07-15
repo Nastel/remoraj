@@ -21,11 +21,11 @@ import java.lang.reflect.Method;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public interface AdviceListener {
-	void onIntercept(Class<?> adviceClass, Object thiz, Method method);
+	void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method);
 
 	void onMethodFinished(Class<?> adviceClass, double elapseTime);
 
-	void onAdviceError(Class<?> adviceClass, Throwable e);
+	void onAdviceError(RemoraAdvice adviceInstance, Throwable e);
 
 	void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition);
 }

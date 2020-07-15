@@ -98,12 +98,13 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static void before(@Advice.This MessageConsumer thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime)//
 	// @Advice.Local("remoraLogger") Logger logger) // ) //
 	{
 		try {
-			if (!intercept(JMSReceiveAdvice.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(JMSReceiveAdvice.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (logging) {
@@ -126,7 +127,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -153,13 +154,14 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Thrown Throwable exception, //
 			@Advice.Return Message message, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		boolean doFinnaly = true;
 		try {
-			if (!intercept(JMSReceiveAdvice.class, obj, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(JMSReceiveAdvice.class, obj, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (logging) {
@@ -199,7 +201,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		} finally {
 			if (doFinnaly) {
 				doFinally(logging ? logger : null, obj.getClass());

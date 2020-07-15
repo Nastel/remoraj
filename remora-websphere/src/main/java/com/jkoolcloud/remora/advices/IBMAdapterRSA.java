@@ -94,13 +94,14 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	public static void before(@Advice.This WSJdbcStatement thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime //
 	// @Advice.Local("remoraLogger") Logger logger
 
 	) {
 		try {
-			if (!intercept(IBMAdapterRSA.class, thiz, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(IBMAdapterRSA.class, thiz, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (logging) {
@@ -121,7 +122,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 				ed.addProperty("DB_NAME", thiz.getJNDIName());
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ADVICE_NAME, logging ? logger : null);
+			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
 		}
 	}
 
@@ -146,13 +147,15 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	public static void after(@Advice.This Object obj, //
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime //
 	// @Advice.Local("remoraLogger") Logger logger//
 	) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(IBMAdapterRSA.class, obj, method, logging ? logger : null, arguments)) {
+			ctx = prepareIntercept(IBMAdapterRSA.class, obj, method, logging ? logger : null, arguments);
+			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
