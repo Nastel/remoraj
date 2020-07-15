@@ -43,9 +43,6 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 	public static String[] INTERCEPTING_CLASS = { "javax.websocket.Endpoint" };
 	public static String INTERCEPTING_METHOD = "onClose,onOpen,onError";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(WebsocketEndpointAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
 			.advice(methodMatcher(), WebsocketEndpointAdvice.class.getName());
@@ -82,39 +79,33 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(WebsocketEndpointAdvice.class, thiz, method, logging ? logger : null, args);
+			ctx = prepareIntercept(WebsocketEndpointAdvice.class, thiz, method, args);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", WebsocketEndpointAdvice.class.getName(), "before");
-			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, ctx);
+			logger.info("Entering: {} {}", WebsocketEndpointAdvice.class.getName(), ctx.interceptorInstance, "before");
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			if (args != null && args.length >= 1 && args[0] instanceof Session) {
 				Session session = (Session) args[0];
 
 				String name = method.getName();
 				if ("onOpen".equals(name)) {
-					if (logging) {
-						logger.info("Encountered WebSocket onOpen");
-					}
+					logger.info("Encountered WebSocket onOpen");
 					ed.setEventType(EntryDefinition.EventType.OPEN);
 					for (MessageHandler handler : session.getMessageHandlers()) {
 
 						WebsocketSessionAdvice.sessionHandlers.put(handler, session);
-						if (logging) {
-							logger.info("Adding known handler {} for session {}", handler, session);
-						}
+						logger.info("Adding known handler {} for session {}", handler, ctx.interceptorInstance,
+								session);
 					}
 					WebsocketSessionAdvice.sessionEndpoints.put(session.getBasicRemote(), session);
 					WebsocketSessionAdvice.sessionEndpoints.put(session.getAsyncRemote(), session);
 				}
 				if ("onClose".equals(name)) {
-					if (logging) {
-						logger.info("Encountered WebSocket onclose");
-					}
+					logger.info("Encountered WebSocket onclose");
 					ed.setEventType(EntryDefinition.EventType.CLOSE);
 					if (args.length >= 2 && args[1] instanceof CloseReason) {
 						ed.addPropertyIfExist("CLOSE_REASON", ((CloseReason) args[1]).getReasonPhrase());
@@ -126,9 +117,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 
 				}
 				if ("OnError".equals(name)) {
-					if (logging) {
-						logger.info("Encountered WebSocket onError");
-					}
+					logger.info("Encountered WebSocket onError");
 					ed.setEventType(EntryDefinition.EventType.CLOSE);
 					if (args.length >= 2 && args[1] instanceof Throwable) {
 						if (args[1] instanceof Throwable) {
@@ -143,7 +132,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 				}
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -173,26 +162,24 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(WebsocketEndpointAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(WebsocketEndpointAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", WebsocketEndpointAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", WebsocketEndpointAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 	}
@@ -224,7 +211,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

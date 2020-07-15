@@ -41,8 +41,6 @@ public class SimpleTestConstructor extends BaseTransformers {
 	public static String[] INTERCEPTING_CLASS = { "lt.slabs.com.jkoolcloud.remora.JustATest2" };
 	public static String INTERCEPTING_METHOD = "constructor";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
@@ -75,12 +73,12 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("startTime") long starttime) //
 	{
 		try {
-			ctx = prepareIntercept(SimpleTestConstructor.class, thiz, method, logging ? logger : null, args);
+			ctx = prepareIntercept(SimpleTestConstructor.class, thiz, method, args);
 			if (!ctx.intercept) {
 				return;
 			}
 			System.out.println("BEFORE METHOD CALL");
-			ed = getEntryDefinition(ed, SimpleTestConstructor.class, logging ? logger : null);
+			ed = getEntryDefinition(ed, SimpleTestConstructor.class, ctx);
 
 			if (args != null && args[0] instanceof String) {
 
@@ -99,13 +97,13 @@ public class SimpleTestConstructor extends BaseTransformers {
 
 			}
 
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 		} catch (Throwable t) {
 			System.out.println("Exception");
 			logger.info("Exception");
 			t.printStackTrace();
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -118,26 +116,22 @@ public class SimpleTestConstructor extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(SimpleTestConstructor.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(SimpleTestConstructor.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", SimpleTestConstructor.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", SimpleTestConstructor.class.getName(), "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 

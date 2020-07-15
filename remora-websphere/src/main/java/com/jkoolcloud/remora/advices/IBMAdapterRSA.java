@@ -42,8 +42,6 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 			"com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement", "com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement" };
 	public static String INTERCEPTING_METHOD = "execut";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
@@ -100,17 +98,15 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 
 	) {
 		try {
-			ctx = prepareIntercept(IBMAdapterRSA.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(IBMAdapterRSA.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}", IBMAdapterRSA.class.getSimpleName(), "before",
-						thiz.getClass().getName());
-			}
+			logger.info("Entering: {} {} from {}", ctx, IBMAdapterRSA.class.getSimpleName(), "before",
+					thiz.getClass().getName());
 
-			ed = getEntryDefinition(ed, IBMAdapterRSA.class, logging ? logger : null);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			ed = getEntryDefinition(ed, IBMAdapterRSA.class, ctx);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			if (arguments != null && arguments.length >= 1 && arguments[0] instanceof String) {
 				ed.addProperty("SQL", arguments[0].toString());
 
@@ -122,7 +118,7 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 				ed.addProperty("DB_NAME", thiz.getJNDIName());
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -154,24 +150,20 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(IBMAdapterRSA.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(IBMAdapterRSA.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", IBMAdapterRSA.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", IBMAdapterRSA.class.getName(), "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 

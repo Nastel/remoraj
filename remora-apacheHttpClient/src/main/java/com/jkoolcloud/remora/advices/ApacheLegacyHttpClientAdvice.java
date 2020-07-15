@@ -44,10 +44,6 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 	@RemoraConfig.Configurable
 	public static String headerCorrIDName = "REMORA_CORR";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -101,27 +97,23 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(ApacheLegacyHttpClientAdvice.class, thiz, method, logging ? logger : null, route,
-					request);
+			ctx = prepareIntercept(ApacheLegacyHttpClientAdvice.class, thiz, method, route, request);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), "before");
-			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, ctx);
+			logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), ctx.interceptorInstance, "before");
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.addPropertyIfExist("URI", request.getURI().toString());
 			ed.addPropertyIfExist("HOST", route.getTargetHost().getHostName());
 			ed.setResource(request.getURI().toString(), EntryDefinition.ResourceType.NETADDR);
 
 			request.addHeader(headerCorrIDName, ed.getId());
 			ed.addProperty(headerCorrIDName, ed.getId());
-			if (logging) {
-				logger.info("Atached correlator:  {}", ed.getId());
-			}
+			logger.info("Atached correlator:  {}", ctx.interceptorInstance, ed.getId());
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -152,26 +144,24 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(ApacheLegacyHttpClientAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(ApacheLegacyHttpClientAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", ApacheHttpClientAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", ApacheHttpClientAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 

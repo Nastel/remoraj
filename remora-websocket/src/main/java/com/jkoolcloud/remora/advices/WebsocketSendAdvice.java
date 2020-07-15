@@ -46,10 +46,6 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 	public static String[] INTERCEPTING_CLASS = { "javax.websocket.RemoteEndpoint" };
 	public static String INTERCEPTING_METHOD = "send";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -101,15 +97,14 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(WebsocketSendAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(WebsocketSendAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, WebsocketSendAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", WebsocketSendAdvice.class.getName(), "before");
-			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, WebsocketSendAdvice.class, ctx);
+			logger.info("Entering: {} {}", WebsocketSendAdvice.class.getName(), ctx.interceptorInstance, "before");
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.setEventType(EntryDefinition.EventType.SEND);
 			Session session = WebsocketSessionAdvice.sessionEndpoints.get(thiz);
 			if (session != null) {
@@ -136,14 +131,13 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 					stack.setApplication(application);
 				}
 
-				if (logging) {
-					logger.info("Attached correlator {}, server {}, application {}", correlator, server, application);
-				}
+				logger.info("Attached correlator {}, server {}, application {}", correlator, server,
+						ctx.interceptorInstance, application);
 			} else {
-				logger.warn("No session found: endpoint {}, method {}", thiz, method);
+				logger.warn("No session found: endpoint {}, method {}", thiz, ctx.interceptorInstance, method);
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -174,26 +168,24 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(WebsocketSendAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(WebsocketSendAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", WebsocketSendAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", WebsocketSendAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 
@@ -210,7 +202,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

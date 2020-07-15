@@ -49,9 +49,6 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
 	public static String INTERCEPTING_METHOD = "service";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JavaxServletAdvice.class.getClassLoader()) //
 			.include(RemoraConfig.INSTANCE.classLoader) //
@@ -110,17 +107,14 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			ctx = prepareIntercept(JavaxServletAdvice.class, thiz, method, logging ? logger : null, req, resp);
+			ctx = prepareIntercept(JavaxServletAdvice.class, thiz, method, req, resp);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}", JavaxServletAdvice.class.getSimpleName(), "before",
-						thiz.getClass().getName());
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
-			ed = getEntryDefinition(ed, JavaxServletAdvice.class, logging ? logger : null);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			ed = getEntryDefinition(ed, JavaxServletAdvice.class, ctx);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			if (req instanceof HttpServletRequest && req.getDispatcherType() == DispatcherType.REQUEST) {
 				try {
@@ -176,30 +170,24 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 						String remoraHeader = ((HttpServletRequest) req).getHeader(headerCorrIDName);
 						if (remoraHeader == null) {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, ed.getId());
-							if (logging) {
-								logger.info("Added RermoroaJ header: " + headerCorrIDName + ed.getId());
-							}
+							logger.info("Added RermoroaJ header: " + headerCorrIDName + ed.getId());
 						} else {
 							((HttpServletResponse) resp).addHeader(headerCorrIDName, remoraHeader);
 							ed.addPropertyIfExist(headerCorrIDName, remoraHeader);
 						}
 					}
 				} catch (Throwable t) {
-					if (logging) {
-						logger.info("Failed getting some of properties" + req);
-						logger.error(t);
-					}
+					logger.info("Failed getting some of properties" + req);
+					logger.error(t);
 
 				}
 
 			} else {
-				if (logging) {
-					logger.info("Request is null");
-				}
+				logger.info("Request is null");
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -233,28 +221,27 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 	{
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(JavaxServletAdvice.class, obj, method, logging ? logger : null, req, resp);
+			ctx = prepareIntercept(JavaxServletAdvice.class, obj, method, req, resp);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				ctx.interceptorInstance.logger
+						.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", JavaxServletAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 
@@ -281,7 +268,7 @@ public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice
 		if (load) {
 			getTransform().with(getListener()).installOn(inst);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 }

@@ -22,9 +22,7 @@ import org.tinylog.format.MessageFormatter;
 import org.tinylog.provider.ContextProvider;
 import org.tinylog.provider.LoggingProvider;
 
-import com.jkoolcloud.remora.AdviceRegistry;
-import com.jkoolcloud.remora.advices.Logable;
-import com.jkoolcloud.remora.advices.RemoraAdvice;
+import com.jkoolcloud.remora.advices.BaseTransformers;
 
 public class RemoraLoggingProvider implements LoggingProvider {
 
@@ -59,15 +57,15 @@ public class RemoraLoggingProvider implements LoggingProvider {
 	@Override
 	public void log(int depth, String tag, Level level, Throwable exception, MessageFormatter formatter, Object obj,
 			Object... arguments) {
-		try {
-			RemoraAdvice adviceByName = AdviceRegistry.INSTANCE.getAdviceByName(tag);
-			if (adviceByName != null && adviceByName instanceof Logable) {
-				if (((Logable) adviceByName).getLogLevel().ordinal() > level.ordinal()) {
-					return;
-				}
+		if (arguments != null && arguments[0] instanceof BaseTransformers) {
+			BaseTransformers adviceByName = ((BaseTransformers) arguments[0]);
+
+			if (adviceByName.getLogLevel().ordinal() > level.ordinal()) {
+				return;
+
 			}
-		} catch (ClassNotFoundException e) {
 		}
+
 		realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
 
 	}

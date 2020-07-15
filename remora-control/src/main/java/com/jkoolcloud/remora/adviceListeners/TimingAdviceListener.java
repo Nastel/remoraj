@@ -37,7 +37,7 @@ public class TimingAdviceListener implements ReportingAdviceListener {
 	}
 
 	@Override
-	public void onMethodFinished(Class<?> adviceClass, double elapseTime) {
+	public void onMethodFinished(RemoraAdvice adviceClass, double elapseTime) {
 		maxTime.set((int) Math.max(maxTime.get(), elapseTime));
 		if (minTime.get() == 0) {
 			minTime.set((int) elapseTime);

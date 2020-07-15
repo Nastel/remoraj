@@ -29,6 +29,7 @@ import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.RemoraConfig;
+import com.jkoolcloud.remora.adviceListeners.AdviceListener;
 import com.jkoolcloud.remora.core.CallStack;
 import com.jkoolcloud.remora.core.EmptyStack;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -80,6 +81,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 	public static boolean checkCallRepeats = true;
 
 	public List<AdviceListener> listeners = new ArrayList<>(5);
+	public TaggedLogger logger;
 
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
@@ -136,20 +138,20 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 	public abstract AgentBuilder.Transformer getAdvice();
 
 	public static void fillDefaultValuesAfter(EntryDefinition entryDefinition, long startTime,
-			@Advice.Thrown Throwable exception, TaggedLogger logger) {
+			@Advice.Thrown Throwable exception, InterceptionContext ctx) {
 		if (entryDefinition.isChained()) {
 			entryDefinition.setChained(false);
 			return;
 		}
 		double duration = ((double) System.nanoTime() - startTime) / (double) TimeUnit.MICROSECONDS.toNanos(1L);
-		invokeOnMethodFinished(entryDefinition.getAdviceClassClass(), duration);
+		invokeOnMethodFinished(ctx.interceptorInstance, duration);
 
 		entryDefinition.setDuration((long) duration);
 
 		entryDefinition.stop();
 
 		if (exception != null) {
-			handleInstrumentedMethodException(entryDefinition, exception, logger);
+			handleInstrumentedMethodException(entryDefinition, exception, ctx.interceptorInstance.getLogger());
 		}
 
 		Stack<EntryDefinition> entryDefinitionStack = stackThreadLocal.get();
@@ -175,10 +177,11 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 	}
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition, ThreadLocal<CallStack> stackThreadLocal,
-			Object thiz, Method method, TaggedLogger logger) {
+			Object thiz, Method method, InterceptionContext ctx) {
 		if (entryDefinition.isChained()) {
 			return 0;
 		}
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -249,16 +252,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 
 	}
 
-	private static void invokeOnMethodFinished(Class<?> adviceClass, double elapseTime) {
-		try {
-			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
-					.getBaseTransformerByName(adviceClass.getSimpleName()).listeners;
-			for (AdviceListener listener : listeners) {
-				listener.onMethodFinished(adviceClass, elapseTime);
-			}
-		} catch (ClassNotFoundException e) {
+	private static void invokeOnMethodFinished(BaseTransformers adviceClass, double elapseTime) {
 
+		for (AdviceListener listener : adviceClass.listeners) {
+			listener.onMethodFinished(adviceClass, elapseTime);
 		}
+
 	}
 
 	public static void registerListener(Class<? extends AdviceListener> adviceListener) {
@@ -296,7 +295,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 		return sb.toString();
 	}
 
-	public static void doFinally(TaggedLogger logger, Class<?> caller) {
+	public static void doFinally(InterceptionContext ctx, Class<?> caller) {
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		if (logger != null) {
 			logger.debug("DoFinnaly");
 		}
@@ -353,7 +353,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 		return false;
 	}
 
-	public static void handleAdviceException(Throwable t, BaseTransformers adviceInstance, TaggedLogger logger) {
+	public static void handleAdviceException(Throwable t, InterceptionContext ctx) {
+		BaseTransformers adviceInstance = ctx.interceptorInstance;
+		TaggedLogger logger = adviceInstance.getLogger();
 		invokeOnError(adviceInstance, t);
 
 		if (logger != null) {
@@ -393,7 +395,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 	}
 
 	public static InterceptionContext prepareIntercept(Class<? extends BaseTransformers> tClass, Object thiz,
-			Method method, TaggedLogger logger, Object... arguments) {
+			Method method, Object... arguments) {
 		InterceptionContext context = new InterceptionContext();
 
 		BaseTransformers adviceInstance = getAdviceInstance(tClass);
@@ -411,7 +413,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 			if (!filter.intercept(thiz, method, arguments)) {
 				if (filter.excludeWholeStack()) {
 					if (stackThreadLocal.get() == null || stackThreadLocal.get().isEmpty()) {
-						stackThreadLocal.set(new EmptyStack(logger, callStackLimit));
+						stackThreadLocal.set(new EmptyStack(context.interceptorInstance.getLogger(), callStackLimit));
 					}
 				}
 				// context.intercept = false;
@@ -436,11 +438,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 	}
 
 	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class<? extends BaseTransformers> adviceClass,
-			TaggedLogger logger) {
+			InterceptionContext ctx) {
 		if (ed != null) {
 			return ed;
 		}
 
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		EntryDefinition lastED = null;
 		CallStack entryDefinitions = stackThreadLocal.get();
 		if (entryDefinitions != null && !entryDefinitions.isEmpty()) {
@@ -502,6 +505,10 @@ public abstract class BaseTransformers implements RemoraAdvice, Logable {
 	@Override
 	public Level getLogLevel() {
 		return logLevel;
+	}
+
+	public TaggedLogger getLogger() {
+		return logger;
 	}
 
 	public static class TransformationLoggingListener extends AgentBuilder.Listener.Adapter {

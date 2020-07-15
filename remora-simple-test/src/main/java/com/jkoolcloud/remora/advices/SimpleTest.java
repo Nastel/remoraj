@@ -39,8 +39,6 @@ public class SimpleTest extends BaseTransformers {
 	public static String[] INTERCEPTING_CLASS = { "lt.slabs.com.jkoolcloud.remora.JustATest" };
 	public static String INTERCEPTING_METHOD = "instrumentedMethod";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
 	public static TaggedLogger logger;
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
@@ -72,7 +70,7 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("starttime") long starttime) //
 	{
 		try {
-			ctx = prepareIntercept(SimpleTest.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(SimpleTest.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
@@ -85,9 +83,9 @@ public class SimpleTest extends BaseTransformers {
 			logger.trace(new Exception("Exception"));
 
 			System.out.println("BEFORE METHOD CALL");
-			ed = getEntryDefinition(ed, SimpleTest.class, logging ? logger : null);
+			ed = getEntryDefinition(ed, SimpleTest.class, ctx);
 
-			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.addProperty("URI", uri.toString());
 			ed.addProperty("Arg", arguments.toString());
 
@@ -103,14 +101,14 @@ public class SimpleTest extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("starttime") long starttime) {
 		try {
-			ctx = prepareIntercept(SimpleTest.class, obj, method, logging ? logger : null);
+			ctx = prepareIntercept(SimpleTest.class, obj, method);
 			if (!ctx.intercept) {
 				return;
 			}
 			System.out.println("###AFTER METHOD CALL");
 			// fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null );
 		} finally {
-			doFinally(logging ? logger : null, obj.getClass());
+			doFinally(ctx, obj.getClass());
 		}
 
 	}

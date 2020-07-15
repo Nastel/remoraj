@@ -23,7 +23,6 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 
@@ -38,11 +37,6 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 	public static final String ADVICE_NAME = "InputStreamCloseAdvice";
 	public static String[] INTERCEPTING_CLASS = { "java.io.InputStream" };
 	public static String INTERCEPTING_METHOD = "close";
-
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-
-	public static TaggedLogger logger;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -86,17 +80,14 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 
 			@Advice.Origin Method method //
 	) {
-		InterceptionContext ctx = prepareIntercept(InputStreamCloseAdvice.class, thiz, method, logging ? logger : null);
+		InterceptionContext ctx = prepareIntercept(InputStreamCloseAdvice.class, thiz, method);
 		if (!ctx.intercept) {
 			return;
 		}
-		if (logging) {
-			logger.info("Exiting: {} {}", InputStreamCloseAdvice.class.getName(), "after");
-		}
 		try {
-			StreamsManager.INSTANCE.close(thiz, ctx, logging ? logger : null, method);
+			StreamsManager.INSTANCE.close(thiz, ctx, method);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 
 	}
@@ -112,7 +103,7 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

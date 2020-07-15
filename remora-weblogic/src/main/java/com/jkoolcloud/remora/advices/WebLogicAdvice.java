@@ -43,10 +43,6 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "weblogic.servlet.internal.ServletStubImpl" };
 	public static String INTERCEPTING_METHOD = "execute";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -98,14 +94,14 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(WebLogicAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(WebLogicAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering : {} {} from {}", WebLogicAdvice.class.getName(), "before",
-						thiz.getClass().getName());
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+
+			logger.info("Entering : {} {} from {}", WebLogicAdvice.class.getName(), "before",
+					thiz.getClass().getName());
 
 			if (stackThreadLocal != null) {
 				CallStack stack = stackThreadLocal.get();
@@ -115,9 +111,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 				}
 				try {
 					Object httpServer = ReflectionUtils.getFieldValue(thiz, Object.class, "context.httpServer");
-					if (logging) {
-						logger.info("Setting server {}", httpServer);
-					}
+					logger.info("Setting server {}", ctx.interceptorInstance, httpServer);
 					stack.setServer(httpServer.toString());
 				} catch (IllegalArgumentException e) {
 					logger.info(e);
@@ -126,7 +120,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -157,26 +151,24 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(WebLogicAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(WebLogicAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", WebLogicAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", WebLogicAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 

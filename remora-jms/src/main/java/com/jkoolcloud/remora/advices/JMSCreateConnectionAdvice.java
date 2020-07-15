@@ -44,10 +44,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	public static String[] INTERCEPTING_CLASS = { "javax.jms.ConnectionFactory" };
 	public static String INTERCEPTING_METHOD = "createConnection";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method maches.
@@ -102,19 +98,18 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			ctx = prepareIntercept(JMSCreateConnectionAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(JMSCreateConnectionAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
-						thiz.getClass().getName());
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Entering: {} {} from {}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
+					thiz.getClass().getName());
 
-			ed = getEntryDefinition(ed, JMSCreateConnectionAdvice.class, logging ? logger : null);
+			ed = getEntryDefinition(ed, JMSCreateConnectionAdvice.class, ctx);
 			ed.setEventType(EntryDefinition.EventType.OPEN);
 
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			try {
 				Properties fieldValue = ReflectionUtils.getFieldValue(thiz, Properties.class, "factory.properties");
@@ -126,7 +121,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -158,26 +153,24 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 	{
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(JMSCreateConnectionAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(JMSCreateConnectionAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", JMSCreateConnectionAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", JMSCreateConnectionAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 
@@ -199,7 +192,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 		if (load) {
 			getTransform().with(getListener()).installOn(inst);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 }

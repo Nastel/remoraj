@@ -44,10 +44,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 	@RemoraConfig.Configurable
 	public static final String parameterPrefix = "PARAM_";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -99,16 +95,16 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null,
-					parameterName, parameterValue);
+			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method, parameterName, parameterValue);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}.{}()", JDBCCallableStatementAdvice.class.getName(), "before",
-						thiz.getClass().getName(), method.getName());
-			}
-			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+
+			logger.info("Entering: {} {} from {}.{}()", JDBCCallableStatementAdvice.class.getName(), "before",
+					thiz.getClass().getName(), method.getName());
+
+			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, ctx);
 			stackThreadLocal.get().push(ed);
 			if (parameterName instanceof String) {
 				ed.addPropertyIfExist(parameterName.toString(), parameterValue.toString());
@@ -117,7 +113,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -144,10 +140,11 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method, logging ? logger : null);
+			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			stackThreadLocal.get().pop();
 		} catch (Exception e) {
 
@@ -165,7 +162,7 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

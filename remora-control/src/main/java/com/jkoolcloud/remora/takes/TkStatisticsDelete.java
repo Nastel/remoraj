@@ -27,7 +27,7 @@ import org.takes.facets.fork.RqRegex;
 import org.takes.rs.RsText;
 
 import com.jkoolcloud.remora.AdviceRegistry;
-import com.jkoolcloud.remora.advices.AdviceListener;
+import com.jkoolcloud.remora.adviceListeners.AdviceListener;
 
 public class TkStatisticsDelete implements Take {
 

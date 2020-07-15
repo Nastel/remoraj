@@ -45,10 +45,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			"com.ibm.ws.webcontainer.servlet.ServletWrapper" };
 	public static String INTERCEPTING_METHOD = "handleRequest";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -100,22 +96,21 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed,
-@Advice.Local("context") InterceptionContext ctx, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
-			if (!intercept( {
+			ctx = prepareIntercept(WASAdvice.class, thiz, method, new Object[] { req, resp });
+			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}", WASAdvice.class.getSimpleName(), "before",
-						thiz.getClass().getName());
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Entering: {} {} from {}", WASAdvice.class.getSimpleName(), "before",
+					thiz.getClass().getName());
 
-			ed = getEntryDefinition(ed, WASAdvice.class, logging ? logger : null);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			ed = getEntryDefinition(ed, WASAdvice.class, ctx);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			if (req != null) {
 				try {
@@ -163,7 +158,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -173,34 +168,31 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Argument(0) ServletRequest req, //
 			@Advice.Argument(1) ServletResponse resp, //
 			@Advice.Thrown Throwable exception, //
-			@Advice.Local("ed") EntryDefinition ed,
-@Advice.Local("context") InterceptionContext ctx, //
+			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-		ctx = prepareIntercept(WASAdvice.class, obj, method, logging ? logger : null, new Object[] { req, resp });
-if (!ctx.intercept) {
+		ctx = prepareIntercept(WASAdvice.class, obj, method, new Object[] { req, resp });
+		if (!ctx.intercept) {
 			return;
 		}
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		boolean doFinally = true;
 		try {
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", WASAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", WASAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 

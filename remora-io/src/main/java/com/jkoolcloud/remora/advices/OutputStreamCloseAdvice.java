@@ -39,10 +39,6 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	public static String[] INTERCEPTING_CLASS = { "java.io.OutputStream" };
 	public static String INTERCEPTING_METHOD = "close";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -84,17 +80,16 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	public static void after(@Advice.This OutputStream thiz, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Origin Method method //
 	) {
-		ctx = prepareIntercept(OutputStreamCloseAdvice.class, thiz, method, logging ? logger : null);
+		ctx = prepareIntercept(OutputStreamCloseAdvice.class, thiz, method);
 		if (!ctx.intercept) {
 			return;
 		}
-		if (logging) {
-			logger.info("Exiting: {} {}", OutputStreamCloseAdvice.class.getName(), "after");
-		}
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
+		logger.info("Exiting: {} {}", OutputStreamCloseAdvice.class.getName(), ctx.interceptorInstance, "after");
 		try {
-			StreamsManager.INSTANCE.close(thiz, ctx, logging ? logger : null, method);
+			StreamsManager.INSTANCE.close(thiz, ctx, method);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 
 	}
@@ -110,7 +105,7 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

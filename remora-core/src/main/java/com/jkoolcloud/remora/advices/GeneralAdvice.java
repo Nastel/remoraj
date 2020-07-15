@@ -20,9 +20,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
-import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -32,13 +30,6 @@ import net.bytebuddy.description.type.TypeDescription;
 public class GeneralAdvice extends BaseTransformers {
 
 	public static final String ADVICE_NAME = "GeneralAdvice";
-
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-	static {
-		logger = Logger.tag(ADVICE_NAME);
-	}
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -63,9 +54,9 @@ public class GeneralAdvice extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -92,9 +83,9 @@ public class GeneralAdvice extends BaseTransformers {
 			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} finally {
-			doFinally(logging ? logger : null, obj.getClass());
+			doFinally(ctx, obj.getClass());
 		}
 
 	}

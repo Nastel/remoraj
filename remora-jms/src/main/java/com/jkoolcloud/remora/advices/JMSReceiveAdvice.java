@@ -43,11 +43,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "receive";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	@RemoraConfig.Configurable
 	private static boolean fetchMsg = false;
-
-	public static TaggedLogger logger;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -103,22 +99,19 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger) // ) //
 	{
 		try {
-			ctx = prepareIntercept(JMSReceiveAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(JMSReceiveAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}", JMSReceiveAdvice.class.getSimpleName(), "before",
-						thiz.getClass().getName());
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Entering: {} {} from {}", JMSReceiveAdvice.class.getSimpleName(), "before",
+					thiz.getClass().getName());
 
-			ed = getEntryDefinition(ed, JMSSendAdvice.class, logging ? logger : null);
-
-			ed = getEntryDefinition(ed, JMSReceiveAdvice.class, logging ? logger : null);
+			ed = getEntryDefinition(ed, JMSReceiveAdvice.class, ctx);
 
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			if (thiz instanceof QueueReceiver) {
 				String queueName = ((QueueReceiver) thiz).getQueue().getQueueName();
@@ -127,7 +120,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -160,17 +153,15 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	{
 		boolean doFinnaly = true;
 		try {
-			ctx = prepareIntercept(JMSReceiveAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(JMSReceiveAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", JMSReceiveAdvice.class.getName(), "after");
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Exiting: {} {}", JMSReceiveAdvice.class.getName(), ctx.interceptorInstance, "after");
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinnaly = false;
 				return;
 			}
@@ -182,29 +173,23 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 				Destination jmsDestination = message.getJMSDestination();
 				if (jmsDestination == null) {
 					jmsDestination = getFieldValue(message, Destination.class, "destination");
-					if (logging) {
-						logger.debug("Destination2: " + jmsDestination);
-					}
+					logger.debug("Destination2: " + jmsDestination);
 				} else {
-					if (logging) {
-						logger.debug("Destination1: " + jmsDestination);
-					}
+					logger.debug("Destination1: " + jmsDestination);
 				}
 				ed.setResource(String.valueOf(jmsDestination), EntryDefinition.ResourceType.QUEUE);
 				if (fetchMsg && message instanceof TextMessage) {
 					ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
 				}
 			} else {
-				if (logging) {
-					logger.debug("Message is null");
-				}
+				logger.debug("Message is null");
 			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinnaly) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 
@@ -226,7 +211,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 		if (load) {
 			getTransform().with(getListener()).installOn(inst);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 }

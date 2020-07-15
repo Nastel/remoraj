@@ -40,10 +40,6 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 	public static String[] INTERCEPTING_CLASS = { "java.sql.Connection" };
 	public static String INTERCEPTING_METHOD = "prepare";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -95,21 +91,21 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-
-			ed = getEntryDefinition(ed, JDBCConnectionAdvice.class, logging ? logger : null);
-
-			if (logging) {
-				logger.info("Entering: {} {} from {}.{}()", JDBCConnectionAdvice.class.getName(), "before",
-						thiz.getClass().getName(), method.getName());
+			ctx = prepareIntercept(JDBCCallableStatementAdvice.class, thiz, method);
+			if (!ctx.intercept) {
+				return;
 			}
+			ed = getEntryDefinition(ed, JDBCConnectionAdvice.class, ctx);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Entering: {} {} from {}.{}()", JDBCConnectionAdvice.class.getName(), "before",
+					thiz.getClass().getName(), method.getName());
+
 			stackThreadLocal.get().push(ed);
 			ed.addPropertyIfExist("SQL", sql);
-			if (logging) {
-				logger.debug("Adding SQL: {}", sql);
-			}
+			logger.debug("Adding SQL: {}", ctx.interceptorInstance, sql);
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -156,7 +152,7 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

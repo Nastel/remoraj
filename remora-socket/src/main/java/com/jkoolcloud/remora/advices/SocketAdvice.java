@@ -27,7 +27,6 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "connect";
 
 	public static boolean logging = false;
-	public static TaggedLogger logger;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -82,14 +81,15 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			if (!intercept(SocketAdvice.class, thiz, method, logging ? logger : null, socketAddress, timeout)) {
+			ctx = prepareIntercept(SocketAdvice.class, thiz, method, socketAddress, timeout);
+			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, SocketAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", SocketAdvice.class.getName(), "before");
-			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+
+			ed = getEntryDefinition(ed, SocketAdvice.class, ctx);
+			logger.info("Entering: {} {}", SocketAdvice.class.getName(), ctx.interceptorInstance, "before");
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			ed.addPropertyIfExist("resource",
 					thiz.getInetAddress() == null ? null : thiz.getInetAddress().getHostName());
@@ -105,7 +105,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	 */
 
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This Object obj, //
+	public static void after(@Advice.This Object thiz, //
 			@Advice.Origin Method method, //
 			@Advice.Argument(0) SocketAddress socketAddress, //
 			@Advice.Argument(1) int timeout, //
@@ -137,25 +137,25 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			if (!intercept(SocketAdvice.class, obj, method, logging ? logger : null, socketAddress, timeout)) {
+			ctx = prepareIntercept(SocketAdvice.class, thiz, method, socketAddress, timeout);
+			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", SocketAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", SocketAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, thiz.getClass());
 			}
 		}
 
@@ -172,7 +172,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

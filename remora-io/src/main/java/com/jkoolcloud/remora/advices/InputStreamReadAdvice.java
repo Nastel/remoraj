@@ -40,11 +40,6 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 	public static String[] INTERCEPTING_CLASS = { "java.io.InputStream" };
 	public static String INTERCEPTING_METHOD = "read";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -90,11 +85,12 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Origin Method method//
 	) {
 		try {
-			ctx = prepareIntercept(InputStreamReadAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(InputStreamReadAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, ctx, logging ? logger : null, method);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, ctx, method);
 			if (streamStats == null) {
 				throw new IllegalStateException(
 						"Stream stats is null for " + method.getDeclaringClass() + "." + method.getName());
@@ -107,7 +103,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 				streamStats.advanceCount(((Object[]) arguments[0]).length);
 			}
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 
 	}
@@ -123,7 +119,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

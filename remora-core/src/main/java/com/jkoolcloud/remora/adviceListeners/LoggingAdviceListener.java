@@ -17,30 +17,27 @@
 package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.jkoolcloud.remora.advices.RemoraAdvice;
-import com.jkoolcloud.remora.advices.RemoraStatistic;
-import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
-public class CountingAdviceListener implements ReportingAdviceListener {
-	private final long resetTime;
-	private RemoraStatistic statistic = new RemoraStatistic();
+import jdk.nashorn.internal.runtime.logging.Loggable;
 
-	public CountingAdviceListener() {
-		resetTime = System.currentTimeMillis();
-
-	}
-
+public class LoggingAdviceListener implements AdviceListener {
 	@Override
 	public void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method) {
-
+		if (adviceInstance instanceof Loggable) {
+			((Loggable) adviceInstance).getLogger().info("Entering: {} {} from {}",
+					adviceInstance.getClass().getSimpleName(), "before", thiz.getClass().getName());
+		}
 	}
 
 	@Override
-	public void onMethodFinished(RemoraAdvice adviceClass, double elapseTime) {
+	public void onMethodFinished(RemoraAdvice adviceInstance, double elapseTime) {
+		if (adviceInstance instanceof Loggable) {
+			((Loggable) adviceInstance).getLogger().info("Exiting: {} {}", adviceInstance.getClass().getName(),
+					"after");
+		}
 
 	}
 
@@ -51,23 +48,6 @@ public class CountingAdviceListener implements ReportingAdviceListener {
 
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
-		statistic.incEventCreateCount();
-	}
 
-	public RemoraStatistic getAdviceStatistic() {
-		return statistic;
-	}
-
-	@Override
-	public Map<String, Object> report() {
-		return new HashMap<String, Object>() {
-			{
-				put("resetTimestamp", resetTime);
-				put("timeSinceLastResetSeconds", (System.currentTimeMillis() - resetTime) / 1000);
-				put("invokeCount", statistic.getInvokeCount());
-				put("eventCreateCount", statistic.getEventCreateCount());
-				put("errorCount", statistic.getErrorCount());
-			}
-		};
 	}
 }

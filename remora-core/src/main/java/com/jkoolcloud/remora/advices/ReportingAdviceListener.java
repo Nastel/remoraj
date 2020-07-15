@@ -18,6 +18,8 @@ package com.jkoolcloud.remora.advices;
 
 import java.util.Map;
 
+import com.jkoolcloud.remora.adviceListeners.AdviceListener;
+
 public interface ReportingAdviceListener extends AdviceListener {
 	Map<String, Object> report();
 }

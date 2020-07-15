@@ -47,9 +47,6 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 	public static String headerCorrIDName = "REMORA_CORR";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-	@RemoraConfig.Configurable
 	public static boolean extractParams = true;
 	@RemoraConfig.Configurable
 	public static String paramPrefix = "PAR_";
@@ -109,15 +106,14 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(ApacheHttpClientAdvice.class, thiz, method, logging ? logger : null, route, request);
+			ctx = prepareIntercept(ApacheHttpClientAdvice.class, thiz, method, route, request);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), "before");
-			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, ctx);
+			logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), ctx.interceptorInstance, "before");
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			if (request != null) {
 				URI uri = request.getURI();
 
@@ -142,25 +138,19 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 						}
 					}
 				} else {
-					if (logging) {
-						logger.info("URI is null");
-					}
+					logger.info("URI is null");
 				}
 			} else {
-				if (logging) {
-					logger.info("Request is null");
-				}
+				logger.info("Request is null");
 			}
 
 			ed.addPropertyIfExist("HOST", route.getTargetHost().getHostName());
 
 			request.addHeader(headerCorrIDName, ed.getId());
 			ed.addProperty(headerCorrIDName, ed.getId());
-			if (logging) {
-				logger.info("Atached correlator:  {}", ed.getId());
-			}
+			logger.info("Atached correlator:  {}", ctx.interceptorInstance, ed.getId());
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -191,26 +181,24 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(ApacheHttpClientAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(ApacheHttpClientAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", ApacheHttpClientAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", ApacheHttpClientAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 

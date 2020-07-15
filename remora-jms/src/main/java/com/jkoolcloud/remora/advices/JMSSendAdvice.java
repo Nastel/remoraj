@@ -43,10 +43,8 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String INTERCEPTING_METHOD = "send";
 
 	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	@RemoraConfig.Configurable
 	private static boolean fetchMsg = false;
-	public static TaggedLogger logger;
+
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JMSSendAdvice.class.getClassLoader()) //
 			.include(RemoraConfig.INSTANCE.classLoader) //
@@ -87,18 +85,17 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
-			ctx = prepareIntercept(JMSSendAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(JMSSendAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Entering: {} {} from {}", JMSSendAdvice.class.getSimpleName(), "before",
-						thiz.getClass().getName());
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Entering: {} {} from {}", JMSSendAdvice.class.getSimpleName(), "before",
+					thiz.getClass().getName());
 
-			ed = getEntryDefinition(ed, JMSSendAdvice.class, logging ? logger : null);
+			ed = getEntryDefinition(ed, JMSSendAdvice.class, ctx);
 			ed.setEventType(EntryDefinition.EventType.SEND);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			if (thiz instanceof QueueSender) {
 				String queueName = ((QueueSender) thiz).getQueue().getQueueName();
@@ -133,7 +130,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -148,28 +145,26 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 	) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(JMSSendAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(JMSSendAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) // noinspection Duplicates
 			{ // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
 			// noinspection Duplicates
-			if (logging) {
-				logger.info("Exiting: {} {}", JMSSendAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", JMSSendAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 
@@ -205,7 +200,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 		if (load) {
 			getTransform().with(getListener()).installOn(inst);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 }

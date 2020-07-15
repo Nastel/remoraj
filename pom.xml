@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jkoolcloud.remora</groupId>
@@ -19,11 +20,11 @@
 
         <websphere.install.dir>${basedir}</websphere.install.dir>
 
-        <byte.buddy.version>1.10.10</byte.buddy.version>
+        <byte.buddy.version>1.10.12</byte.buddy.version>
         <!--Versions 5.17.17 up to 5.17.43 is not compatible with RemoraJ!!!-->
         <chronicle.version>5.19.16</chronicle.version>
         <powermock.version>2.0.5</powermock.version>
-        <tinylog.version>2.0.1</tinylog.version>
+        <tinylog.version>2.1.2</tinylog.version>
         <skip.javadoc.pack>true</skip.javadoc.pack>
     </properties>
 
@@ -176,7 +177,7 @@
     <modules>
         <module>remora-core</module>
         <module>remora-simple-test</module>
-		<module>remora-websphere</module>
+        <module>remora-websphere</module>
         <module>remora-jms</module>
         <module>remora-jboss</module>
         <module>remora-jdbc</module>
@@ -193,6 +194,6 @@
         <module>remora-socket</module>
         <module>remora-io</module>
         <module>remora--package</module>
-<!--    <module>remora-test</module>-->
-  </modules>
+
+    </modules>
 </project>

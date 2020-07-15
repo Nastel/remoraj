@@ -45,50 +45,45 @@ public enum StreamsManager {
 			totalTrackedOutputStreams);
 	public HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = new HashMap<>(500);
 
-	public StreamStats get(InputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
-			Method method) {
+	public StreamStats get(InputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
 
 		WeakHashMap<InputStream, EntryDefinition> availableInputStreams = this.availableInputStreams;
 		HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = this.availableInputStreamsEntries;
 
 		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, ctx, logger, method, availableInputStreams, availableInputStreamsEntries, ed);
+		ed = checkForEntryOrCreate(thiz, ctx, method, availableInputStreams, availableInputStreamsEntries, ed);
 
 		return availableInputStreamsEntries.get(ed);
 	}
 
-	public StreamStats get(OutputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
-			Method method) {
+	public StreamStats get(OutputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
 
 		WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = this.availableOutputStreams;
 		HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = this.availableOutputStreamsEntries;
 
 		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, ctx, logger, method, availableOutputStreams, availableOutputStreamsEntries,
-				ed);
+		ed = checkForEntryOrCreate(thiz, ctx, method, availableOutputStreams, availableOutputStreamsEntries, ed);
 
 		return availableInputStreamsEntries.get(ed);
 	}
 
-	public StreamStats close(InputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
-			Method method) {
+	public StreamStats close(InputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
 		WeakHashMap<InputStream, EntryDefinition> availableStreams = availableInputStreams;
 		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableInputStreamsEntries;
 
-		return closeAndGenerateStats(thiz, ctx, logger, availableStreamsEntries, availableStreams);
+		return closeAndGenerateStats(thiz, ctx, availableStreamsEntries, availableStreams);
 	}
 
-	public StreamStats close(OutputStream thiz, BaseTransformers.InterceptionContext ctx, TaggedLogger logger,
-			Method method) {
+	public StreamStats close(OutputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
 		WeakHashMap<OutputStream, EntryDefinition> availableStreams = availableOutputStreams;
 		HashMap<EntryDefinition, StreamStats> availableStreamsEntries = availableOutputStreamsEntries;
 
-		return closeAndGenerateStats(thiz, ctx, logger, availableStreamsEntries, availableStreams);
+		return closeAndGenerateStats(thiz, ctx, availableStreamsEntries, availableStreams);
 	}
 
 	@Nullable
 	private static StreamStats closeAndGenerateStats(Object thiz, BaseTransformers.InterceptionContext ctx,
-			TaggedLogger logger, HashMap<EntryDefinition, StreamStats> availableStreamsEntries,
+			HashMap<EntryDefinition, StreamStats> availableStreamsEntries,
 			WeakHashMap<?, EntryDefinition> availableStreams) {
 		boolean doFinally = true;
 		try {
@@ -96,6 +91,7 @@ public enum StreamsManager {
 			// logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 			// }
 			EntryDefinition ed = availableStreams.remove(thiz);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) {
 				if (logger != null) {
 					logger.error("Stream closed but not tracked");
@@ -114,36 +110,36 @@ public enum StreamsManager {
 						ed.addPropertyIfExist("accessCount", streamStats.accessCount);
 					}
 
-					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, logger);
+					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, ctx);
 					if (ed.isFinished()) {
 						availableStreamsEntries.remove(ed);
 					}
 				}
 			}
 		} catch (Throwable t) {
-			BaseTransformers.handleAdviceException(t, ctx.interceptorInstance, logger);
+			BaseTransformers.handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logger, thiz.getClass());
+				doFinally(ctx, thiz.getClass());
 			}
 		}
 		return null;
 	}
 
 	private static <T> EntryDefinition checkForEntryOrCreate(T thiz, BaseTransformers.InterceptionContext ctx,
-			TaggedLogger logger, Method method, WeakHashMap<T, EntryDefinition> availableStreams,
+			Method method, WeakHashMap<T, EntryDefinition> availableStreams,
 			HashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed) {
 		if (!availableStreams.containsKey(thiz)) {
 
-			ed = BaseTransformers.getEntryDefinition(ed, InputStreamReadAdvice.class, logger);
+			ed = BaseTransformers.getEntryDefinition(ed, InputStreamReadAdvice.class, ctx);
 			availableStreams.put(thiz, ed);
-
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (!availableStreamsEntries.containsKey(ed)) {
 				StreamStats streamStats = new StreamStats();
 				if (logger != null) {
 					logger.info("Creating the new stream stats: " + ed.getId());
 				}
-				BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal, thiz, method, logger);
+				BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal, thiz, method, ctx);
 				streamStats.starttime = ed.getStartTime();
 				ed.addProperty("toString", String.valueOf(thiz));
 				availableStreamsEntries.put(ed, streamStats);

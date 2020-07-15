@@ -39,10 +39,6 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 	public static String[] INTERCEPTING_CLASS = { "java.io.OutputStream" };
 	public static String INTERCEPTING_METHOD = "write";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -88,13 +84,14 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("context") InterceptionContext ctx, @Advice.Origin Method method//
 	) {
 		try {
-			ctx = prepareIntercept(OutputStreamWriteAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(OutputStreamWriteAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			StreamsManager.INSTANCE.get(thiz, ctx, logging ? logger : null, method).advanceCount();
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			StreamsManager.INSTANCE.get(thiz, ctx, method).advanceCount();
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 
 	}
@@ -110,7 +107,7 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

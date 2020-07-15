@@ -45,9 +45,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.ConsumerRecord" };
 	public static String INTERCEPTING_METHOD = "ConsumerRecord";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
 	public static ThreadLocal<Stack<Long>> startTimeThreadLocal = new ThreadLocal<>();
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(KafkaConsumerAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
@@ -99,14 +96,13 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	//
 	{
 		try {
-			ctx = prepareIntercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(KafkaConsumerAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", KafkaConsumerAdvice.class.getName(), "before");
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, ctx);
+			logger.info("Entering: {} {}", ctx, KafkaConsumerAdvice.class.getName(), ctx.interceptorInstance, "before");
 
 			ed.setName("consume");
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
@@ -126,12 +122,12 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 				ed.addPropertyIfExist(HEADER_PREFIX + header.key(), String.valueOf(header.value()));
 			}
 
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, null, null, logging ? logger : null);//
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, null, null, ctx);//
 
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -150,28 +146,26 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 
 		try {
 
-			ctx = prepareIntercept(KafkaConsumerAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(KafkaConsumerAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", KafkaConsumerAdvice.class.getName(), "after");
-			}
-
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			logger.info("Exiting: {} {}", ctx, KafkaConsumerAdvice.class.getName(), ctx.interceptorInstance, "after");
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test", ctx,
+						ctx);
+
 				doFinally = false;
 				return;
 			}
 
-			fillDefaultValuesAfter(ed, startTime, null, logging ? logger : null);
+			fillDefaultValuesAfter(ed, startTime, null, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, thiz.getClass());
+				doFinally(ctx, thiz.getClass());
 			}
 		}
 
@@ -202,7 +196,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

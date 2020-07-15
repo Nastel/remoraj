@@ -49,10 +49,6 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	public static Map<MessageHandler, Session> sessionHandlers = new HashMap<>();
 	public static Map<RemoteEndpoint, Session> sessionEndpoints = new HashMap<>();
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -102,10 +98,11 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(WebsocketSessionAdvice.class, thiz, method, logging ? logger : null, args);
+			ctx = prepareIntercept(WebsocketSessionAdvice.class, thiz, method, args);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			MessageHandler handler = null;
 			if (args != null && args.length == 1 && args[0] instanceof MessageHandler) {
 				handler = (MessageHandler) args[0];
@@ -113,10 +110,10 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 			if (args != null && args.length == 2 && args[1] instanceof MessageHandler) {
 				handler = (MessageHandler) args[1];
 			}
-			logger.info("Found new Handler {} - session {}", handler, thiz);
+			logger.info("Found new Handler {} - session {}", handler, ctx.interceptorInstance, thiz);
 			sessionHandlers.put(handler, thiz);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -132,7 +129,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object obj, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Origin Method method) {
-		ctx = prepareIntercept(WebsocketSessionAdvice.class, obj, method, logging ? logger : null);
+		ctx = prepareIntercept(WebsocketSessionAdvice.class, obj, method);
 		if (!ctx.intercept) {
 			return;
 		}
@@ -149,7 +146,7 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

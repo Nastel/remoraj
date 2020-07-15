@@ -95,7 +95,8 @@ public class RemoraControlAdvice implements RemoraAdvice, Logable {
 			ScheduledExecutorService adminServiceQuery = Executors.newScheduledThreadPool(1);
 			adminServiceQuery.scheduleAtFixedRate(() -> adminReporter.report(), 0, reporterSchedule, TimeUnit.SECONDS);
 		} else {
-			logger.info("Admin reporter will be not initialised, admin reporter endpoint not set");
+			logger.info(
+					"Admin reporter will be not initialised, ctx.interceptorInstance, admin reporter endpoint not set");
 		}
 
 		BaseTransformers.registerListener(CountingAdviceListener.class);

@@ -37,6 +37,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.webapp.WebApp;
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.WASAdvice;
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.output.SysOutOutput;
@@ -52,6 +53,7 @@ public class WASAdviceTest {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new WASAdvice()));
 	}
 
+	private BaseTransformers.InterceptionContext ctx = new BaseTransformers.InterceptionContext();
 
 	@Test
 	public void testWebsphereInterceptor() throws NoSuchMethodException {
@@ -68,8 +70,8 @@ public class WASAdviceTest {
 		// Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
 		Method method = Whitebox.getMethod(WebApp.class, "handleRequest", ServletRequest.class, ServletResponse.class);
 
-		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
-		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 0);
+		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, ctx, 0);
+		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, ctx, 0);
 	}
 
 	@SuppressWarnings("unused")
@@ -89,10 +91,10 @@ public class WASAdviceTest {
 		EntryDefinition handleRequestEntry = new EntryDefinition(WASAdvice.class, true);
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 
-		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
+		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, ctx, 0);
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, 56);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 78 );
-		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
+		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, ctx, 140);
 	}
 
 	@SuppressWarnings("unused")
@@ -116,7 +118,7 @@ public class WASAdviceTest {
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsReceiveEntryInternal = new EntryDefinition(JMSReceiveAdvice.class);
 
-		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
+		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, ctx, 0);
 		// first JMS message
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntry, System.nanoTime());
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntryInternal, System.nanoTime());
@@ -134,7 +136,8 @@ public class WASAdviceTest {
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, null, System.nanoTime() );
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, System.nanoTime() );
 
-		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, System.nanoTime());
+		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, ctx,
+				System.nanoTime());
 	}
 
 	@SuppressWarnings("unused")
@@ -158,8 +161,8 @@ public class WASAdviceTest {
 		// EntryDefinition jmsSendEntry = new EntryDefinition(JMSSendAdvice.class);
 		// EntryDefinition jmsSendEntryInternal = new EntryDefinition(JMSSendAdvice.class);
 
-		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, 0);
-		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
+		WASAdvice.before(webApp, servletRequest, servletResponse, method, handleRequestEntry, ctx, 0);
+		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, handleRequestEntry, ctx, 140);
 
 		// IBMWebsphereInterceptor.before(servletWrapper, servletRequest, servletResponse, method, handleRequestEntry,
 		// 0);
@@ -174,7 +177,7 @@ public class WASAdviceTest {
 		// JMSSendAdvice.before(messageProducer, jmxSendArguments, jmxMethod, jmsSendEntryInternal, 86);
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, null, 98 );
 		// JMSSendAdvice.after(messageProducer,jmxMethod, jmxSendArguments, null, jmsSendEntry, 102 );
-		WASAdvice.after(servletWrapper, method, servletRequest, servletResponse, null, handleRequestEntry, 140);
+		WASAdvice.after(servletWrapper, method, servletRequest, servletResponse, null, handleRequestEntry, ctx, 140);
 
 	}
 
@@ -189,7 +192,7 @@ public class WASAdviceTest {
 		ServletResponse servletResponse = mock(ServletResponse.class);
 		Method method = WebApp.class.getMethod("handleRequest", ServletRequest.class, ServletResponse.class);
 
-		WASAdvice.before(webApp, servletRequest, servletResponse, method, null, 0);
-		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, null, 0);
+		WASAdvice.before(webApp, servletRequest, servletResponse, method, null, ctx, 0);
+		WASAdvice.after(webApp, method, servletRequest, servletResponse, null, null, ctx, 0);
 	}
 }

@@ -14,16 +14,17 @@
  *  limitations under the License.
  */
 
-package com.jkoolcloud.remora.advices;
+package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
 
+import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public interface AdviceListener {
 	void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method);
 
-	void onMethodFinished(Class<?> adviceClass, double elapseTime);
+	void onMethodFinished(RemoraAdvice adviceClass, double elapseTime);
 
 	void onAdviceError(RemoraAdvice adviceInstance, Throwable e);
 

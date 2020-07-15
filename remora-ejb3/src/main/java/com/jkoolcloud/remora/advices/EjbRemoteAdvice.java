@@ -42,10 +42,6 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "@Remote" };
 	public static String INTERCEPTING_METHOD = "public";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -98,15 +94,14 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(EjbRemoteAdvice.class, thiz, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(EjbRemoteAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", EjbRemoteAdvice.class.getName(), "before");
-			}
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, ctx);
+			logger.info("Entering: {} {}", EjbRemoteAdvice.class.getName(), ctx.interceptorInstance, "before");
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			if (stackThreadLocal.get() != null) {
 				stackThreadLocal.get().setApplication(String.valueOf(method.getDeclaringClass()));
 			}
@@ -120,7 +115,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -151,26 +146,24 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(EjbRemoteAdvice.class, obj, method, logging ? logger : null, arguments);
+			ctx = prepareIntercept(EjbRemoteAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", EjbRemoteAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", EjbRemoteAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, obj.getClass());
+				doFinally(ctx, obj.getClass());
 			}
 		}
 
@@ -187,7 +180,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

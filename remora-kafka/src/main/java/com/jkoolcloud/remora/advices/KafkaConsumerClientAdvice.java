@@ -43,9 +43,6 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.Consumer" };
 	public static String INTERCEPTING_METHOD = "poll";
 
-	@RemoraConfig.Configurable
-	public static boolean logging = false;
-	public static TaggedLogger logger;
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(KafkaConsumerClientAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
 			.advice(methodMatcher(), KafkaConsumerClientAdvice.class.getName());
@@ -80,16 +77,16 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(KafkaConsumerClientAdvice.class, thiz, method, logging ? logger : null);
+			ctx = prepareIntercept(KafkaConsumerClientAdvice.class, thiz, method);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, logging ? logger : null);
-			if (logging) {
-				logger.info("Entering: {} {}", KafkaConsumerClientAdvice.class.getName(), "before");
-			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, ctx);
+			logger.info("Entering: {} {}", KafkaConsumerClientAdvice.class.getName(), ctx.interceptorInstance,
+					"before");
 			ed.setTransparent();
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, logging ? logger : null);
+			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			ed.setEventType(EntryDefinition.EventType.CALL);
 			try {
@@ -99,15 +96,13 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 				if (entryDefinitions != null) {
 					String application = MessageFormat.format("clientId={0}, groupId={0}", clientId, groupId);
 					entryDefinitions.setApplication(application);
-					if (logging) {
-						logger.info("Setting the application", application);
-					}
+					logger.info("Setting the application", ctx.interceptorInstance, application);
 				}
 			} catch (IllegalArgumentException e) {
 			}
 
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		}
 	}
 
@@ -132,26 +127,24 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(KafkaConsumerClientAdvice.class, producer, method, logging ? logger : null);
+			ctx = prepareIntercept(KafkaConsumerClientAdvice.class, producer, method);
 			if (!ctx.intercept) {
 				return;
 			}
+			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				if (logging) {
-					logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
-				}
+				logger.info(
+						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
 				doFinally = false;
 				return;
 			}
-			if (logging) {
-				logger.info("Exiting: {} {}", KafkaConsumerClientAdvice.class.getName(), "after");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, logging ? logger : null);
+			logger.info("Exiting: {} {}", KafkaConsumerClientAdvice.class.getName(), ctx.interceptorInstance, "after");
+			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null);
+			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(logging ? logger : null, producer.getClass());
+				doFinally(ctx, producer.getClass());
 			}
 		}
 
@@ -182,7 +175,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} not enabled", getName());
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 
