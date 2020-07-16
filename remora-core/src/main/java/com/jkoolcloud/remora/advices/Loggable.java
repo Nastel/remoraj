@@ -17,7 +17,10 @@
 package com.jkoolcloud.remora.advices;
 
 import org.tinylog.Level;
+import org.tinylog.TaggedLogger;
 
-public interface Logable {
+public interface Loggable {
 	Level getLogLevel();
+
+	TaggedLogger getLogger();
 }

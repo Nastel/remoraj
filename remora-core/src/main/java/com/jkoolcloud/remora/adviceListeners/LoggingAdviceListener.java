@@ -18,10 +18,9 @@ package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
 
+import com.jkoolcloud.remora.advices.Loggable;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.core.EntryDefinition;
-
-import jdk.nashorn.internal.runtime.logging.Loggable;
 
 public class LoggingAdviceListener implements AdviceListener {
 	@Override

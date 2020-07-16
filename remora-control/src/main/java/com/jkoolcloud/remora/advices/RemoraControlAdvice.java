@@ -48,7 +48,7 @@ import com.jkoolcloud.remora.takes.*;
 
 //import org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder;
 
-public class RemoraControlAdvice implements RemoraAdvice, Logable {
+public class RemoraControlAdvice implements RemoraAdvice, Loggable {
 
 	public static final String ADVICE_NAME = "RemoraControlAdvice";
 	protected static TaggedLogger logger;
@@ -146,6 +146,11 @@ public class RemoraControlAdvice implements RemoraAdvice, Logable {
 	@Override
 	public Level getLogLevel() {
 		return logLevel;
+	}
+
+	@Override
+	public TaggedLogger getLogger() {
+		return logger;
 	}
 
 	public static class AvailableInetSocketAddress {

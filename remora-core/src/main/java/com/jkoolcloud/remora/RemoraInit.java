@@ -25,6 +25,8 @@ import java.util.ServiceLoader;
 import org.tinylog.Logger;
 import org.tinylog.configuration.Configuration;
 
+import com.jkoolcloud.remora.adviceListeners.LoggingAdviceListener;
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 
 public class RemoraInit {
@@ -70,6 +72,8 @@ public class RemoraInit {
 			advice.install(inst);
 			Logger.tag("INIT").info("Installed {}", advice.getName());
 		});
+
+		BaseTransformers.registerListener(LoggingAdviceListener.class);
 
 		failedList.forEach((advice, exc) -> {
 			Logger.tag("INIT").info("Failed configuring: ", advice.getName());

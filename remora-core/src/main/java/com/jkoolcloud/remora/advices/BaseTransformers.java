@@ -48,7 +48,7 @@ import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.utility.JavaModule;
 
-public abstract class BaseTransformers implements RemoraAdvice, Logable {
+public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;

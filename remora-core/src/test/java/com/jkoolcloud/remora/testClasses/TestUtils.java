@@ -16,6 +16,8 @@
 
 package com.jkoolcloud.remora.testClasses;
 
+import static org.junit.Assert.fail;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -59,16 +61,19 @@ public class TestUtils {
 		@Override
 		public void close() throws IOException {
 			queue.close();
-			boolean success = false;
-			while (!success) {
+			int successMaxTimes = 5;
+
+			while (successMaxTimes > 0) {
 				try {
+					System.gc();
 					Thread.sleep(900);
 					FileUtils.deleteDirectory(tempDirectory.toFile());
-					success = true;
+					return;
 				} catch (IOException | InterruptedException e) {
-					success = false;
+					successMaxTimes--;
 				}
 			}
+			fail("Cannot delete old queue files");
 
 		}
 
