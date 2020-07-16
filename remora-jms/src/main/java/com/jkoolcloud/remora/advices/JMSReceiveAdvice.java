@@ -149,7 +149,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Local("startTime") long startTime) //
 	// @Advice.Local("remoraLogger") Logger logger)
 	{
-		boolean doFinnaly = true;
+		boolean doFinally = true;
 		try {
 			ctx = prepareIntercept(JMSReceiveAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
@@ -157,12 +157,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
-			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				logger.info(
-						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
-				doFinnaly = false;
-				return;
-			}
+			doFinally = checkEntryDefinition(ed, ctx);
 
 			if (message != null) {
 				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
@@ -186,7 +181,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		} finally {
-			if (doFinnaly) {
+			if (doFinally) {
 				doFinally(ctx, obj.getClass());
 			}
 		}

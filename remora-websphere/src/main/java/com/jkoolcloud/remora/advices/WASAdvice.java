@@ -177,12 +177,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		boolean doFinally = true;
 		try {
-			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				logger.info(
-						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
-				doFinally = false;
-				return;
-			}
+			doFinally = checkEntryDefinition(ed, ctx);
 
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 			ed.addProperty("RespContext", resp.getContentType());

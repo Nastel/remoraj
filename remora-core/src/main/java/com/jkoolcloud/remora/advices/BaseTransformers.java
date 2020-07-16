@@ -187,7 +187,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
 				if (logger != null) {
-					logger.info("This not filled");
+					logger.error("This not filled");
 				}
 			}
 
@@ -359,9 +359,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		invokeOnError(adviceInstance, t);
 
 		if (logger != null) {
-			logger.info("{} threw an exception {} {}", adviceInstance.getClass(), t.getMessage(),
+			logger.error("{} threw an exception {} {}", adviceInstance.getClass(), t.getMessage(),
 					t.getClass().getName());
-			logger.info(Arrays.toString(t.getStackTrace()));
+			logger.error(Arrays.toString(t.getStackTrace()));
 		}
 	}
 
@@ -502,11 +502,22 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
+	public static boolean checkEntryDefinition(EntryDefinition ed, InterceptionContext ctx) {
+		if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
+			ctx.interceptorInstance.logger.info(
+					"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
+			return false;
+		} else {
+            return true;
+        }
+	}
+
 	@Override
 	public Level getLogLevel() {
 		return logLevel;
 	}
 
+	@Override
 	public TaggedLogger getLogger() {
 		return logger;
 	}

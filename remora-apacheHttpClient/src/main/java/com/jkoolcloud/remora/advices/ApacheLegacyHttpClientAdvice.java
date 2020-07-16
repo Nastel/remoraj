@@ -149,12 +149,7 @@ public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements Re
 				return;
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-				logger.info(
-						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
-				doFinally = false;
-				return;
-			}
+			doFinally = checkEntryDefinition(ed, ctx);
 
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
