@@ -112,7 +112,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, ApacheHttpClientAdvice.class, ctx);
-			logger.info("Entering: {} {}", ApacheHttpClientAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			if (request != null) {
 				URI uri = request.getURI();
@@ -192,7 +192,7 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", ApacheHttpClientAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

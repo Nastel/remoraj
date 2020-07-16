@@ -97,8 +97,6 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			}
 			ed = getEntryDefinition(ed, JDBCConnectionAdvice.class, ctx);
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			logger.info("Entering: {} {} from {}.{}()", JDBCConnectionAdvice.class.getName(), "before",
-					thiz.getClass().getName(), method.getName());
 
 			stackThreadLocal.get().push(ed);
 			ed.addPropertyIfExist("SQL", sql);

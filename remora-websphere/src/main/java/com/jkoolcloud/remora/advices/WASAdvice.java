@@ -106,8 +106,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			logger.info("Entering: {} {} from {}", WASAdvice.class.getSimpleName(), "before",
-					thiz.getClass().getName());
 
 			ed = getEntryDefinition(ed, WASAdvice.class, ctx);
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
@@ -185,7 +183,7 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", WASAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {

@@ -106,7 +106,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
                 return;
             }
 			ed = getEntryDefinition(ed, ${adviceClassName}Advice.class, ctx);;
-			logger.info("Entering: {} {}",${adviceClassName}Advice.class.getName(), ctx.interceptorInstance, "before"));
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx.interceptorInstance, ctx  );
@@ -146,7 +146,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}",${adviceClassName}Advice.class.getName(), ctx.interceptorInstance, "after"));
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx.interceptorInstance, ctx  );

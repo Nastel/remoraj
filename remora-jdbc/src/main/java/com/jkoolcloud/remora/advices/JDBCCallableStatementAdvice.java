@@ -101,9 +101,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
-			logger.info("Entering: {} {} from {}.{}()", JDBCCallableStatementAdvice.class.getName(), "before",
-					thiz.getClass().getName(), method.getName());
-
 			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, ctx);
 			stackThreadLocal.get().push(ed);
 			if (parameterName instanceof String) {

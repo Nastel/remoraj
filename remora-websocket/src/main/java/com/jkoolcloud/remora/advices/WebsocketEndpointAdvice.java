@@ -85,7 +85,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, WebsocketEndpointAdvice.class, ctx);
-			logger.info("Entering: {} {}", WebsocketEndpointAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			if (args != null && args.length >= 1 && args[0] instanceof Session) {
@@ -173,7 +173,7 @@ public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraA
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", WebsocketEndpointAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

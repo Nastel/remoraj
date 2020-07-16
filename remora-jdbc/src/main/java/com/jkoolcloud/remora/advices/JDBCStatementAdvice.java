@@ -102,8 +102,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, ctx);
-			logger.info("Entering: {} {} from {}.{}()", JDBCStatementAdvice.class.getName(), "before",
-					thiz.getClass().getName(), method.getName());
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			String sql = ed.getProperties().get("SQL");
@@ -178,7 +177,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", JDBCStatementAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 
 		} catch (Throwable t) {

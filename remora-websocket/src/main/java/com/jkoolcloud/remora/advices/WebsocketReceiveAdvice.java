@@ -100,7 +100,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, WebsocketReceiveAdvice.class, ctx);
-			logger.info("Entering: {} {}", WebsocketReceiveAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 			Session session = WebsocketSessionAdvice.sessionHandlers.get(thiz);
@@ -174,7 +174,7 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", WebsocketReceiveAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

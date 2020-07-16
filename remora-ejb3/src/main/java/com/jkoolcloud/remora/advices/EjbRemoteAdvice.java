@@ -100,7 +100,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, ctx);
-			logger.info("Entering: {} {}", EjbRemoteAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			if (stackThreadLocal.get() != null) {
 				stackThreadLocal.get().setApplication(String.valueOf(method.getDeclaringClass()));
@@ -157,7 +157,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", EjbRemoteAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

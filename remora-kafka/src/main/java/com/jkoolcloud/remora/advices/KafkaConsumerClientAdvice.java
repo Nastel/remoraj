@@ -83,8 +83,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, KafkaConsumerClientAdvice.class, ctx);
-			logger.info("Entering: {} {}", KafkaConsumerClientAdvice.class.getName(), ctx.interceptorInstance,
-					"before");
+
 			ed.setTransparent();
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
@@ -138,7 +137,7 @@ public class KafkaConsumerClientAdvice extends BaseTransformers {
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", KafkaConsumerClientAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

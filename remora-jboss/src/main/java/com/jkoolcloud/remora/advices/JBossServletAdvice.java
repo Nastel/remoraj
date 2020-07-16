@@ -83,8 +83,6 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, JBossServletAdvice.class, ctx);
-			logger.info("Entering: {} {} from {}", JBossServletAdvice.class.getSimpleName(), "before",
-					thiz.getClass().getName());
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
@@ -135,7 +133,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", JBossServletAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

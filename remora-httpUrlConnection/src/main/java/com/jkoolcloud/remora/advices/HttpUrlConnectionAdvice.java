@@ -100,7 +100,7 @@ public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraA
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, HttpUrlConnectionAdvice.class, ctx);
-			logger.info("Entering: {} {}", HttpUrlConnectionAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.addPropertyIfExist("URI", thiz.getURL().toString());
 			ed.addPropertyIfExist("HOST", thiz.getURL().getHost());
@@ -149,7 +149,7 @@ public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraA
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", HttpUrlConnectionAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

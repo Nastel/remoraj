@@ -88,7 +88,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
 			ed = getEntryDefinition(ed, SocketAdvice.class, ctx);
-			logger.info("Entering: {} {}", SocketAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 
 			ed.addPropertyIfExist("resource",
@@ -149,7 +149,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", SocketAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

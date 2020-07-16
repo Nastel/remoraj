@@ -90,8 +90,6 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			logger.info("Entering: {} {} from {}", JMSSendAdvice.class.getSimpleName(), "before",
-					thiz.getClass().getName());
 
 			ed = getEntryDefinition(ed, JMSSendAdvice.class, ctx);
 			ed.setEventType(EntryDefinition.EventType.SEND);
@@ -158,7 +156,7 @@ public class JMSSendAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			// noinspection Duplicates
-			logger.info("Exiting: {} {}", JMSSendAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

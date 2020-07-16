@@ -97,7 +97,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, SpringExceptionAdvice.class, ctx);
-			logger.info("Entering: {} {}", SpringExceptionAdvice.class.getName(), ctx.interceptorInstance, "before");
+
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.setException(exception);
 		} catch (Throwable t) {
@@ -143,7 +143,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", SpringExceptionAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

@@ -102,7 +102,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, ctx);
-			logger.info("Entering: {} {}", ctx, KafkaConsumerAdvice.class.getName(), ctx.interceptorInstance, "before");
 
 			ed.setName("consume");
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
@@ -151,7 +150,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 				return;
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			logger.info("Exiting: {} {}", ctx, KafkaConsumerAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				logger.info("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test", ctx,
 						ctx);

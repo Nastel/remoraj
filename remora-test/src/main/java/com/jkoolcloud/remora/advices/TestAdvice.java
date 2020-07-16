@@ -1,28 +1,12 @@
-/*
- * Copyright 2019-2020 NASTEL TECHNOLOGIES, INC.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -33,11 +17,13 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class SpringTransactionAdvice extends BaseTransformers implements RemoraAdvice {
+public class TestAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "SpringTransactionAdvice";
-	public static String[] INTERCEPTING_CLASS = { "org.springframework.web.servlet" };
-	public static String INTERCEPTING_METHOD = "handle";
+	public static final String ADVICE_NAME = "TestAdvice";
+	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
+	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
+
+	public static boolean logging = false;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -45,10 +31,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named("handle").and(returns(named("org.springframework.web.servlet.ModelAndView")))
-				.and(takesArgument(0, named("javax.servlet.http.HttpServletRequest")))
-				.and(takesArgument(1, named("javax.servlet.http.HttpServletResponse")))
-				.and(takesArgument(2, Object.class));
+		return named(INTERCEPTING_METHOD);
 	}
 
 	/**
@@ -57,8 +40,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 
 	@Override
 	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return nameStartsWith(INTERCEPTING_CLASS[0])
-				.and(hasSuperType(named("org.springframework.web.servlet.HandlerAdapter"))).and(not(isInterface()));
+		return hasSuperType(named(INTERCEPTING_CLASS[0]));
 	}
 
 	@Override
@@ -67,8 +49,8 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(SpringTransactionAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), SpringTransactionAdvice.class.getName());
+			.include(TestAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), TestAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -94,12 +76,10 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(SpringTransactionAdvice.class, thiz, method, arguments);
-			if (!ctx.intercept) {
+			if (!getAdviceInstance(TestAdvice.class).enabled) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			ed = getEntryDefinition(ed, SpringTransactionAdvice.class, ctx);
+			ed = getEntryDefinition(ed, TestAdvice.class, ctx);
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
@@ -134,11 +114,9 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(SpringTransactionAdvice.class, obj, method, arguments);
-			if (!ctx.intercept) {
+			if (!getAdviceInstance(TestAdvice.class).enabled) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
 				logger.info(
 						"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
@@ -151,7 +129,7 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(ctx, obj.getClass());
+				doFinally(logger, TestAdvice.class);
 			}
 		}
 

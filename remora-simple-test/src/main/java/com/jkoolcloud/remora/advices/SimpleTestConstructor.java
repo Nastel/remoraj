@@ -125,7 +125,7 @@ public class SimpleTestConstructor extends BaseTransformers {
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", SimpleTestConstructor.class.getName(), "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

@@ -85,7 +85,7 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 			return;
 		}
 		TaggedLogger logger = ctx.interceptorInstance.getLogger();
-		logger.info("Exiting: {} {}", OutputStreamCloseAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 		try {
 			StreamsManager.INSTANCE.close(thiz, ctx, method);
 		} catch (Throwable t) {

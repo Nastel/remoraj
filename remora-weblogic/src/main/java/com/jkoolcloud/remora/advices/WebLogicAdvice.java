@@ -100,9 +100,6 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
-			logger.info("Entering : {} {} from {}", WebLogicAdvice.class.getName(), "before",
-					thiz.getClass().getName());
-
 			if (stackThreadLocal != null) {
 				CallStack stack = stackThreadLocal.get();
 				if (stack == null) {
@@ -162,7 +159,7 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", WebLogicAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

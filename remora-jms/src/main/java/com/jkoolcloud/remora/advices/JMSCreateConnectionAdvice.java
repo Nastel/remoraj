@@ -103,8 +103,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 				return;
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-			logger.info("Entering: {} {} from {}", JMSCreateConnectionAdvice.class.getSimpleName(), "before",
-					thiz.getClass().getName());
 
 			ed = getEntryDefinition(ed, JMSCreateConnectionAdvice.class, ctx);
 			ed.setEventType(EntryDefinition.EventType.OPEN);
@@ -164,7 +162,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", JMSCreateConnectionAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

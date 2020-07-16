@@ -86,7 +86,6 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, KafkaProducerAdvice.class, ctx);
-			logger.info("Entering: {} {}", KafkaProducerAdvice.class.getName(), ctx.interceptorInstance, "before");
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.setEventType(EntryDefinition.EventType.SEND);
@@ -150,7 +149,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 				doFinally = false;
 				return;
 			}
-			logger.info("Exiting: {} {}", KafkaProducerAdvice.class.getName(), ctx.interceptorInstance, "after");
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
