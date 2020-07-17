@@ -37,11 +37,11 @@
     <url>https://github.com/Nastel/</url>
 
     <properties>
-        <ibm.thinclient>${websphere.install.dir}//lib//com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
-        <ibm.runtimes>${websphere.install.dir}//lib//com.ibm.ws.runtime.jar</ibm.runtimes>
-        <ibm.webcontainer>${websphere.install.dir}//lib//com.ibm.ws.webcontainer.jar</ibm.webcontainer>
-        <ibm.rsaHelpers>${websphere.install.dir}//lib//rsahelpers.jar</ibm.rsaHelpers>
-        <ibm.adminService>${websphere.install.dir}//lib//com.ibm.ws.admin.core.jar</ibm.adminService>
+        <ibm.thinclient>${websphere.install.dir}\runtimes\com.ibm.jaxws.thinclient_8.5.0.jar</ibm.thinclient>
+        <ibm.runtimes>${websphere.install.dir}\plugins\com.ibm.ws.runtime.jar</ibm.runtimes>
+        <ibm.webcontainer>${websphere.install.dir}\plugins\com.ibm.ws.webcontainer.jar</ibm.webcontainer>
+        <ibm.rsaHelpers>${websphere.install.dir}\lib\rsahelpers.jar</ibm.rsaHelpers>
+        <ibm.adminService>${websphere.install.dir}\plugins\com.ibm.ws.admin.core.jar</ibm.adminService>
     </properties>
 
     <dependencies>

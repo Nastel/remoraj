@@ -187,7 +187,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
 				if (logger != null) {
-					logger.error("This not filled");
+					logger.error("\"This\" not filled");
 				}
 			}
 
@@ -298,7 +298,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public static void doFinally(InterceptionContext ctx, Class<?> caller) {
 		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		if (logger != null) {
-			logger.debug("DoFinnaly");
+			logger.debug("Finalizing {} interception", caller.getSimpleName());
 		}
 		try {
 
@@ -316,18 +316,18 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 					if (entryDefinitions.size() <= 0) {
 						stackThreadLocal.remove();
 						if (logger != null) {
-							logger.info("Stack end;");
+							logger.info("Stack end {}.", peek.getId());
 						}
 					}
 				}
 			} else {
 				if (logger != null) {
-					logger.info("No stackThread");
+					logger.error("No CallStack");
 				}
 			}
 		} catch (Exception e) {
 			if (logger != null) {
-				logger.info(e);
+				logger.error(e);
 			}
 		}
 	}
@@ -340,14 +340,13 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		try {
 			if (adviceClass.getSimpleName().equals(lastED.getAdviceClass())) {
 				if (logger != null) {
-					logger.info(("Stack contains the same advice"));
+					logger.debug(("Stack contains the same advice"));
 				}
 				return true;
 			}
 		} catch (Exception e) {
 			if (logger != null) {
-				logger.info("Can't check if advice stack has stacked common advices");
-				logger.info(e);
+				logger.info(e, "Can't check if advice stack has stacked common advices");
 			}
 		}
 		return false;
@@ -504,12 +503,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	public static boolean checkEntryDefinition(EntryDefinition ed, InterceptionContext ctx) {
 		if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-			ctx.interceptorInstance.logger.info(
-					"EntryDefinition not exist, ctx.interceptorInstance, entry might be filtered out as duplicate or ran on test");
+			ctx.interceptorInstance.logger
+					.error("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
 			return false;
 		} else {
-            return true;
-        }
+			return true;
+		}
 	}
 
 	@Override
@@ -559,36 +558,14 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 		}
 
-	}
-
-	public static class DiscoveryLoggingListener extends TransformationLoggingListener {
-
-		public DiscoveryLoggingListener(TaggedLogger logger) {
-			super(logger);
-		}
-
 		@Override
 		public void onDiscovery(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded) {
-			if (logger == null) {
-				System.out.println(
-						format(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module, loaded));
-			} else {
-				logger.info(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module);
+			if (logger != null) {
+				logger.trace(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module);
 
 			}
 		}
 
-		@Override
-		public void onIgnored(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
-				boolean loaded) {
-			if (logger == null) {
-				System.out.println(format(PREFIX + " IGNORED {} [{}, {}, loaded={}]", typeDescription, classLoader,
-						module, loaded));
-			} else {
-				logger.info(PREFIX + " IGNORED {} [{}, {}, loaded={}]", typeDescription, classLoader, module);
-
-			}
-		}
 	}
 
 }

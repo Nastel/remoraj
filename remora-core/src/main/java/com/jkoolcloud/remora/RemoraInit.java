@@ -23,11 +23,13 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 import org.tinylog.configuration.Configuration;
 
 import com.jkoolcloud.remora.adviceListeners.LoggingAdviceListener;
 import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
+import com.jkoolcloud.remora.core.utils.RemoraLoggingProvider;
 
 public class RemoraInit {
 
@@ -36,7 +38,7 @@ public class RemoraInit {
 	public static void initializeAdvices(Instrumentation inst, ClassLoader classLoader) {
 
 		// LOGGER.info("Initializing advices: " + getClass() + " classloader: " + getClass().getClassLoader());
-
+		TaggedLogger logger = Logger.tag("INIT");
 		ServiceLoader<RemoraAdvice> advices = ServiceLoader.load(RemoraAdvice.class, classLoader);
 		Iterator<RemoraAdvice> iterator = advices.iterator();
 		ArrayList<RemoraAdvice> adviceList = new ArrayList<>(50);
@@ -58,28 +60,30 @@ public class RemoraInit {
 				failedList.put(remoraAdvice, e);
 			}
 
-			// LOGGER.info("\t Found module: " + remoraAdvice);
+			logger.info("\t Found module: " + remoraAdvice);
 
 		}
+
 		try {
 			RemoraConfig.configure(AdviceRegistry.INSTANCE);
 		} catch (IllegalAccessException e) {
-			Logger.tag("INIT").info("AdviceRegistry Config failed");
+			logger.info("AdviceRegistry Config failed");
 		}
 		AdviceRegistry.INSTANCE.report(adviceList);
 		// need to configure logger first
 		adviceList.forEach(advice -> {
 			advice.install(inst);
-			Logger.tag("INIT").info("Installed {}", advice.getName());
+			logger.info("Installed {}", advice.getName());
 		});
 
 		BaseTransformers.registerListener(LoggingAdviceListener.class);
 
 		failedList.forEach((advice, exc) -> {
-			Logger.tag("INIT").info("Failed configuring: ", advice.getName());
-			Logger.tag("INIT").info(exc);
+			logger.info("Failed configuring: ", advice.getName());
+			logger.info(exc);
 		});
-		// LOGGER.info("Loading finished");
+		logger.info("Loading finished");
+		RemoraLoggingProvider.startLogging();
 
 	}
 

@@ -33,6 +33,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.core.output.AgentOutput;
@@ -49,7 +51,7 @@ public enum RemoraConfig {
 
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
-	// private TaggedLogger logger = Logger.tag("INIT");
+	private TaggedLogger logger = Logger.tag("INIT");
 	public Properties config;
 	public ClassLoader classLoader = null;
 
@@ -69,8 +71,8 @@ public enum RemoraConfig {
 					String configValue = getConfigValue(object.getClass(), field.getName());
 					Object appliedValue = getAppliedValue(field, configValue);
 					if (appliedValue != null) {
-						// logger.info(format("Setting {} class config field \"{}\" as {}",
-						// object.getClass().getName(), appliedValue.toString(), field.getName()));
+						INSTANCE.logger.debug("Setting {} class config field \"{}\" as {}", object.getClass().getName(),
+								field.getName(), appliedValue.toString());
 						field.set(object, appliedValue);
 					}
 
@@ -120,12 +122,12 @@ public enum RemoraConfig {
 						Class<?> outClass = Class.forName(configValue);
 						appliedValue = (AgentOutput<EntryDefinition>) outClass.newInstance();
 					} catch (Exception e) {
-						e.printStackTrace();
+						INSTANCE.logger.error("AgentOutput couldn't be defined: {}", e);
 						appliedValue = null;
 					}
 
 				case "default":
-					// logger.info("Unsupported property");
+					INSTANCE.logger.info("Unsupported property {}, {}", field.getType().getSimpleName(), configValue);
 
 				}
 			}
@@ -145,7 +147,7 @@ public enum RemoraConfig {
 		Class<?> workingClass = aClass;
 		String value = null;
 		while (value == null && !workingClass.equals(Object.class)) {
-			value = RemoraConfig.INSTANCE.config.getProperty(workingClass.getName() + "." + name);
+			value = INSTANCE.config.getProperty(workingClass.getName() + "." + name);
 			workingClass = workingClass.getSuperclass();
 		}
 		return value;
@@ -158,10 +160,10 @@ public enum RemoraConfig {
 		File file = new File(remoraPath + REMORA_PROPERTIES_FILE);
 		try (FileInputStream inStream = new FileInputStream(file)) {
 			config.load(inStream);
-			// logger.info("Successfully loaded {} properties from configuration file", config.size()));
+			logger.info("Successfully loaded {} properties from configuration file", config.size());
 		} catch (IOException e) {
-			// logger.error("Failed loading properties file");
-			// logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e));
+			logger.error("Failed loading properties file");
+			logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e);
 		}
 		configureFilters();
 	}
@@ -193,12 +195,8 @@ public enum RemoraConfig {
 				}
 				FilterManager.INSTANCE.add(filterName, adviceFilter);
 
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				INSTANCE.logger.error("Filter configuration failed", e);
 			}
 		});
 	}

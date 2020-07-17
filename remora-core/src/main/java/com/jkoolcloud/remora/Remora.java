@@ -60,31 +60,30 @@ public class Remora {
 		if (System.getProperty(REMORA_PATH) == null) {
 			System.setProperty(REMORA_PATH, options == null ? getJarContainingFolder(Remora.class) : options);
 		}
-
 		String baseRemoraDir = System.getProperty(Remora.REMORA_PATH);
 		System.out.println("Running RemoraJ " + getVersion());
 
-		// logger.info("Starting from premain; classloader: " + Remora.class.getClassLoader());
-
 		inst.appendToBootstrapClassLoaderSearch(new JarFile(baseRemoraDir + "/" + "remora.jar"));
 		bootLoader = new RemoraClassLoader(findJars(baseRemoraDir + MODULES_DIR), Remora.class.getClassLoader(), inst);
-		// logger.info("Initializing classloader: " + bootLoader);
+		logger = Logger.tag("INIT");
+
+		logger.info("Initializing classloader: " + bootLoader);
 		Class<?> appClass = bootLoader.loadClass("com.jkoolcloud.remora.RemoraInit");
 		Object instance = appClass.newInstance();
-		// logger.info("Initializing agent class: " + appClass);
+		logger.info("Initializing agent class: " + appClass);
 		Method initializeAdvices = appClass.getMethod("initializeAdvices", Instrumentation.class, ClassLoader.class);
-		// logger.info("Initializing advices: " + appClass);
+		logger.info("Initializing advices: " + appClass);
 		initializeAdvices.invoke(instance, inst, bootLoader);
-		logger = Logger.tag("INIT");
+
 		String vmid = System.getProperty(REMORA_VM_IDENTIFICATION);
 		if (vmid == null) {
 			vmid = getDefaultVM();
 			System.setProperty(REMORA_VM_IDENTIFICATION, vmid);
 		}
 		EntryDefinition.setVmIdentification(vmid);
-		 // Load output and config manager by Bootstarp classloader;
+		// Load output and config manager by Bootstarp classloader;
 		RemoraConfig.INSTANCE.name();
-		OutputManager.INSTANCE.name(); 
+		OutputManager.INSTANCE.name();
 	}
 
 	public static String getJarContainingFolder(Class<Remora> aclass) throws Exception {

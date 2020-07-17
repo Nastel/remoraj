@@ -16,6 +16,12 @@
 
 package com.jkoolcloud.remora.core.utils;
 
+import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.tinylog.Level;
 import org.tinylog.core.TinylogLoggingProvider;
 import org.tinylog.format.MessageFormatter;
@@ -26,11 +32,24 @@ import com.jkoolcloud.remora.advices.BaseTransformers;
 
 public class RemoraLoggingProvider implements LoggingProvider {
 
-	private TinylogLoggingProvider realProvider = new TinylogLoggingProvider();
+	private TinylogLoggingProvider realProvider;
+	private static Semaphore semaphore = new Semaphore(-1);
+	private static ArrayList<RemoraLoggingProvider> instances = new ArrayList<>();
+	private final static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
+			new ArrayBlockingQueue<Runnable>(1000) {
+				@Override
+				public Runnable take() throws InterruptedException {
+					semaphore.acquire();
+					return super.take();
+				}
+			});
+
+	public RemoraLoggingProvider() {
+		instances.add(this);
+	}
 
 	public void reload() throws InterruptedException, ReflectiveOperationException {
 		realProvider.shutdown();
-
 		realProvider = new TinylogLoggingProvider();
 	}
 
@@ -65,8 +84,14 @@ public class RemoraLoggingProvider implements LoggingProvider {
 
 			}
 		}
-
-		realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
+		if (semaphore.availablePermits() < 0) {
+			// String className = RuntimeProvider.getCallerStackTraceElement(depth + 1).getClassName();
+			threadPoolExecutor.submit(() -> {
+				realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
+			});
+		} else {
+			realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
+		}
 
 	}
 
@@ -79,7 +104,15 @@ public class RemoraLoggingProvider implements LoggingProvider {
 
 	@Override
 	public void shutdown() throws InterruptedException {
+		threadPoolExecutor.shutdownNow();
 		realProvider.shutdown();
+
+	}
+
+	public static void startLogging() {
+		instances.stream().forEach(a -> a.realProvider = new TinylogLoggingProvider());
+		semaphore.release(Integer.MAX_VALUE);
+		threadPoolExecutor.shutdown();
 	}
 
 }
