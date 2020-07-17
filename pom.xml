@@ -18,7 +18,7 @@
 
         <skip.assembly.pack>false</skip.assembly.pack>
 
-        <websphere.install.dir>${basedir}</websphere.install.dir>
+        <websphere.install.dir>C://Users//slabs//IBM//WebSphere//AppServer2</websphere.install.dir>
 
         <byte.buddy.version>1.10.12</byte.buddy.version>
         <!--Versions 5.17.17 up to 5.17.43 is not compatible with RemoraJ!!!-->
