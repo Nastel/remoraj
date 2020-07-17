@@ -37,7 +37,6 @@ public class RemoraInit {
 
 	public static void initializeAdvices(Instrumentation inst, ClassLoader classLoader) {
 
-		// LOGGER.info("Initializing advices: " + getClass() + " classloader: " + getClass().getClassLoader());
 		TaggedLogger logger = Logger.tag("INIT");
 		ServiceLoader<RemoraAdvice> advices = ServiceLoader.load(RemoraAdvice.class, classLoader);
 		Iterator<RemoraAdvice> iterator = advices.iterator();
@@ -73,7 +72,8 @@ public class RemoraInit {
 		// need to configure logger first
 		adviceList.forEach(advice -> {
 			advice.install(inst);
-			logger.info("Installed {}", advice.getName());
+			logger.info("Installed {}, {}", advice.getName(),
+					advice.getClass().getPackage().getImplementationVersion());
 		});
 
 		BaseTransformers.registerListener(LoggingAdviceListener.class);

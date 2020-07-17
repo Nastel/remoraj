@@ -96,7 +96,6 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime)//
-	// @Advice.Local("remoraLogger") Logger logger) // ) //
 	{
 		try {
 			ctx = prepareIntercept(JMSReceiveAdvice.class, thiz, method, arguments);
@@ -147,7 +146,6 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Return Message message, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		boolean doFinally = true;
 		try {

@@ -90,7 +90,7 @@ public class SimpleTest extends BaseTransformers {
 			ed.addProperty("Arg", arguments.toString());
 
 		} catch (Throwable t) {
-			// handleAdviceException(t, ctx.interceptorInstance, logging ? logger : null );
+			handleAdviceException(t, ctx);
 		}
 	}
 

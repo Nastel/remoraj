@@ -38,11 +38,6 @@ public class CallStack extends Stack<EntryDefinition> {
 
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
-		// if (contains(item)) {
-		// logger.info("Stack already contains ED");
-		// return item;
-		//
-		// }
 		if (size() >= limit) {
 			if (logger != null) {
 				logger.error("Stack limit reached: {}, {} : {}", (size() + 1), item.getAdviceClass(), item.getId());

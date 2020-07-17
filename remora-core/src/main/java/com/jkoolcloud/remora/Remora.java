@@ -61,12 +61,14 @@ public class Remora {
 			System.setProperty(REMORA_PATH, options == null ? getJarContainingFolder(Remora.class) : options);
 		}
 		String baseRemoraDir = System.getProperty(Remora.REMORA_PATH);
-		System.out.println("Running RemoraJ " + getVersion());
+		String version = getVersion();
+		System.out.println("Running RemoraJ " + version);
 
 		inst.appendToBootstrapClassLoaderSearch(new JarFile(baseRemoraDir + "/" + "remora.jar"));
 		bootLoader = new RemoraClassLoader(findJars(baseRemoraDir + MODULES_DIR), Remora.class.getClassLoader(), inst);
 		logger = Logger.tag("INIT");
 
+		logger.info("Running RemoraJ " + version);
 		logger.info("Initializing classloader: " + bootLoader);
 		Class<?> appClass = bootLoader.loadClass("com.jkoolcloud.remora.RemoraInit");
 		Object instance = appClass.newInstance();

@@ -98,7 +98,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		try {
 			ctx = prepareIntercept(WASAdvice.class, thiz, method, new Object[] { req, resp });
@@ -168,7 +167,6 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		ctx = prepareIntercept(WASAdvice.class, obj, method, new Object[] { req, resp });
 		if (!ctx.intercept) {

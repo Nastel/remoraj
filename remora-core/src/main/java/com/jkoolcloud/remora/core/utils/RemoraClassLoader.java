@@ -26,13 +26,13 @@ import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 
 public class RemoraClassLoader extends URLClassLoader {
+	// USING LOGGER at classloader will cause java.lang.ClassCircularityError
 	// TaggedLogger logger = Logger.tag("INFO");
 
 	public RemoraClassLoader(URL[] urls, ClassLoader parent, Instrumentation inst) {
 		super(urls, parent);
 		for (URL url : urls) {
 			try {
-				// logger.info("Appending boot classloader with: " + url);
 				inst.appendToBootstrapClassLoaderSearch(new JarFile(url.getFile()));
 			} catch (IOException e) {
 				e.printStackTrace();

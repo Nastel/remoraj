@@ -95,7 +95,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) //
-	// @Advice.Local("remoraLogger") Logger logger) //
 	{
 		try {
 			ctx = prepareIntercept(JMSCreateConnectionAdvice.class, thiz, method, arguments);
@@ -147,7 +146,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			@Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime)//
-	// @Advice.Local("remoraLogger") Logger logger)
 	{
 		boolean doFinally = true;
 		try {

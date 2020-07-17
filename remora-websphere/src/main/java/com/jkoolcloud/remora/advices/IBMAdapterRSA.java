@@ -94,7 +94,6 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime //
-	// @Advice.Local("remoraLogger") Logger logger
 
 	) {
 		try {
@@ -144,7 +143,6 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
 			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime //
-	// @Advice.Local("remoraLogger") Logger logger//
 	) {
 		boolean doFinally = true;
 		try {
