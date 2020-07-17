@@ -551,9 +551,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 						format(PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module, loaded));
 				throwable.printStackTrace();
 			} else {
-				logger.info(PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module, loaded);
-				logger.info(throwable.getMessage());
-				logger.info(Arrays.toString(throwable.getStackTrace()));
+				logger.info(throwable, PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module,
+						loaded);
 			}
 
 		}

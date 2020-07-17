@@ -111,7 +111,7 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			} else {
 				appender = queue.acquireAppender();
 				logger.warn("Current thread has no appender. Getting new, hope it's running on test");
-				markSendError(appender, new Exception("Thread is not the instance of ChronocleAppenderThread"));
+				markSendError(appender, new Exception("Thread is not the instance of ChronicleAppenderThread"));
 			}
 
 			if (entry.isFinished()) {
