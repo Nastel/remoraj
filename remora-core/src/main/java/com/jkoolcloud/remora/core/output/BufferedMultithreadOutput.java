@@ -47,7 +47,7 @@ public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 	@RemoraConfig.Configurable
 	AgentOutput<EntryDefinition> output;
 
-	TaggedLogger logger = Logger.tag("INIT");
+	TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 
 	private ExecutorService queueWorkers;
 	private ArrayBlockingQueue<Runnable> workQueue;
@@ -93,7 +93,7 @@ public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 			}
 
 		} catch (Exception e) {
-			TaggedLogger init = Logger.tag("INIT");
+			TaggedLogger init = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 			init.error("Cannot release filter");
 		}
 

@@ -51,7 +51,7 @@ public enum RemoraConfig {
 
 	// If anyone wonders why it's not static
 	// https://stackoverflow.com/questions/49141972/nullpointerexception-in-enum-logger
-	private TaggedLogger logger = Logger.tag("INIT");
+	private TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 	public Properties config;
 	public ClassLoader classLoader = null;
 

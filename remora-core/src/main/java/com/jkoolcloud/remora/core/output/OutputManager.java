@@ -48,6 +48,7 @@ public enum OutputManager {
 			try {
 				Class<?> outClass = Class.forName(outputClass);
 				output = (AgentOutput<EntryDefinition>) outClass.newInstance();
+				logger.debug("Initialised output {}", output);
 			} catch (Exception e) {
 				outputListeners.forEach(l -> l.onInitialized(e));
 			}
@@ -59,7 +60,10 @@ public enum OutputManager {
 			RemoraConfig.configure(output);
 			synchronized (output) {
 				try {
-					outputListeners.forEach(listener -> listener.onInitialize());
+					outputListeners.forEach(listener -> {
+						listener.onInitialize();
+						logger.debug("Initializing outpus listener {}", listener);
+					});
 					output.init();
 				} catch (AgentOutput.OutputException e) {
 					outputListeners.forEach(l -> l.onInitialized(e));
@@ -70,7 +74,11 @@ public enum OutputManager {
 
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 				synchronized (output) {
-					outputListeners.forEach(l -> l.onShutdown());
+					outputListeners.forEach(l -> {
+						l.onShutdown();
+						logger.debug("Shutting down output listener {}", l);
+					});
+					logger.info("Shutting down output {}", output);
 					output.shutdown();
 				}
 			}));

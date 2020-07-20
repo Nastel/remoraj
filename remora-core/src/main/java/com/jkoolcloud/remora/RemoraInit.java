@@ -37,7 +37,7 @@ public class RemoraInit {
 
 	public static void initializeAdvices(Instrumentation inst, ClassLoader classLoader) {
 
-		TaggedLogger logger = Logger.tag("INIT");
+		TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 		ServiceLoader<RemoraAdvice> advices = ServiceLoader.load(RemoraAdvice.class, classLoader);
 		Iterator<RemoraAdvice> iterator = advices.iterator();
 		ArrayList<RemoraAdvice> adviceList = new ArrayList<>(50);

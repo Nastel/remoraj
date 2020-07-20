@@ -24,13 +24,17 @@ public class EmptyStack extends CallStack {
 	 */
 	private static final long serialVersionUID = 1089732400822680741L;
 	private static final EntryDefinition.DummyEntryDefinition item = new EntryDefinition.DummyEntryDefinition();
+	private final TaggedLogger logger;
 
 	public EmptyStack(TaggedLogger logger, int limit) {
 		super(logger, limit);
+		this.logger = logger;
+		this.logger.debug("EmptyStack created");
 	}
 
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
+		logger.trace("Item pushed to empty stack");
 		return item;
 	}
 

@@ -41,7 +41,7 @@ import net.openhft.chronicle.queue.impl.StoreFileListener;
 public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 
 	public static final String DISABLE_PROXY_CODEGEN = "disableProxyCodegen";
-	TaggedLogger logger = Logger.tag("INIT");
+	TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 
 	private ChronicleQueue queue;
 	@RemoraConfig.Configurable
@@ -75,7 +75,7 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			unusedQueues.addAll(Arrays.asList(cq4s));
 		}
 
-		logger.info("Writing to " + queueDir.getAbsolutePath());
+		logger.info("Writing to  {}", queueDir.getAbsolutePath());
 		new ScheduledQueueErrorReporter(logger, errorReportingSchedule);
 
 		queue = ChronicleQueue.singleBuilder(queueDir.getPath()).rollCycle(rollCycle).timeoutMS(timeout)
@@ -84,19 +84,21 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 					@Override
 					public void onReleased(int cycle, File file) {
 						while (!unusedQueues.offer(file)) {
-							unusedQueues.removeFirst().delete();
+							File fileToDelete = unusedQueues.removeFirst();
+							fileToDelete.delete();
+							logger.debug("Deleting unused queue file {} ", queueDir.getAbsolutePath());
 						}
 
 					}
 				}).build();
 
 		if (queue != null) {
-			logger.info("Queue initialized " + this);
+			logger.info("Queue initialized {}", this);
 			if (queue instanceof RollingChronicleQueue) {
 				((RollingChronicleQueue) queue).storeForCycle(((RollingChronicleQueue) queue).cycle(), 0, false);
 			}
 		} else {
-			logger.error("Queue initializaton failed file=" + queueDir);
+			logger.error("Queue initializaton failed file={}", queueDir);
 		}
 
 	}
@@ -181,9 +183,9 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 
 			ExcerptAppender threadAppender = queue.acquireAppender();
 			if (threadAppender != null) {
-				logger.info("Appender initialized");
+				logger.info("Appender initialized. Queue {}", queue);
 			} else {
-				logger.error("Appender failed");
+				logger.error("Appender failed {}, queue", threadAppender);
 			}
 
 			return new ChronicleAppenderThread(r, threadAppender);

@@ -21,11 +21,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
+
 import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.advices.BaseTransformers;
 
 public enum FilterManager {
 	INSTANCE;
+	private final TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 
 	Map<String, StatisticEnabledFilter> filters = new ConcurrentHashMap<>(10);
 
@@ -36,7 +41,11 @@ public enum FilterManager {
 
 	public void add(String filterName, StatisticEnabledFilter filter) {
 		StatisticEnabledFilter put = filters.put(filterName, filter);
+		logger.info("Adding filter {}, {}", filterName, filter);
 		if (put != null) {
+			logger.info(
+					"There was already filter with name {}, filter is replaced, but references for advices using old filter is cleared."
+							+ " You should set the advices you want to use new filter");
 			AdviceRegistry.INSTANCE.getRegisteredAdvices().stream().filter(advice -> advice instanceof BaseTransformers)
 					.map(advice -> (BaseTransformers) advice)
 					.forEach(baseTransformers -> baseTransformers.filters.remove(put));

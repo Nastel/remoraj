@@ -39,6 +39,7 @@ import com.jkoolcloud.remora.core.utils.RemoraClassLoader;
 public class Remora {
 
 	public static final String REMORA_VM_IDENTIFICATION = "remora.vmid";
+	public static final String MAIN_REMORA_LOGGER = "INIT";
 	public static TaggedLogger logger;
 
 	public static final boolean DEBUG_BOOT_LOADER = true;
@@ -66,7 +67,7 @@ public class Remora {
 
 		inst.appendToBootstrapClassLoaderSearch(new JarFile(baseRemoraDir + "/" + "remora.jar"));
 		bootLoader = new RemoraClassLoader(findJars(baseRemoraDir + MODULES_DIR), Remora.class.getClassLoader(), inst);
-		logger = Logger.tag("INIT");
+		logger = Logger.tag(MAIN_REMORA_LOGGER);
 
 		logger.info("Running RemoraJ " + version);
 		logger.info("Initializing classloader: " + bootLoader);

@@ -22,11 +22,12 @@ import java.util.concurrent.ThreadFactory;
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 public class NullOutput implements AgentOutput<EntryDefinition> {
 
-	TaggedLogger logger = Logger.tag("INIT");
+	TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 
 	@Override
 	public void init() {
