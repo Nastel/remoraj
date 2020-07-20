@@ -47,11 +47,16 @@ public class TKFilters implements Take {
 		StringBuilder response = new StringBuilder();
 		response.append("[");
 		Map<String, StatisticEnabledFilter> filters = FilterManager.INSTANCE.getAll();
+		Exception[] exception = new Exception[1];
 		response.append(filters.entrySet().stream().map(stringAdviceFilterEntry -> {
 
 			List<String> properties = ReflectionUtils.getConfigurableFields(stringAdviceFilterEntry.getValue());
-			Map<String, Object> stringObjectMap = ReflectionUtils.mapToCurrentValues(stringAdviceFilterEntry.getValue(),
-					properties);
+			Map<String, Object> stringObjectMap = null;
+			try {
+				stringObjectMap = ReflectionUtils.mapToCurrentValues(stringAdviceFilterEntry.getValue(), properties);
+			} catch (Exception e) {
+				exception[0] = e;
+			}
 			String collect = stringObjectMap.entrySet().stream()
 					.map(entry -> JSONUtils.quote(entry.getKey()) + " : " + JSONUtils.quote(entry.getValue()))
 					.collect(Collectors.joining(",\n"));
@@ -62,6 +67,9 @@ public class TKFilters implements Take {
 					JSONUtils.quote(stringAdviceFilterEntry.getValue().getExcludedCount()),
 					JSONUtils.addPadding(4, collect));
 		}).collect(Collectors.joining(",\n")));
+		if (exception[0] != null) {
+			throw exception[0];
+		}
 		response.append("\n]");
 		return new RsText(response.toString());
 

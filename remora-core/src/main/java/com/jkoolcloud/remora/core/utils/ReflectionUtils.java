@@ -134,19 +134,26 @@ public class ReflectionUtils {
 				.map(field -> field.getName()).collect(Collectors.toList());
 	}
 
-	public static Map<String, Object> mapToCurrentValues(Object advice, List<String> availableConfigurationFields) {
-		return availableConfigurationFields.stream().collect(Collectors.toMap(fName -> fName, fName -> {
+	public static Map<String, Object> mapToCurrentValues(Object advice, List<String> availableConfigurationFields)
+			throws Exception {
+		Exception[] exception = new Exception[1];
+		Map<String, Object> collect = availableConfigurationFields.stream()
+				.collect(Collectors.toMap(fName -> fName, fName -> {
 
-			try {
-				Field declaredField = getFieldFromAllDeclaredFields(advice.getClass(), fName);
-				declaredField.setAccessible(true);
-				Object value = declaredField.get(advice);
+					try {
+						Field declaredField = getFieldFromAllDeclaredFields(advice.getClass(), fName);
+						declaredField.setAccessible(true);
+						Object value = declaredField.get(advice);
 
-				return value == null ? "null" : value;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return "N/A";
-		}));
+						return value == null ? "null" : value;
+					} catch (Exception e) {
+						exception[0] = e;
+					}
+					return "N/A";
+				}));
+		if (exception[0] != null) {
+			throw exception[0];
+		}
+		return collect;
 	}
 }

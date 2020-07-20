@@ -54,6 +54,7 @@ public class TkAdviceList implements Take {
 			response.append(",\n");
 			List<String> configurableFields = ReflectionUtils.getConfigurableFields(advice);
 			Map<String, Object> fieldsAndValues = ReflectionUtils.mapToCurrentValues(advice, configurableFields);
+
 			response.append("\t\"properties\": {\n");
 			response.append(fieldsAndValues.entrySet().stream()
 					.map(entry -> "\t\t\"" + entry.getKey() + "\" : " + quote(entry.getValue()) + "")

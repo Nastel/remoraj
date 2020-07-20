@@ -35,6 +35,7 @@ public class RemoraClassLoader extends URLClassLoader {
 			try {
 				inst.appendToBootstrapClassLoaderSearch(new JarFile(url.getFile()));
 			} catch (IOException e) {
+				System.err.println("Remora classloader can't load " + url);
 				e.printStackTrace();
 			}
 		}
