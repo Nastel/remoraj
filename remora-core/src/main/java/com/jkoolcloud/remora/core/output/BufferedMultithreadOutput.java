@@ -22,6 +22,7 @@ import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.AdviceRegistry;
+import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.core.EntryDefinition;

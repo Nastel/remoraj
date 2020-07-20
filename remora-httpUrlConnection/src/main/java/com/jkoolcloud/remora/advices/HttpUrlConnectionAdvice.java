@@ -37,8 +37,6 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class HttpUrlConnectionAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "HttpUrlConnectionAdvice";
-	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
-	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 	@RemoraConfig.Configurable
 	public static String headerCorrIDName = "REMORA_CORR";
 
