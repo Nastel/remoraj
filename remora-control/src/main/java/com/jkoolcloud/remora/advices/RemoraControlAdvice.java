@@ -126,12 +126,16 @@ public class RemoraControlAdvice implements RemoraAdvice, Loggable {
 
 				ServiceLoader<PluginTake> pluginEndpoints = ServiceLoader.load(PluginTake.class,
 						Remora.getClassLoader());
-				pluginEndpoints.forEach(
-						pluginEndpoint -> endpoints.add(new FkRegex(pluginEndpoint.getEnpointPath(), pluginEndpoint)));
+				pluginEndpoints.forEach(pluginEndpoint -> {
+					endpoints.add(new FkRegex(pluginEndpoint.getEnpointPath(), pluginEndpoint));
+					logger.info("Added custom endpoint {} for path {}", pluginEndpoint.getClass().getSimpleName(),
+							pluginEndpoint.getEnpointPath());
+				});
 
 				new FtBasic(new TkFork(endpoints),
 
 						address.getPort()).start(Exit.NEVER);
+
 			} catch (Exception e) {
 				logger.error(e);
 			}

@@ -115,7 +115,7 @@ public class SimpleTest extends BaseTransformers {
 
 	@Override
 	public AgentBuilder.Listener getListener() {
-		return new BaseTransformers.TransformationLoggingListener(logger);
+		return new TransformationLoggingListener(logger);
 	}
 
 	@Override

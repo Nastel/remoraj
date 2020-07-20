@@ -40,8 +40,6 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "ApacheHttpClientAdvice";
-	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
-	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
 	@RemoraConfig.Configurable
 	public static String headerCorrIDName = "REMORA_CORR";
@@ -138,10 +136,10 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 						}
 					}
 				} else {
-					logger.info("URI is null");
+					logger.info("URI is null. Request {}, Remora Event id {}", request, ed.getId());
 				}
 			} else {
-				logger.info("Request is null");
+				logger.info("Request is null. {}, {} ", thiz, ed.getId());
 			}
 
 			ed.addPropertyIfExist("HOST", route.getTargetHost().getHostName());
