@@ -81,9 +81,10 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This InputStream thiz, //
-			@Advice.AllArguments Object[] arguments, @Advice.Local("context") InterceptionContext ctx, //
+			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method//
 	) {
+		InterceptionContext ctx = null;
 		try {
 			ctx = prepareIntercept(InputStreamReadAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {

@@ -81,8 +81,9 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This OutputStream thiz, //
 			@Advice.AllArguments Object[] arguments, //
-			@Advice.Local("context") InterceptionContext ctx, @Advice.Origin Method method//
+			@Advice.Origin Method method//
 	) {
+		InterceptionContext ctx = null;
 		try {
 			ctx = prepareIntercept(OutputStreamWriteAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {

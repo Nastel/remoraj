@@ -16,6 +16,10 @@
 
 package com.jkoolcloud.remora.core.utils;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.PrintStream;
 import java.util.Locale;
 
 import org.junit.Test;
@@ -25,6 +29,8 @@ import org.tinylog.format.JavaTextMessageFormatFormatter;
 
 public class RemoraLoggingProviderTest {
 
+	private boolean output;
+
 	@Test
 	public void testDelaydedLogging() throws InterruptedException {
 		String key = "writertest", tag = "test";
@@ -33,14 +39,25 @@ public class RemoraLoggingProviderTest {
 			provider.log(1, tag, Level.DEBUG, null, new JavaTextMessageFormatFormatter(Locale.getDefault()), "OOO",
 					"11");
 		}
-		Thread.sleep(1000);
+
+		System.setOut(new PrintStream(System.out) {
+			@Override
+			public void print(String s) {
+				output = true;
+				super.print(s);
+			}
+		});
+		assertFalse(output);
+
 		Configuration.set(key, "console");
 		// Configuration.set(key + ".file", System.getProperty(Remora.REMORA_PATH) + "/log/" + tag + ".log");
 		Configuration.set(key + ".format", "{date} [{thread}] {class}.{method}()\n\t{level}: {message}");
 		Configuration.set(key + ".tag", tag);
 		Configuration.set(key + ".level", "TRACE");
 		RemoraLoggingProvider.startLogging();
-		Thread.sleep(1000);
+
+		Thread.sleep(100);
+		assertTrue(output);
 
 	}
 

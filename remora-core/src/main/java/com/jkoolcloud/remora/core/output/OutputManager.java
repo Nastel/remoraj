@@ -35,10 +35,6 @@ public enum OutputManager {
 	private static AgentOutput<EntryDefinition> output;
 	private static List<OutputListener> outputListeners;
 
-	OutputManager() {
-		install();
-	}
-
 	@SuppressWarnings("unchecked")
 	public void install() {
 		logger.info("Starting OutputManager");

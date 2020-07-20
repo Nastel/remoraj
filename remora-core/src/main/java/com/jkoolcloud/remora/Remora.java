@@ -86,7 +86,7 @@ public class Remora {
 		EntryDefinition.setVmIdentification(vmid);
 		// Load output and config manager by Bootstarp classloader;
 		RemoraConfig.INSTANCE.name();
-		OutputManager.INSTANCE.name();
+		OutputManager.INSTANCE.install();
 	}
 
 	public static String getJarContainingFolder(Class<Remora> aclass) throws Exception {

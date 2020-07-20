@@ -75,7 +75,7 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			unusedQueues.addAll(Arrays.asList(cq4s));
 		}
 
-		logger.info("Writing to  {}", queueDir.getAbsolutePath());
+		logger.info("Output {} Writing to  {}", this, queueDir.getAbsolutePath());
 		new ScheduledQueueErrorReporter(logger, errorReportingSchedule);
 
 		queue = ChronicleQueue.singleBuilder(queueDir.getPath()).rollCycle(rollCycle).timeoutMS(timeout)
