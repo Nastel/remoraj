@@ -232,6 +232,13 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	}
 
+	private static void invokeOnProcessed(BaseTransformers adviceInstance, Object thiz, Method method) {
+		List<AdviceListener> listeners = adviceInstance.listeners;
+		for (AdviceListener listener : listeners) {
+			listener.onProcessed(adviceInstance, thiz, method);
+		}
+	}
+
 	private static void invokeEventCreate(Class<?> adviceClass, EntryDefinition ed) {
 		try {
 			List<AdviceListener> listeners = AdviceRegistry.INSTANCE
@@ -419,6 +426,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				return context;
 			}
 		}
+		invokeOnProcessed(adviceInstance, thiz, method);
 		context.intercept = true;
 		return context;
 	}

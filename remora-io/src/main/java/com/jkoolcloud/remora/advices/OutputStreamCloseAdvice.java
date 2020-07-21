@@ -77,10 +77,10 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	@Advice.OnMethodExit
-	public static void after(@Advice.This OutputStream thiz, @Advice.Local("context") InterceptionContext ctx, //
+	public static void after(@Advice.This OutputStream thiz, //
 			@Advice.Origin Method method //
 	) {
-		ctx = prepareIntercept(OutputStreamCloseAdvice.class, thiz, method);
+		InterceptionContext ctx = prepareIntercept(OutputStreamCloseAdvice.class, thiz, method);
 		if (!ctx.intercept) {
 			return;
 		}

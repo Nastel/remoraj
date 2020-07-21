@@ -69,4 +69,9 @@ public class RemoraInitTest {
 
 	}
 
+	@Test
+	public void testGetEnv() {
+		Remora.logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
+		Remora.logRunEnv();
+	}
 }

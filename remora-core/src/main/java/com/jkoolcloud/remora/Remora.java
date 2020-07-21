@@ -26,6 +26,7 @@ import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
@@ -69,7 +70,9 @@ public class Remora {
 		bootLoader = new RemoraClassLoader(findJars(baseRemoraDir + MODULES_DIR), Remora.class.getClassLoader(), inst);
 		logger = Logger.tag(MAIN_REMORA_LOGGER);
 
-		logger.info("Running RemoraJ " + version);
+		logger.info("Running RemoraJ {}", version);
+		logger.info("Running from {}", System.getProperty(REMORA_PATH));
+		logRunEnv();
 		logger.info("Initializing classloader: " + bootLoader);
 		Class<?> appClass = bootLoader.loadClass("com.jkoolcloud.remora.RemoraInit");
 		Object instance = appClass.newInstance();
@@ -87,6 +90,32 @@ public class Remora {
 		// Load output and config manager by Bootstarp classloader;
 		RemoraConfig.INSTANCE.name();
 		OutputManager.INSTANCE.install();
+	}
+
+	static void logRunEnv() {
+		List<String> envProps = Arrays.asList(new String[] { // set of interesting runtime environment properties
+				"java.version", "java.vendor", "java.vm.name", "java.vm.version", // JVM props
+				"os.name", "os.version" // OS props
+		});
+
+		Map<Boolean, List<Map.Entry<Object, Object>>> sortedProperties = System.getProperties().entrySet().stream()
+				.collect(Collectors.partitioningBy(e -> envProps.contains(e.getKey())));
+
+		List<Map.Entry<Object, Object>> importantProperties = sortedProperties.get(Boolean.TRUE);
+		List<Map.Entry<Object, Object>> otherProperties = sortedProperties.get(Boolean.FALSE);
+
+		logger.info("------------------------------------------------------------------------\n"); // NON-NLS
+		for (Map.Entry<Object, Object> property : importantProperties) {
+			logger.info(String.format("%20s: %s", property.getKey(), property.getValue()));
+
+		}
+		for (Map.Entry<Object, Object> property : otherProperties) {
+			logger.debug(String.format("%20s: %s", property.getKey(), property.getValue()));
+
+		}
+
+		logger.info("------------------------------------------------------------------------\n"); // NON-NLS
+
 	}
 
 	public static String getJarContainingFolder(Class<Remora> aclass) throws Exception {

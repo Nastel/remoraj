@@ -18,6 +18,7 @@ package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
@@ -29,4 +30,6 @@ public interface AdviceListener {
 	void onAdviceError(RemoraAdvice adviceInstance, Throwable e);
 
 	void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition);
+
+	void onProcessed(BaseTransformers adviceInstance, Object thiz, Method method);
 }

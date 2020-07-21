@@ -82,7 +82,7 @@ public class RemoraInit {
 			logger.info("Failed configuring: ", advice.getName());
 			logger.info(exc);
 		});
-		logger.info("Loading finished");
+		logger.info("Loading advices finished. Loaded {} advices, failed {}", adviceList.size(), failedList.size());
 		RemoraLoggingProvider.startLogging();
 
 	}

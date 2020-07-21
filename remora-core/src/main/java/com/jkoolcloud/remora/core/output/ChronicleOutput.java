@@ -179,11 +179,11 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 	private class AppenderThreadFactory implements ThreadFactory {
 		@Override
 		public Thread newThread(@NotNull Runnable r) {
-			logger.info("Creating new thread");
+			logger.info("Creating new thread for ouput queue {}", queue);
 
 			ExcerptAppender threadAppender = queue.acquireAppender();
 			if (threadAppender != null) {
-				logger.info("Appender initialized. Queue {}", queue);
+				logger.info("Appender initialized {}", threadAppender);
 			} else {
 				logger.error("Appender failed {}, queue", threadAppender);
 			}

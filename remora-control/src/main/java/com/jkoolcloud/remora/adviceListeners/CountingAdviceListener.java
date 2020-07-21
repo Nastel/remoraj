@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.RemoraStatistic;
 import com.jkoolcloud.remora.advices.ReportingAdviceListener;
@@ -52,6 +53,11 @@ public class CountingAdviceListener implements ReportingAdviceListener {
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
 		statistic.incEventCreateCount();
+	}
+
+	@Override
+	public void onProcessed(BaseTransformers adviceInstance, Object thiz, Method method) {
+
 	}
 
 	public RemoraStatistic getAdviceStatistic() {

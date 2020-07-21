@@ -18,6 +18,7 @@ package com.jkoolcloud.remora.adviceListeners;
 
 import java.lang.reflect.Method;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.Loggable;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -25,10 +26,7 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 public class LoggingAdviceListener implements AdviceListener {
 	@Override
 	public void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method) {
-		if (adviceInstance instanceof Loggable) {
-			((Loggable) adviceInstance).getLogger().info("Entering: {} {} from {}",
-					adviceInstance.getClass().getSimpleName(), "before", thiz.getClass().getName());
-		}
+
 	}
 
 	@Override
@@ -48,5 +46,13 @@ public class LoggingAdviceListener implements AdviceListener {
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
 
+	}
+
+	@Override
+	public void onProcessed(BaseTransformers adviceInstance, Object thiz, Method method) {
+		if (adviceInstance instanceof Loggable) {
+			((Loggable) adviceInstance).getLogger().info("Entering: {} {} from {}",
+					adviceInstance.getClass().getSimpleName(), "before", thiz.getClass().getName());
+		}
 	}
 }

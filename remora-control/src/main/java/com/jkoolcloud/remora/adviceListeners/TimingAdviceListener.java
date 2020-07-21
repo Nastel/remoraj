@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
 import com.jkoolcloud.remora.advices.RemoraAdvice;
 import com.jkoolcloud.remora.advices.ReportingAdviceListener;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -54,6 +55,11 @@ public class TimingAdviceListener implements ReportingAdviceListener {
 
 	@Override
 	public void onCreateEntity(Class<?> adviceClass, EntryDefinition entryDefinition) {
+
+	}
+
+	@Override
+	public void onProcessed(BaseTransformers adviceInstance, Object thiz, Method method) {
 
 	}
 
