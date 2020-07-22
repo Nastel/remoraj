@@ -185,13 +185,13 @@
         <module>remora-apacheHttpClient</module>
         <module>remora-javaxServlet</module>
         <module>remora-httpUrlConnection</module>
-        <module>remora-weblogic</module>
+<!--        <module>remora-weblogic</module>-->
         <module>remora-websocket</module>
         <module>remora-kafka</module>
         <module>remora-ejb3</module>
         <module>remora-spring</module>
         <module>remora-control</module>
-        <!-- <module>remora-socket</module> -->
+        <module>remora-socket</module>
         <module>remora-io</module>
         <module>remora--package</module>
 

@@ -42,8 +42,6 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	public static String[] INTERCEPTING_CLASS = { "java.net.Socket" };
 	public static String INTERCEPTING_METHOD = "connect";
 
-	public static boolean logging = false;
-
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
 	 * method matches.
@@ -128,7 +126,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	/**
 	 * Method called on instrumented method finished.
 	 *
-	 * @param obj
+	 * @param thiz
 	 *            reference to method object
 	 * @param method
 	 *            instrumented method description

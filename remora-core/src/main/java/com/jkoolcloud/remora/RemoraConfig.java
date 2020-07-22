@@ -71,7 +71,7 @@ public enum RemoraConfig {
 					String configValue = getConfigValue(object.getClass(), field.getName());
 					Object appliedValue = getAppliedValue(field, configValue);
 					if (appliedValue != null) {
-						INSTANCE.logger.debug("Setting {} class config field \"{}\" as {}", object.getClass().getName(),
+						INSTANCE.logger.debug("Setting {} class config field: \"{}\" = {}", object.getClass().getName(),
 								field.getName(), appliedValue.toString());
 						field.set(object, appliedValue);
 					}

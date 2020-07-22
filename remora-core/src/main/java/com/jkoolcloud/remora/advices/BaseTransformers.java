@@ -70,9 +70,10 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public List<AdviceFilter> filters = new ArrayList<>(10);
 	@RemoraConfig.Configurable
 	public Level logLevel = Level.OFF;
-
 	@RemoraConfig.Configurable
 	public List<String> excludeProperties = new ArrayList<>(10);
+	@RemoraConfig.Configurable
+	public boolean doNotCorrelate = false;
 
 	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
@@ -171,8 +172,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		entryDefinition.setException(exception);
 
 		if (logger != null) {
-			logger.info(
-					format("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz()));
+			logger.info("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz());
 		}
 	}
 
