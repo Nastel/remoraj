@@ -24,7 +24,6 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -81,16 +80,8 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, JBossServletAdvice.class, ctx);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
-			// Class find issues
-			// if (arguments !=null && arguments.length > 0 &&
-			// arguments.getClass().isInstance(Class.forName("io.undertow.servlet.core.ManagedServlet"))) {
-			// ed.addPropertyIfExist("RESOURCE", arguments[0].toString());
-			// }
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
@@ -126,9 +117,7 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -137,7 +126,6 @@ public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice
 				doFinally(ctx, obj.getClass());
 			}
 		}
-
 	}
 
 	/**

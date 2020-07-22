@@ -26,7 +26,6 @@ import java.util.Properties;
 import javax.jms.ConnectionFactory;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -101,13 +100,10 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
 			ed = getEntryDefinition(ed, JMSCreateConnectionAdvice.class, ctx);
 			ed.setEventType(EntryDefinition.EventType.OPEN);
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
 			try {
 				Properties fieldValue = ReflectionUtils.getFieldValue(thiz, Properties.class, "factory.properties");
 				if (fieldValue != null) {
@@ -116,7 +112,6 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			} catch (IllegalArgumentException e) {
 
 			}
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
@@ -153,9 +148,7 @@ public class JMSCreateConnectionAdvice extends BaseTransformers implements Remor
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

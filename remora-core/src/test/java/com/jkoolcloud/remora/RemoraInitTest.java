@@ -34,7 +34,7 @@ public class RemoraInitTest {
 	}
 
 	public static void main(String[] args) {
-		String key2 = "test2", key = "test", adviceName = "test";
+		String key = "test", adviceName = "test";
 		ThreadLocal<String> string = new ThreadLocal<>();
 		string.set("SSSS");
 		// Configure
@@ -54,9 +54,7 @@ public class RemoraInitTest {
 		Configuration.set(key + ".tag", adviceName);
 		Configuration.set(key + ".level", "error");
 		logger = Logger.tag("test");
-
 		doTestLogging(logger);
-
 	}
 
 	private static void doTestLogging(TaggedLogger logger) {

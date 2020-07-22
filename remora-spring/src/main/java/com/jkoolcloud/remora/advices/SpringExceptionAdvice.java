@@ -16,13 +16,14 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.returns;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -95,9 +96,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, SpringExceptionAdvice.class, ctx);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			ed.setException(exception);
 		} catch (Throwable t) {
@@ -136,9 +135,7 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

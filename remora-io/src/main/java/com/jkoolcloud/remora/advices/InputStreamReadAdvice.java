@@ -24,7 +24,6 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 
@@ -90,7 +89,6 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, ctx, method);
 			if (streamStats == null) {
 				throw new IllegalStateException(
@@ -106,7 +104,6 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
-
 	}
 
 	@Override

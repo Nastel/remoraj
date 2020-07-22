@@ -142,9 +142,7 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -153,7 +151,6 @@ public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvic
 				doFinally(ctx, producer.getClass());
 			}
 		}
-
 	}
 
 	/**

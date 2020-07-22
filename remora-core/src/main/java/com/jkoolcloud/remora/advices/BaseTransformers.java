@@ -511,8 +511,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	public static boolean checkEntryDefinition(EntryDefinition ed, InterceptionContext ctx) {
 		if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-			ctx.interceptorInstance.logger
-					.error("EntryDefinition not exist, entry might be filtered out as duplicate or ran on test");
+			ctx.interceptorInstance.logger.error("EntryDefinition is null, entry might be filtered out as duplicate or ran on test");
 			return false;
 		} else {
 			return true;

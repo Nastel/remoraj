@@ -16,7 +16,14 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.isAbstract;
+import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
+import static net.bytebuddy.matcher.ElementMatchers.isConstructor;
+import static net.bytebuddy.matcher.ElementMatchers.isInterface;
+import static net.bytebuddy.matcher.ElementMatchers.isPublic;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -24,7 +31,6 @@ import java.lang.reflect.Method;
 import javax.ejb.EJBContext;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -98,9 +104,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, EjbRemoteAdvice.class, ctx);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 			if (stackThreadLocal.get() != null) {
 				stackThreadLocal.get().setApplication(String.valueOf(method.getDeclaringClass()));
@@ -150,9 +154,7 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -161,7 +163,6 @@ public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally(ctx, obj.getClass());
 			}
 		}
-
 	}
 
 	@Override

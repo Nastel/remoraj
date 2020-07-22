@@ -142,9 +142,7 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -153,7 +151,6 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally(ctx, obj.getClass());
 			}
 		}
-
 	}
 
 	/**

@@ -170,11 +170,8 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		} finally {
@@ -182,7 +179,6 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 				doFinally(ctx, thiz.getClass());
 			}
 		}
-
 	}
 
 	@Override

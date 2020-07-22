@@ -16,7 +16,9 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.isConstructor;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -27,7 +29,6 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.record.TimestampType;
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -100,9 +101,7 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, KafkaConsumerAdvice.class, ctx);
-
 			ed.setName("consume");
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
 			ed.addPropertyIfExist("TOPIC", topic);
@@ -120,11 +119,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			for (Header header : headers) {
 				ed.addPropertyIfExist(HEADER_PREFIX + header.key(), String.valueOf(header.value()));
 			}
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, null, null, ctx);//
-
 			ed.setEventType(EntryDefinition.EventType.RECEIVE);
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
@@ -149,8 +145,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
 			doFinally = checkEntryDefinition(ed, ctx);
 			fillDefaultValuesAfter(ed, startTime, null, ctx);
 		} catch (Throwable t) {
@@ -160,7 +154,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 				doFinally(ctx, thiz.getClass());
 			}
 		}
-
 	}
 
 	/**

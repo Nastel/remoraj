@@ -16,14 +16,20 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.isInterface;
+import static net.bytebuddy.matcher.ElementMatchers.isPublic;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.not;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.sql.Statement;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -99,8 +105,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
 			ed = getEntryDefinition(ed, JDBCCallableStatementAdvice.class, ctx);
 			stackThreadLocal.get().push(ed);
 			if (parameterName instanceof String) {
@@ -108,7 +112,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			} else {
 				ed.addPropertyIfExist(parameterPrefix + parameterName, parameterValue.toString());
 			}
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
@@ -141,7 +144,6 @@ public class JDBCCallableStatementAdvice extends BaseTransformers implements Rem
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			stackThreadLocal.get().pop();
 		} catch (Exception e) {
 
