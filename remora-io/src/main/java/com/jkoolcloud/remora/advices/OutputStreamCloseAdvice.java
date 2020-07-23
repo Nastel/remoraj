@@ -16,14 +16,15 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasGenericSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 import java.io.OutputStream;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 
@@ -80,18 +81,16 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	public static void after(@Advice.This OutputStream thiz, //
 			@Advice.Origin Method method //
 	) {
-		InterceptionContext ctx = prepareIntercept(OutputStreamCloseAdvice.class, thiz, method);
-		if (!ctx.intercept) {
-			return;
-		}
-		TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
+		InterceptionContext ctx = null;
 		try {
+			ctx = prepareIntercept(OutputStreamCloseAdvice.class, thiz, method);
+			if (!ctx.intercept) {
+				return;
+			}
 			StreamsManager.INSTANCE.close(thiz, ctx, method);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
-
 	}
 
 	@Override
