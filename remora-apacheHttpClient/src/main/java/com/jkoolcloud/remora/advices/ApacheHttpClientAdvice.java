@@ -18,14 +18,12 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.conn.routing.HttpRoute;
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -193,17 +191,6 @@ public class ApacheHttpClientAdvice extends BaseTransformers implements RemoraAd
 			}
 		}
 
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
 	}
 
 	@Override

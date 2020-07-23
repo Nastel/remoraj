@@ -18,13 +18,11 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.ibm.websphere.management.AdminService;
@@ -190,18 +188,8 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
 	public String getName() {
 		return ADVICE_NAME;
 	}
 
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
-	}
 }

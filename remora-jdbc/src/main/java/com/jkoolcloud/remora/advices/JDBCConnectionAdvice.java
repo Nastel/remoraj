@@ -18,10 +18,8 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -136,21 +134,6 @@ public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvi
 			stackThreadLocal.get().pop();
 		} catch (Exception e) {
 
-		}
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

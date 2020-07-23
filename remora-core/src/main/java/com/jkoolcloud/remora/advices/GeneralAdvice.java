@@ -16,10 +16,7 @@
 
 package com.jkoolcloud.remora.advices;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-
-import org.tinylog.Logger;
 
 import com.jkoolcloud.remora.core.EntryDefinition;
 
@@ -101,18 +98,8 @@ public class GeneralAdvice extends BaseTransformers {
 	}
 
 	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
 	public String getName() {
 		return ADVICE_NAME;
 	}
 
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
-	}
 }

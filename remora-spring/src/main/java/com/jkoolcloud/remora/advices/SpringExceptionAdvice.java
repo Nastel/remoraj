@@ -16,14 +16,9 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.returns;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-
-import org.tinylog.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -145,21 +140,6 @@ public class SpringExceptionAdvice extends BaseTransformers implements RemoraAdv
 			}
 		}
 
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
-		}
 	}
 
 	@Override

@@ -16,11 +16,8 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.isConstructor;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Stack;
@@ -28,7 +25,6 @@ import java.util.Stack;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.record.TimestampType;
-import org.tinylog.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -168,21 +164,6 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 	@Override
 	public AgentBuilder.Transformer getAdvice() {
 		return advice;
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
-		}
 	}
 
 	@Override

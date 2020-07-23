@@ -16,18 +16,9 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
-import static net.bytebuddy.matcher.ElementMatchers.isInterface;
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.not;
-import static net.bytebuddy.matcher.ElementMatchers.returns;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-
-import org.tinylog.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -149,21 +140,6 @@ public class SpringTransactionAdvice extends BaseTransformers implements RemoraA
 			if (doFinally) {
 				doFinally(ctx, obj.getClass());
 			}
-		}
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

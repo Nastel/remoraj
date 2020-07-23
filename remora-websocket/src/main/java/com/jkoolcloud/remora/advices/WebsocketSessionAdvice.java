@@ -18,7 +18,6 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,6 @@ import javax.websocket.MessageHandler;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -132,21 +130,6 @@ public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAd
 		ctx = prepareIntercept(WebsocketSessionAdvice.class, obj, method);
 		if (!ctx.intercept) {
 			return;
-		}
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 

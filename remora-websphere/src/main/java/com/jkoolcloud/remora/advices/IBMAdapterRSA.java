@@ -18,11 +18,9 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
@@ -162,18 +160,8 @@ public class IBMAdapterRSA extends BaseTransformers implements RemoraAdvice {
 	}
 
 	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
 	public String getName() {
 		return ADVICE_NAME;
 	}
 
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
-	}
 }

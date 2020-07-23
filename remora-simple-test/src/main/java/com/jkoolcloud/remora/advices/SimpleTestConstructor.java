@@ -19,10 +19,8 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -143,9 +141,4 @@ public class SimpleTestConstructor extends BaseTransformers {
 		return ADVICE_NAME;
 	}
 
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
-	}
 }

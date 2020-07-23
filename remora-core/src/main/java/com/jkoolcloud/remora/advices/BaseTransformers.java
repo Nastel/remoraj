@@ -19,12 +19,14 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.none;
 
+import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.tinylog.Level;
+import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.AdviceRegistry;
@@ -452,7 +454,20 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	}
 
-	protected abstract AgentBuilder.Listener getListener();
+	protected AgentBuilder.Listener getListener() {
+		return new TransformationLoggingListener(logger);
+	}
+
+	@Override
+
+	public void install(Instrumentation instrumentation) {
+		logger = Logger.tag(getName());
+		if (load) {
+			getTransform().with(getListener()).installOn(instrumentation);
+		} else {
+			logger.info("Advice {} ({}) not enabled", getName(), this);
+		}
+	}
 
 	public static String format(String pattern, Object... args) {
 		return MessageFormat.format(pattern, args);
@@ -525,7 +540,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	public static boolean checkEntryDefinition(EntryDefinition ed, InterceptionContext ctx) {
 		if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-			ctx.interceptorInstance.logger.error("EntryDefinition is null, entry might be filtered out as duplicate or ran on test");
+			ctx.interceptorInstance.logger
+					.error("EntryDefinition is null, entry might be filtered out as duplicate or ran on test");
 			return false;
 		} else {
 			return true;

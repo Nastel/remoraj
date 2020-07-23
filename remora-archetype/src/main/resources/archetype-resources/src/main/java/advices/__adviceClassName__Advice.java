@@ -154,20 +154,9 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 
 	}
 
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
 
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-		    logger.info("Advice {} not enabled", this, getName());
-		}
-	}
+
+
 
 	@Override
 	public String getName() {

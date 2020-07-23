@@ -16,8 +16,6 @@
 
 package com.jkoolcloud.remora.advices;
 
-import java.lang.instrument.Instrumentation;
-
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
@@ -38,11 +36,6 @@ public class Advice2 extends BaseTransformers {
 
 	public Advice2() {
 		LOGGER.info("Initialsed1");
-	}
-
-	@Override
-	public void install(Instrumentation inst) {
-
 	}
 
 	@Override

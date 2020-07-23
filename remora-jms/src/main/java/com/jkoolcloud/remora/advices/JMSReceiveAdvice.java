@@ -20,12 +20,10 @@ import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
 import javax.jms.*;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -181,22 +179,8 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
 	public String getName() {
 		return ADVICE_NAME;
 	}
 
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(inst);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
-		}
-	}
 }

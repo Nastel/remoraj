@@ -167,11 +167,6 @@ public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
 	public String getName() {
 		return ADVICE_NAME;
 	}

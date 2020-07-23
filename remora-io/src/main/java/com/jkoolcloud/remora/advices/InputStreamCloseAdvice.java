@@ -19,10 +19,7 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.io.InputStream;
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-
-import org.tinylog.Logger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 
@@ -90,21 +87,6 @@ public class InputStreamCloseAdvice extends BaseTransformers implements RemoraAd
 			handleAdviceException(t, ctx);
 		}
 
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation instrumentation) {
-		logger = Logger.tag(ADVICE_NAME);
-		if (load) {
-			getTransform().with(getListener()).installOn(instrumentation);
-		} else {
-			logger.info("Advice {} not enabled", this, getName());
-		}
 	}
 
 	@Override

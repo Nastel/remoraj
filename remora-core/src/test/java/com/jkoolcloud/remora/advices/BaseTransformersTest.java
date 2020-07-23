@@ -18,8 +18,6 @@ package com.jkoolcloud.remora.advices;
 
 import static org.junit.Assert.*;
 
-import java.lang.instrument.Instrumentation;
-
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -279,11 +277,6 @@ public class BaseTransformersTest {
 		}
 
 		@Override
-		public void install(Instrumentation inst) {
-
-		}
-
-		@Override
 		public String getName() {
 			return null;
 		}
@@ -305,11 +298,6 @@ public class BaseTransformersTest {
 		@Override
 		protected AgentBuilder.Listener getListener() {
 			return null;
-		}
-
-		@Override
-		public void install(Instrumentation inst) {
-
 		}
 
 		@Override

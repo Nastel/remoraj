@@ -19,10 +19,8 @@ package com.jkoolcloud.remora.advices;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 
-import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
@@ -161,17 +159,6 @@ public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally(ctx, obj.getClass());
 			}
 		}
-	}
-
-	@Override
-	protected AgentBuilder.Listener getListener() {
-		return new TransformationLoggingListener(logger);
-	}
-
-	@Override
-	public void install(Instrumentation inst) {
-		logger = Logger.tag(ADVICE_NAME);
-		getTransform().with(getListener()).installOn(inst);
 	}
 
 	@Override
