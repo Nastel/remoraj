@@ -99,7 +99,7 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 			} else if (arguments instanceof Object[] && arguments.length == 3) {
 				streamStats.advanceCount((int) arguments[2]);
 			} else if (arguments instanceof Object[] && arguments.length == 1) {
-				streamStats.advanceCount(((Object[]) arguments[0]).length);
+				streamStats.advanceCount(((byte[]) arguments[0]).length);
 			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

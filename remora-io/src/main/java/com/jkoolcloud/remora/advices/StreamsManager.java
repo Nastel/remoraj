@@ -51,7 +51,8 @@ public enum StreamsManager {
 		HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = this.availableInputStreamsEntries;
 
 		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, ctx, method, availableInputStreams, availableInputStreamsEntries, ed);
+		ed = checkForEntryOrCreate(thiz, ctx, method, availableInputStreams, availableInputStreamsEntries, ed,
+				InputStreamReadAdvice.class);
 
 		return availableInputStreamsEntries.get(ed);
 	}
@@ -62,7 +63,8 @@ public enum StreamsManager {
 		HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = this.availableOutputStreamsEntries;
 
 		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, ctx, method, availableOutputStreams, availableOutputStreamsEntries, ed);
+		ed = checkForEntryOrCreate(thiz, ctx, method, availableOutputStreams, availableOutputStreamsEntries, ed,
+				OutputStreamWriteAdvice.class);
 
 		return availableInputStreamsEntries.get(ed);
 	}
@@ -128,10 +130,11 @@ public enum StreamsManager {
 
 	private static <T> EntryDefinition checkForEntryOrCreate(T thiz, BaseTransformers.InterceptionContext ctx,
 			Method method, WeakHashMap<T, EntryDefinition> availableStreams,
-			HashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed) {
+			HashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed,
+			Class<? extends BaseTransformers> adviceClass) {
 		if (!availableStreams.containsKey(thiz)) {
 
-			ed = BaseTransformers.getEntryDefinition(ed, InputStreamReadAdvice.class, ctx);
+			ed = BaseTransformers.getEntryDefinition(ed, adviceClass, ctx);
 			availableStreams.put(thiz, ed);
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (!availableStreamsEntries.containsKey(ed)) {

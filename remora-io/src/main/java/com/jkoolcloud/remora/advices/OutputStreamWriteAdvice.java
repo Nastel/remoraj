@@ -18,8 +18,6 @@ package com.jkoolcloud.remora.advices;
 
 import static net.bytebuddy.matcher.ElementMatchers.hasGenericSuperType;
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 import java.io.OutputStream;
 import java.lang.instrument.Instrumentation;
@@ -47,7 +45,7 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD).and(takesArguments(1).and(takesArgument(0, byte.class)));
+		return named(INTERCEPTING_METHOD);
 	}
 
 	/**
@@ -91,7 +89,15 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 			if (!ctx.intercept) {
 				return;
 			}
-			StreamsManager.INSTANCE.get(thiz, ctx, method).advanceCount();
+			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, ctx, method);
+
+			if (arguments != null || arguments.length == 1) {
+				streamStats.advanceCount();
+			} else if (arguments instanceof Object[] && arguments.length == 3) {
+				streamStats.advanceCount((int) arguments[2]);
+			} else if (arguments instanceof Object[] && arguments.length == 1) {
+				streamStats.advanceCount(((byte[]) arguments[0]).length);
+			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
