@@ -226,7 +226,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 		} catch (Throwable t) {
 			if (logger != null) {
-				logger.error("####Advice error/fillDefaultValuesBefore: {}", t);
+				logger.error(t, "####Advice error/fillDefaultValuesBefore: {}", t);
 			}
 		}
 		return System.nanoTime();
@@ -381,9 +381,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		invokeOnError(adviceInstance, t);
 
 		if (logger != null) {
-			logger.error("{} threw an exception {} {}", adviceInstance.getClass(), t.getMessage(),
+			logger.error(t, "{} threw an exception {} {}", adviceInstance.getClass(), t.getMessage(),
 					t.getClass().getName());
-			logger.error(Arrays.toString(t.getStackTrace()));
 		}
 	}
 

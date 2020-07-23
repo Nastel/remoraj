@@ -61,7 +61,7 @@ public class TransformationLoggingListener extends AgentBuilder.Listener.Adapter
 	@Override
 	public void onDiscovery(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded) {
 		if (logger != null) {
-			logger.trace(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module);
+			logger.trace(PREFIX + " DISCOVERY {} [{}, {}, loaded={}]", typeName, classLoader, module, loaded);
 
 		}
 	}

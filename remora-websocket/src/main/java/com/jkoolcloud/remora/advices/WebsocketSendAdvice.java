@@ -132,7 +132,7 @@ public class WebsocketSendAdvice extends BaseTransformers implements RemoraAdvic
 				logger.info("Attached correlator {}, server {}, application {}", correlator, server,
 						ctx.interceptorInstance, application);
 			} else {
-				logger.warn("No session found: endpoint {}, method {}", thiz, ctx.interceptorInstance, method);
+				logger.warn("No session found: endpoint {}, method {}", ctx.interceptorInstance, thiz, method);
 			}
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);

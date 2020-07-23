@@ -122,7 +122,7 @@ public enum RemoraConfig {
 						Class<?> outClass = Class.forName(configValue);
 						appliedValue = (AgentOutput<EntryDefinition>) outClass.newInstance();
 					} catch (Exception e) {
-						INSTANCE.logger.error("AgentOutput couldn't be defined: {}", e);
+						INSTANCE.logger.error(e, "AgentOutput couldn't be defined: {}", e);
 						appliedValue = null;
 					}
 
@@ -162,8 +162,7 @@ public enum RemoraConfig {
 			config.load(inStream);
 			logger.info("Successfully loaded {} properties from configuration file", config.size());
 		} catch (IOException e) {
-			logger.error("Failed loading properties file");
-			logger.info("Exception: {} {} \n {}", "RemoraConfig", "init", e);
+			logger.error(e, "Failed loading properties file");
 		}
 		configureFilters();
 	}

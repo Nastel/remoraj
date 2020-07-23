@@ -125,8 +125,8 @@ public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAd
 					stack.setApplication(application);
 				}
 
-				logger.info("Attached correlator {}, server {}, application {}", correlator, server,
-						ctx.interceptorInstance, application);
+				logger.info("Attached correlator {}, server {}, application {}", ctx.interceptorInstance, correlator,
+						server, application);
 			}
 
 		} catch (Throwable t) {
