@@ -44,9 +44,8 @@ public class SimpleTestConstructor extends BaseTransformers {
 	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(SimpleTestConstructor.class.getClassLoader())//
-			.include(RemoraConfig.INSTANCE.classLoader)//
-
+			.include(SimpleTestConstructor.class.getClassLoader())
+			.include(RemoraConfig.INSTANCE.classLoader)
 			.advice(methodMatcher(), "com.jkoolcloud.remora.advices.SimpleTestConstructor");
 
 	private static ElementMatcher.Junction<MethodDescription> methodMatcher() {
@@ -79,7 +78,6 @@ public class SimpleTestConstructor extends BaseTransformers {
 			ed = getEntryDefinition(ed, SimpleTestConstructor.class, ctx);
 
 			if (args != null && args[0] instanceof String) {
-
 				System.out.println("OK");
 			} else {
 				System.out.println("NOK");
@@ -94,13 +92,9 @@ public class SimpleTestConstructor extends BaseTransformers {
 				break;
 
 			}
-
 			starttime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
 		} catch (Throwable t) {
-			System.out.println("Exception");
-			logger.info("Exception");
-			t.printStackTrace();
+			logger.info(t, "Exception during OnBefore");
 			handleAdviceException(t, ctx);
 		}
 	}
@@ -119,7 +113,6 @@ public class SimpleTestConstructor extends BaseTransformers {
 				return;
 			}
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -128,7 +121,6 @@ public class SimpleTestConstructor extends BaseTransformers {
 				doFinally(ctx, obj.getClass());
 			}
 		}
-
 	}
 
 	@Override

@@ -100,9 +100,7 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			ed = getEntryDefinition(ed, JDBCStatementAdvice.class, ctx);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
 			String sql = ed.getProperties().get("SQL");
 
 			if (arguments != null && arguments.length > 0 && arguments[0] instanceof String) {
@@ -130,11 +128,9 @@ public class JDBCStatementAdvice extends BaseTransformers implements RemoraAdvic
 					logger.info("Adding resource reflection {}", ctx.interceptorInstance, resource);
 				} catch (IllegalArgumentException e) {
 				}
-
 			} catch (Exception e1) {
 				logger.info("Exception: {}", ctx.interceptorInstance, e1);
 			}
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
