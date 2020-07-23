@@ -1,1 +1,2 @@
 com.jkoolcloud.remora.advices.SocketAdvice
+com.jkoolcloud.remora.advices.SocketCloseAdvice

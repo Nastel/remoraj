@@ -20,9 +20,7 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 
 import org.tinylog.Logger;
 import org.tinylog.TaggedLogger;
@@ -36,12 +34,11 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-@Tracked
-public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
+public class SocketCloseAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "SocketAdvice";
+	public static final String ADVICE_NAME = "SocketCloseAdvice";
 	public static String[] INTERCEPTING_CLASS = { "java.net.Socket" };
-	public static String INTERCEPTING_METHOD = "connect";
+	public static String INTERCEPTING_METHOD = "close";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -49,7 +46,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD).and(takesArguments(2));
+		return named(INTERCEPTING_METHOD).and(takesArguments(0));
 	}
 
 	/**
@@ -67,8 +64,8 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(SocketAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), SocketAdvice.class.getName());
+			.include(SocketCloseAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), SocketCloseAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -90,34 +87,19 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Socket thiz, //
-			@Advice.Argument(0) SocketAddress socketAddress, //
-			@Advice.Argument(1) int timeout, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(SocketAdvice.class, thiz, method, socketAddress, timeout);
+			ctx = prepareIntercept(SocketCloseAdvice.class, thiz, method);
 			if (!ctx.intercept) {
 				return;
 			}
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
-			ed = getEntryDefinition(ed, SocketAdvice.class, ctx);
+			ed = getEntryDefinition(ed, SocketCloseAdvice.class, ctx);
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
-			ed.addPropertyIfExist("resource",
-					thiz.getInetAddress() == null ? null : thiz.getInetAddress().getHostName());
-			ed.addPropertyIfExist("localAddress",
-					thiz.getLocalAddress() == null ? null : thiz.getLocalAddress().getHostName());
-			ed.addPropertyIfExist("localPort", thiz.getLocalPort());
-			ed.addPropertyIfExist("port", thiz.getPort());
-			if (socketAddress instanceof InetSocketAddress) {
-				ed.addPropertyIfExist("port", ((InetSocketAddress) socketAddress).getPort());
-				ed.addPropertyIfExist("hostName", ((InetSocketAddress) socketAddress).getHostName());
-				ed.addPropertyIfExist("hostString", ((InetSocketAddress) socketAddress).getHostString());
-
-			}
 
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -145,24 +127,23 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This Object thiz, //
 			@Advice.Origin Method method, //
-			@Advice.Argument(0) SocketAddress socketAddress, //
-			@Advice.Argument(1) int timeout, //
 			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
 			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(SocketAdvice.class, thiz, method, socketAddress, timeout);
+			ctx = prepareIntercept(SocketCloseAdvice.class, thiz, method);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed.setEventType(EntryDefinition.EventType.OPEN);
-
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			ed.setEventType(EntryDefinition.EventType.CLOSE);
 
 			doFinally = checkEntryDefinition(ed, ctx);
 
+			untrack(thiz, ed);
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
+
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		} finally {

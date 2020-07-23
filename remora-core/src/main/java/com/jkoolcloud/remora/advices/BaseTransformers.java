@@ -84,6 +84,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public List<AdviceListener> listeners = new ArrayList<>(5);
 	public TaggedLogger logger;
 
+	private static WeakHashMap<Object, EntryDefinition> trackedObjects = new WeakHashMap<>(1000);
+
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
 
@@ -181,7 +183,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		if (entryDefinition.isChained()) {
 			return 0;
 		}
-		TaggedLogger logger = ctx.interceptorInstance.getLogger();
+		BaseTransformers interceptorInstance = ctx.interceptorInstance;
+		TaggedLogger logger = interceptorInstance.getLogger();
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -197,6 +200,10 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				if (logger != null) {
 					logger.info("#Method not filled");
 				}
+			}
+
+			if (interceptorInstance.getClass().isAnnotationPresent(Tracked.class)) {
+				trackedObjects.put(thiz, entryDefinition);
 			}
 
 			if (stackThreadLocal != null) {
@@ -221,6 +228,13 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 		}
 		return System.nanoTime();
+	}
+
+	public static void untrack(Object thiz, EntryDefinition entryDefinition) {
+		EntryDefinition remove = trackedObjects.remove(thiz);
+		if (remove != null) {
+			entryDefinition.setCorrelator(remove.getId());
+		}
 	}
 
 	private static void invokeOnIntercept(BaseTransformers adviceInstance, Object thiz, Method method) {
