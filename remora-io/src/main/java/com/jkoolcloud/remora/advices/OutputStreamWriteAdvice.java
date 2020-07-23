@@ -88,11 +88,14 @@ public class OutputStreamWriteAdvice extends BaseTransformers implements RemoraA
 			}
 			StreamStats streamStats = StreamsManager.INSTANCE.get(thiz, ctx, method);
 
-			if (arguments != null || arguments.length == 1) {
+			if (arguments instanceof Object[] && arguments.length == 1 && arguments[0] instanceof Byte) { // for a
+																											// write(byte)
+																											// case
 				streamStats.advanceCount();
-			} else if (arguments instanceof Object[] && arguments.length == 3) {
+			} else if (arguments instanceof Object[] && arguments.length == 3) { // write(byte b[], int off, int len)
 				streamStats.advanceCount((int) arguments[2]);
-			} else if (arguments instanceof Object[] && arguments.length == 1) {
+			} else if (arguments instanceof Object[] && arguments.length == 1 && arguments[0] instanceof byte[]) { // write(byte
+																													// b[])
 				streamStats.advanceCount(((byte[]) arguments[0]).length);
 			}
 		} catch (Throwable t) {

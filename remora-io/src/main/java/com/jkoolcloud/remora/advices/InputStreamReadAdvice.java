@@ -91,11 +91,12 @@ public class InputStreamReadAdvice extends BaseTransformers implements RemoraAdv
 				throw new IllegalStateException(
 						"Stream stats is null for " + method.getDeclaringClass() + "." + method.getName());
 			}
-			if (arguments == null || arguments.length == 0) {
+			if (arguments == null || arguments.length == 0) { // for a read() case
 				streamStats.advanceCount();
-			} else if (arguments instanceof Object[] && arguments.length == 3) {
+			} else if (arguments instanceof Object[] && arguments.length == 3) {// for a read(byte b[], int off, int
+																				// len)
 				streamStats.advanceCount((int) arguments[2]);
-			} else if (arguments instanceof Object[] && arguments.length == 1) {
+			} else if (arguments instanceof Object[] && arguments.length == 1) { // for a read(byte b[])
 				streamStats.advanceCount(((byte[]) arguments[0]).length);
 			}
 		} catch (Throwable t) {
