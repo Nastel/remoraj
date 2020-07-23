@@ -41,11 +41,11 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class WebsocketSessionAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "WebsocketSessionAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.websocket.Session" };
-	public static String INTERCEPTING_METHOD = "addMessageHandler";
+	public static final String[] INTERCEPTING_CLASS = { "javax.websocket.Session" };
+	public static final String INTERCEPTING_METHOD = "addMessageHandler";
 
-	public static Map<MessageHandler, Session> sessionHandlers = new HashMap<>();
-	public static Map<RemoteEndpoint, Session> sessionEndpoints = new HashMap<>();
+	public static final Map<MessageHandler, Session> sessionHandlers = new HashMap<>();
+	public static final Map<RemoteEndpoint, Session> sessionEndpoints = new HashMap<>();
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

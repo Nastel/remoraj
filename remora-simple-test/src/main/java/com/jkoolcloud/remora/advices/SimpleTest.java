@@ -34,8 +34,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class SimpleTest extends BaseTransformers {
 
 	public static final String ADVICE_NAME = "SimpleTest";
-	public static String[] INTERCEPTING_CLASS = { "lt.slabs.com.jkoolcloud.remora.JustATest" };
-	public static String INTERCEPTING_METHOD = "instrumentedMethod";
+	public static final String[] INTERCEPTING_CLASS = { "lt.slabs.com.jkoolcloud.remora.JustATest" };
+	public static final String INTERCEPTING_METHOD = "instrumentedMethod";
 
 	public static TaggedLogger logger;
 

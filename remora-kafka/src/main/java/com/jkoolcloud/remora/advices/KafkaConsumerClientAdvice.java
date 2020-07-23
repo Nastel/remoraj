@@ -38,8 +38,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class KafkaConsumerClientAdvice extends BaseTransformers {
 
 	public static final String ADVICE_NAME = "KafkaConsumerClientAdvice";
-	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.Consumer" };
-	public static String INTERCEPTING_METHOD = "poll";
+	public static final String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.Consumer" };
+	public static final String INTERCEPTING_METHOD = "poll";
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(KafkaConsumerClientAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//

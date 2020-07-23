@@ -39,8 +39,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class KafkaProducerAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "KafkaProducerAdvice";
-	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.producer.KafkaProducer" };
-	public static String INTERCEPTING_METHOD = "send";
+	public static final String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.producer.KafkaProducer" };
+	public static final String INTERCEPTING_METHOD = "send";
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(KafkaProducerAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//

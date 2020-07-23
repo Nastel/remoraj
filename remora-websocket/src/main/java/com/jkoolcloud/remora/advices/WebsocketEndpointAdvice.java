@@ -38,8 +38,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class WebsocketEndpointAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "WebsocketEndpointAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.websocket.Endpoint" };
-	public static String INTERCEPTING_METHOD = "onClose,onOpen,onError";
+	public static final String[] INTERCEPTING_CLASS = { "javax.websocket.Endpoint" };
+	public static final String INTERCEPTING_METHOD = "onClose,onOpen,onError";
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(WebsocketEndpointAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//

@@ -39,8 +39,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 
 	public static final String ADVICE_NAME = "KafkaConsumerAdvice";
 	public static final String HEADER_PREFIX = "HDR_";
-	public static String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.ConsumerRecord" };
-	public static String INTERCEPTING_METHOD = "ConsumerRecord";
+	public static final String[] INTERCEPTING_CLASS = { "org.apache.kafka.clients.consumer.ConsumerRecord" };
+	public static final String INTERCEPTING_METHOD = "ConsumerRecord";
 
 	public static ThreadLocal<Stack<Long>> startTimeThreadLocal = new ThreadLocal<>();
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()

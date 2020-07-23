@@ -39,11 +39,11 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class JBossAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "JBossService";
-	public static String[] INTERCEPTING_CLASS = { "io.undertow.servlet.handlers.ServletHandler" };
+	public static final String[] INTERCEPTING_CLASS = { "io.undertow.servlet.handlers.ServletHandler" };
 
 	public static final String JBOSS_MODULES_SYSTEM_PKGS = "jboss.modules.system.pkgs";
 	public static final String APM_BASE_PACKAGE = "com.jkoolcloud.remora, org.tinylog, net.bytebuddy";
-	public static String INTERCEPTING_METHOD = "handleRequest";
+	public static final String INTERCEPTING_METHOD = "handleRequest";
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JBossAdvice.class.getClassLoader())//

@@ -36,8 +36,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class ApacheLegacyHttpClientAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "ApacheLegacyHttpClientAdvice";
-	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
-	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
+	public static final String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
+	public static final String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
 	@RemoraConfig.Configurable
 	public static String headerCorrIDName = "REMORA_CORR";

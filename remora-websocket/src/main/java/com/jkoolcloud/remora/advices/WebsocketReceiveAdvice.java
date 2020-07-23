@@ -40,8 +40,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class WebsocketReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "WebsocketReceiveAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.websocket.MessageHandler" };
-	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
+	public static final String[] INTERCEPTING_CLASS = { "javax.websocket.MessageHandler" };
+	public static final String INTERCEPTING_METHOD = "<CHANGE HERE>";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

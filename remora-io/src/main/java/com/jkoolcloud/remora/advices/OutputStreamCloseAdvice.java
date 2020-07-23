@@ -32,8 +32,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "OutputStreamCloseAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.io.OutputStream" };
-	public static String INTERCEPTING_METHOD = "close";
+	public static final String[] INTERCEPTING_CLASS = { "java.io.OutputStream" };
+	public static final String INTERCEPTING_METHOD = "close";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

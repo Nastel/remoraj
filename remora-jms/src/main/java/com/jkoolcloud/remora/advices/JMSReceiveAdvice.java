@@ -37,8 +37,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static final String ADVICE_NAME = "JMSReceiveAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.jms.MessageConsumer" };
-	public static String INTERCEPTING_METHOD = "receive";
+	public static final String[] INTERCEPTING_CLASS = { "javax.jms.MessageConsumer" };
+	public static final String INTERCEPTING_METHOD = "receive";
 
 	@RemoraConfig.Configurable
 	private static boolean fetchMsg = false;

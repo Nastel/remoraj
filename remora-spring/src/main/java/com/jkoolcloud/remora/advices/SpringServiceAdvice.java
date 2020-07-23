@@ -32,8 +32,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class SpringServiceAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "SpringServiceAdvice";
-	public static String[] INTERCEPTING_CLASS = { "org.springframework.web.context.WebApplicationContext" };
-	public static String INTERCEPTING_METHOD = "initPropertySources";
+	public static final String[] INTERCEPTING_CLASS = { "org.springframework.web.context.WebApplicationContext" };
+	public static final String INTERCEPTING_METHOD = "initPropertySources";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

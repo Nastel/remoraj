@@ -37,8 +37,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class JMSCreateConnectionAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "JMSCreateConnectionAdvice";
-	public static String[] INTERCEPTING_CLASS = { "javax.jms.ConnectionFactory" };
-	public static String INTERCEPTING_METHOD = "createConnection";
+	public static final String[] INTERCEPTING_CLASS = { "javax.jms.ConnectionFactory" };
+	public static final String INTERCEPTING_METHOD = "createConnection";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

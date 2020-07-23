@@ -44,8 +44,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class JavaxServletAdvice extends BaseTransformers implements RemoraAdvice {
 	public static final String ADVICE_NAME = "JavaxHttpServlet";
-	public static String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
-	public static String INTERCEPTING_METHOD = "service";
+	public static final String[] INTERCEPTING_CLASS = { "javax.servlet.http.HttpServlet" };
+	public static final String INTERCEPTING_METHOD = "service";
 
 	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
 			.include(JavaxServletAdvice.class.getClassLoader()) //

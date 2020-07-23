@@ -16,14 +16,14 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -98,12 +98,8 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
 			ed = getEntryDefinition(ed, SocketAdvice.class, ctx);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
 			ed.addPropertyIfExist("resource",
 					thiz.getInetAddress() == null ? null : thiz.getInetAddress().getHostName());
 			ed.addPropertyIfExist("localAddress",
@@ -116,7 +112,6 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 				ed.addPropertyIfExist("hostString", ((InetSocketAddress) socketAddress).getHostString());
 
 			}
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
@@ -155,11 +150,7 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			ed.setEventType(EntryDefinition.EventType.OPEN);
-
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
@@ -168,7 +159,6 @@ public class SocketAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally(ctx, thiz.getClass());
 			}
 		}
-
 	}
 
 	@Override

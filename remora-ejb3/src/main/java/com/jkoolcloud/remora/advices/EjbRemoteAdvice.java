@@ -35,8 +35,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class EjbRemoteAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "EjbRemoteAdvice";
-	public static String[] INTERCEPTING_CLASS = { "@Remote" };
-	public static String INTERCEPTING_METHOD = "public";
+	public static final String[] INTERCEPTING_CLASS = { "@Remote" };
+	public static final String INTERCEPTING_METHOD = "public";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

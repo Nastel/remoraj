@@ -34,8 +34,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class JDBCCallableStatementAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "JDBCStatementParamsAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.sql.Statement" };
-	public static String INTERCEPTING_METHOD = "set*";
+	public static final String[] INTERCEPTING_CLASS = { "java.sql.Statement" };
+	public static final String INTERCEPTING_METHOD = "set*";
 
 	@RemoraConfig.Configurable
 	public static final String parameterPrefix = "PARAM_";

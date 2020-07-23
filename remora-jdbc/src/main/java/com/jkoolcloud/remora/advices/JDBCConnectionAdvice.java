@@ -35,8 +35,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class JDBCConnectionAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "JDBCConnectionAdvice";
-	public static String[] INTERCEPTING_CLASS = { "java.sql.Connection" };
-	public static String INTERCEPTING_METHOD = "prepare";
+	public static final String[] INTERCEPTING_CLASS = { "java.sql.Connection" };
+	public static final String INTERCEPTING_METHOD = "prepare";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

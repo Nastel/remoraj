@@ -37,7 +37,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class JBossServletAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "JBoss";
-	public static String[] INTERCEPTING_CLASS = { "io.undertow.servlet.handlers.ServletHandler" };
+	public static final String[] INTERCEPTING_CLASS = { "io.undertow.servlet.handlers.ServletHandler" };
 
 	public static String INTERCEPTING_METHOD = "handleRequest";
 

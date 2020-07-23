@@ -38,8 +38,8 @@ import net.bytebuddy.matcher.ElementMatcher;
 public class WebLogicAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "WebLogicAdvice";
-	public static String[] INTERCEPTING_CLASS = { "weblogic.servlet.internal.ServletStubImpl" };
-	public static String INTERCEPTING_METHOD = "execute";
+	public static final String[] INTERCEPTING_CLASS = { "weblogic.servlet.internal.ServletStubImpl" };
+	public static final String INTERCEPTING_METHOD = "execute";
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available

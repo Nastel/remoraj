@@ -16,12 +16,12 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 import java.lang.reflect.Method;
 import java.net.Socket;
-
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -79,7 +79,6 @@ public class SocketCloseAdvice extends BaseTransformers implements RemoraAdvice 
 	 *            method startTime
 	 *
 	 */
-
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This Socket thiz, //
 			@Advice.Origin Method method, //
@@ -90,12 +89,8 @@ public class SocketCloseAdvice extends BaseTransformers implements RemoraAdvice 
 			if (!ctx.intercept) {
 				return;
 			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
-
 			ed = getEntryDefinition(ed, SocketCloseAdvice.class, ctx);
-
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
 		}
