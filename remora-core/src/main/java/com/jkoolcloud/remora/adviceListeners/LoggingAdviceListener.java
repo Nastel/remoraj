@@ -52,7 +52,8 @@ public class LoggingAdviceListener implements AdviceListener {
 	public void onProcessed(BaseTransformers adviceInstance, Object thiz, Method method) {
 		if (adviceInstance instanceof Loggable) {
 			((Loggable) adviceInstance).getLogger().info("Entering: {} {} from {}", adviceInstance,
-					adviceInstance.getClass().getSimpleName(), adviceInstance, "before", thiz.getClass().getName());
+					adviceInstance.getClass().getSimpleName(), "before", thiz.getClass().getName());
+
 		}
 	}
 }

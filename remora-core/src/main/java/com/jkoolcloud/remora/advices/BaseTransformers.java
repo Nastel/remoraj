@@ -210,7 +210,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				trackedObjects.put(thiz, entryDefinition);
 			}
 
-			if (stackThreadLocal != null) {
+			if (stackThreadLocal != null && !interceptorInstance.doNotCorrelate) {
 				if (stackThreadLocal.get() == null) {
 					CallStack definitions = new CallStack(ctx, callStackLimit);
 					stackThreadLocal.set(definitions);
@@ -333,7 +333,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 					EntryDefinition peek = entryDefinitions.peek();
 					if (peek != null && caller != null) {
 
-						if (Objects.equals(peek.getClazz(), caller.getName())) {
+						if (Objects.equals(peek.getClazz(), caller.getName())
+								&& !ctx.interceptorInstance.doNotCorrelate) {
 							entryDefinitions.pop();
 						}
 
