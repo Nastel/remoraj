@@ -44,7 +44,7 @@ public enum OutputManager {
 			try {
 				Class<?> outClass = Class.forName(outputClass);
 				output = (AgentOutput<EntryDefinition>) outClass.newInstance();
-				logger.debug("Initialised output {}", output);
+				logger.debug("Initialized output {}", output);
 			} catch (Exception e) {
 				outputListeners.forEach(l -> l.onInitialized(e));
 			}
@@ -58,7 +58,7 @@ public enum OutputManager {
 				try {
 					outputListeners.forEach(listener -> {
 						listener.onInitialize();
-						logger.debug("Initializing outpus listener {}", listener);
+						logger.debug("Initializing output listener {}", listener);
 					});
 					output.init();
 				} catch (AgentOutput.OutputException e) {
@@ -92,7 +92,7 @@ public enum OutputManager {
 			outputListeners.forEach(l -> l.onSend());
 			output.send(entryDefinition);
 		} else {
-			outputListeners.forEach(l -> l.onSent(new AgentOutput.OutputException("No output initialised")));
+			outputListeners.forEach(l -> l.onSent(new AgentOutput.OutputException("No output initialized")));
 		}
 	}
 
