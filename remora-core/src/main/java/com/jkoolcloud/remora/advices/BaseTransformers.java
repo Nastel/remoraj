@@ -156,7 +156,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		entryDefinition.stop();
 
 		if (exception != null) {
-			handleInstrumentedMethodException(entryDefinition, exception, ctx.interceptorInstance.getLogger());
+			handleInstrumentedMethodException(entryDefinition, exception, ctx);
 		}
 
 		Stack<EntryDefinition> entryDefinitionStack = stackThreadLocal.get();
@@ -172,11 +172,13 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	}
 
 	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, Throwable exception,
-			TaggedLogger logger) {
+			InterceptionContext ctx) {
 		entryDefinition.setException(exception);
 
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		if (logger != null) {
-			logger.info("Exception {} occurred in method {}", exception.getMessage(), entryDefinition.getClazz());
+			logger.info("Exception {} occurred in method {}", ctx.interceptorInstance, exception.getMessage(),
+					entryDefinition.getClazz());
 		}
 	}
 
@@ -192,7 +194,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
 				if (logger != null) {
-					logger.error("\"This\" not filled");
+					logger.error("\"This\" not filled", ctx.interceptorInstance);
 				}
 			}
 
@@ -200,7 +202,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				entryDefinition.setName(method.getName());
 			} else {
 				if (logger != null) {
-					logger.info("#Method not filled");
+					logger.info("#Method not filled", ctx.interceptorInstance);
 				}
 			}
 
@@ -210,7 +212,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 			if (stackThreadLocal != null) {
 				if (stackThreadLocal.get() == null) {
-					CallStack definitions = new CallStack(logger, callStackLimit);
+					CallStack definitions = new CallStack(ctx, callStackLimit);
 					stackThreadLocal.set(definitions);
 				}
 				stackThreadLocal.get().push(entryDefinition);
@@ -226,7 +228,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 		} catch (Throwable t) {
 			if (logger != null) {
-				logger.error(t, "####Advice error/fillDefaultValuesBefore: {}", t);
+				logger.error(t, "####Advice error/fillDefaultValuesBefore: {}", ctx.interceptorInstance, t);
 			}
 		}
 		return System.nanoTime();
@@ -321,7 +323,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public static void doFinally(InterceptionContext ctx, Class<?> caller) {
 		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		if (logger != null) {
-			logger.debug("Finalizing {} interception", caller.getSimpleName());
+			logger.debug("Finalizing {} interception", ctx.interceptorInstance, caller.getSimpleName());
 		}
 		try {
 
@@ -339,13 +341,13 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 					if (entryDefinitions.size() <= 0) {
 						stackThreadLocal.remove();
 						if (logger != null) {
-							logger.info("Stack end {}.", peek.getId());
+							logger.info("Stack end {}.", ctx.interceptorInstance, peek.getId());
 						}
 					}
 				}
 			} else {
 				if (logger != null) {
-					logger.error("No CallStack");
+					logger.error("No CallStack", ctx.interceptorInstance);
 				}
 			}
 		} catch (Exception e) {
@@ -355,21 +357,21 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
-	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger,
-			EntryDefinition lastED) {
+	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger, EntryDefinition lastED,
+			InterceptionContext ctx) {
 		if (lastED == null) {
 			return false;
 		}
 		try {
 			if (adviceClass.getSimpleName().equals(lastED.getAdviceClass())) {
 				if (logger != null) {
-					logger.debug(("Stack contains the same advice"));
+					logger.debug("Stack contains the same advice", ctx.interceptorInstance);
 				}
 				return true;
 			}
 		} catch (Exception e) {
 			if (logger != null) {
-				logger.info(e, "Can't check if advice stack has stacked common advices");
+				logger.info(e, "Can't check if advice stack has stacked common advices", ctx.interceptorInstance);
 			}
 		}
 		return false;
@@ -381,8 +383,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		invokeOnError(adviceInstance, t);
 
 		if (logger != null) {
-			logger.error(t, "{} threw an exception {} {}", adviceInstance.getClass(), t.getMessage(),
-					t.getClass().getName());
+			logger.error(t, "{} threw an exception {} {} intercepting method = {}", ctx.interceptorInstance,
+					adviceInstance, adviceInstance.getClass(), t.getMessage(), t.getClass().getName(), ctx.method);
 		}
 	}
 
@@ -417,9 +419,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	public static InterceptionContext prepareIntercept(Class<? extends BaseTransformers> tClass, Object thiz,
 			Method method, Object... arguments) {
-		InterceptionContext context = new InterceptionContext();
-
 		BaseTransformers adviceInstance = getAdviceInstance(tClass);
+		InterceptionContext context = new InterceptionContext(adviceInstance, method);
+
 		context.interceptorInstance = adviceInstance;
 		invokeOnIntercept(adviceInstance, thiz, method);
 		if (stackThreadLocal.get() instanceof EmptyStack) {
@@ -434,7 +436,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			if (!filter.intercept(thiz, method, arguments)) {
 				if (filter.excludeWholeStack()) {
 					if (stackThreadLocal.get() == null || stackThreadLocal.get().isEmpty()) {
-						stackThreadLocal.set(new EmptyStack(context.interceptorInstance.getLogger(), callStackLimit));
+						stackThreadLocal.set(new EmptyStack(context, callStackLimit));
 					}
 				}
 				// context.intercept = false;
@@ -450,7 +452,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		public boolean intercept;
 		public EntryDefinition ed;
 		public BaseTransformers interceptorInstance;
+		public Method method;
 
+		public InterceptionContext(BaseTransformers adviceInstance, Method method) {
+			interceptorInstance = adviceInstance;
+			method = method;
+		}
 	}
 
 	protected AgentBuilder.Listener getListener() {
@@ -464,7 +471,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		if (load) {
 			getTransform().with(getListener()).installOn(instrumentation);
 		} else {
-			logger.info("Advice {} ({}) not enabled", getName(), this);
+			logger.info("Advice {} not enabled", this, getName());
 		}
 	}
 
@@ -487,7 +494,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		if (adviceClass.isAnnotationPresent(TransparentAdvice.class)) {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
-					logger.debug("Transparent advice, last ED is transparent, returning last {}", lastED.getId());
+					logger.debug("Transparent advice, last ED is transparent, returning last {}",
+							ctx.interceptorInstance, lastED.getId());
 				}
 				return lastED;
 			} else {
@@ -496,7 +504,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				invokeEventCreate(adviceClass, entryDefinition);
 				if (logger != null) {
 					logger.debug("Transparent advice, no previous transparent advice, returning new {}",
-							entryDefinition.getId());
+							ctx.interceptorInstance, entryDefinition.getId());
 				}
 				entryDefinition.setTransparent();
 				entryDefinition.setMode(EntryDefinition.Mode.STOP);
@@ -507,7 +515,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			if (lastED != null && lastED.isTransparent()) {
 				if (logger != null) {
 					logger.debug("Nontransparent advice, previous transparent advice, returning last {}",
-							lastED.getId());
+							ctx.interceptorInstance, lastED.getId());
 				}
 				lastED.setAdviceClass(adviceClass);
 				lastED.setTransparent(false);
@@ -515,12 +523,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				return lastED;
 			} else {
 
-				if (isChainedClassInterception(adviceClass, logger, lastED)) {
+				if (isChainedClassInterception(adviceClass, logger, lastED, ctx)) {
 					lastED.setChained();
 					if (logger != null) {
 						logger.debug(
 								"Nontransparent advice, previous non transparent advice, chained, returning last {}",
-								lastED.getId());
+								ctx.interceptorInstance, lastED.getId());
 					}
 					return lastED;
 				} else {
@@ -529,7 +537,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 					invokeEventCreate(adviceClass, entryDefinition);
 					if (logger != null) {
 						logger.debug("Nontransparent advice, previous non transparent advice, returning new {}",
-								entryDefinition.getId());
+								ctx.interceptorInstance, entryDefinition.getId());
 					}
 					return entryDefinition;
 				}
@@ -539,8 +547,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	public static boolean checkEntryDefinition(EntryDefinition ed, InterceptionContext ctx) {
 		if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates
-			ctx.interceptorInstance.logger
-					.error("EntryDefinition is null, entry might be filtered out as duplicate or ran on test");
+			ctx.interceptorInstance.logger.error(
+					"EntryDefinition is null, entry might be filtered out as duplicate or ran on test",
+					ctx.interceptorInstance);
 			return false;
 		} else {
 			return true;

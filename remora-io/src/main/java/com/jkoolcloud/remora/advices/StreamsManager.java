@@ -66,7 +66,8 @@ public enum StreamsManager {
 		ed = checkForEntryOrCreate(thiz, ctx, method, availableOutputStreams, availableOutputStreamsEntries, ed,
 				OutputStreamWriteAdvice.class);
 
-		return availableInputStreamsEntries.get(ed);
+		StreamStats streamStats = availableOutputStreamsEntries.get(ed);
+		return streamStats;
 	}
 
 	public StreamStats close(InputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
@@ -140,7 +141,7 @@ public enum StreamsManager {
 			if (!availableStreamsEntries.containsKey(ed)) {
 				StreamStats streamStats = new StreamStats();
 				if (logger != null) {
-					logger.info("Creating the new stream stats: " + ed.getId());
+					logger.debug("Creating the new stream stats: {}", ctx.interceptorInstance, ed.getId());
 				}
 				BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal, thiz, method, ctx);
 				streamStats.starttime = ed.getStartTime();
@@ -148,7 +149,7 @@ public enum StreamsManager {
 				availableStreamsEntries.put(ed, streamStats);
 			}
 			if (logger != null) {
-				logger.info("Created the new stream entry: " + ed.getId());
+				logger.debug("Created the new stream entry: {}", ctx.interceptorInstance, ed.getId());
 			}
 
 		} else {

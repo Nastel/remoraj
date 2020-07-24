@@ -20,18 +20,22 @@ import java.util.Stack;
 
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
+
 public class CallStack extends Stack<EntryDefinition> {
 	private static final long serialVersionUID = 1273371157804943471L;
 
 	private final TaggedLogger logger;
+	protected final BaseTransformers.InterceptionContext ctx;
 
 	private String application = null;
 	private String server = null;
 	private final String stackCorrelator;
 	private final int limit;
 
-	public CallStack(TaggedLogger logger, int limit) {
-		this.logger = logger;
+	public CallStack(BaseTransformers.InterceptionContext ctx, int limit) {
+		logger = ctx.interceptorInstance.getLogger();
+		this.ctx = ctx;
 		this.limit = limit;
 		stackCorrelator = JUGFactoryImpl.newUUID();
 	}
@@ -40,14 +44,16 @@ public class CallStack extends Stack<EntryDefinition> {
 	public EntryDefinition push(EntryDefinition item) {
 		if (size() >= limit) {
 			if (logger != null) {
-				logger.error("Stack limit reached: {}, {} : {}", (size() + 1), item.getAdviceClass(), item.getId());
+				logger.error("Stack limit reached: {}, {} : {}", ctx.interceptorInstance, (size() + 1),
+						item.getAdviceClass(), item.getId());
 			}
 			return null;
 
 		}
 
 		if (logger != null) {
-			logger.info("Stack push: {}, {} : {}", (size() + 1), item.getAdviceClass(), item.getId());
+			logger.debug("Stack push: {}, {} : {}", ctx.interceptorInstance, (size() + 1), item.getAdviceClass(),
+					item.getId());
 		}
 		item.setApplication(application);
 		item.setServer(server);
@@ -60,7 +66,7 @@ public class CallStack extends Stack<EntryDefinition> {
 	public synchronized EntryDefinition pop() {
 		EntryDefinition pop = super.pop();
 		if (logger != null) {
-			logger.info("Stack pop: {} : {} ", size(), pop.getId());
+			logger.debug("Stack pop: {} : {} ", ctx.interceptorInstance, size(), pop.getId());
 		}
 
 		return pop;

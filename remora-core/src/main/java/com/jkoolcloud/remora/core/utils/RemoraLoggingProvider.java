@@ -17,6 +17,7 @@
 package com.jkoolcloud.remora.core.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -76,18 +77,26 @@ public class RemoraLoggingProvider implements LoggingProvider {
 	@Override
 	public void log(int depth, String tag, Level level, Throwable exception, MessageFormatter formatter, Object obj,
 			Object... arguments) {
+		BaseTransformers adviceByName = null;
 		if (arguments != null && arguments[0] instanceof BaseTransformers) {
-			BaseTransformers adviceByName = ((BaseTransformers) arguments[0]);
+			adviceByName = ((BaseTransformers) arguments[0]);
+		}
+		if (arguments != null && arguments[0] instanceof BaseTransformers.InterceptionContext) {
+			adviceByName = ((BaseTransformers.InterceptionContext) arguments[0]).interceptorInstance;
+		}
 
-			if (adviceByName.getLogLevel().ordinal() > level.ordinal()) {
+		if (adviceByName != null) {
+			Level advicesLogLevel = adviceByName.getLogLevel();
+			if (advicesLogLevel.ordinal() > level.ordinal()) {
 				return;
-
 			}
+			arguments = Arrays.copyOfRange(arguments, 1, arguments.length);
 		}
 		if (semaphore.availablePermits() < 0) {
 			// String className = RuntimeProvider.getCallerStackTraceElement(depth + 1).getClassName();
+			Object[] finalArguments = arguments;
 			threadPoolExecutor.submit(() -> {
-				realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
+				realProvider.log(depth + 1, tag, level, exception, formatter, obj, finalArguments);
 			});
 		} else {
 			realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);

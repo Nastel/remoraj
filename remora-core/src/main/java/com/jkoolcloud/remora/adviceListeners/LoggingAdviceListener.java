@@ -32,8 +32,8 @@ public class LoggingAdviceListener implements AdviceListener {
 	@Override
 	public void onMethodFinished(RemoraAdvice adviceInstance, double elapseTime) {
 		if (adviceInstance instanceof Loggable) {
-			((Loggable) adviceInstance).getLogger().info("Exiting: {} {}", adviceInstance.getClass().getName(),
-					"after");
+			((Loggable) adviceInstance).getLogger().info("Exiting: {} {}", adviceInstance,
+					adviceInstance.getClass().getName(), "after");
 		}
 
 	}
@@ -51,8 +51,8 @@ public class LoggingAdviceListener implements AdviceListener {
 	@Override
 	public void onProcessed(BaseTransformers adviceInstance, Object thiz, Method method) {
 		if (adviceInstance instanceof Loggable) {
-			((Loggable) adviceInstance).getLogger().info("Entering: {} {} from {}",
-					adviceInstance.getClass().getSimpleName(), "before", thiz.getClass().getName());
+			((Loggable) adviceInstance).getLogger().info("Entering: {} {} from {}", adviceInstance,
+					adviceInstance.getClass().getSimpleName(), adviceInstance, "before", thiz.getClass().getName());
 		}
 	}
 }

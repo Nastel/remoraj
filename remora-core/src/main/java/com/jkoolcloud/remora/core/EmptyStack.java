@@ -18,6 +18,8 @@ package com.jkoolcloud.remora.core;
 
 import org.tinylog.TaggedLogger;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
+
 public class EmptyStack extends CallStack {
 	/**
 	 * 
@@ -26,15 +28,15 @@ public class EmptyStack extends CallStack {
 	private static final EntryDefinition.DummyEntryDefinition item = new EntryDefinition.DummyEntryDefinition();
 	private final TaggedLogger logger;
 
-	public EmptyStack(TaggedLogger logger, int limit) {
-		super(logger, limit);
-		this.logger = logger;
-		this.logger.debug("EmptyStack created");
+	public EmptyStack(BaseTransformers.InterceptionContext ctx, int limit) {
+		super(ctx, limit);
+		logger = ctx.interceptorInstance.getLogger();
+		logger.debug("EmptyStack created", ctx.interceptorInstance);
 	}
 
 	@Override
 	public EntryDefinition push(EntryDefinition item) {
-		logger.trace("Item pushed to empty stack");
+		logger.trace("Item pushed to empty stack", ctx.interceptorInstance);
 		return item;
 	}
 
