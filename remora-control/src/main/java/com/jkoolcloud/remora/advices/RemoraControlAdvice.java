@@ -79,7 +79,7 @@ public class RemoraControlAdvice implements RemoraAdvice, Loggable {
 				availableInetSocketAddress[0] = new AvailableInetSocketAddress(port);
 				InetSocketAddress inetSocketAddress = availableInetSocketAddress[0].getInetSocketAddress();
 				startHttpServer(inetSocketAddress);
-				logger.info("Initialised Remora control instance on {}, port: {}", inetSocketAddress.getHostName(),
+				logger.info("Initialized Remora control instance on {}, port: {}", inetSocketAddress.getHostName(),
 						inetSocketAddress.getPort());
 			} catch (IOException e) {
 				logger.error("Cannot initialize remora control instance. \n {}", e);
@@ -91,12 +91,12 @@ public class RemoraControlAdvice implements RemoraAdvice, Loggable {
 					availableInetSocketAddress[0] == null ? 0
 							: availableInetSocketAddress[0].getInetSocketAddress().getPort(),
 					System.getProperty(Remora.REMORA_VM_IDENTIFICATION), logger);
-			logger.info("Admin reporter initialised, wil invoke every {} seconds", reporterSchedule);
+			logger.info("Admin reporter initialized, wil invoke every {} seconds", reporterSchedule);
 			ScheduledExecutorService adminServiceQuery = Executors.newScheduledThreadPool(1);
 			adminServiceQuery.scheduleAtFixedRate(() -> adminReporter.report(), 0, reporterSchedule, TimeUnit.SECONDS);
 		} else {
 			logger.info(
-					"Admin reporter will be not initialised, ctx.interceptorInstance, admin reporter endpoint not set");
+					"Admin reporter will be not initialized, ctx.interceptorInstance, admin reporter endpoint not set");
 		}
 
 		BaseTransformers.registerListener(CountingAdviceListener.class);
