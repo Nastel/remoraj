@@ -454,9 +454,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		public BaseTransformers interceptorInstance;
 		public Method method;
 
-		public InterceptionContext(BaseTransformers adviceInstance, Method method) {
-			interceptorInstance = adviceInstance;
-			method = method;
+		public InterceptionContext(BaseTransformers adviceInstance, Method m) {
+			this.interceptorInstance = adviceInstance;
+			this.method = m;
 		}
 	}
 
