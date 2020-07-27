@@ -16,6 +16,7 @@
 
 package com.jkoolcloud.remora.core;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 import org.tinylog.TaggedLogger;
@@ -52,8 +53,8 @@ public class CallStack extends Stack<EntryDefinition> {
 		}
 
 		if (logger != null) {
-			logger.debug("Stack push: {}, {} : {}", ctx.interceptorInstance, (size() + 1), item.getAdviceClass(),
-					item.getId());
+			logger.debug("{}---> Stack push: {}, {} : {}", ctx.interceptorInstance, addPadding(), (size() + 1),
+					item.getAdviceClass(), item.getId());
 		}
 		item.setApplication(application);
 		item.setServer(server);
@@ -62,11 +63,18 @@ public class CallStack extends Stack<EntryDefinition> {
 		return super.push(item);
 	}
 
+	private String addPadding() {
+		char[] data = new char[size() * 3];
+		Arrays.fill(data, '-');
+		return String.valueOf(data);
+
+	}
+
 	@Override
 	public synchronized EntryDefinition pop() {
 		EntryDefinition pop = super.pop();
 		if (logger != null) {
-			logger.debug("Stack pop: {} : {} ", ctx.interceptorInstance, size(), pop.getId());
+			logger.debug("<---{} Stack pop: {} : {} ", ctx.interceptorInstance, addPadding(), size(), pop.getId());
 		}
 
 		return pop;

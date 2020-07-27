@@ -147,6 +147,7 @@ public enum StreamsManager {
 				streamStats.starttime = ed.getStartTime();
 				ed.addProperty("toString", String.valueOf(thiz));
 				availableStreamsEntries.put(ed, streamStats);
+				doFinally(ctx, thiz.getClass());
 			}
 			if (logger != null) {
 				logger.debug("Created the new stream entry: {}", ctx.interceptorInstance, ed.getId());

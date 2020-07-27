@@ -336,6 +336,10 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 						if (Objects.equals(peek.getClazz(), caller.getName())
 								&& !ctx.interceptorInstance.doNotCorrelate) {
 							entryDefinitions.pop();
+						} else {
+							logger.debug("Entry not popped from stack. Reason {}!={}, doNotCorrelate={}",
+									ctx.interceptorInstance, peek.getClazz(), caller.getName(),
+									ctx.interceptorInstance.doNotCorrelate);
 						}
 
 					}
@@ -456,8 +460,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		public Method method;
 
 		public InterceptionContext(BaseTransformers adviceInstance, Method m) {
-			this.interceptorInstance = adviceInstance;
-			this.method = m;
+			interceptorInstance = adviceInstance;
+			method = m;
 		}
 	}
 
