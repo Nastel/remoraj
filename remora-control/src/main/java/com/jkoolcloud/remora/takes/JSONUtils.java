@@ -37,7 +37,7 @@ public class JSONUtils {
 
 	static String quote(Object value) {
 		if (value instanceof Number) {
-			MessageFormat messageFormat = new MessageFormat("{0,number, #.##}", Locale.US);
+			MessageFormat messageFormat = new MessageFormat("{0,number,#.##}", Locale.US);
 			String format = messageFormat.format(new Object[] { value });
 			return format;
 		}
