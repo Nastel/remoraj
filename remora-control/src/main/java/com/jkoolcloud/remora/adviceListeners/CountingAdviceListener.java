@@ -37,7 +37,7 @@ public class CountingAdviceListener implements ReportingAdviceListener {
 
 	@Override
 	public void onIntercept(RemoraAdvice adviceInstance, Object thiz, Method method) {
-
+		statistic.incInvokeCount();
 	}
 
 	@Override
