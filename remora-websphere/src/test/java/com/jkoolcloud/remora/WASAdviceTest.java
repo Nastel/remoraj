@@ -48,12 +48,22 @@ import com.jkoolcloud.remora.core.output.SysOutOutput;
 		"com.ibm.ws.webcontainer.servlet.ServletWrapper" })
 public class WASAdviceTest {
 
+	private static WASAdvice wasAdvice = new WASAdvice();
+
 	static {
 		System.setProperty(Remora.REMORA_PATH, ".");
-		AdviceRegistry.INSTANCE.report(Collections.singletonList(new WASAdvice()));
+		AdviceRegistry.INSTANCE.report(Collections.singletonList(wasAdvice));
 	}
 
-	private BaseTransformers.InterceptionContext ctx = new BaseTransformers.InterceptionContext();
+	private BaseTransformers.InterceptionContext ctx;
+
+	{
+		try {
+			ctx = new BaseTransformers.InterceptionContext(wasAdvice, ServletRequest.class.getMethod("execute"));
+		} catch (NoSuchMethodException e) {
+
+		}
+	}
 
 	@Test
 	public void testWebsphereInterceptor() throws NoSuchMethodException {
