@@ -97,12 +97,13 @@ public enum StreamsManager {
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
 			if (ed == null) {
 				if (logger != null) {
-					logger.error("Stream closed but not tracked");
+					logger.error("Stream closed but not tracked: {}, {}", ctx.interceptorInstance, thiz,
+							thiz.getClass());
 				}
 				doFinally = false;
 			} else {
 				if (logger != null) {
-					logger.info("Close invoked on stream " + ed.getId());
+					logger.info("Close invoked on stream {}", ctx.interceptorInstance, ed.getId());
 				}
 				if (ed != null) {
 					StreamStats streamStats = availableStreamsEntries.get(ed);
