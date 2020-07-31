@@ -9,7 +9,7 @@ By default remoraJ HTTP service uses port 7366 and will switch to next available
 
 If the remora is working on localhost and default port you should query `localhost:7366/`
 
-```
+```sh
 curl -XGET 'http://localhost:7366/'
 ```
  
@@ -21,7 +21,7 @@ To change a property you run POST on remroaJ instance `localhost:7366/change`
 
 i.e. to enable logging on `JavaxServletAdvice` you should run:
 
-```
+```sh
 curl -XPOST -d '{
    	"advice": "JavaxServletAdvice",
    	"property": "logging",
@@ -366,7 +366,7 @@ Below is a list of available advices:
 
 To get statistics query `localhost:7366/stats/[advice name]`
 
-```
+```sh
 curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 ```
 
@@ -390,7 +390,7 @@ Expected response:
 
 To reset statistics send DELETE to the same endpoint:  `localhost:7366/stats/[advice name]`
 
-```
+```sh
 curl -XGET 'localhost:7366/stats/JavaxServletAdvice'
 ```
 
@@ -401,7 +401,7 @@ To reset *all* statistics send DELETE to:  `localhost:7366/stats`
 
 To get statistics query `localhost:7366/queryStats`
 
-```
+```sh
 curl -XGET 'localhost:7366/queryStats'
 ```
 
@@ -420,7 +420,7 @@ Expected response:
 
 To get thradDump `localhost:7366/threadDump`
 
-```
+```sh
 curl -XGET 'localhost:7366/threadDump'
 ```
 
@@ -519,7 +519,7 @@ Expected response:
 
 You can enable stack traces of instrumented method calls by enabling `sendStackTrace` property on any advice.
 
-```
+```sh
 curl -XPOST -d '{
    	"advice": "JavaxServletAdvice",
    	"property": "sendStackTrace",
@@ -654,7 +654,7 @@ Expected response:
 
 to get Systems and processor info get `localhost:7366/sysInfo`.
 
-```
+```sh
 curl -XGET 'localhost:7366/sysInfo'
 ```
 
@@ -682,7 +682,7 @@ Expected response:
 
 to get filters info get `localhost:7366/filters`
 
-```
+```sh
 curl -XGET 'localhost:7366/filters'
 ```
 
@@ -729,7 +729,7 @@ to create new filter POST `localhost:7366/filters` with body:
 i.e.:
 
 
-```
+```sh
 curl -XPOST -d '{
                 	"class": "com.jkoolcloud.remora.filters.ClassNameFilter",
                 	"name": "test",
@@ -757,7 +757,7 @@ see [Change property request section](##-Change-Property-Request)
     
 i.e. to add filter "test" on `JavaxServletAdvice` you should run:
     
-```
+```sh
 curl -XPOST -d '{
    	"advice": "JavaxServletAdvice",
    	"property": "filters",
@@ -768,12 +768,12 @@ curl -XPOST -d '{
 Filters will be overridden, you must include all filter you want to apply.
 
 
-#Streams (Require Streams module)
+# Streams (Require Streams module)
 
-to see active input and output streams GET `localhost:7366/streams`
+to obtain active input and output streams GET `localhost:7366/streams`
 
 i.e.:
-```
+```sh
 curl -XGET 'localhost:7366/streams'
 ```
 
@@ -808,7 +808,7 @@ for a detailed stream statistics query `localhost:7366/streams/[streamClassName]
 
 i.e.: to get statistics for `org.jboss.stdio.LoggingOutputStream`
 
-```
+```sh
 curl -XGET 'localhost:7366/streams/org.jboss.stdio.LoggingOutputStream'
 ```
 
