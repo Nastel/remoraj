@@ -41,7 +41,7 @@ public class OutputStreamCloseAdvice extends BaseTransformers implements RemoraA
 	 */
 
 	private static ElementMatcher<? super MethodDescription> methodMatcher() {
-		return named(INTERCEPTING_METHOD).and(takesArguments(0));
+		return named(INTERCEPTING_METHOD).or(named("finalize")).and(takesArguments(0));
 	}
 
 	/**

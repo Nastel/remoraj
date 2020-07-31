@@ -48,7 +48,7 @@ public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 	@RemoraConfig.Configurable
 	AgentOutput<EntryDefinition> output;
 
-	TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
+	static TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
 
 	private ExecutorService queueWorkers;
 	private ArrayBlockingQueue<Runnable> workQueue;
@@ -62,6 +62,7 @@ public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 			limitingFilter.mode = AdviceFilter.Mode.INCLUDE;
 			limitingFilter.everyNth = 1;
 			FilterManager.INSTANCE.add(AUTO_LIMITING_FILTER, limitingFilter);
+			logger.info("Created new limmiting filter");
 		}
 		limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
 		LimitingFilter finalLimitingFilter = limitingFilter;
@@ -71,6 +72,7 @@ public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 
 		((LimitingFilter) limitingFilter).everyNth *= filterAdvance;
 
+		logger.info("-> Filter advance: {}", ((LimitingFilter) limitingFilter).everyNth);
 		scheduleRelease();
 	}
 
@@ -84,6 +86,7 @@ public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 		try {
 			LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
 			limitingFilter.everyNth /= filterAdvance;
+			logger.info("<- Filter advance: {}", ((LimitingFilter) limitingFilter).everyNth);
 			if (limitingFilter.everyNth <= 1) {
 				AdviceRegistry.INSTANCE.getRegisteredAdvices().stream()
 						.filter(advice -> advice instanceof BaseTransformers).map(advice -> (BaseTransformers) advice)

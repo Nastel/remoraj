@@ -17,6 +17,7 @@
 package com.jkoolcloud.remora.advices;
 
 import static com.jkoolcloud.remora.advices.BaseTransformers.doFinally;
+import static com.jkoolcloud.remora.advices.BaseTransformers.getStackTrace;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -112,6 +113,12 @@ public enum StreamsManager {
 						ed.addPropertyIfExist("bytesCount", streamStats.count);
 						ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
 						ed.addPropertyIfExist("accessCount", streamStats.accessCount);
+						if (ctx.interceptorInstance.sendStackTrace) {
+							ed.addPropertyIfExist("closeStackTrace", getStackTrace());
+						}
+						if (ctx.method.getName().equals("finalize")) {
+							ed.addProperty("finalize", "true");
+						}
 					}
 
 					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, ctx);

@@ -19,6 +19,7 @@ package com.jkoolcloud.remora.takes;
 import java.util.HashMap;
 
 import org.junit.Test;
+import org.takes.facets.fork.RqRegex;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
@@ -48,14 +49,28 @@ public class TKStreamsTest {
 				put(ed, value);
 			}
 		});
+
+		EntryDefinition entryDefinition = new EntryDefinition(OutputStreamWriteAdvice.class, false);
+		entryDefinition.setClazz("java.io");
+
+		EntryDefinition entryDefinition2 = new EntryDefinition(OutputStreamWriteAdvice.class, false);
+		entryDefinition2.setClazz("java.io2");
+
 		StreamsManager.INSTANCE.setAvailableOutputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
 			{
-				put(new EntryDefinition(OutputStreamWriteAdvice.class, false), value);
-				put(new EntryDefinition(OutputStreamWriteAdvice.class, false), value);
+				put(entryDefinition, value);
+				put(entryDefinition2, value);
 			}
 		});
 		String x = new RsPrint(new TKStreams().act(new RqFake())).printBody();
 		new ObjectMapper().readTree(x);
 		System.out.println(x);
+
+		String y = new RsPrint(
+				new TKStreamDetails().act(new RqRegex.Fake(new TKStreamDetails().getEnpointPath(), "/streams/null")))
+						.printBody();
+		System.out.println(y);
+		new ObjectMapper().readTree(y);
+
 	}
 }

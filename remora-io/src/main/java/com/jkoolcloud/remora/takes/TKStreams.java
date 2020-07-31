@@ -16,9 +16,7 @@
 
 package com.jkoolcloud.remora.takes;
 
-import static java.text.MessageFormat.format;
-
-import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -77,46 +75,31 @@ public class TKStreams implements PluginTake {
 
 		sb.append("\t\"activeInputStreams\":");
 
-		sb.append("\t[\n");
-		String inputStreamList = StreamsManager.INSTANCE.getAvailableInputStreamsEntries().entrySet().stream()
-				.map(entry -> //
-				format(STATS_RENTRY, //
-						entry.getKey().getClazz(), //
-						entry.getKey().getId(), //
-						entry.getValue().count, //
-						entry.getValue().accessTimestamp, //
-						entry.getValue().starttime, //
-						entry.getValue().accessCount, //
-						getToStringValues(entry)))
-				.collect(Collectors.joining(","));
-		sb.append(JSONUtils.addPadding(3, inputStreamList));
-		sb.append("\t],\n");
+		sb.append("\t{\n");
+		String inputStreamList = getStreamList(StreamsManager.INSTANCE.getAvailableInputStreamsEntries());
+		sb.append(JSONUtils.addPadding(0, inputStreamList));
+		sb.append("\t},\n");
 		sb.append("\t\"activeOutputStreams\":");
 
-		sb.append("\t[\n");
-		String outputStreamList = StreamsManager.INSTANCE.getAvailableOutputStreamsEntries().entrySet().stream()
-				.map(entry -> //
-				format(STATS_RENTRY, //
-						entry.getKey().getClazz(), //
-						entry.getKey().getId(), //
-						entry.getValue().count, //
-						entry.getValue().accessTimestamp, //
-						entry.getValue().starttime, //
-						entry.getValue().accessCount, //
-						getToStringValues(entry)))
-				.collect(Collectors.joining(","));
-		sb.append(JSONUtils.addPadding(3, outputStreamList));
-		sb.append("\t]\n");
+		sb.append("\t{\n");
+		String outputStreamList = getStreamList(StreamsManager.INSTANCE.getAvailableOutputStreamsEntries());
+		sb.append(JSONUtils.addPadding(0, outputStreamList));
+		sb.append("\t}\n");
 
 		sb.append("}\n");
 		return new RsText(sb.toString());
 	}
 
 	@NotNull
-	private String getToStringValues(Map.Entry<EntryDefinition, StreamStats> entry) {
-		return JSONUtils.addPadding(4,
-				entry.getKey().getProperties().entrySet().stream().filter(e -> e.getKey().startsWith("toString"))
-						.map(e -> JSONUtils.quote(e.getValue())).collect(Collectors.joining(",\n")));
+	private String getStreamList(HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries) {
+
+		return availableInputStreamsEntries.entrySet().stream()
+				.collect(Collectors
+						.groupingBy(entry -> entry.getKey().getClazz() == null ? "null" : entry.getKey().getClazz()))
+				.entrySet().stream()
+				.map(entry -> "\t\t" + JSONUtils.quote(entry.getKey()) + " : " + entry.getValue().size())
+				.collect(Collectors.joining(",\n"));
+
 	}
 
 	@Override
