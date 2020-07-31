@@ -766,3 +766,65 @@ curl -XPOST -d '{
 
 ```  
 Filters will be overridden, you must include all filter you want to apply.
+
+
+#Streams (Require Streams module)
+
+to see active input and output streams GET `localhost:7366/streams`
+
+i.e.:
+```
+curl -XGET 'localhost:7366/streams'
+```
+
+Expected response:
+```json
+{
+	"totalTrackedInputStreams": 46,
+	"totalTrackedOutputStreams": 160,
+	"totalActiveInputSteams": 1,
+	"totalUniqueInputStreams": 1,
+	"totalActiveOutputSteams": 10,
+	"totalUniqueOutputStreams": 94,
+	"activeStreamsBytesRead": 133824,
+	"activeStreamsBytesWrite": 23794211,
+	"activeInputStreams":	{
+		"io.undertow.servlet.spec.ServletInputStreamImpl" : 1
+	},
+	"activeOutputStreams":	{
+		"java.security.DigestOutputStream" : 5,
+		"org.jboss.logmanager.handlers.UncloseableOutputStream" : 3,
+		"sun.security.util.DerOutputStream" : 78,
+		"java.net.SocketOutputStream" : 1,
+		"org.apache.commons.io.output.ByteArrayOutputStream" : 3,
+		"org.jboss.stdio.LoggingOutputStream" : 1,
+		"java.util.logging.FileHandler$MeteredStream" : 1,
+		"org.jboss.logmanager.handlers.UninterruptibleOutputStream" : 2
+	}
+}
+```
+
+for a detailed stream statistics query `localhost:7366/streams/[streamClassName]`
+
+i.e.: to get statistics for `org.jboss.stdio.LoggingOutputStream`
+
+```
+curl -XGET 'localhost:7366/streams/org.jboss.stdio.LoggingOutputStream'
+```
+
+Expected response:
+```json
+
+{
+  "stream" : "org.jboss.stdio.LoggingOutputStream",
+  "id" : "7d824e2d-d31f-11ea-a343-00059a3c7a00",
+  "bytes" : 49084,
+  "lastAccessed" : 1596194796496,
+  "lastAccessedReadable" : "2020-07-31 14.26.36",
+  "created" : 1596194279136,
+  "createdReadable" : "2020-07-31 14.17.59",
+  "invocations": 920,
+  "instances": ["org.jboss.stdio.LoggingOutputStream@10244427"
+		]
+}
+```

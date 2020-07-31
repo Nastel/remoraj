@@ -48,7 +48,7 @@ public class TKStreams implements PluginTake {
 		sb.append("\t\"totalTrackedInputStreams\": ");
 		sb.append(StreamsManager.INSTANCE.totalTrackedInputStreams.get());
 		sb.append(",\n");
-		sb.append("\t\"totalOutputInputStreams\": ");
+		sb.append("\t\"totalTrackedInputStreams\": ");
 		sb.append(StreamsManager.INSTANCE.totalTrackedOutputStreams.get());
 		sb.append(",\n");
 		sb.append("\t\"totalActiveInputSteams\": ");
