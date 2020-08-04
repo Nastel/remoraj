@@ -170,11 +170,9 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 		if (!ctx.intercept) {
 			return;
 		}
-		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		boolean doFinally = true;
 		try {
 			doFinally = checkEntryDefinition(ed, ctx);
-
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 			ed.addProperty("RespContext", resp.getContentType());
 		} catch (Throwable t) {
@@ -184,12 +182,10 @@ public class WASAdvice extends BaseTransformers implements RemoraAdvice {
 				doFinally(ctx, obj.getClass());
 			}
 		}
-
 	}
 
 	@Override
 	public String getName() {
 		return ADVICE_NAME;
 	}
-
 }
