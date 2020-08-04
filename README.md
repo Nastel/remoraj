@@ -59,7 +59,7 @@ You must configure the Remora Java agent and Streams agent to run RemoraJ. Your 
 * Configure the Remora Java Agent for your JVM (captures java call traces, metrics)
 * Start your application or app server (with remora agent)
 
-Please complete the following steps if you decide to send traces to Nastel XRay:
+Complete the following steps for Nastel XRay integration:
 * Obtain your account with [Nastel XRay](https://xray.nastel.com/xray/Nastel/login.jsp). Make sure to get your streaming access token
 * Configure the Streams Agent (you will need your streaming access token here)
 * Start the Streams Agent (forwards traces to your data repository associated with your streaming access token)
