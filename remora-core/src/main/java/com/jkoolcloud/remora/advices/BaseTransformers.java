@@ -16,8 +16,7 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
-import static net.bytebuddy.matcher.ElementMatchers.none;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -48,6 +47,7 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.LatentMatcher;
 import net.bytebuddy.utility.JavaModule;
 
 public abstract class BaseTransformers implements RemoraAdvice, Loggable {
@@ -78,8 +78,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public boolean doNotCorrelate = false;
 
 	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
+
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
-			new ByteBuddy().with(TypeValidation.DISABLED).with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
+			new ByteBuddy().ignore(new LatentMatcher.Resolved<>(isSynthetic()))//
+					.with(TypeValidation.DISABLED)//
+					.with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
+
 	@RemoraConfig.Configurable
 	public static boolean checkCallRepeats = true;
 

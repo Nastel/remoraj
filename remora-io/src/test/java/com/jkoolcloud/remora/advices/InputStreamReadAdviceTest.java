@@ -52,21 +52,27 @@ public class InputStreamReadAdviceTest {
 		Path target = Paths.get(tempFile.getAbsolutePath() + "copy");
 		Files.copy(tempFile.toPath(), target);
 
-		Scanner scanner = new Scanner(new MyWrappedInputStream(new MyFileInputStream(target)));
-		while (scanner.hasNextLine()) {
-			String data = scanner.nextLine();
-			System.out.println(data);
+		for (int i = 0; i < 100; i++) {
+			MyFileInputStream target1 = new MyFileInputStream(target);
+			Scanner scanner = new Scanner(new MyWrappedInputStream(target1));
+			while (scanner.hasNextLine()) {
+				String data = scanner.nextLine();
+				System.out.println(data);
+			}
+
+			target1.close();
 		}
 
-		scanner.close();
+		for (int i = 0; i < 100; i++) {
 
-		Scanner scanner2 = new Scanner(new MyWrappedInputStream(new MyFileInputStream(target)));
-		while (scanner2.hasNextLine()) {
-			String data = scanner2.nextLine();
-			System.out.println(data);
+			Scanner scanner2 = new Scanner(new MyWrappedInputStream(new MyFileInputStream(target)));
+			while (scanner2.hasNextLine()) {
+				String data = scanner2.nextLine();
+				System.out.println(data);
+			}
+
+			scanner2.close();
 		}
-
-		scanner2.close();
 	}
 
 }

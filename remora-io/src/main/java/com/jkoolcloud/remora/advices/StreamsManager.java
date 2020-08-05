@@ -106,25 +106,24 @@ public enum StreamsManager {
 				if (logger != null) {
 					logger.info("Close invoked on stream {}", ctx.interceptorInstance, ed.getId());
 				}
-				if (ed != null) {
-					StreamStats streamStats = availableStreamsEntries.get(ed);
+				StreamStats streamStats = availableStreamsEntries.get(ed);
 
-					if (!ed.isChained()) {
-						ed.addPropertyIfExist("bytesCount", streamStats.count);
-						ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
-						ed.addPropertyIfExist("accessCount", streamStats.accessCount);
-						if (ctx.interceptorInstance.sendStackTrace) {
-							ed.addPropertyIfExist("closeStackTrace", getStackTrace());
-						}
-						if (ctx.method.getName().equals("finalize")) {
-							ed.addProperty("finalize", "true");
-						}
+				if (!ed.isChained()) {
+					ed.setEventType(EntryDefinition.EventType.CLOSE);
+					ed.addPropertyIfExist("bytesCount", streamStats.count);
+					ed.addPropertyIfExist("lastAccessed", streamStats.accessTimestamp);
+					ed.addPropertyIfExist("accessCount", streamStats.accessCount);
+					if (ctx.interceptorInstance.sendStackTrace) {
+						ed.addPropertyIfExist("closeStackTrace", getStackTrace());
 					}
+					if (ctx.method.getName().equals("finalize")) {
+						ed.addProperty("finalize", "true");
+					}
+				}
 
-					BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, ctx);
-					if (ed.isFinished()) {
-						availableStreamsEntries.remove(ed);
-					}
+				BaseTransformers.fillDefaultValuesAfter(ed, streamStats.starttime, null, ctx);
+				if (ed.isFinished()) {
+					availableStreamsEntries.remove(ed);
 				}
 			}
 		} catch (Throwable t) {
@@ -151,6 +150,7 @@ public enum StreamsManager {
 				if (logger != null) {
 					logger.debug("Creating the new stream stats: {}", ctx.interceptorInstance, ed.getId());
 				}
+				ed.setEventType(EntryDefinition.EventType.OPEN);
 				BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal, thiz, method, ctx);
 				streamStats.starttime = ed.getStartTime();
 				ed.addProperty("toString", String.valueOf(thiz));
