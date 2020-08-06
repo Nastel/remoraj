@@ -18,8 +18,8 @@ package com.jkoolcloud.remora.takes;
 
 import static java.text.MessageFormat.format;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,9 +49,9 @@ public class TKStreamDetails implements PluginTake {
 	@Override
 	public Response act(Request req) throws Exception {
 		String io = ((RqRegex) req).matcher().group("io");
-		HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = StreamsManager.INSTANCE
+		WeakHashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = StreamsManager.INSTANCE
 				.getAvailableInputStreamsEntries();
-		HashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = StreamsManager.INSTANCE
+		WeakHashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = StreamsManager.INSTANCE
 				.getAvailableOutputStreamsEntries();
 
 		String collect = Stream

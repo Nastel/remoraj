@@ -16,7 +16,7 @@
 
 package com.jkoolcloud.remora.takes;
 
-import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +48,7 @@ public class TKStreams implements PluginTake {
 		sb.append("\t\"totalTrackedInputStreams\": ");
 		sb.append(StreamsManager.INSTANCE.totalTrackedInputStreams.get());
 		sb.append(",\n");
-		sb.append("\t\"totalTrackedInputStreams\": ");
+		sb.append("\t\"totalTrackedOutputStreams\": ");
 		sb.append(StreamsManager.INSTANCE.totalTrackedOutputStreams.get());
 		sb.append(",\n");
 		sb.append("\t\"totalActiveInputSteams\": ");
@@ -91,7 +91,7 @@ public class TKStreams implements PluginTake {
 	}
 
 	@NotNull
-	private String getStreamList(HashMap<EntryDefinition, StreamStats> availableInputStreamsEntries) {
+	private String getStreamList(WeakHashMap<EntryDefinition, StreamStats> availableInputStreamsEntries) {
 
 		return availableInputStreamsEntries.entrySet().stream()
 				.collect(Collectors

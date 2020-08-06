@@ -16,7 +16,7 @@
 
 package com.jkoolcloud.remora.takes;
 
-import java.util.HashMap;
+import java.util.WeakHashMap;
 
 import org.junit.Test;
 import org.takes.facets.fork.RqRegex;
@@ -39,7 +39,7 @@ public class TKStreamsTest {
 		Thread.sleep(100);
 		value.accessTimestamp = System.currentTimeMillis();
 
-		StreamsManager.INSTANCE.setAvailableInputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
+		StreamsManager.INSTANCE.setAvailableInputStreamsEntries(new WeakHashMap<EntryDefinition, StreamStats>() {
 			{
 				EntryDefinition ed = new EntryDefinition(InputStreamReadAdvice.class, false);
 				ed.addProperty("toString", "test".chars().toString());
@@ -56,7 +56,7 @@ public class TKStreamsTest {
 		EntryDefinition entryDefinition2 = new EntryDefinition(OutputStreamWriteAdvice.class, false);
 		entryDefinition2.setClazz("java.io2");
 
-		StreamsManager.INSTANCE.setAvailableOutputStreamsEntries(new HashMap<EntryDefinition, StreamStats>() {
+		StreamsManager.INSTANCE.setAvailableOutputStreamsEntries(new WeakHashMap<EntryDefinition, StreamStats>() {
 			{
 				put(entryDefinition, value);
 				put(entryDefinition2, value);
