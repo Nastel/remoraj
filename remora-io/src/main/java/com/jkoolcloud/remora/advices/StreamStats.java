@@ -37,4 +37,9 @@ public class StreamStats {
 
 		accessTimestamp = System.currentTimeMillis();
 	}
+
+	@Override
+	public String toString() {
+		return "StreamStats{" + "count=" + count + ", starttime=" + starttime + '}';
+	}
 }

@@ -50,11 +50,9 @@ public enum StreamsManager {
 		WeakHashMap<InputStream, EntryDefinition> availableInputStreams = this.availableInputStreams;
 		WeakHashMap<EntryDefinition, StreamStats> availableInputStreamsEntries = this.availableInputStreamsEntries;
 
-		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, ctx, method, availableInputStreams, availableInputStreamsEntries, ed,
+		return checkForEntryOrCreate(thiz, ctx, method, availableInputStreams, availableInputStreamsEntries,
 				InputStreamReadAdvice.class);
 
-		return availableInputStreamsEntries.get(ed);
 	}
 
 	public StreamStats get(OutputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
@@ -62,12 +60,9 @@ public enum StreamsManager {
 		WeakHashMap<OutputStream, EntryDefinition> availableOutputStreams = this.availableOutputStreams;
 		WeakHashMap<EntryDefinition, StreamStats> availableOutputStreamsEntries = this.availableOutputStreamsEntries;
 
-		EntryDefinition ed = null;
-		ed = checkForEntryOrCreate(thiz, ctx, method, availableOutputStreams, availableOutputStreamsEntries, ed,
+		return checkForEntryOrCreate(thiz, ctx, method, availableOutputStreams, availableOutputStreamsEntries,
 				OutputStreamWriteAdvice.class);
 
-		StreamStats streamStats = availableOutputStreamsEntries.get(ed);
-		return streamStats;
 	}
 
 	public StreamStats close(InputStream thiz, BaseTransformers.InterceptionContext ctx, Method method) {
@@ -91,9 +86,10 @@ public enum StreamsManager {
 		boolean doFinally = true;
 		try {
 
-			EntryDefinition ed = checkForEntryOrCreate(thiz, ctx, ctx.method, availableStreams, availableStreamsEntries,
-					null, ctx.interceptorInstance.getClass());
+			StreamStats streamStats = checkForEntryOrCreate(thiz, ctx, ctx.method, availableStreams,
+					availableStreamsEntries, ctx.interceptorInstance.getClass());
 			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+			EntryDefinition ed = availableStreams.get(thiz);
 			if (ed == null) {
 				if (logger != null) {
 					logger.error("Stream closed but not tracked: {}, {}", ctx.interceptorInstance, thiz,
@@ -104,7 +100,6 @@ public enum StreamsManager {
 				if (logger != null) {
 					logger.info("Close invoked on stream {}", ctx.interceptorInstance, ed.getId());
 				}
-				StreamStats streamStats = availableStreamsEntries.get(ed);
 
 				if (!ed.isChained()) {
 					if (streamStats != null) {
@@ -139,35 +134,39 @@ public enum StreamsManager {
 		return null;
 	}
 
-	private static <T> EntryDefinition checkForEntryOrCreate(T thiz, BaseTransformers.InterceptionContext ctx,
+	private static <T> StreamStats checkForEntryOrCreate(T thiz, BaseTransformers.InterceptionContext ctx,
 			Method method, WeakHashMap<T, EntryDefinition> availableStreams,
-			WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries, EntryDefinition ed,
+			WeakHashMap<EntryDefinition, StreamStats> availableStreamsEntries,
 			Class<? extends BaseTransformers> adviceClass) {
+		TaggedLogger logger = ctx.interceptorInstance.getLogger();
+		EntryDefinition ed = null;
 		if (!availableStreams.containsKey(thiz)) {
-
 			ed = BaseTransformers.getEntryDefinition(ed, adviceClass, ctx);
+			logger.debug("New stream {}, ed: {}", ctx, thiz, ed);
 			availableStreams.put(thiz, ed);
+
 		} else {
+			logger.debug("Known stream {}, ed: {}", ctx, thiz, ed);
 			ed = availableStreams.get(thiz);
 		}
 
-		TaggedLogger logger = ctx.interceptorInstance.getLogger();
 		if (!availableStreamsEntries.containsKey(ed)) {
 			StreamStats streamStats = new StreamStats();
-			if (logger != null) {
-				logger.debug("Creating the new stream stats: {}", ctx.interceptorInstance, ed.getId());
-			}
+			logger.debug("Creating the new stream stats: {}, {}", ctx.interceptorInstance, ed.getId(), streamStats);
 			ed.setEventType(EntryDefinition.EventType.OPEN);
 			BaseTransformers.fillDefaultValuesBefore(ed, BaseTransformers.stackThreadLocal, thiz, method, ctx);
 			streamStats.starttime = ed.getStartTime();
 			ed.addProperty("toString", String.valueOf(thiz));
 			availableStreamsEntries.put(ed, streamStats);
 			doFinally(ctx, thiz.getClass());
+			return streamStats;
+		} else {
+			StreamStats streamStats = availableStreamsEntries.get(ed);
+			logger.debug("Fetched the stream stats entry: {}, {}", ctx.interceptorInstance, ed.getId(), streamStats);
+			return streamStats;
+
 		}
-		if (logger != null) {
-			logger.debug("Created the new stream entry: {}", ctx.interceptorInstance, ed.getId());
-		}
-		return ed;
+
 	}
 
 	public WeakHashMap<EntryDefinition, StreamStats> getAvailableInputStreamsEntries() {
