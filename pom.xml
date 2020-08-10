@@ -177,7 +177,7 @@
     <modules>
         <module>remora-core</module>
         <module>remora-simple-test</module>
-        <!-- <module>remora-websphere</module> -->
+        <module>remora-websphere</module>
         <module>remora-jms</module>
         <module>remora-jboss</module>
         <module>remora-jdbc</module>

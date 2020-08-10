@@ -48,10 +48,13 @@ public class RemoraInit {
 			String adviceName = remoraAdvice.getName();
 			String key = "writer" + adviceName;
 			Configuration.set(key, "rolling file");
-			Configuration.set(key + ".file", System.getProperty(Remora.REMORA_PATH) + "/log/" + adviceName + ".log");
+			Configuration.set(key + ".file",
+					System.getProperty(Remora.REMORA_PATH) + "/log/" + adviceName + "{count}.log");
 			Configuration.set(key + ".format", "{date} [{thread}] {class}.{method}()\n\t{level}: {message}");
 			Configuration.set(key + ".tag", adviceName);
 			Configuration.set(key + ".level", "debug");
+			Configuration.set(key + ".policies", "size: 4mb");
+
 			try {
 				RemoraConfig.configure(remoraAdvice);
 				adviceList.add(remoraAdvice);

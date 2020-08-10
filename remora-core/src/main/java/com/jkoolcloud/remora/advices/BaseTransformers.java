@@ -188,11 +188,13 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition, ThreadLocal<CallStack> stackThreadLocal,
 			Object thiz, Method method, InterceptionContext ctx) {
-		if (entryDefinition.isChained()) {
-			return 0;
-		}
 		BaseTransformers interceptorInstance = ctx.interceptorInstance;
 		TaggedLogger logger = interceptorInstance.getLogger();
+		if (entryDefinition.isChained()) {
+			logger.debug("Ed {} chained, not filling in", ctx, entryDefinition);
+			return 0;
+		}
+
 		try {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
@@ -220,6 +222,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 					stackThreadLocal.set(definitions);
 				}
 				stackThreadLocal.get().push(entryDefinition);
+			} else {
+				logger.debug("StackThreadLocal null = {}, DoNotCorrelate = {}", ctx, stackThreadLocal == null,
+						interceptorInstance.doNotCorrelate);
 			}
 
 			entryDefinition.setThread(Thread.currentThread().toString());
@@ -229,7 +234,10 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 			if (!entryDefinition.isTransparent() || !(stackThreadLocal.get() instanceof EmptyStack)) {
 				OutputManager.send(entryDefinition);
+			} else {
+				logger.debug("Transparent = {}, EmptyStack = {}", ctx, !(stackThreadLocal.get() instanceof EmptyStack));
 			}
+
 		} catch (Throwable t) {
 			if (logger != null) {
 				logger.error(t, "####Advice error/fillDefaultValuesBefore: {}", ctx.interceptorInstance, t);
