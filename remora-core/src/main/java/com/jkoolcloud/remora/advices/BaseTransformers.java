@@ -171,6 +171,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 		}
 		if (!entryDefinition.isTransparent() && !(stackThreadLocal.get() instanceof EmptyStack)) {
+			ctx.interceptorInstance.getLogger().debug("Sending {},  {}", ctx, entryDefinition,
+					entryDefinition.isFinished() ? "Finished" : "Not Finished");
 			OutputManager.send(entryDefinition);
 		}
 	}
@@ -233,6 +235,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				entryDefinition.setStackTrace(getStackTrace());
 			}
 			if (!entryDefinition.isTransparent() || !(stackThreadLocal.get() instanceof EmptyStack)) {
+				logger.debug("Sending {},  {}", ctx, entryDefinition,
+						entryDefinition.isFinished() ? "Finished" : "Not Finished");
 				OutputManager.send(entryDefinition);
 			} else {
 				logger.debug("Transparent = {}, EmptyStack = {}", ctx, !(stackThreadLocal.get() instanceof EmptyStack));

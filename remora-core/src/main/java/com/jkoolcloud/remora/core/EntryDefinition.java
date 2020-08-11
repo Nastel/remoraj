@@ -31,6 +31,7 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	private static final String DEFAULT_APPL_NAME = "Java";
 	protected final String id = JUGFactoryImpl.newUUID();
 	private final Class<? extends BaseTransformers> adviceClass;
+	public boolean sentEntry;
 	private boolean transparent;
 	private boolean chained;
 	public static String vmIdentificationStatic;

@@ -117,9 +117,16 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 			}
 
 			if (entry.isFinished()) {
-				entry.exit.write(appender);
+				if (entry.sentEntry) {
+					entry.exit.write(appender);
+				} else {
+					entry.entry.write(appender);
+					entry.sentEntry = true;
+					entry.exit.write(appender);
+				}
 			} else {
 				entry.entry.write(appender);
+				entry.sentEntry = true;
 			}
 
 			// }
