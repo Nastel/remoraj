@@ -41,6 +41,14 @@
             <field-locator id="TNum" locator="TIMESTAMP" locator-type="Label" datatype="Number"/>
         </field>
 
+        <field name="bytesCount" locator="bytesCount" datatype="Number"/>
+        <field name="lastAccessed" locator="lastAccessed" datatype="Timestamp"/>
+        <field name="accessCount" locator="accessCount" datatype="Number"/>
+        <field name="PORT" locator="PORT" datatype="Number"/>
+        <field name="OFFSET" locator="OFFSET" datatype="Number"/>
+        <field name="port" locator="port" datatype="Number"/>
+        <field name="localPort" locator="localPort" datatype="Number"/>
+
         <field name="all" locator="#"/>
     </parser>
 
