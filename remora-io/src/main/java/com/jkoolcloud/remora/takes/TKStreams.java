@@ -54,13 +54,13 @@ public class TKStreams implements PluginTake {
 		sb.append("\t\"totalActiveInputSteams\": ");
 		sb.append(StreamsManager.INSTANCE.getAvailableInputStreams().size());
 		sb.append(",\n");
-		sb.append("\t\"totalUniqueInputStreams\": ");
+		sb.append("\t\"totalInputStreamEvents\": ");
 		sb.append(StreamsManager.INSTANCE.getAvailableInputStreamsEntries().size());
 		sb.append(",\n");
 		sb.append("\t\"totalActiveOutputSteams\": ");
 		sb.append(StreamsManager.INSTANCE.getAvailableOutputStreams().size());
 		sb.append(",\n");
-		sb.append("\t\"totalUniqueOutputStreams\": ");
+		sb.append("\t\"totalOutputStreamEvents\": ");
 		sb.append(StreamsManager.INSTANCE.getAvailableOutputStreamsEntries().size());
 		sb.append(",\n");
 		sb.append("\t\"activeStreamsBytesRead\": ");
