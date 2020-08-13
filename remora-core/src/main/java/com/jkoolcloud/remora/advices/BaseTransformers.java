@@ -50,48 +50,128 @@ import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.LatentMatcher;
 import net.bytebuddy.utility.JavaModule;
 
+/**
+ * Base class for {@link RemoraAdvice} witch is inherited by almost all of the advices. Here is wehre all the common
+ * manipulation for intercepted methods occurs:
+ *
+ * <p>
+ * <ul>
+ * <li>Advice listeners events
+ * <li>Filtering
+ * <li>Enabled/dissabled featur
+ * <li>Creating {@link EntryDefinition}
+ * <li>Sending {@link com.jkoolcloud.remora.core.Entry} and {@link com.jkoolcloud.remora.core.Exit}
+ * <li>Creating {@link CallStack} and correalting events
+ * </ul>
+ * <p>
+ * the entity {@link EntryDefinition} is created
+ */
 public abstract class BaseTransformers implements RemoraAdvice, Loggable {
-
+	/**
+	 * List of qualified class name begginings to be ignored.
+	 */
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public static List<String> ignores;
+
+	/**
+	 * Call stack max value.
+	 */
 	@RemoraConfig.Configurable
 	public static int callStackLimit = 100;
+
+	/**
+	 * Property that loads particualar advice. If set to false it will be ignored for loading, to load such advice you
+	 * need to restart the application
+	 */
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public boolean load = true;
+
+	/**
+	 * Enabled instrumented classes to be compiled with version prior to Java 1.5. This needed for instrumenting
+	 * Websphere 8.5.5 with Remora-stream
+	 */
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public boolean java15safe = false;
 
+	/**
+	 * If enabled Collects StackTrace of Advice intercepted methods.
+	 */
 	@RemoraConfig.Configurable
 	public boolean sendStackTrace;
+
+	/**
+	 * Max element to collect for StackTrace.
+	 */
 	@RemoraConfig.Configurable
 	private static int maxStackTraceElements = 30;
 
+	/**
+	 * Advice enabled flag. If false the interception proccess will not continue. See
+	 * {@link #prepareIntercept(Class, Object, Method, Object...)}
+	 */
 	@RemoraConfig.Configurable
 	public boolean enabled = true;
+
+	/**
+	 * Filter list applied for Advice.
+	 */
 	@RemoraConfig.Configurable
 	public List<AdviceFilter> filters = new ArrayList<>(10);
+
+	/**
+	 * LogLevel for advice.
+	 */
 	@RemoraConfig.Configurable
 	public Level logLevel = Level.OFF;
+
+	/**
+	 * Exclude collected properties for advice. See {@link EntryDefinition#addProperty(String, String)}
+	 */
 	@RemoraConfig.Configurable
 	public List<String> excludeProperties = new ArrayList<>(10);
+
+	/**
+	 * If flag set, particualr advice will not start {@link CallStack}, thus not correlating particular events. This is
+	 * needed for some "low level" interceptions, i.e. Socket or Stereams interception, witch can false-correlate
+	 * "higher level", i.e. HTTP, events.
+	 */
 	@RemoraConfig.Configurable
 	public boolean doNotCorrelate = false;
 
+	/**
+	 * ThreadLocal there {@link CallStack} is stored.
+	 */
 	public static ThreadLocal<CallStack> stackThreadLocal = new ThreadLocal<>();
+
+	/**
+	 * Adds property if the key already exists with _1, if enabled this will check other is not the same value.
+	 * Othervise no check will occur and the pproperty is added to {@link EntryDefinition} despite previos is the same.
+	 */
+	@RemoraConfig.Configurable
+	public static boolean checkCallRepeats = true;
 
 	private final static AgentBuilder agentBuilder = new AgentBuilder.Default(
 			new ByteBuddy().ignore(new LatentMatcher.Resolved<>(isSynthetic()))//
 					.with(TypeValidation.DISABLED)//
 					.with(MethodGraph.Compiler.ForDeclaredMethods.INSTANCE));
 
-	@RemoraConfig.Configurable
-	public static boolean checkCallRepeats = true;
-
+	/**
+	 * Listeners storage.
+	 */
 	public List<AdviceListener> listeners = new ArrayList<>(5);
+
+	/**
+	 * Effective logger
+	 */
 	public TaggedLogger logger;
 
+	/**
+	 * List for objects there one interception depends on another, i.e. OPEN-CLOSE relationship. The onject reference is
+	 * stored and these methods will be correlated if occured in the same instance.
+	 */
 	private static WeakHashMap<Object, EntryDefinition> trackedObjects = new WeakHashMap<>(1000);
 
+	// TODO not sure if the clenups of this is needed
 	public static class EnhancedElementMatcher<T extends TypeDescription>
 			extends ElementMatcher.Junction.AbstractBase<T> {
 
@@ -116,6 +196,11 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
+	/**
+	 * Gets the byteBudy transform.
+	 *
+	 * @return
+	 */
 	public AgentBuilder.Identified.Extendable getTransform() {
 		AgentBuilder.Transformer noop = new AgentBuilder.Transformer() {
 			@Override
@@ -142,6 +227,11 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		return type;
 	}
 
+	/**
+	 * To be ovveriden with actual Advice's class to instercept.
+	 *
+	 * @return
+	 */
 	public abstract ElementMatcher<TypeDescription> getTypeMatcher();
 
 	public abstract AgentBuilder.Transformer getAdvice();
