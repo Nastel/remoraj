@@ -33,6 +33,6 @@ public class ClassNameFilterTest {
 		ClassNameFilter classNameFilter = new ClassNameFilter();
 		classNameFilter.regex = true;
 		classNameFilter.classNames.add("com\\.jkoolcloud.*");
-		assertTrue(classNameFilter.maches(new TestClass(), TestClass.class.getMethod("main")));
+		assertTrue(classNameFilter.matches(new TestClass(), TestClass.class.getMethod("main")));
 	}
 }

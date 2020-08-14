@@ -18,6 +18,16 @@ package com.jkoolcloud.remora.advices;
 
 import java.lang.instrument.Instrumentation;
 
+/**
+ * Interface for Advices. Advices are RemoraJ classes related to {@link net.bytebuddy.asm.Advice} and supposedly have
+ * definition of class to be instrumented and have methods annotated with {@link net.bytebuddy.asm.Advice.OnMethodExit}
+ * and {@link net.bytebuddy.asm.Advice.OnMethodEnter}.
+ *
+ * Advice implementations are installed on {@link com.jkoolcloud.remora.RemoraInit} using
+ * {@link java.util.ServiceLoader}. The implementations of actual should be defined in file
+ * META-INF/services/com.jkoolcloud.remora.advices.RemoraAdvice witch contains a list of fully-qualified binary names of
+ * concrete provider classes.
+ */
 public interface RemoraAdvice {
 	void install(Instrumentation inst);
 

@@ -37,7 +37,7 @@ public class ClassNameFilter extends StatisticEnabledFilter {
 	}
 
 	@Override
-	public boolean maches(Object thiz, Method method, Object... arguments) {
+	public boolean matches(Object thiz, Method method, Object... arguments) {
 		if (regex) {
 			return classNames.stream().filter(query -> thiz.getClass().getName().matches(query)).findFirst()
 					.isPresent();

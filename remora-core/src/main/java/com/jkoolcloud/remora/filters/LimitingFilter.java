@@ -36,7 +36,7 @@ public class LimitingFilter extends StatisticEnabledFilter {
 	}
 
 	@Override
-	public boolean maches(Object thiz, Method method, Object... arguments) {
+	public boolean matches(Object thiz, Method method, Object... arguments) {
 		if (everyNth <= 1) {
 			return true;
 		}

@@ -18,6 +18,17 @@ package com.jkoolcloud.remora.filters;
 
 import java.lang.reflect.Method;
 
+/**
+ * Interface for Advice filter. Advice filter is called by
+ * {@link com.jkoolcloud.remora.advices.BaseTransformers#prepareIntercept(Class, Object, Method, Object...)} and a
+ * filter implementation is supposed to decide if the implementation is supposed to be processed further.
+ * <p>
+ * As the advice filter is supposed to be created by {@link com.jkoolcloud.remora.RemoraConfig} or REST endpoint on
+ * remora-config module it should have default not arguments constructor.
+ * <p>
+ * For a filter configuration use fields annotated with {@link com.jkoolcloud.remora.RemoraConfig.Configurable}, so it
+ * can be altered using REST and configuration file.
+ */
 public interface AdviceFilter {
 
 	void countExcluded();
@@ -26,13 +37,31 @@ public interface AdviceFilter {
 
 	boolean excludeWholeStack();
 
-	boolean maches(Object thiz, Method method, Object... arguments);
+	/**
+	 * For a filter you need to override `matches` method, matches should return true if a filter maches. Method
+	 * `matches` has a property `thiz` with a reference for intercepted object.
+	 */
 
+	boolean matches(Object thiz, Method method, Object... arguments);
+
+	/**
+	 * Filter has to modes `INCLUDE` and `EXCLUDE`, each advice calls default filters method
+	 * {@link #intercept(Object, Method, Object...)} witch determine, by the mode set, if the intercept should be
+	 * processed further.
+	 *
+	 * @return
+	 */
 	Mode getMode();
 
+	/**
+	 * default implementation of method making decision either the instrumentation should be processed further based on
+	 * selected {@link Mode}. Filter can include everything that matches or, otherwise, exclude ones that matches.
+	 * That's determined by mode. So the implementation itself is responsible only for determining if the filter
+	 * matches.
+	 */
 	default boolean intercept(Object thiz, Method method, Object... arguments) {
 		countInvoked();
-		boolean maches = maches(thiz, method, arguments);
+		boolean maches = matches(thiz, method, arguments);
 
 		if (getMode().equals(Mode.INCLUDE)) {
 			if (!maches) {
@@ -50,7 +79,14 @@ public interface AdviceFilter {
 	}
 
 	enum Mode {
-		INCLUDE, EXCLUDE
+		/**
+		 * The filter includes <b>only</b> the interceptions matching filter.
+		 */
+		INCLUDE,
+		/**
+		 * The filters excludes from further processing if filter matches.
+		 */
+		EXCLUDE
 	}
 
 }

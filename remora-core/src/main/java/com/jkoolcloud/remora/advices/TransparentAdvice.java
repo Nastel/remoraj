@@ -23,7 +23,10 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the advice that should not create {@link com.jkoolcloud.remora.core.EntryDefinition}, instead it should poll
- * one from stack and add the required parameters
+ * one from stack and add the required parameters. This is useful for a particular methods there is no need to create
+ * {@link com.jkoolcloud.remora.core.EntryDefinition} but to collect particular properties, i.e. CallableStatement
+ * instrumentation needs to collect setInt, setText etc. bus you don't want to have an event for every of these, but one
+ * event containing all set parameters.
  */
 
 @Target(ElementType.TYPE)

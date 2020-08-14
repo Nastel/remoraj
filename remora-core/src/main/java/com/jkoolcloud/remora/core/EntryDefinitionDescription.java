@@ -16,6 +16,7 @@
 
 package com.jkoolcloud.remora.core;
 
+//TODO is that usefull?
 public interface EntryDefinitionDescription {
 	void entry(Entry entry);
 
