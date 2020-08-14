@@ -50,7 +50,7 @@ import net.bytebuddy.matcher.LatentMatcher;
 import net.bytebuddy.utility.JavaModule;
 
 /**
- * Base class for {@link RemoraAdvice} witch is inherited by almost all of the advices. Here is wehre all the common
+ * Base class for {@link RemoraAdvice} witch is inherited by almost all of the advices. Here is where all the common
  * manipulation for intercepted methods occurs:
  *
  * <p>
@@ -79,7 +79,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public static int callStackLimit = 100;
 
 	/**
-	 * Property that loads particualar advice. If set to false it will be ignored for loading, to load such advice you
+	 * Property that loads particular advice. If set to false it will be ignored for loading, to load such advice you
 	 * need to restart the application
 	 */
 	@RemoraConfig.Configurable(configurableOnce = true)
@@ -87,7 +87,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	/**
 	 * Enabled instrumented classes to be compiled with version prior to Java 1.5. This needed for instrumenting
-	 * Websphere 8.5.5 with Remora-stream
+	 * WebSphere 8.5.5 with Remora-stream
 	 */
 	@RemoraConfig.Configurable(configurableOnce = true)
 	public boolean java15safe = false;
@@ -144,7 +144,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	/**
 	 * Adds property if the key already exists with _1, if enabled this will check other is not the same value.
-	 * Otherwise no check will occur and the property is added to {@link EntryDefinition} despite previos is the same.
+	 * Otherwise no check will occur and the property is added to {@link EntryDefinition} despite previous is the same.
 	 */
 	@RemoraConfig.Configurable
 	public static boolean checkCallRepeats = true;
