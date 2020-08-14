@@ -20,7 +20,6 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -106,7 +105,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	private static int maxStackTraceElements = 30;
 
 	/**
-	 * Advice enabled flag. If false the interception proccess will not continue. See
+	 * Advice enabled flag. If false the interception process will not continue. See
 	 * {@link #prepareIntercept(Class, Object, Method, Object...)}
 	 */
 	@RemoraConfig.Configurable
@@ -131,9 +130,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public List<String> excludeProperties = new ArrayList<>(10);
 
 	/**
-	 * If flag set, particualr advice will not start {@link CallStack}, thus not correlating particular events. This is
-	 * needed for some "low level" interceptions, i.e. Socket or Stereams interception, witch can false-correlate
-	 * "higher level", i.e. HTTP, events.
+	 * If flag set, particular advice will not start {@link CallStack}, thus not correlating particular events. This is
+	 * needed for some "low level" interceptions, i.e. Socket or Streams interception, witch can false-correlate "higher
+	 * level", i.e. HTTP, events.
 	 */
 	@RemoraConfig.Configurable
 	public boolean doNotCorrelate = false;
@@ -145,7 +144,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	/**
 	 * Adds property if the key already exists with _1, if enabled this will check other is not the same value.
-	 * Othervise no check will occur and the pproperty is added to {@link EntryDefinition} despite previos is the same.
+	 * Otherwise no check will occur and the property is added to {@link EntryDefinition} despite previos is the same.
 	 */
 	@RemoraConfig.Configurable
 	public static boolean checkCallRepeats = true;
@@ -166,8 +165,8 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	public TaggedLogger logger;
 
 	/**
-	 * List for objects there one interception depends on another, i.e. OPEN-CLOSE relationship. The onject reference is
-	 * stored and these methods will be correlated if occured in the same instance.
+	 * List for objects there one interception depends on another, i.e. OPEN-CLOSE relationship. The object reference is
+	 * stored and these methods will be correlated if occurred in the same instance.
 	 */
 	private static WeakHashMap<Object, EntryDefinition> trackedObjects = new WeakHashMap<>(1000);
 
@@ -197,7 +196,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	}
 
 	/**
-	 * Gets the byteBudy transform.
+	 * Gets the ByteBuddy transform.
 	 *
 	 * @return
 	 */
@@ -228,14 +227,34 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	}
 
 	/**
-	 * To be ovveriden with actual Advice's class to instercept.
+	 * To be overridden with actual Advice's class to intercept.
 	 *
 	 * @return
 	 */
 	public abstract ElementMatcher<TypeDescription> getTypeMatcher();
 
+	/**
+	 * To be overridden with actual Advice's class to advice.
+	 *
+	 * @return
+	 */
 	public abstract AgentBuilder.Transformer getAdvice();
 
+	/**
+	 * Advices called method called by advice method marked by {@link net.bytebuddy.asm.Advice.OnMethodExit} to process
+	 * common path for instrumentation. This method is responsible for timing the method, ending and sending
+	 * {@link EntryDefinition}.
+	 *
+	 *
+	 * @param entryDefinition
+	 *            entity to operate on
+	 * @param startTime
+	 *            method startTime
+	 * @param exception
+	 *            native method thrown exception
+	 * @param ctx
+	 *            context
+	 */
 	public static void fillDefaultValuesAfter(EntryDefinition entryDefinition, long startTime,
 			@Advice.Thrown Throwable exception, InterceptionContext ctx) {
 		if (entryDefinition.isChained()) {
@@ -267,6 +286,14 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
+	/**
+	 * Common advice method to handle native method exception. I will set {@link EntryDefinition} field exception.
+	 *
+	 * @param entryDefinition
+	 * @param exception
+	 * @param ctx
+	 */
+
 	public static void handleInstrumentedMethodException(EntryDefinition entryDefinition, Throwable exception,
 			InterceptionContext ctx) {
 		entryDefinition.setException(exception);
@@ -277,6 +304,17 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 					entryDefinition.getClazz());
 		}
 	}
+
+	/**
+	 * Advices called method called by advice method marked by {@link net.bytebuddy.asm.Advice.OnMethodEnter} to process
+	 * common path for {@link EntryDefinition} creation, setting startTime.
+	 *
+	 * The method will fill {@link EntryDefinition} fields: class, name, starttime, adviceClass, thread.
+	 *
+	 * If the interception is Chained it will be skipped, as the {@link EntryDefinition} is already filed in by first
+	 * method call to fillDefaultValuesBefore().
+	 * 
+	 */
 
 	public static long fillDefaultValuesBefore(EntryDefinition entryDefinition, ThreadLocal<CallStack> stackThreadLocal,
 			Object thiz, Method method, InterceptionContext ctx) {
@@ -340,6 +378,16 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		return System.nanoTime();
 	}
 
+	/**
+	 * Method to be called when OPEN-CLOSE relationship bounded advices annotated with {@link Tracked} reaches CLOSE
+	 * call.
+	 *
+	 * @param thiz
+	 *            object
+	 * @param entryDefinition
+	 *            entry definition
+	 *
+	 */
 	public static void untrack(Object thiz, EntryDefinition entryDefinition) {
 		EntryDefinition remove = trackedObjects.remove(thiz);
 		if (remove != null) {
@@ -391,6 +439,14 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 	}
 
+	/**
+	 * Register {@link AdviceListener} for Advices.
+	 *
+	 * @param adviceListener
+	 *            advice listener to be regsitered
+	 *
+	 */
+
 	public static void registerListener(Class<? extends AdviceListener> adviceListener) {
 		for (RemoraAdvice registeredAdvice : AdviceRegistry.INSTANCE.getRegisteredAdvices()) {
 			if (registeredAdvice instanceof BaseTransformers) {
@@ -402,6 +458,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 		}
 	}
+
+	/**
+	 * Common method for generating StackTrace entry.
+	 *
+	 * @return
+	 */
 
 	public static String getStackTrace() {
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
@@ -425,6 +487,15 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 		return sb.toString();
 	}
+
+	/**
+	 * Method to be called from advices after() method annotated with {@link net.bytebuddy.asm.Advice.OnMethodExit}
+	 * finally block. The method itself should be wrapped with TRY-CATCH block to prevent native method break, and on
+	 * FINALLY block this common method is called.
+	 *
+	 * @param ctx
+	 * @param caller
+	 */
 
 	public static void doFinally(InterceptionContext ctx, Class<?> caller) {
 		TaggedLogger logger = ctx.interceptorInstance.getLogger();
@@ -468,6 +539,19 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
+	/**
+	 * Method for determine that particular interception is chained. Most of the intercepted method in RemoraJ is
+	 * instrumented on Interface basis, so it will intercept all the methods implementing such interface. In Object
+	 * Oriented application it's common to call super class in particular implementations, but for RemoraJ there is not
+	 * much added value on such methods, so they're generally skipped, marking them as "chained".
+	 *
+	 *
+	 * @param adviceClass
+	 * @param logger
+	 * @param lastED
+	 * @param ctx
+	 * @return
+	 */
 	public static boolean isChainedClassInterception(Class<?> adviceClass, TaggedLogger logger, EntryDefinition lastED,
 			InterceptionContext ctx) {
 		if (lastED == null) {
@@ -488,6 +572,11 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		return false;
 	}
 
+	/**
+	 * Common advice method to handle instrumentation exception. The advice code should be wrapped with TRY-CATCH, for a
+	 * common advice instrumentation handling this method should be called.
+	 */
+
 	public static void handleAdviceException(Throwable t, InterceptionContext ctx) {
 		BaseTransformers adviceInstance = ctx.interceptorInstance;
 		TaggedLogger logger = adviceInstance.getLogger();
@@ -499,6 +588,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
+	/**
+	 * Default class ignores.
+	 *
+	 * @return
+	 */
+
 	protected static ElementMatcher<NamedElement> getClassIgnores() {
 		return nameStartsWith("net.openhft") //
 				.or(nameStartsWith("java.lang")) //
@@ -506,6 +601,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				.or(nameStartsWith("net.bytebuddy")) //
 				.or(getFromConfig());
 	}
+
+	/**
+	 * Get additional ignores from configuration.
+	 * 
+	 * @return
+	 */
 
 	private static ElementMatcher<NamedElement> getFromConfig() {
 		ElementMatcher.Junction<NamedElement> ad = none();
@@ -519,6 +620,14 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		return ad;
 	}
 
+	/**
+	 * Get's advice instance by name.
+	 *
+	 * @param tClass
+	 * @param <T>
+	 * @return
+	 */
+
 	@SuppressWarnings("unchecked")
 	private static <T extends BaseTransformers> T getAdviceInstance(Class<T> tClass) {
 		try {
@@ -527,6 +636,18 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			return (T) AdviceRegistry.INSTANCE.getRegisteredAdvices().get(0);
 		}
 	}
+
+	/**
+	 * Method that's called on before() method annotated with {@link net.bytebuddy.asm.Advice.OnMethodEnter}. It should
+	 * be first instrumentation call and it's responsible for creating an interception context
+	 * {@link InterceptionContext}, checking that particular advice is enabled, and handle filters.
+	 *
+	 * @param tClass
+	 * @param thiz
+	 * @param method
+	 * @param arguments
+	 * @return
+	 */
 
 	public static InterceptionContext prepareIntercept(Class<? extends BaseTransformers> tClass, Object thiz,
 			Method method, Object... arguments) {
@@ -559,6 +680,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		return context;
 	}
 
+	/**
+	 * Interception context responsible for moving commonly required entities for interception. Such as adviceInstance,
+	 * EntryDefinition and method. You get the logger from {@link #interceptorInstance}, and it should be supplied for
+	 * logging methods as firs parameters to determine the log level for particular Advice on time.
+	 *
+	 */
 	public static class InterceptionContext {
 		public boolean intercept;
 		public EntryDefinition ed;
@@ -571,12 +698,21 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
+	/**
+	 * Get a listener for ByteBuddy transformation events.
+	 *
+	 * @return ByteBuddy listener
+	 */
 	protected AgentBuilder.Listener getListener() {
 		return new TransformationLoggingListener(logger);
 	}
 
 	@Override
 
+	/**
+	 * Common Advice install logic. It's called once on RemoraJ modules load, and should be overridden if particular
+	 * advice needs to do some logic on module install.
+	 */
 	public void install(Instrumentation instrumentation) {
 		logger = Logger.tag(getName());
 		if (load) {
@@ -586,10 +722,14 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		}
 	}
 
-	public static String format(String pattern, Object... args) {
-		return MessageFormat.format(pattern, args);
-	}
-
+	/**
+	 * Create or find an {@link EntryDefinition} for particular instrumentation case.
+	 *
+	 * @param ed
+	 * @param adviceClass
+	 * @param ctx
+	 * @return
+	 */
 	public static EntryDefinition getEntryDefinition(EntryDefinition ed, Class<? extends BaseTransformers> adviceClass,
 			InterceptionContext ctx) {
 		if (ed != null) {
@@ -655,6 +795,17 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			}
 		}
 	}
+
+	/**
+	 * Continence method for checking that entryDefinition on particular Advices after() call is not null. On
+	 * instrumented application {@link EntryDefinition} is created on before() method and should be transferred to
+	 * after() method using ByteBuddy {@link Advice.Local} annotated parameter. If this particular method is called on
+	 * test it might be null, and in this case finally block shouldn't be called.
+	 *
+	 * @param ed
+	 * @param ctx
+	 * @return
+	 */
 
 	public static boolean checkEntryDefinition(EntryDefinition ed, InterceptionContext ctx) {
 		if (ed == null) { // ed expected to be null if not created by entry, that's for duplicates

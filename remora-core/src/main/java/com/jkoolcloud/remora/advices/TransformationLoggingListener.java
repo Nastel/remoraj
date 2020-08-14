@@ -16,6 +16,8 @@
 
 package com.jkoolcloud.remora.advices;
 
+import static java.text.MessageFormat.format;
+
 import org.tinylog.TaggedLogger;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -35,8 +37,8 @@ public class TransformationLoggingListener extends AgentBuilder.Listener.Adapter
 	public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
 			boolean loaded, DynamicType dynamicType) {
 		if (logger == null) {
-			System.out.println(BaseTransformers.format(PREFIX + " TRANSFORM {} [{}, {}, loaded={}]",
-					typeDescription.getName(), classLoader, module, loaded));
+			System.out.println(format(PREFIX + " TRANSFORM {} [{}, {}, loaded={}]", typeDescription.getName(),
+					classLoader, module, loaded));
 		} else {
 			logger.info(PREFIX + " TRANSFORM {} [{}, {}, loaded={}]", typeDescription.getName(), classLoader, module,
 					typeDescription);
@@ -49,8 +51,8 @@ public class TransformationLoggingListener extends AgentBuilder.Listener.Adapter
 			Throwable throwable) {
 
 		if (logger == null) {
-			System.out.println(BaseTransformers.format(PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName,
-					classLoader, module, loaded));
+			System.out.println(
+					format(PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module, loaded));
 			throwable.printStackTrace();
 		} else {
 			logger.info(throwable, PREFIX + " ERROR {} [{}, {}, loaded={}] \n", typeName, classLoader, module, loaded);
