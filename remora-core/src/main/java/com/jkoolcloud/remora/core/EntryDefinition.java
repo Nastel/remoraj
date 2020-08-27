@@ -84,6 +84,11 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	private boolean finished;
 
 	/**
+	 *
+	 */
+	public String methodClass;
+
+	/**
 	 * Flags to check property to already known value. See {@link BaseTransformers#checkCallRepeats}
 	 */
 	private boolean checkLastPropertyValue;
@@ -261,6 +266,10 @@ public class EntryDefinition implements EntryDefinitionDescription {
 	public void setName(String name) {
 		entry.name = name;
 		exit.name = name;
+	}
+
+	public String getName() {
+		return entry.name;
 	}
 
 	/**

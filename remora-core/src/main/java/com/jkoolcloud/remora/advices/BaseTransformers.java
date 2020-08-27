@@ -22,6 +22,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.tinylog.Level;
 import org.tinylog.Logger;
@@ -77,6 +78,12 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	 */
 	@RemoraConfig.Configurable
 	public static int callStackLimit = 100;
+
+	/**
+	 * Add {@link EntryDefinition} id to stacktrace
+	 */
+	@RemoraConfig.Configurable
+	private static boolean addIdsToStackTrace = true;
 
 	/**
 	 * Property that loads particular advice. If set to false it will be ignored for loading, to load such advice you
@@ -336,6 +343,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 
 			if (method != null) {
 				entryDefinition.setName(method.getName());
+				entryDefinition.methodClass = method.getDeclaringClass().getName();
 			} else {
 				if (logger != null) {
 					logger.info("#Method not filled", ctx.interceptorInstance);
@@ -472,6 +480,14 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		sb.append("Stack length: ");
 		sb.append(stackTrace.length);
 		sb.append("\n ");
+		Map<String, String> idsFromCallStack = null;
+		if (addIdsToStackTrace) {
+			idsFromCallStack = stackThreadLocal.get().stream()
+					.collect(Collectors.toMap(
+							entryDefinition -> entryDefinition.methodClass + "." + entryDefinition.getName(),
+							entryDefinition -> entryDefinition.getId()));
+		}
+
 		for (StackTraceElement element : stackTrace) {
 			i++;
 			if (i >= maxStackTraceElements) {
@@ -482,6 +498,16 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			sb.append(".");
 			sb.append(element.getMethodName());
 			sb.append("()");
+
+			if (idsFromCallStack != null && addIdsToStackTrace) {
+				String s = idsFromCallStack.get(element.getClassName() + "." + element.getMethodName());
+				if (s != null) {
+					sb.append(" [");
+					sb.append(s);
+					sb.append("]");
+				}
+			}
+
 			sb.append("\r\n\t ");
 
 		}
