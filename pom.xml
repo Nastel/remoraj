@@ -193,7 +193,7 @@
         <module>remora-control</module>
         <module>remora-socket</module>
         <module>remora-io</module>
+        <module>remora-thraeads</module>
         <module>remora--package</module>
-
     </modules>
 </project>

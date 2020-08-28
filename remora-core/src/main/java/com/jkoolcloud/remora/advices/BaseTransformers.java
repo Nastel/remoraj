@@ -481,7 +481,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		sb.append(stackTrace.length);
 		sb.append("\n ");
 		Map<String, String> idsFromCallStack = null;
-		if (addIdsToStackTrace) {
+		if (addIdsToStackTrace && stackThreadLocal.get() != null) {
 			idsFromCallStack = stackThreadLocal.get().stream()
 					.collect(Collectors.toMap(
 							entryDefinition -> entryDefinition.methodClass + "." + entryDefinition.getName(),
@@ -620,7 +620,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	 * @return
 	 */
 
-	protected static ElementMatcher<NamedElement> getClassIgnores() {
+	protected ElementMatcher<NamedElement> getClassIgnores() {
 		return nameStartsWith("net.openhft") //
 				.or(nameStartsWith("java.lang")) //
 				.or(nameStartsWith("com.jkoolcloud.remora")) //
@@ -634,7 +634,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	 * @return
 	 */
 
-	private static ElementMatcher<NamedElement> getFromConfig() {
+	protected ElementMatcher<NamedElement> getFromConfig() {
 		ElementMatcher.Junction<NamedElement> ad = none();
 		if (ignores == null) {
 			return ad;

@@ -98,18 +98,19 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static void before(@Advice.This Object thiz, //
 			@Advice.AllArguments Object[] arguments, //
 			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed,
-@Advice.Local("context") InterceptionContext ctx, //
+			@Advice.Local("ed") EntryDefinition ed,//
+            @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-            if (!intercept(${adviceClassName}Advice.class, thiz, method, ctx, arguments)) {
+            ctx = prepareIntercept(${adviceClassName}Advice.class, thiz, method, arguments);
+            if (!ctx.intercept) {
                 return;
             }
 			ed = getEntryDefinition(ed, ${adviceClassName}Advice.class, ctx);;
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, ctx  );
+            handleAdviceException(t, ctx);
 		}
 	}
 
@@ -133,19 +134,21 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Origin Method method, //
 			@Advice.AllArguments Object[] arguments, //
 			// @Advice.Return Object returnValue, // //TODO needs separate Advice capture for void type
-			@Advice.Thrown Throwable exception, @Advice.Local("ed") EntryDefinition ed,
-@Advice.Local("context") InterceptionContext ctx, //
+			@Advice.Thrown Throwable exception, //
+            @Advice.Local("ed") EntryDefinition ed,//
+            @Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-		    if (!intercept(${adviceClassName}Advice.class, thiz, method, ctx, arguments)) {
-             return;
+            ctx = prepareIntercept(${adviceClassName}Advice.class, thiz, method, arguments);
+            if (!ctx.intercept) {
+            return;
             }
-        doFinally = checkEntryDefinition(ed, ctx);
+            doFinally = checkEntryDefinition(ed, ctx);
 
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
-			handleAdviceException(t, ctx.interceptorInstance, ctx  );
+			handleAdviceException(t, ctx  );
 		} finally {
 			if (doFinally) {
 				doFinally(ctx, obj.getClass());

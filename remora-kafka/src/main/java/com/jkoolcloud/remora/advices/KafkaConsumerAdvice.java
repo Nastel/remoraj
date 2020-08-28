@@ -88,7 +88,8 @@ public class KafkaConsumerAdvice extends BaseTransformers implements RemoraAdvic
 			@Advice.Argument(8) Object key, //
 			@Advice.Argument(9) Object value, //
 			@Advice.Argument(10) Headers headers, //
-			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
+			@Advice.Local("ed") EntryDefinition ed, //
+			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime)
 	//
 	{
