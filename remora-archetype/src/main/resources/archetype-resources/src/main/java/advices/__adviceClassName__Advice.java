@@ -20,23 +20,19 @@
 
 package ${package}.advices;
 
-import net.bytebuddy.asm.Advice;
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
 
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.NamedElement;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import net.bytebuddy.description.method.MethodDescription;
 
 
 public class ${adviceClassName}Advice extends BaseTransformers implements RemoraAdvice {
@@ -44,9 +40,6 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 	public static final String ADVICE_NAME = "${adviceClassName}Advice";
 	public static String[] INTERCEPTING_CLASS = { "<CHANGE HERE>" };
 	public static String INTERCEPTING_METHOD = "<CHANGE HERE>";
-
-	public static boolean logging = false;
-
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to
@@ -140,7 +133,7 @@ public class ${adviceClassName}Advice extends BaseTransformers implements Remora
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-            ctx = prepareIntercept(${adviceClassName}Advice.class, thiz, method, arguments);
+            ctx = prepareIntercept(${adviceClassName}Advice.class, obj, method, arguments);
             if (!ctx.intercept) {
             return;
             }

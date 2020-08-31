@@ -10,10 +10,10 @@
     </parent>
     <packaging>jar</packaging>
 
-    <artifactId>${artifactId}</artifactId>
+    <artifactId>remora-bussines-methods</artifactId>
 
-    <name>${artifactId}</name>
-    <description>A simple ${artifactId}.</description>
+    <name>remora-bussines-methods</name>
+    <description>A simple remora-bussines-methods.</description>
     <url>https://github.com/Nastel/</url>
 
     <properties>
@@ -105,7 +105,7 @@
                     <artifactSet>
 
                         <includes>
-                            <include>com.jkoolcloud.remora:${artifactId}</include>
+                            <include>com.jkoolcloud.remora:remora-bussines-methods</include>
                         </includes>
                     </artifactSet>
                 </configuration>
@@ -124,15 +124,14 @@
                 <version>3.1.0</version>
             </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.2.0</version>
-      </plugin>
-    </plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+        </plugins>
 
     </build>
-
 
 
 </project>
