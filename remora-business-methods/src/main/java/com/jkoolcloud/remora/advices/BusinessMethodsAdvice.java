@@ -39,7 +39,7 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class BussinesMethodsAdvice extends BaseTransformers implements RemoraAdvice {
+public class BusinessMethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "BussinesMethodsAdvice";
 	public static final String CONFIG_BUSSINESS_METHOD_PROPERTIES = "/config/trackedMethods.properties";
@@ -81,8 +81,8 @@ public class BussinesMethodsAdvice extends BaseTransformers implements RemoraAdv
 	}
 
 	AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(BussinesMethodsAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), BussinesMethodsAdvice.class.getName());
+			.include(BusinessMethodsAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), BusinessMethodsAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -109,11 +109,11 @@ public class BussinesMethodsAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(BussinesMethodsAdvice.class, thiz, method, arguments);
+			ctx = prepareIntercept(BusinessMethodsAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, BussinesMethodsAdvice.class, ctx);
+			ed = getEntryDefinition(ed, BusinessMethodsAdvice.class, ctx);
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
@@ -148,7 +148,7 @@ public class BussinesMethodsAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(BussinesMethodsAdvice.class, obj, method, arguments);
+			ctx = prepareIntercept(BusinessMethodsAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
