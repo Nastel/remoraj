@@ -51,7 +51,7 @@ public interface AdviceListener {
 	 * @param adviceInstance
 	 *            Interceptor instance.
 	 * @param thiz
-	 *            The object neing intercepted.
+	 *            The object being intercepted. NOTE that might be nul if intercepted method is static.
 	 * @param method
 	 *            Intercepted method.
 	 */

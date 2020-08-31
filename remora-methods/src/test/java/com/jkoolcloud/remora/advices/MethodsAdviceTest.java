@@ -10,13 +10,13 @@ import org.junit.Test;
 //@RunWith(PowerMockRunner.class)
 //@PrepareForTest({WebApp.class})
 //@SuppressStaticInitializationFor({""})
-public class BussinesMethodsAdviceTest {
+public class MethodsAdviceTest {
 
 	@Test
 	public void testFillClassAndMethodList() throws NoSuchMethodException {
 		String[] interceptionEntries = { "com.nastel.bank.DbUtils.getUserId()",
 				"com.nastel.bank.DbUtils.getBalance()" };
-		BussinesMethodsAdvice bma = new BussinesMethodsAdvice();
+		MethodsAdvice bma = new MethodsAdvice();
 		bma.fillClassAndMethodList(Arrays.asList(interceptionEntries).stream());
 
 		assertTrue(bma.instrumentedClasses.contains("com.nastel.bank.DbUtils"));

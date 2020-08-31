@@ -336,9 +336,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
-				if (logger != null) {
-					logger.error("\"This\" not filled", ctx.interceptorInstance);
-				}
+				entryDefinition.setClazz(method.getDeclaringClass().getName());
 			}
 
 			if (method != null) {
@@ -350,7 +348,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 				}
 			}
 
-			if (interceptorInstance.getClass().isAnnotationPresent(Tracked.class)) {
+			if (interceptorInstance.getClass().isAnnotationPresent(Tracked.class) && thiz != null) {
 				trackedObjects.put(thiz, entryDefinition);
 			}
 
@@ -485,7 +483,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			idsFromCallStack = stackThreadLocal.get().stream()
 					.collect(Collectors.toMap(
 							entryDefinition -> entryDefinition.methodClass + "." + entryDefinition.getName(),
-							entryDefinition -> entryDefinition.getId()));
+							entryDefinition -> entryDefinition.getId(), (previous, other) -> previous));
 		}
 
 		for (StackTraceElement element : stackTrace) {

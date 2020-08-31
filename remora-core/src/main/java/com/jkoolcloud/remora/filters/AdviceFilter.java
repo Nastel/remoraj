@@ -39,7 +39,8 @@ public interface AdviceFilter {
 
 	/**
 	 * For a filter you need to override `matches` method, matches should return true if a filter maches. Method
-	 * `matches` has a property `thiz` with a reference for intercepted object.
+	 * `matches` has a property `thiz` with a reference for intercepted object. NOTE that might be nul if intercepted
+	 * method is static.
 	 */
 
 	boolean matches(Object thiz, Method method, Object... arguments);

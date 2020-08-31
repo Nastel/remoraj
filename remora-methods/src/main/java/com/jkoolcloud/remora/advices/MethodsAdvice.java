@@ -39,9 +39,9 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class BusinessMethodsAdvice extends BaseTransformers implements RemoraAdvice {
+public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "BussinesMethodsAdvice";
+	public static final String ADVICE_NAME = "BusinessMethodsAdvice";
 	public static final String CONFIG_BUSSINESS_METHOD_PROPERTIES = "/config/trackedMethods.properties";
 	protected List<String> classAndMethodList;
 	protected Set<String> instrumentedClasses;
@@ -81,8 +81,8 @@ public class BusinessMethodsAdvice extends BaseTransformers implements RemoraAdv
 	}
 
 	AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(BusinessMethodsAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
-			.advice(methodMatcher(), BusinessMethodsAdvice.class.getName());
+			.include(MethodsAdvice.class.getClassLoader()).include(RemoraConfig.INSTANCE.classLoader)//
+			.advice(methodMatcher(), MethodsAdvice.class.getName());
 
 	/**
 	 * Advices before method is called before instrumented method code
@@ -109,11 +109,11 @@ public class BusinessMethodsAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("context") InterceptionContext ctx, //
 			@Advice.Local("startTime") long startTime) {
 		try {
-			ctx = prepareIntercept(BusinessMethodsAdvice.class, thiz, method, arguments);
+			ctx = prepareIntercept(MethodsAdvice.class, thiz, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}
-			ed = getEntryDefinition(ed, BusinessMethodsAdvice.class, ctx);
+			ed = getEntryDefinition(ed, MethodsAdvice.class, ctx);
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
@@ -148,7 +148,7 @@ public class BusinessMethodsAdvice extends BaseTransformers implements RemoraAdv
 			@Advice.Local("startTime") long startTime) {
 		boolean doFinally = true;
 		try {
-			ctx = prepareIntercept(BusinessMethodsAdvice.class, obj, method, arguments);
+			ctx = prepareIntercept(MethodsAdvice.class, obj, method, arguments);
 			if (!ctx.intercept) {
 				return;
 			}

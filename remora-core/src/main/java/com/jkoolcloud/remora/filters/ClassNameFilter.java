@@ -42,7 +42,7 @@ public class ClassNameFilter extends StatisticEnabledFilter {
 			return classNames.stream().filter(query -> thiz.getClass().getName().matches(query)).findFirst()
 					.isPresent();
 		} else {
-			return classNames.contains(thiz.getClass().getName());
+			return classNames.contains(thiz == null ? thiz.getClass().getName() : method.getDeclaringClass().getName());
 		}
 	}
 
