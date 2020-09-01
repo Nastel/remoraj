@@ -159,7 +159,7 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 			handleAdviceException(t, ctx);
 		} finally {
 			if (doFinally) {
-				doFinally(ctx, obj.getClass());
+				doFinally(ctx, obj == null ? method.getDeclaringClass() : obj.getClass());
 			}
 		}
 
