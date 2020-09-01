@@ -17,6 +17,7 @@
 package com.jkoolcloud.remora.advices;
 
 import static com.jkoolcloud.remora.Remora.REMORA_PATH;
+import static java.nio.file.StandardOpenOption.*;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
@@ -24,6 +25,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,8 +46,10 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "BusinessMethodsAdvice";
 	public static final String CONFIG_BUSSINESS_METHOD_PROPERTIES = "/config/trackedMethods.properties";
-	protected List<String> classAndMethodList;
-	protected Set<String> instrumentedClasses;
+	public List<String> classAndMethodList = new ArrayList<>();
+	public Set<String> instrumentedClasses = new HashSet<>();
+	public static final String REMORA_BASE_PATH = System.getProperty(REMORA_PATH);
+	public static final Path CONFIGURATION_PATH = Paths.get(REMORA_BASE_PATH + CONFIG_BUSSINESS_METHOD_PROPERTIES);
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -175,9 +180,7 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	private void readConfigurationFile() {
-		String remoraBasePath = System.getProperty(REMORA_PATH);
-		Path path = Paths.get(remoraBasePath + CONFIG_BUSSINESS_METHOD_PROPERTIES);
-		try (Stream<String> lines = Files.lines(path)) {
+		try (Stream<String> lines = Files.lines(CONFIGURATION_PATH)) {
 			fillClassAndMethodList(lines);
 		} catch (IOException e) {
 			logger.error(e);
@@ -189,6 +192,12 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 		classAndMethodList = lines.map(line -> line.substring(0, line.indexOf('('))).collect(Collectors.toList());
 		instrumentedClasses = classAndMethodList.stream().map(entry -> entry.substring(0, entry.lastIndexOf('.')))
 				.collect(Collectors.toSet());
+	}
+
+	public void writeConfigurationFiles() throws IOException {
+		Files.write(CONFIGURATION_PATH,
+				classAndMethodList.stream().map(line -> line + "()").collect(Collectors.toList()),
+				new java.nio.file.StandardOpenOption[] { WRITE, CREATE, TRUNCATE_EXISTING });
 	}
 
 	@Override
