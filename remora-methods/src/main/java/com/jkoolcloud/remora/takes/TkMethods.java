@@ -31,11 +31,11 @@ import org.takes.rs.RsText;
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.advices.MethodsAdvice;
 
-public class TKMethods implements PluginTake {
+public class TkMethods implements PluginTake {
 
 	@Override
 	public String getEnpointPath() {
-		return "/methods(/)(?<method>[^/]+)";
+		return "/methods?/?(?<method>[^/]+)";
 	}
 
 	@Override
@@ -49,12 +49,15 @@ public class TKMethods implements PluginTake {
 			String path = new RqHref.Base(req).href().path();
 			Pattern pattern = Pattern.compile("/methods/(?<method>[^/]+)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(path);
+			// TODO check that corresponds to actual class pattern
 			if (matcher.matches()) {
 				String instrumentMethod = matcher.group("method");
-				adviceByName.classAndMethodList
-						.add(instrumentMethod.substring(instrumentMethod.length() - 2).equals("()")
-								? instrumentMethod.substring(0, instrumentMethod.length() - 2) : instrumentMethod);
+				String classAndMethod = instrumentMethod.substring(instrumentMethod.length() - 2).equals("()")
+						? instrumentMethod.substring(0, instrumentMethod.length() - 2) : instrumentMethod;
+				adviceByName.classAndMethodList.add(classAndMethod);
 				adviceByName.writeConfigurationFiles();
+
+				classAndMethod.substring(0, classAndMethod.lastIndexOf("."));
 				return new RsText("OK");
 			} else {
 				return new RsText("Pattern not matched");

@@ -52,7 +52,7 @@ public class TKMethodsTest {
 		advice.install(mock(Instrumentation.class));
 
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(advice));
-		String s = new RsPrint(new TKMethods().act(new RqFake())).printBody();
+		String s = new RsPrint(new TkMethods().act(new RqFake())).printBody();
 		JsonNode jsonNode = new ObjectMapper().readTree(s);
 		System.out.println(s);
 		// System.out.println(jsonNode);
@@ -63,10 +63,10 @@ public class TKMethodsTest {
 	public void testActPOST() throws Exception {
 		AdviceRegistry.INSTANCE.report(Collections.singletonList(new MethodsAdvice()));
 		String s = new RsPrint(
-				new TKMethods().act(new RqFake(RqMethod.PUT, "/methods/com.nastel.bank.DbUtils.getUserId()")))
+				new TkMethods().act(new RqFake(RqMethod.PUT, "/methods/com.nastel.bank.DbUtils.getUserId()")))
 						.printBody();
 		String s1 = new RsPrint(
-				new TKMethods().act(new RqFake(RqMethod.PUT, "/methods/com.nastel.bank.DbUtils.getBalance")))
+				new TkMethods().act(new RqFake(RqMethod.PUT, "/methods/com.nastel.bank.DbUtils.getBalance")))
 						.printBody();
 		// JsonNode jsonNode = new ObjectMapper().readTree(s);
 		List<String> strings = Files.readAllLines(CONFIGURATION_PATH);

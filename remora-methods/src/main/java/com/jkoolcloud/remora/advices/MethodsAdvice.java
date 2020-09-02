@@ -25,9 +25,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,9 +42,9 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
-	public static final String ADVICE_NAME = "BusinessMethodsAdvice";
-	public static final String CONFIG_BUSSINESS_METHOD_PROPERTIES = "/config/trackedMethods.properties";
-	public List<String> classAndMethodList = new ArrayList<>();
+	public static final String ADVICE_NAME = "MethodsAdvice";
+	public static final String CONFIG_BUSSINESS_METHOD_PROPERTIES = "/config/remora-methods.properties";
+	public Set<String> classAndMethodList = new HashSet<>();
 	public Set<String> instrumentedClasses = new HashSet<>();
 	public static final String REMORA_BASE_PATH = System.getProperty(REMORA_PATH);
 	public static final Path CONFIGURATION_PATH = Paths.get(REMORA_BASE_PATH + CONFIG_BUSSINESS_METHOD_PROPERTIES);
@@ -189,7 +187,7 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 	}
 
 	protected void fillClassAndMethodList(Stream<String> lines) {
-		classAndMethodList = lines.map(line -> line.substring(0, line.indexOf('('))).collect(Collectors.toList());
+		classAndMethodList = lines.map(line -> line.substring(0, line.indexOf('('))).collect(Collectors.toSet());
 		instrumentedClasses = classAndMethodList.stream().map(entry -> entry.substring(0, entry.lastIndexOf('.')))
 				.collect(Collectors.toSet());
 	}
