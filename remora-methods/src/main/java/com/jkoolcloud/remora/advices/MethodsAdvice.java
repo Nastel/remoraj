@@ -22,6 +22,7 @@ import static java.nio.file.StandardOpenOption.*;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -106,7 +107,7 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
 	@Advice.OnMethodEnter
 	public static void before(@Advice.This(optional = true) Object thiz, //
-			@Advice.AllArguments Object[] arguments, //
+			@Advice.AllArguments(typing = Assigner.Typing.DYNAMIC) Object[] arguments, //
 			@Advice.Origin Method method, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("context") InterceptionContext ctx, //
@@ -117,6 +118,12 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			ed = getEntryDefinition(ed, MethodsAdvice.class, ctx);
+
+			int i = 0;
+			for (Parameter param : method.getParameters()) {
+				ed.addPropertyIfExist(param.getName(), String.valueOf(arguments[i]));
+				i++;
+			}
 
 			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
 		} catch (Throwable t) {
@@ -144,7 +151,7 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 	@Advice.OnMethodExit(onThrowable = Throwable.class)
 	public static void after(@Advice.This(optional = true) Object obj, //
 			@Advice.Origin Method method, //
-			@Advice.AllArguments Object[] arguments, //
+			@Advice.AllArguments(typing = Assigner.Typing.DYNAMIC) Object[] arguments, //
 			@Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue, @Advice.Thrown Throwable exception, //
 			@Advice.Local("ed") EntryDefinition ed, //
 			@Advice.Local("context") InterceptionContext ctx, //
@@ -156,7 +163,7 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			doFinally = checkEntryDefinition(ed, ctx);
-
+			ed.addPropertyIfExist(method.getName(), String.valueOf(returnValue));
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
