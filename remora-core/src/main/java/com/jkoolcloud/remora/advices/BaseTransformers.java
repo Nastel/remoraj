@@ -109,7 +109,7 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 	 * Max element to collect for StackTrace.
 	 */
 	@RemoraConfig.Configurable
-	private static int maxStackTraceElements = 30;
+	public static int maxStackTraceElements = 30;
 
 	/**
 	 * Advice enabled flag. If false the interception process will not continue. See

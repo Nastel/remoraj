@@ -45,10 +45,14 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
 	public static final String ADVICE_NAME = "MethodsAdvice";
 	public static final String CONFIG_BUSSINESS_METHOD_PROPERTIES = "/config/remora-methods.properties";
-	public Set<String> classAndMethodList = new HashSet<>();
-	public Set<String> instrumentedClasses = new HashSet<>();
 	public static final String REMORA_BASE_PATH = System.getProperty(REMORA_PATH);
 	public static final Path CONFIGURATION_PATH = Paths.get(REMORA_BASE_PATH + CONFIG_BUSSINESS_METHOD_PROPERTIES);
+
+	@RemoraConfig.Configurable
+	public int maxArgumentLength = 128;
+
+	public Set<String> classAndMethodList = new HashSet<>();
+	public Set<String> instrumentedClasses = new HashSet<>();
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
@@ -121,7 +125,13 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 
 			int i = 0;
 			for (Parameter param : method.getParameters()) {
-				ed.addPropertyIfExist(param.getName(), String.valueOf(arguments[i]));
+				String value = String.valueOf(arguments[i]);
+				int maxArgumentLength = ((MethodsAdvice) ctx.interceptorInstance).maxArgumentLength;
+				if (value.length() > maxArgumentLength) {
+					ed.addPropertyIfExist(param.getName(), value.substring(0, maxArgumentLength));
+				} else {
+					ed.addPropertyIfExist(param.getName(), value);
+				}
 				i++;
 			}
 
@@ -163,7 +173,19 @@ public class MethodsAdvice extends BaseTransformers implements RemoraAdvice {
 				return;
 			}
 			doFinally = checkEntryDefinition(ed, ctx);
+
+			int maxArgumentLength = ((MethodsAdvice) ctx.interceptorInstance).maxArgumentLength;
+			if (returnValue != null) {
+				String value = String.valueOf(returnValue);
+				if (value.length() > maxArgumentLength) {
+					ed.addPropertyIfExist(method.getName(), value.substring(0, maxArgumentLength));
+				} else {
+					ed.addPropertyIfExist(method.getName(), value);
+				}
+			}
+
 			ed.addPropertyIfExist(method.getName(), String.valueOf(returnValue));
+
 			fillDefaultValuesAfter(ed, startTime, exception, ctx);
 		} catch (Throwable t) {
 			handleAdviceException(t, ctx);
