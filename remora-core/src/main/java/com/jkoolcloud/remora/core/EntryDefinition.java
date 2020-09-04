@@ -230,6 +230,10 @@ public class EntryDefinition implements EntryDefinitionDescription {
 		}
 	}
 
+	public void addGenericProperties(String prefix, Object object) {
+		// TODO implement
+	}
+
 	/**
 	 * Gets the class of intercepted class.
 	 *
