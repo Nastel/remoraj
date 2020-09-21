@@ -41,10 +41,10 @@ public interface TypePropertyAggregator<T> {
 		OBJECT_TO_STRING(Object.class, ObjectToStringPropertyAggregator.class);
 
 		private TypePropertyAggregator<?> value;
-		Map<Class, TypePropertyAggregator<?>> aggregators = new HashMap<>();
+		Map<Class<?>, TypePropertyAggregator<?>> aggregators = new HashMap<>();
 
 		Default(Class<? extends Object> collectionClass,
-				Class<? extends TypePropertyAggregator> collectionPropertyAggregatorClass) {
+				Class<? extends TypePropertyAggregator<?>> collectionPropertyAggregatorClass) {
 			try {
 				value = collectionPropertyAggregatorClass.newInstance();
 				aggregators.put(collectionClass, value);
@@ -54,7 +54,8 @@ public interface TypePropertyAggregator<T> {
 		}
 
 		<T> TypePropertyAggregator<? extends Object> getAggregator(T object) {
-			TypePropertyAggregator aggregator = aggregators
+			@SuppressWarnings("unlikely-arg-type")
+			TypePropertyAggregator<?> aggregator = aggregators
 					.get(aggregators.keySet().stream().filter(key -> key.isInstance(object)).findFirst());
 			if (aggregator == null) {
 				return OBJECT_TO_STRING.value;
@@ -63,10 +64,10 @@ public interface TypePropertyAggregator<T> {
 		}
 	}
 
-	class CollectionPropertyAggregator implements TypePropertyAggregator<Collection> {
+	class CollectionPropertyAggregator implements TypePropertyAggregator<Collection<?>> {
 
 		@Override
-		public void collect(Collection object, EntryDefinition entryDefinition, String prefix) {
+		public void collect(Collection<?> object, EntryDefinition entryDefinition, String prefix) {
 			entryDefinition.addPropertyIfExist(name(prefix, "SIZE"), object.size());
 		}
 	}
@@ -84,7 +85,6 @@ public interface TypePropertyAggregator<T> {
 			} else {
 				ed.addPropertyIfExist(prefix, value);
 			}
-
 		}
 	}
 }
