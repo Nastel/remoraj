@@ -19,7 +19,6 @@ package com.jkoolcloud.remora.takes;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rq.RqHeaders;
 import org.takes.rs.RsWithHeaders;
 
 public final class TkCorsAllowAll implements Take {
@@ -35,7 +34,6 @@ public final class TkCorsAllowAll implements Take {
 	@Override
 	public Response act(Request req) throws Exception {
 		Response response;
-		String domain = new RqHeaders.Smart(new RqHeaders.Base(req)).single("origin", "");
 		response = new RsWithHeaders(origin.act(req), "Access-Control-Allow-Credentials: true",
 				// @checkstyle LineLengthCheck (1 line)
 				"Access-Control-Allow-Methods: OPTIONS, GET, PUT, POST, DELETE, HEAD",
