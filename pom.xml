@@ -22,7 +22,7 @@
 
         <byte.buddy.version>1.10.12</byte.buddy.version>
         <!--Versions 5.17.17 up to 5.17.43 is not compatible with RemoraJ!!!-->
-        <chronicle.version>5.19.16</chronicle.version>
+        <chronicle.version>5.20.22</chronicle.version>
         <powermock.version>2.0.5</powermock.version>
         <tinylog.version>2.1.2</tinylog.version>
         <skip.javadoc.pack>true</skip.javadoc.pack>

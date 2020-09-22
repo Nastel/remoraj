@@ -129,10 +129,9 @@
                             <exclude>net.java.dev.jna:*</exclude>
                             <exclude>commons-cli:*</exclude>
                             <exclude>org.slf4j:*</exclude>
-                            <exclude>org.openjdk.jmh:*</exclude>-->
-                            <exclude>net.sf.jopt-simple:*</exclude>-->
-                            <exclude>org.apache.commons:commons-math3</exclude>-->
-                            <exclude>org.openjdk.jmh:*</exclude>-->
+                            <exclude>net.sf.jopt-simple:*</exclude>
+                            <exclude>org.apache.commons:commons-math3</exclude>
+                            <exclude>org.openjdk.jmh:*</exclude>
                         </excludes>
                     </artifactSet>
 

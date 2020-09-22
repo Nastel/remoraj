@@ -39,8 +39,8 @@ public class TkGCInfo implements Take {
 
 			+ "'}'";
 	public static final String GC_INFO_TEMPALTE = "'{'\n" + "  \"Name\": \"{0}\",\n"//
-			+ "  \"Collections\": {1,number,#},\n"//
-			+ "  \"LastCollectionTime\": {2,number,#},\n"//
+			+ "  \"Collections\": {1,number,#.##},\n"//
+			+ "  \"LastCollectionTime\": {2,number,#.##},\n"//
 			+ "  \"PoolNames\": [{3}]\n"//
 			+ "'}'";
 
@@ -52,10 +52,10 @@ public class TkGCInfo implements Take {
 			+ "'}'";
 
 	public static final String USAGE_TEMPLATE = "'{'\n"//
-			+ "  \"Init\": {0,number,#},\n" //
-			+ "  \"Used\": {1,number,#},\n"//
-			+ "  \"Max\": {2,number,#},\n" //
-			+ "  \"Commited\": {3,number,#}" //
+			+ "  \"Init\": {0,number,#.##},\n" //
+			+ "  \"Used\": {1,number,#.##},\n"//
+			+ "  \"Max\": {2,number,#.##},\n" //
+			+ "  \"Commited\": {3,number,#.##}" //
 			+ "'}'";
 
 	@Override
@@ -104,7 +104,7 @@ public class TkGCInfo implements Take {
 		long committed = collectionUsage.getCommitted();
 		String paddedPattern = JSONUtils.addPadding(padding, USAGE_TEMPLATE);
 
-		return format(paddedPattern, init, used, max, committed);
+		return format(paddedPattern, init, used, max, committed).replaceAll("−", "-");
 	}
 
 }

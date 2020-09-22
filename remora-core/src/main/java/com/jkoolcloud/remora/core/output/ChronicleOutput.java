@@ -95,7 +95,8 @@ public class ChronicleOutput implements AgentOutput<EntryDefinition> {
 		if (queue != null) {
 			logger.info("Queue initialized {}", this);
 			if (queue instanceof RollingChronicleQueue) {
-				((RollingChronicleQueue) queue).storeForCycle(((RollingChronicleQueue) queue).cycle(), 0, false);
+				RollingChronicleQueue queue = (RollingChronicleQueue) this.queue;
+				queue.storeForCycle(queue.cycle(), 0, false, null);
 			}
 		} else {
 			logger.error("Queue initializaton failed file={}", queueDir);
