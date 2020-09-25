@@ -37,7 +37,7 @@ public class RemoraLoggingProvider implements LoggingProvider {
 	private static Semaphore semaphore = new Semaphore(-1);
 	private static ArrayList<RemoraLoggingProvider> instances = new ArrayList<>();
 	private final static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
-			new ArrayBlockingQueue<Runnable>(1000) {
+			new ArrayBlockingQueue<Runnable>(5000) {
 				@Override
 				public Runnable take() throws InterruptedException {
 					semaphore.acquire();
@@ -47,11 +47,6 @@ public class RemoraLoggingProvider implements LoggingProvider {
 
 	public RemoraLoggingProvider() {
 		instances.add(this);
-	}
-
-	public void reload() throws InterruptedException, ReflectiveOperationException {
-		realProvider.shutdown();
-		realProvider = new TinylogLoggingProvider();
 	}
 
 	@Override
