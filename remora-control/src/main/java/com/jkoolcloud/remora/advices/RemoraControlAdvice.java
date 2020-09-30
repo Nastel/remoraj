@@ -74,6 +74,7 @@ public class RemoraControlAdvice implements RemoraAdvice, Loggable {
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		AvailableInetSocketAddress[] availableInetSocketAddress = { null };
 
+		logger.info("Scheduling http server after {} {}", serviceDelay, TimeUnit.SECONDS);
 		scheduledExecutorService.schedule(() -> {
 			try {
 				availableInetSocketAddress[0] = new AvailableInetSocketAddress(port);
