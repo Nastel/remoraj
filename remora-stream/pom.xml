@@ -25,14 +25,14 @@
     <parent>
         <groupId>com.jkoolcloud.remora</groupId>
         <artifactId>remora</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>remora-stream</artifactId>
 
     <properties>
-        <chronicle.stream.version>1.11.1</chronicle.stream.version>
+        <chronicle.stream.version>1.12.0-SNAPSHOT</chronicle.stream.version>
     </properties>
 
     <dependencies>
