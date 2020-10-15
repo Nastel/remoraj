@@ -224,5 +224,5 @@ Each advice creates it own logging file. You can find all files in your remora's
 
 # Supported Analytics Platforms
 * [Nastel XRay](https://xray.nastel.com/xray/Nastel/login.jsp) -- AIOps & transaction tracking. Supports SaaS/On-prem/Cloud
-* Integrate traces into ELK, Splunk or other platform via [agent output class implementation](#agent-trace-output)
+* Integrate traces into ELK, Splunk or other platform via [agent output class implementation](#agent-trace-output) 
 
