@@ -41,7 +41,7 @@ public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
 	public static final String INTERCEPTING_METHOD = "receive";
 
 	@RemoraConfig.Configurable
-	private static boolean fetchMsg = false;
+	public static boolean fetchMsg = false;
 
 	/**
 	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
