@@ -24,14 +24,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
+import com.jkoolcloud.remora.advices.GeneralAdvice;
+import com.jkoolcloud.remora.core.*;
 import org.junit.Test;
 
 import com.google.common.io.Files;
 import com.jkoolcloud.remora.advices.Advice1;
-import com.jkoolcloud.remora.core.Entry;
-import com.jkoolcloud.remora.core.EntryDefinition;
-import com.jkoolcloud.remora.core.EntryDefinitionDescription;
-import com.jkoolcloud.remora.core.Exit;
 import com.jkoolcloud.remora.testClasses.TestUtils;
 
 import net.openhft.chronicle.queue.ExcerptAppender;
@@ -97,5 +96,41 @@ public class ChronicleOutputTest {
 
 		}
 	}
+
+	@Test
+    public void testMultipleAppenders() {
+
+        File tempDir = Files.createTempDir();
+        //tempDir.deleteOnExit();
+
+        ChronicleOutput output = new ChronicleOutput();
+        createOutput(output, tempDir);
+
+        EntryDefinition ed = new EntryDefinition(GeneralAdvice.class, true);
+        ed.setEventType(EntryDefinition.EventType.CALL);
+        ed.setCorrelator("123");
+        ed.setResource("TEST", EntryDefinition.ResourceType.QUEUE);
+        ed.setClazz(ChronicleOutputTest.class.getName());
+        ed.setStackTrace("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        ed.setStartTime(System.currentTimeMillis());
+        output.send(ed);
+        ed.stop();
+        ed.addProperty("a", "b");
+        ed.addProperty("a", "b");
+        ed.addProperty("a", "b");
+        ed.addProperty("a", "b");
+        ed.addProperty("a", "b");
+        output.send(ed);
+
+    }
+
+    private void createOutput(ChronicleOutput output, File tempDir) {
+        output.rollCycle = RollCycles.TEST_SECONDLY;
+        output.keepQueueRolls = 2;
+
+        System.out.println(tempDir.getAbsolutePath());
+        output.queuePath = tempDir.getPath();
+        output.init();
+    }
 
 }

@@ -26,6 +26,8 @@ import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
+import static com.jkoolcloud.remora.core.EntryDefinition.DEFAULT_APPL_NAME;
+
 public class Exit extends SelfDescribingMarshallable implements Runnable {
 	protected static final byte modelVersion = 1;
 	protected String id;
@@ -41,6 +43,8 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 	protected String correlator;
 	protected String exceptionTrace;
 	protected Long duration;
+    protected String vmId;
+
 
 	@Override
 	public void run() {
@@ -67,17 +71,22 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 				.write("mode").text(mode.name())//
 				.write("resource").text(resource)//
 				.write("resourceType").text(resourceType.name())//
-				.write("application").text(application)//
+				.write("application").text(getApp())//
 				.write("properties").marshallable(properties)//
 				.write("eventType").text(eventType.name())//
 				.write("exception").text(exception)//
 				.write("correlator").text(correlator)//
-				.write("exceptionTrace").text(exceptionTrace)//
+                .write("vmId").text(vmId)//
+                .write("exceptionTrace").text(exceptionTrace)//
 
 		));
 	}
 
-	@Override
+    private String getApp() {
+        return System.getProperty("remora.appl.name", DEFAULT_APPL_NAME);
+    }
+
+    @Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;

@@ -16,57 +16,68 @@
 
 package com.jkoolcloud.remora.core.output;
 
+import com.jkoolcloud.remora.core.EntryDefinition;
+import org.jetbrains.annotations.NotNull;
+import org.tinylog.TaggedLogger;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.tinylog.TaggedLogger;
-
-import com.jkoolcloud.remora.core.EntryDefinition;
-
 public class ScheduledQueueErrorReporter {
 
-	public static AtomicInteger chronicleQueueFailCount = new AtomicInteger(0);
-	public static AtomicInteger intermediateQueueFailCount = new AtomicInteger(0);
-	public static Exception lastException;
-	public static long lastIndexAppender;
-	public static int maxMemoryQueueSize = 0;
+    public static AtomicInteger chronicleQueueFailCount = new AtomicInteger(0);
+    public static AtomicInteger intermediateQueueFailCount = new AtomicInteger(0);
+    public static Exception lastException;
+    public static long lastIndexAppender;
+    public static int maxMemoryQueueSize = 0;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private int lastReportedMemoryQueueErrorCount = 0;
+    private int lastReportedPersistentQueueErrorCount = 0;
 
-	private int lastReportedMemoryQueueErrorCount = 0;
-	private int lastReportedPersistentQueueErrorCount = 0;
+    public ScheduledQueueErrorReporter(TaggedLogger logger, Integer delay) {
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+            @Override
+            public Thread newThread(@NotNull Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setName("ScheduledQueueErrorReporter" + System.currentTimeMillis());
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            if (logger != null) {
+                int newIntermediateErrorCount = intermediateQueueFailCount.get();
+                if (newIntermediateErrorCount < lastReportedMemoryQueueErrorCount) {
+                    logger.error(
+                            // put all stats, queue size, etc
+                            "Failed to write to mem queue: failure count = {}", intermediateQueueFailCount.get());
+                    lastReportedMemoryQueueErrorCount = newIntermediateErrorCount;
+                }
 
-	private final ScheduledExecutorService scheduledExecutorService;
+                AgentOutput<EntryDefinition> output = OutputManager.getOutput();
+                if (output instanceof ChronicleOutput) {
+                    int imQueueSize = ((BufferedMultithreadOutput) output).getImQueueSize();
+                    maxMemoryQueueSize = Math.max(imQueueSize, maxMemoryQueueSize);
+                }
 
-	public ScheduledQueueErrorReporter(TaggedLogger logger, Integer delay) {
-		scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-		scheduledExecutorService.scheduleAtFixedRate(() -> {
-			if (logger != null) {
-				int newIntermediateErrorCount = intermediateQueueFailCount.get();
-				if (newIntermediateErrorCount < lastReportedMemoryQueueErrorCount) {
-					logger.error(
-							// put all stats, queue size, etc
-							"Failed to write to mem queue: failure count = {}", intermediateQueueFailCount.get());
-					lastReportedMemoryQueueErrorCount = newIntermediateErrorCount;
-				}
+                int newPersistentErrorCount = chronicleQueueFailCount.get();
+                if (newPersistentErrorCount > lastReportedPersistentQueueErrorCount) {
+                    logger.error(
+                            "Failed to write to persistent queue: failure count={}, last appender index = {}, error={} {}",
+                            chronicleQueueFailCount.get(), lastIndexAppender, lastException.getClass().getSimpleName(),
+                            lastException.getMessage());
+                    logger.debug(lastException);
+                    lastReportedPersistentQueueErrorCount = newPersistentErrorCount;
+                }
 
-				AgentOutput<EntryDefinition> output = OutputManager.getOutput();
-				if (output instanceof ChronicleOutput) {
-					int imQueueSize = ((BufferedMultithreadOutput) output).getImQueueSize();
-					maxMemoryQueueSize = Math.max(imQueueSize, maxMemoryQueueSize);
-				}
+            }
+        }, 0, delay, TimeUnit.SECONDS);
+    }
 
-				int newPersistentErrorCount = chronicleQueueFailCount.get();
-				if (newPersistentErrorCount > lastReportedPersistentQueueErrorCount) {
-					logger.error(
-							"Failed to write to persistent queue: failure count={}, last appender index = {}, error={} {}",
-							chronicleQueueFailCount.get(), lastIndexAppender, lastException.getClass().getSimpleName(),
-							lastException.getMessage());
-					logger.debug(lastException);
-					lastReportedPersistentQueueErrorCount = newPersistentErrorCount;
-				}
-
-			}
-		}, 0, delay, TimeUnit.SECONDS);
-	}
+    public void shutdown() {
+        scheduledExecutorService.shutdown();
+    }
 }

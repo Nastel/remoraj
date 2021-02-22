@@ -18,8 +18,6 @@ package com.jkoolcloud.remora.advices;
 
 import org.junit.Test;
 
-import com.jkoolcloud.remora.core.EntryDefinition;
-
 //Enable power mockito if any of classes failing to mock
 //@RunWith(PowerMockRunner.class)
 //@PrepareForTest({WebApp.class})
@@ -31,8 +29,8 @@ public class KafkaConsumerAdviceTest {
 		// PowerMockito.mockStatic(<<classToIntercept>>.class);
 		// WebApp webApp=mock(<<classToIntercept>>.class);
 
-		@SuppressWarnings("unused")
-		EntryDefinition handleRequestEntry = new EntryDefinition(KafkaConsumerAdvice.class, true);
+		// @SuppressWarnings("unused")
+		// EntryDefinition handleRequestEntry = new EntryDefinition(KafkaConsumerAdvice.class, true);
 
 		// Method method=Whitebox.getMethod(Object.class,"<<interceptingMethod>>");
 

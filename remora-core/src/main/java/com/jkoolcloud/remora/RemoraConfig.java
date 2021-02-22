@@ -104,7 +104,8 @@ public enum RemoraConfig {
 					}
 					break;
 				case "boolean":
-					appliedValue = Boolean.parseBoolean(configValue);
+					appliedValue = Boolean.parseBoolean(configValue.trim());
+					//TODO apply trim for others too
 					break;
 
 				case "int":

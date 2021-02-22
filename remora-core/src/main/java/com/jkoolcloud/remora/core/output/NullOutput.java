@@ -45,6 +45,6 @@ public class NullOutput implements AgentOutput<EntryDefinition> {
 
 	@Override
 	public ThreadFactory getThreadFactory() {
-		return Executors.defaultThreadFactory();
+        return new OutputThreadFactory();
 	}
 }

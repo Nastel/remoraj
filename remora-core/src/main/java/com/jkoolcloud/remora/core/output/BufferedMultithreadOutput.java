@@ -16,11 +16,6 @@
 
 package com.jkoolcloud.remora.core.output;
 
-import java.util.concurrent.*;
-
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
-
 import com.jkoolcloud.remora.AdviceRegistry;
 import com.jkoolcloud.remora.Remora;
 import com.jkoolcloud.remora.RemoraConfig;
@@ -29,120 +24,120 @@ import com.jkoolcloud.remora.core.EntryDefinition;
 import com.jkoolcloud.remora.filters.AdviceFilter;
 import com.jkoolcloud.remora.filters.FilterManager;
 import com.jkoolcloud.remora.filters.LimitingFilter;
+import org.tinylog.Logger;
+import org.tinylog.TaggedLogger;
+
+import java.util.concurrent.*;
 
 public class BufferedMultithreadOutput implements AgentOutput<EntryDefinition> {
 
-	@RemoraConfig.Configurable
-	public static boolean limitingFilter = true;
-	public static final String AUTO_LIMITING_FILTER = "AUTO_LIMITING_FILTER";
-	@RemoraConfig.Configurable
-	public static int filterAdvance = 2;
-	@RemoraConfig.Configurable
-	public static int releaseTimeSec = 60;
-	@RemoraConfig.Configurable
-	Integer intermediateQueueSize = 1000;
+    public static final String AUTO_LIMITING_FILTER = "AUTO_LIMITING_FILTER";
+    @RemoraConfig.Configurable
+    public static boolean limitingFilter = true;
+    @RemoraConfig.Configurable
+    public static int filterAdvance = 2;
+    @RemoraConfig.Configurable
+    public static int releaseTimeSec = 60;
+    static TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
+    @RemoraConfig.Configurable
+    Integer intermediateQueueSize = 1000;
+    @RemoraConfig.Configurable
+    Integer workerSize = 2;
+    @RemoraConfig.Configurable
+    AgentOutput<EntryDefinition> output;
+    private ExecutorService queueWorkers;
+    private ArrayBlockingQueue<Runnable> workQueue;
 
-	@RemoraConfig.Configurable
-	Integer workerSize = 2;
+    public static void limit() {
 
-	@RemoraConfig.Configurable
-	AgentOutput<EntryDefinition> output;
+        LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
+        if (limitingFilter == null) {
 
-	static TaggedLogger logger = Logger.tag(Remora.MAIN_REMORA_LOGGER);
+            limitingFilter = new LimitingFilter();
+            limitingFilter.mode = AdviceFilter.Mode.INCLUDE;
+            limitingFilter.everyNth = 1;
+            FilterManager.INSTANCE.add(AUTO_LIMITING_FILTER, limitingFilter);
+            logger.info("Created new limmiting filter");
+        }
+        limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
+        LimitingFilter finalLimitingFilter = limitingFilter;
+        AdviceRegistry.INSTANCE.getRegisteredAdvices().stream().filter(advice -> advice instanceof BaseTransformers)
+                .filter(advice -> !((BaseTransformers) advice).filters.contains(finalLimitingFilter))
+                .forEach(advice -> ((BaseTransformers) advice).filters.add(finalLimitingFilter));
 
-	private ExecutorService queueWorkers;
-	private ArrayBlockingQueue<Runnable> workQueue;
+        ((LimitingFilter) limitingFilter).everyNth *= filterAdvance;
 
-	public static void limit() {
+        logger.info("-> Filter advance: {}", ((LimitingFilter) limitingFilter).everyNth);
+        scheduleRelease();
+    }
 
-		LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-		if (limitingFilter == null) {
+    private static void scheduleRelease() {
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.schedule(BufferedMultithreadOutput::release, releaseTimeSec, TimeUnit.SECONDS);
+        executorService.shutdown();
+    }
 
-			limitingFilter = new LimitingFilter();
-			limitingFilter.mode = AdviceFilter.Mode.INCLUDE;
-			limitingFilter.everyNth = 1;
-			FilterManager.INSTANCE.add(AUTO_LIMITING_FILTER, limitingFilter);
-			logger.info("Created new limmiting filter");
-		}
-		limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-		LimitingFilter finalLimitingFilter = limitingFilter;
-		AdviceRegistry.INSTANCE.getRegisteredAdvices().stream().filter(advice -> advice instanceof BaseTransformers)
-				.filter(advice -> !((BaseTransformers) advice).filters.contains(finalLimitingFilter))
-				.forEach(advice -> ((BaseTransformers) advice).filters.add(finalLimitingFilter));
+    public static void release() {
+        try {
+            LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
+            limitingFilter.everyNth /= filterAdvance;
+            logger.info("<- Filter advance: {}", ((LimitingFilter) limitingFilter).everyNth);
+            if (limitingFilter.everyNth <= 1) {
+                AdviceRegistry.INSTANCE.getRegisteredAdvices().stream()
+                        .filter(advice -> advice instanceof BaseTransformers).map(advice -> (BaseTransformers) advice)
+                        .forEach(advice -> advice.filters.remove(limitingFilter));
+                limitingFilter.everyNth = 1;
+            } else {
+                scheduleRelease();
+            }
 
-		((LimitingFilter) limitingFilter).everyNth *= filterAdvance;
+        } catch (Exception e) {
+            TaggedLogger init = Logger.tag(Remora.MAIN_REMORA_LOGGER);
+            init.error("Cannot release filter");
+        }
 
-		logger.info("-> Filter advance: {}", ((LimitingFilter) limitingFilter).everyNth);
-		scheduleRelease();
-	}
+    }
 
-	private static void scheduleRelease() {
-		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.schedule(BufferedMultithreadOutput::release, releaseTimeSec, TimeUnit.SECONDS);
-		executorService.shutdown();
-	}
+    @Override
+    public void init() throws OutputException {
+        if (output == null) {
+            output = new ChronicleOutput();
+        }
+        output.init();
+        workQueue = new ArrayBlockingQueue<>(intermediateQueueSize);
+        queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS, workQueue,
+                output.getThreadFactory(), (r, executor) -> {
+            ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet();
+            logger.warn("Limiting advices, Overfilled queue");
+            if (limitingFilter) {
+                limit();
+            }
+        });
 
-	public static void release() {
-		try {
-			LimitingFilter limitingFilter = (LimitingFilter) FilterManager.INSTANCE.get(AUTO_LIMITING_FILTER);
-			limitingFilter.everyNth /= filterAdvance;
-			logger.info("<- Filter advance: {}", ((LimitingFilter) limitingFilter).everyNth);
-			if (limitingFilter.everyNth <= 1) {
-				AdviceRegistry.INSTANCE.getRegisteredAdvices().stream()
-						.filter(advice -> advice instanceof BaseTransformers).map(advice -> (BaseTransformers) advice)
-						.forEach(advice -> advice.filters.remove(limitingFilter));
-				limitingFilter.everyNth = 1;
-			} else {
-				scheduleRelease();
-			}
+    }
 
-		} catch (Exception e) {
-			TaggedLogger init = Logger.tag(Remora.MAIN_REMORA_LOGGER);
-			init.error("Cannot release filter");
-		}
+    public int getImQueueSize() {
+        if (workQueue != null) {
+            return workQueue.size();
+        } else {
+            return 0;
+        }
+    }
 
-	}
+    @Override
+    public void send(EntryDefinition entry) {
+        queueWorkers.submit(() -> output.send(entry));
+    }
 
-	@Override
-	public void init() throws OutputException {
-		if (output == null) {
-			output = new ChronicleOutput();
-		}
-		output.init();
-		workQueue = new ArrayBlockingQueue<>(intermediateQueueSize);
-		queueWorkers = new ThreadPoolExecutor(workerSize, workerSize, 0, TimeUnit.MILLISECONDS, workQueue,
-				output.getThreadFactory(), (r, executor) -> {
-					ScheduledQueueErrorReporter.intermediateQueueFailCount.incrementAndGet();
-					logger.warn("Limiting advices, Overfilled queue");
-					if (limitingFilter) {
-						limit();
-					}
-				});
+    @Override
+    public void shutdown() {
+        queueWorkers.shutdown();
+        logger.info("Shutting down chronicle queue:" + this);
 
-	}
+    }
 
-	public int getImQueueSize() {
-		if (workQueue != null) {
-			return workQueue.size();
-		} else {
-			return 0;
-		}
-	}
-
-	@Override
-	public void send(EntryDefinition entry) {
-		queueWorkers.submit(() -> output.send(entry));
-	}
-
-	@Override
-	public void shutdown() {
-		queueWorkers.shutdown();
-		logger.info("Shutting down chronicle queue:" + this);
-
-	}
-
-	@Override
-	public ThreadFactory getThreadFactory() {
-		return Executors.defaultThreadFactory();
-	}
+    @Override
+    public ThreadFactory getThreadFactory() {
+        return new OutputThreadFactory();
+    }
 }

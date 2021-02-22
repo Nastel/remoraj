@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.jkoolcloud.remora.core.EntryDefinition;
@@ -43,6 +44,11 @@ public class RemoraConfigTest {
 
 	public enum TestEnum {
 		ONE, TWO, THREE
+	}
+
+	@Before
+	public void sllep() throws InterruptedException {
+		Thread.sleep(1000);
 	}
 
 	public static class TestForSingleStringConfigrable {

@@ -16,171 +16,165 @@
 
 package com.jkoolcloud.remora.advices;
 
-import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
-import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-
-import java.lang.reflect.Method;
-
-import javax.jms.*;
-
-import org.tinylog.TaggedLogger;
-
 import com.jkoolcloud.remora.RemoraConfig;
 import com.jkoolcloud.remora.core.EntryDefinition;
-
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import org.tinylog.TaggedLogger;
+
+import javax.jms.*;
+import java.lang.reflect.Method;
+
+import static com.jkoolcloud.remora.core.utils.ReflectionUtils.getFieldValue;
+import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class JMSReceiveAdvice extends BaseTransformers implements RemoraAdvice {
-	public static final String ADVICE_NAME = "JMSReceiveAdvice";
-	public static final String[] INTERCEPTING_CLASS = { "javax.jms.MessageConsumer" };
-	public static final String INTERCEPTING_METHOD = "receive";
+    public static final String ADVICE_NAME = "JMSReceiveAdvice";
+    public static final String[] INTERCEPTING_CLASS = {"javax.jms.MessageConsumer"};
+    public static final String INTERCEPTING_METHOD = "receive";
 
-	@RemoraConfig.Configurable
-	public static boolean fetchMsg = false;
+    @RemoraConfig.Configurable
+    public static boolean fetchMsg = false;
+    static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
+            .include(JMSReceiveAdvice.class.getClassLoader())//
+            .include(RemoraConfig.INSTANCE.classLoader) //
+            .advice(methodMatcher(), JMSReceiveAdvice.class.getName());
 
-	/**
-	 * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
-	 * method matches.
-	 */
+    /**
+     * Method matcher intended to match intercepted class method/s to instrument. See (@ElementMatcher) for available
+     * method matches.
+     */
 
-	private static ElementMatcher.Junction<NamedElement> methodMatcher() {
-		return named(INTERCEPTING_METHOD);
-	}
+    private static ElementMatcher.Junction<NamedElement> methodMatcher() {
+        return named(INTERCEPTING_METHOD);
+    }
 
-	static AgentBuilder.Transformer.ForAdvice advice = new AgentBuilder.Transformer.ForAdvice()
-			.include(JMSReceiveAdvice.class.getClassLoader())//
-			.include(RemoraConfig.INSTANCE.classLoader) //
-			.advice(methodMatcher(), JMSReceiveAdvice.class.getName());
+    /**
+     * Advices before method is called before instrumented method code
+     *
+     * @param thiz      reference to method object
+     * @param arguments arguments provided for method
+     * @param method    instrumented method description
+     * @param ed        {@link EntryDefinition} for collecting ant passing values to
+     *                  {@link com.jkoolcloud.remora.core.output.OutputManager}
+     * @param startTime method startTime
+     */
 
-	/**
-	 * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
-	 */
+    @Advice.OnMethodEnter
+    public static void before(@Advice.This MessageConsumer thiz, //
+                              @Advice.AllArguments Object[] arguments, //
+                              @Advice.Origin Method method, //
+                              @Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
+                              @Advice.Local("startTime") long startTime)//
+    {
+        try {
+            ctx = prepareIntercept(JMSReceiveAdvice.class, thiz, method, arguments);
+            if (!ctx.intercept) {
+                return;
+            }
+            ed = getEntryDefinition(ed, JMSReceiveAdvice.class, ctx);
+            ed.setEventType(EntryDefinition.EventType.RECEIVE);
+            startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
+            if (thiz instanceof QueueReceiver) {
+                String queueName = ((QueueReceiver) thiz).getQueue().getQueueName();
+                ed.addPropertyIfExist("QUEUE", queueName);
+                ed.setResource(queueName, EntryDefinition.ResourceType.QUEUE);
+            }
+        } catch (Throwable t) {
+            handleAdviceException(t, ctx);
+        }
+    }
 
-	@Override
-	public ElementMatcher<TypeDescription> getTypeMatcher() {
-		return hasSuperType(named(INTERCEPTING_CLASS[0]));
-	}
+    /**
+     * Method called on instrumented method finished.
+     *
+     * @param obj       reference to method object
+     * @param method    instrumented method description
+     * @param arguments arguments provided for method
+     * @param exception exception thrown in method exit (not caught)
+     * @param ed        {@link EntryDefinition} passed along the method (from before method)
+     * @param startTime startTime passed along the method
+     */
 
-	@Override
-	public AgentBuilder.Transformer getAdvice() {
-		return advice;
-	}
+    @Advice.OnMethodExit(onThrowable = Throwable.class)
+    public static void after(@Advice.This MessageConsumer obj, //
+                             @Advice.Origin Method method, //
+                             @Advice.AllArguments Object[] arguments, //
+                             @Advice.Thrown Throwable exception, //
+                             @Advice.Return Message message, //
+                             @Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
+                             @Advice.Local("startTime") long startTime) //
+    {
+        boolean doFinally = true;
+        try {
+            ctx = prepareIntercept(JMSReceiveAdvice.class, obj, method, arguments);
+            if (!ctx.intercept) {
+                return;
+            }
+            TaggedLogger logger = ctx.interceptorInstance.getLogger();
 
-	/**
-	 * Advices before method is called before instrumented method code
-	 *
-	 * @param thiz
-	 *            reference to method object
-	 * @param arguments
-	 *            arguments provided for method
-	 * @param method
-	 *            instrumented method description
-	 * @param ed
-	 *            {@link EntryDefinition} for collecting ant passing values to
-	 *            {@link com.jkoolcloud.remora.core.output.OutputManager}
-	 * @param startTime
-	 *            method startTime
-	 *
-	 */
+            doFinally = checkEntryDefinition(ed, ctx);
 
-	@Advice.OnMethodEnter
-	public static void before(@Advice.This MessageConsumer thiz, //
-			@Advice.AllArguments Object[] arguments, //
-			@Advice.Origin Method method, //
-			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
-			@Advice.Local("startTime") long startTime)//
-	{
-		try {
-			ctx = prepareIntercept(JMSReceiveAdvice.class, thiz, method, arguments);
-			if (!ctx.intercept) {
-				return;
-			}
-			ed = getEntryDefinition(ed, JMSReceiveAdvice.class, ctx);
-			ed.setEventType(EntryDefinition.EventType.RECEIVE);
-			startTime = fillDefaultValuesBefore(ed, stackThreadLocal, thiz, method, ctx);
-			if (thiz instanceof QueueReceiver) {
-				String queueName = ((QueueReceiver) thiz).getQueue().getQueueName();
-				ed.addPropertyIfExist("QUEUE", queueName);
-				ed.setResource(queueName, EntryDefinition.ResourceType.QUEUE);
-			}
-		} catch (Throwable t) {
-			handleAdviceException(t, ctx);
-		}
-	}
+            if (message != null) {
+                ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
+                ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
+                ed.addPropertyIfExist("TYPE", message.getJMSType());
+                Destination jmsDestination = message.getJMSDestination();
+                if (jmsDestination == null) {
+                    jmsDestination = getFieldValue(message, Destination.class, "destination");
+                    logger.debug("Destination2: " + jmsDestination);
+                } else {
+                    logger.debug("Destination1: " + jmsDestination);
+                }
+                if (jmsDestination != null) {
+                    String resource;
+                    if (jmsDestination instanceof Queue) {
+                        resource = ((Queue) jmsDestination).getQueueName();
+                    } else if (jmsDestination instanceof Topic) {
+                        resource = ((Topic) jmsDestination).getTopicName();
+                    } else {
+                        resource = String.valueOf(jmsDestination);
+                    }
+                    ed.setResource(resource, EntryDefinition.ResourceType.QUEUE);
+                }
+                if (fetchMsg && message instanceof TextMessage) {
+                    ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
+                }
+            } else {
+                logger.debug("Message is null");
+            }
+            fillDefaultValuesAfter(ed, startTime, exception, ctx);
+        } catch (Throwable t) {
+            handleAdviceException(t, ctx);
+        } finally {
+            if (doFinally) {
+                doFinally(ctx, obj.getClass());
+            }
+        }
 
-	/**
-	 * Method called on instrumented method finished.
-	 *
-	 * @param obj
-	 *            reference to method object
-	 * @param method
-	 *            instrumented method description
-	 * @param arguments
-	 *            arguments provided for method
-	 * @param exception
-	 *            exception thrown in method exit (not caught)
-	 * @param ed
-	 *            {@link EntryDefinition} passed along the method (from before method)
-	 * @param startTime
-	 *            startTime passed along the method
-	 */
+    }
 
-	@Advice.OnMethodExit(onThrowable = Throwable.class)
-	public static void after(@Advice.This MessageConsumer obj, //
-			@Advice.Origin Method method, //
-			@Advice.AllArguments Object[] arguments, //
-			@Advice.Thrown Throwable exception, //
-			@Advice.Return Message message, //
-			@Advice.Local("ed") EntryDefinition ed, @Advice.Local("context") InterceptionContext ctx, //
-			@Advice.Local("startTime") long startTime) //
-	{
-		boolean doFinally = true;
-		try {
-			ctx = prepareIntercept(JMSReceiveAdvice.class, obj, method, arguments);
-			if (!ctx.intercept) {
-				return;
-			}
-			TaggedLogger logger = ctx.interceptorInstance.getLogger();
+    /**
+     * Type matcher should find the class intended for intrumentation See (@ElementMatcher) for available matches.
+     */
 
-			doFinally = checkEntryDefinition(ed, ctx);
+    @Override
+    public ElementMatcher<TypeDescription> getTypeMatcher() {
+        return hasSuperType(named(INTERCEPTING_CLASS[0]));
+    }
 
-			if (message != null) {
-				ed.addPropertyIfExist("MESSAGE_ID", message.getJMSMessageID());
-				ed.addPropertyIfExist("CORR_ID", message.getJMSCorrelationID());
-				ed.addPropertyIfExist("TYPE", message.getJMSType());
-				Destination jmsDestination = message.getJMSDestination();
-				if (jmsDestination == null) {
-					jmsDestination = getFieldValue(message, Destination.class, "destination");
-					logger.debug("Destination2: " + jmsDestination);
-				} else {
-					logger.debug("Destination1: " + jmsDestination);
-				}
-				ed.setResource(String.valueOf(jmsDestination), EntryDefinition.ResourceType.QUEUE);
-				if (fetchMsg && message instanceof TextMessage) {
-					ed.addPropertyIfExist("MSG", ((TextMessage) message).getText());
-				}
-			} else {
-				logger.debug("Message is null");
-			}
-			fillDefaultValuesAfter(ed, startTime, exception, ctx);
-		} catch (Throwable t) {
-			handleAdviceException(t, ctx);
-		} finally {
-			if (doFinally) {
-				doFinally(ctx, obj.getClass());
-			}
-		}
+    @Override
+    public AgentBuilder.Transformer getAdvice() {
+        return advice;
+    }
 
-	}
-
-	@Override
-	public String getName() {
-		return ADVICE_NAME;
-	}
+    @Override
+    public String getName() {
+        return ADVICE_NAME;
+    }
 
 }

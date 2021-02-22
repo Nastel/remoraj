@@ -16,6 +16,13 @@
 
 package com.jkoolcloud.remora.core.utils;
 
+import com.jkoolcloud.remora.advices.BaseTransformers;
+import org.tinylog.Level;
+import org.tinylog.core.TinylogLoggingProvider;
+import org.tinylog.format.MessageFormatter;
+import org.tinylog.provider.ContextProvider;
+import org.tinylog.provider.LoggingProvider;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -23,100 +30,96 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.tinylog.Level;
-import org.tinylog.core.TinylogLoggingProvider;
-import org.tinylog.format.MessageFormatter;
-import org.tinylog.provider.ContextProvider;
-import org.tinylog.provider.LoggingProvider;
-
-import com.jkoolcloud.remora.advices.BaseTransformers;
-
 public class RemoraLoggingProvider implements LoggingProvider {
 
-	private TinylogLoggingProvider realProvider;
-	private static Semaphore semaphore = new Semaphore(-1);
-	private static ArrayList<RemoraLoggingProvider> instances = new ArrayList<>();
-	private final static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
-			new ArrayBlockingQueue<Runnable>(5000) {
-				@Override
-				public Runnable take() throws InterruptedException {
-					semaphore.acquire();
-					return super.take();
-				}
-			});
+    private static Semaphore semaphore = new Semaphore(-1);
+    private final static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<Runnable>(5000) {
+                @Override
+                public Runnable take() throws InterruptedException {
+                    semaphore.acquire();
+                    return super.take();
+                }
+            }, r -> {
+        Thread thread = new Thread(r, "Remora logger thread" + System.currentTimeMillis());
+        thread.setDaemon(true);
+        return thread;
+    });
+    private static ArrayList<RemoraLoggingProvider> instances = new ArrayList<>();
+    private TinylogLoggingProvider realProvider;
 
-	public RemoraLoggingProvider() {
-		instances.add(this);
-	}
+    public RemoraLoggingProvider() {
+        instances.add(this);
+    }
 
-	@Override
-	public ContextProvider getContextProvider() {
-		return realProvider.getContextProvider();
-	}
+    public static void startLogging() {
+        instances.stream().forEach(a -> a.realProvider = new TinylogLoggingProvider());
+        semaphore.release(Integer.MAX_VALUE);
+        threadPoolExecutor.shutdown();
+    }
 
-	@Override
-	public Level getMinimumLevel() {
-		return Level.TRACE;
-	}
+    @Override
+    public ContextProvider getContextProvider() {
+        return realProvider.getContextProvider();
+    }
 
-	@Override
-	public Level getMinimumLevel(String tag) {
-		return Level.TRACE;
-	}
+    @Override
+    public Level getMinimumLevel() {
+        return Level.TRACE;
+    }
 
-	@Override
-	public boolean isEnabled(int depth, String tag, Level level) {
-		return realProvider.isEnabled(depth + 1, tag, level);
-	}
+    @Override
+    public Level getMinimumLevel(String tag) {
+        return Level.TRACE;
+    }
 
-	@Override
-	public void log(int depth, String tag, Level level, Throwable exception, MessageFormatter formatter, Object obj,
-			Object... arguments) {
-		BaseTransformers adviceByName = null;
-		if (arguments != null && arguments[0] instanceof BaseTransformers) {
-			adviceByName = ((BaseTransformers) arguments[0]);
-		}
-		if (arguments != null && arguments[0] instanceof BaseTransformers.InterceptionContext) {
-			adviceByName = ((BaseTransformers.InterceptionContext) arguments[0]).interceptorInstance;
-		}
+    @Override
+    public boolean isEnabled(int depth, String tag, Level level) {
+        return realProvider.isEnabled(depth + 1, tag, level);
+    }
 
-		if (adviceByName != null) {
-			Level advicesLogLevel = adviceByName.getLogLevel();
-			if (advicesLogLevel.ordinal() > level.ordinal()) {
-				return;
-			}
-			arguments = Arrays.copyOfRange(arguments, 1, arguments.length);
-		}
-		if (semaphore.availablePermits() < 0) {
-			// String className = RuntimeProvider.getCallerStackTraceElement(depth + 1).getClassName();
-			Object[] finalArguments = arguments;
-			threadPoolExecutor.submit(() -> {
-				realProvider.log(depth + 1, tag, level, exception, formatter, obj, finalArguments);
-			});
-		} else {
-			realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
-		}
+    @Override
+    public void log(int depth, String tag, Level level, Throwable exception, MessageFormatter formatter, Object obj,
+                    Object... arguments) {
+        BaseTransformers adviceByName = null;
+        if (arguments != null && arguments[0] instanceof BaseTransformers) {
+            adviceByName = ((BaseTransformers) arguments[0]);
+        }
+        if (arguments != null && arguments[0] instanceof BaseTransformers.InterceptionContext) {
+            adviceByName = ((BaseTransformers.InterceptionContext) arguments[0]).interceptorInstance;
+        }
 
-	}
+        if (adviceByName != null) {
+            Level advicesLogLevel = adviceByName.getLogLevel();
+            if (advicesLogLevel.ordinal() > level.ordinal()) {
+                return;
+            }
+            arguments = Arrays.copyOfRange(arguments, 1, arguments.length);
+        }
+        if (semaphore.availablePermits() < 0) {
+            // String className = RuntimeProvider.getCallerStackTraceElement(depth + 1).getClassName();
+            Object[] finalArguments = arguments;
+            threadPoolExecutor.submit(() -> {
+                realProvider.log(depth + 1, tag, level, exception, formatter, obj, finalArguments);
+            });
+        } else {
+            realProvider.log(depth + 1, tag, level, exception, formatter, obj, arguments);
+        }
 
-	@Override
-	public void log(String loggerClassName, String tag, Level level, Throwable exception, MessageFormatter formatter,
-			Object obj, Object... arguments) {
-		realProvider.log(loggerClassName, tag, level, exception, formatter, obj, arguments);
+    }
 
-	}
+    @Override
+    public void log(String loggerClassName, String tag, Level level, Throwable exception, MessageFormatter formatter,
+                    Object obj, Object... arguments) {
+        realProvider.log(loggerClassName, tag, level, exception, formatter, obj, arguments);
 
-	@Override
-	public void shutdown() throws InterruptedException {
-		threadPoolExecutor.shutdownNow();
-		realProvider.shutdown();
+    }
 
-	}
+    @Override
+    public void shutdown() throws InterruptedException {
+        threadPoolExecutor.shutdownNow();
+        realProvider.shutdown();
 
-	public static void startLogging() {
-		instances.stream().forEach(a -> a.realProvider = new TinylogLoggingProvider());
-		semaphore.release(Integer.MAX_VALUE);
-		threadPoolExecutor.shutdown();
-	}
+    }
 
 }

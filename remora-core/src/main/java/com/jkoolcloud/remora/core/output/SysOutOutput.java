@@ -39,6 +39,6 @@ public class SysOutOutput implements AgentOutput<EntryDefinition> {
 
 	@Override
 	public ThreadFactory getThreadFactory() {
-		return Executors.defaultThreadFactory();
+        return new OutputThreadFactory();
 	}
 }

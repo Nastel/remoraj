@@ -40,6 +40,7 @@
         <field name="TIMESTAMP" datatype="Timestamp" units="Milliseconds">
             <field-locator id="TNum" locator="TIMESTAMP" locator-type="Label" datatype="Number"/>
         </field>
+        <field name="Message" locator="MSG" locator-type="Label"/>
 
         <field name="bytesCount" locator="bytesCount" datatype="Number"/>
         <field name="lastAccessed" locator="lastAccessed" datatype="Timestamp"/>
@@ -65,7 +66,7 @@
         <field name="StartTime" locator="startTime" locator-type="Label" units="Milliseconds" datatype="Timestamp" timezone="EET"/>
         <field name="Thread" locator="thread" locator-type="Label"/>
         <field name="AdviceClass" locator="adviceClass" locator-type="Label"/>
-        <field name="Message" locator="stackTrace" locator-type="Label"/>
+        <field name="StackTrace" locator="stackTrace" locator-type="Label"/>
         <field name="vmId" locator="vmId" locator-type="Label"/>
         <field name="MODE" locator="mode" locator-type="Label"/>
 
@@ -95,6 +96,8 @@
         </embedded-activity>
         <field name="EventType" locator="eventType" locator-type="Label"/>
         <field name="MODE" locator="mode" locator-type="Label"/>
+        <field name="vmId" locator="vmId" locator-type="Label"/>
+
         <!-- <field name="MessageAge" datatype="Number" value-type="age.usec"> -->
         <!-- <field-locator id="TimestampRAW" locator="startTime" locator-type="Label" datatype="AsInput"> -->
         <!-- <field-transform lang="groovy" phase="raw"><![CDATA[ -->

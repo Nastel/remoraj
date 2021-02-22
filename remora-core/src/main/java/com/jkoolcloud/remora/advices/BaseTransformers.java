@@ -328,7 +328,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 		BaseTransformers interceptorInstance = ctx.interceptorInstance;
 		TaggedLogger logger = interceptorInstance.getLogger();
 		if (entryDefinition.isChained()) {
-			logger.debug("Ed {} chained, not filling in", ctx, entryDefinition);
+		    if (logger != null) {
+                logger.debug("Ed {} chained, not filling in", ctx, entryDefinition);
+            }
 			return 0;
 		}
 
@@ -336,7 +338,9 @@ public abstract class BaseTransformers implements RemoraAdvice, Loggable {
 			if (thiz != null) {
 				entryDefinition.setClazz(thiz.getClass().getName());
 			} else {
-				entryDefinition.setClazz(method.getDeclaringClass().getName());
+                if (method != null) {
+                    entryDefinition.setClazz(method.getDeclaringClass().getName());
+                }
 			}
 
 			if (method != null) {
