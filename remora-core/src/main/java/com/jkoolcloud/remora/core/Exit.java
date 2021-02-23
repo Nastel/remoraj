@@ -98,7 +98,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 		Exit exit = (Exit) o;
 		return Objects.equals(modelVersion, modelVersion) && Objects.equals(id, exit.id)
 				&& Objects.equals(name, exit.name) && mode == exit.mode && Objects.equals(resource, exit.resource)
-				&& resourceType == exit.resourceType && Objects.equals(application, exit.application)
+				&& resourceType == exit.resourceType 
 				&& Objects.equals(properties, exit.properties) && eventType == exit.eventType
 				&& Objects.equals(server, exit.server) && Objects.equals(exception, exit.exception)
 				&& Objects.equals(correlator, exit.correlator) && Objects.equals(exceptionTrace, exit.exceptionTrace)
@@ -107,7 +107,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), id, name, mode, resource, resourceType, application, properties,
+		return Objects.hash(super.hashCode(), id, name, mode, resource, resourceType, properties,
 				eventType, server, exception, correlator, exceptionTrace, duration);
 	}
 
