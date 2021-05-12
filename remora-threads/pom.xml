@@ -10,10 +10,10 @@
     </parent>
     <packaging>jar</packaging>
 
-    <artifactId>remora-thraeads</artifactId>
+    <artifactId>remora-threads</artifactId>
 
-    <name>remora-thraeads</name>
-    <description>A simple remora-thraeads.</description>
+    <name>remora-threads</name>
+    <description>A simple remora-threads.</description>
     <url>https://github.com/Nastel/</url>
 
     <properties>
@@ -105,7 +105,7 @@
                     <artifactSet>
 
                         <includes>
-                            <include>com.jkoolcloud.remora:remora-thraeads</include>
+                            <include>com.jkoolcloud.remora:remora-threads</include>
                         </includes>
                     </artifactSet>
                 </configuration>
