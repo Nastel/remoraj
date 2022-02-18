@@ -16,6 +16,8 @@
 
 package com.jkoolcloud.remora.core;
 
+import static com.jkoolcloud.remora.core.EntryDefinition.DEFAULT_APPL_NAME;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,8 +27,6 @@ import com.jkoolcloud.remora.core.output.ScheduledQueueErrorReporter;
 
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
-
-import static com.jkoolcloud.remora.core.EntryDefinition.DEFAULT_APPL_NAME;
 
 public class Exit extends SelfDescribingMarshallable implements Runnable {
 	protected static final byte modelVersion = 1;
@@ -43,8 +43,7 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 	protected String correlator;
 	protected String exceptionTrace;
 	protected Long duration;
-    protected String vmId;
-
+	protected String vmId;
 
 	@Override
 	public void run() {
@@ -76,17 +75,17 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 				.write("eventType").text(eventType.name())//
 				.write("exception").text(exception)//
 				.write("correlator").text(correlator)//
-                .write("vmId").text(vmId)//
-                .write("exceptionTrace").text(exceptionTrace)//
+				.write("vmId").text(vmId)//
+				.write("exceptionTrace").text(exceptionTrace)//
 
 		));
 	}
 
-    private String getApp() {
-        return System.getProperty("remora.appl.name", DEFAULT_APPL_NAME);
-    }
+	private String getApp() {
+		return System.getProperty("remora.appl.name", DEFAULT_APPL_NAME);
+	}
 
-    @Override
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -98,22 +97,20 @@ public class Exit extends SelfDescribingMarshallable implements Runnable {
 		Exit exit = (Exit) o;
 		return Objects.equals(modelVersion, modelVersion) && Objects.equals(id, exit.id)
 				&& Objects.equals(name, exit.name) && mode == exit.mode && Objects.equals(resource, exit.resource)
-				&& resourceType == exit.resourceType 
-				&& Objects.equals(properties, exit.properties) && eventType == exit.eventType
-				&& Objects.equals(server, exit.server) && Objects.equals(exception, exit.exception)
-				&& Objects.equals(correlator, exit.correlator) && Objects.equals(exceptionTrace, exit.exceptionTrace)
-				&& Objects.equals(duration, exit.duration);
+				&& resourceType == exit.resourceType && Objects.equals(properties, exit.properties)
+				&& eventType == exit.eventType && Objects.equals(server, exit.server)
+				&& Objects.equals(exception, exit.exception) && Objects.equals(correlator, exit.correlator)
+				&& Objects.equals(exceptionTrace, exit.exceptionTrace) && Objects.equals(duration, exit.duration);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), id, name, mode, resource, resourceType, properties,
-				eventType, server, exception, correlator, exceptionTrace, duration);
+		return Objects.hash(super.hashCode(), id, name, mode, resource, resourceType, properties, eventType, server,
+				exception, correlator, exceptionTrace, duration);
 	}
 
 	@Override
 	public String toString() {
 		return id;
 	}
-
 }

@@ -36,9 +36,8 @@ public class EntryDefinitionTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testWiteToQueue() throws Exception {
+	public void testWriteToQueue() throws Exception {
 		try (TestUtils.TempQueue queue = new TestUtils.TempQueue()) {
-
 			ExcerptAppender appender = queue.acquireAppender();
 			ExcerptTailer tailer = queue.createTailer();
 

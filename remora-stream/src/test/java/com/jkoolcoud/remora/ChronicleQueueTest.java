@@ -117,7 +117,6 @@ public class ChronicleQueueTest {
 			appender.writeDocument(expect.exit);
 			Thread.sleep(300);
 		}
-
 	}
 
 	int countEntry = 0;
@@ -130,7 +129,6 @@ public class ChronicleQueueTest {
 	@Ignore // Contains system path
 	@Test
 	public void testReadQueue() {
-
 		ChronicleQueue queue = ChronicleQueue
 				.singleBuilder("c:\\workspace\\build\\remora\\remora-0.1.3-SNAPSHOT\\queue\\").build();
 
@@ -184,7 +182,6 @@ public class ChronicleQueueTest {
 	}
 
 	private void accept(Wire wire) {
-
 		StringBuilder sb = new StringBuilder();
 		ValueIn valueIn = wire.readEventName(sb);
 		if (sb.toString().equalsIgnoreCase("entry")) {
@@ -198,7 +195,6 @@ public class ChronicleQueueTest {
 		} else {
 			countOther++;
 		}
-
 	}
 
 	private boolean readOneMetaData(DocumentContext context) {
@@ -212,5 +208,4 @@ public class ChronicleQueueTest {
 		bytes.readPosition(r);
 		return true;
 	}
-
 }

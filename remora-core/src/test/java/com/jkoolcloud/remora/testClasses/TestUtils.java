@@ -43,7 +43,6 @@ public class TestUtils {
 			queue = ChronicleQueue.single(tempDirectory.toFile().getAbsolutePath());
 			appender = queue.acquireAppender();
 			tailer = queue.createTailer();
-
 		}
 
 		public ChronicleQueue getQueue() {
@@ -74,8 +73,6 @@ public class TestUtils {
 				}
 			}
 			fail("Cannot delete old queue files");
-
 		}
-
 	}
 }
